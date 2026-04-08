@@ -1,0 +1,32 @@
+name: Deploy Backend to EC2
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Deploy to EC2
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          port: ${{ secrets.EC2_PORT }}
+          script: |
+            set -e
+            cd /home/ubuntu/Website-3tattava/backend
+            git pull origin main
+            npm install --production
+            pm2 restart 3tattava-api --update-env
+            sleep 3
+            curl -f http://localhost:5000/api/health || exit 1
+            echo "Deployment successful!"
