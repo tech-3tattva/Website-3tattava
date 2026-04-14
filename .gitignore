@@ -1,0 +1,40 @@
+# ── Environment files (never commit secrets) ──
+.env
+.env.local
+.env.production
+**/.env
+**/.env.local
+**/.env.production
+
+# ── Dependencies ──
+node_modules/
+frontend/node_modules/
+backend/node_modules/
+
+# ── Next.js ──
+frontend/.next/
+frontend/out/
+.next/
+
+# ── Build outputs ──
+dist/
+build/
+
+# ── Logs ──
+*.log
+npm-debug.log*
+
+# ── OS files ──
+.DS_Store
+Thumbs.db
+
+# ── Editor / local tooling ──
+.vscode/
+.idea/
+.superdesign/
+
+# ── Keep backend placeholder ──
+!backend/.gitkeep
+
+# ── Uploaded product images (local dev) ──
+backend/uploads/
