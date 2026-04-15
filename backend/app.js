@@ -27,6 +27,11 @@ const chatRoutes = require("./src/routes/chat.routes");
 
 const app = express();
 
+// Trust the first proxy hop (nginx on the same EC2 host).
+// Required for express-rate-limit to read the real client IP from
+// X-Forwarded-For instead of crashing with ERR_ERL_UNEXPECTED_X_FORWARDED_FOR.
+app.set("trust proxy", 1);
+
 const uploadsRoot = path.join(__dirname, "uploads");
 fs.mkdirSync(path.join(uploadsRoot, "products"), { recursive: true });
 app.use("/uploads", express.static(uploadsRoot));
