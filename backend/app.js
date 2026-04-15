@@ -40,12 +40,29 @@ app.use(
 app.use(express.json({ limit: "2mb" }));
 app.use(cookieParser());
 
+// Allow both apex (3tattava.com) and www, plus Vercel preview deploys.
+// FRONTEND_URL stays env-driven for primary, but we always include the apex/www pair
+// for production to avoid the "you typed it without www" CORS surprise.
 const frontendUrl = process.env.FRONTEND_URL || "http://localhost:3000";
-const allowedOrigins = [frontendUrl, "http://localhost:3000", "http://localhost:3001"];
+const extraOrigins = (process.env.EXTRA_ALLOWED_ORIGINS || "")
+  .split(",")
+  .map((s) => s.trim())
+  .filter(Boolean);
+const allowedOrigins = [
+  frontendUrl,
+  "http://localhost:3000",
+  "http://localhost:3001",
+  "https://www.3tattava.com",
+  "https://3tattava.com",
+  "https://website-3tattava.vercel.app",
+  ...extraOrigins,
+];
+const vercelPreview = /^https:\/\/website-3tattava-[a-z0-9-]+\.vercel\.app$/;
+
 app.use(
   cors({
     origin(origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
+      if (!origin || allowedOrigins.includes(origin) || vercelPreview.test(origin)) {
         return callback(null, true);
       }
       return callback(new Error(`CORS blocked for origin: ${origin}`));
