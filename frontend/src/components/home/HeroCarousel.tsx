@@ -5,12 +5,11 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import Button from "@/components/ui/Button";
 import type { Product } from "@shared/types";
-import { HINDI_TAGLINE } from "@/lib/constants";
 import { HOME_ASSETS } from "@/lib/home-assets";
+import { HERO } from "@/lib/brand-content";
 
 export default function HeroCarousel({ heroProduct }: { heroProduct?: Product }) {
   const image = heroProduct?.images?.[0] || "/placeholder.svg";
-  const heroHref = heroProduct ? `/products/${heroProduct.slug}` : "/products";
 
   return (
     <section
@@ -50,43 +49,64 @@ export default function HeroCarousel({ heroProduct }: { heroProduct?: Product })
           transition={{ duration: 0.55, ease: "easeOut" }}
           className="lg:w-1/2 z-10"
         >
-          <p className="text-[#dcb375] uppercase tracking-[0.28em] text-xs mb-4">
-            Ayurvedic Rasayana
-          </p>
+          <motion.p
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.1 }}
+            className="text-[#dcb375] uppercase tracking-[0.28em] text-xs mb-4"
+          >
+            India&apos;s First Performance Ayurveda Brand
+          </motion.p>
           <h1
             className="font-display text-5xl lg:text-7xl leading-[0.95] mb-6"
             style={{ fontFamily: "Cormorant Garamond, serif" }}
           >
-            The Mountain&apos;s
-            <br />
-            Ancient Secret
+            <motion.span
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.55, delay: 0.12, ease: "easeOut" }}
+              className="block"
+            >
+              {HERO.headline}
+            </motion.span>
+            <motion.span
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.55, delay: 0.22, ease: "easeOut" }}
+              className="block italic text-[#e8c99a]"
+            >
+              {HERO.headlineAccent}
+            </motion.span>
           </h1>
-          <p className="text-lg lg:text-xl font-light mb-4 max-w-md text-white/85">
-            {heroProduct?.shortDescription ||
-              "Pure Himalayan Shilajit Resin crafted for modern vitality."}
-          </p>
-          <p
-            className="font-devanagari text-lg md:text-xl mb-8 text-[#e8c99a]"
-            style={{ fontFamily: "Noto Serif Devanagari, serif" }}
+          <motion.p
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.34 }}
+            className="text-base lg:text-lg font-light mb-8 max-w-xl text-white/85 leading-relaxed"
           >
-            {HINDI_TAGLINE}
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4">
-            <Link href={heroHref}>
-              <Button variant="primary" size="lg" className="min-w-[220px]">
-                Shop Rockoil
+            {HERO.subheadline}
+          </motion.p>
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.44 }}
+            className="flex flex-col sm:flex-row gap-4"
+          >
+            <Link href={HERO.primaryCta.href}>
+              <Button variant="primary" size="lg" className="min-w-[240px]">
+                {HERO.primaryCta.label}
               </Button>
             </Link>
-            <Link href="/dosha-quiz">
+            <Link href={HERO.secondaryCta.href}>
               <Button
                 variant="outline"
                 size="lg"
-                className="min-w-[220px] border-white text-white hover:bg-white hover:text-[#3a2f26]"
+                className="min-w-[240px] border-white text-white hover:bg-white hover:text-[#3a2f26]"
               >
-                Take Dosha Quiz
+                {HERO.secondaryCta.label}
               </Button>
             </Link>
-          </div>
+          </motion.div>
         </motion.div>
 
         <motion.div
@@ -99,7 +119,7 @@ export default function HeroCarousel({ heroProduct }: { heroProduct?: Product })
           <div className="relative w-[320px] h-[320px] md:w-[420px] md:h-[420px] lg:w-[500px] lg:h-[500px] rounded-full bg-[radial-gradient(circle,_rgba(197,144,90,0.22)_0%,_rgba(197,144,90,0.06)_58%,_transparent_100%)] border border-[#dcb375]/30 shadow-[0_0_100px_rgba(197,144,90,0.28)] transition-shadow duration-500 hover:shadow-[0_0_120px_rgba(197,144,90,0.35)]">
             <Image
               src={image}
-              alt={heroProduct?.name || "Featured 3Tattva product"}
+              alt={heroProduct?.name || "Pure Himalayan Shilajit Resin by 3TATTAVA"}
               fill
               className="object-contain p-10"
               sizes="(max-width: 1024px) 90vw, 42vw"

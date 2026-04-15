@@ -1,6 +1,6 @@
 /**
  * Local marketing imagery under public/assests (folder spelling preserved).
- * img1–3: Three Tattvas pillars; img4: hero ambient; img5: featured spotlight mood layer.
+ * img1–3: Three Elements pillars; img4: hero ambient; img5: featured spotlight mood layer.
  */
 export const HOME_ASSETS = {
   heroAmbient: "/assests/img4.png",
@@ -19,21 +19,24 @@ export const TATTVA_BLOCKS = [
     key: "balance" as const,
     num: "01",
     title: "Balance",
-    body: "Harmonize your doshas with grounded, holistic formulations.",
+    outcome: "Cellular Energy",
+    body: "Your mitochondria need 80+ trace minerals to produce ATP — your body's real energy currency. Shilajit delivers what caffeine can't: energy that builds over weeks, not minutes.",
     imageSrc: HOME_ASSETS.tattvas.balance,
   },
   {
     key: "build" as const,
     num: "02",
     title: "Build",
-    body: "Strengthen ojas, resilience, and your daily wellness rituals.",
+    outcome: "Physical Performance",
+    body: "Fulvic acid increases nutrient absorption by up to 28x. Every supplement you're already taking works harder when your mineral foundation is right.",
     imageSrc: HOME_ASSETS.tattvas.build,
   },
   {
     key: "become" as const,
     num: "03",
     title: "Become",
-    body: "Realize your highest potential through mindful transformation.",
+    outcome: "Long-Term Vitality",
+    body: "This isn't a 30-day experiment. It's a daily ritual that compounds — testosterone support, hormonal balance, recovery, and resilience that builds month over month.",
     imageSrc: HOME_ASSETS.tattvas.become,
   },
 ] as const;

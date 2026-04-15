@@ -23,6 +23,7 @@ const adminRoutes = require("./src/routes/admin.routes");
 const newsletterRoutes = require("./src/routes/newsletter.routes");
 const labReportRoutes = require("./src/routes/labReport.routes");
 const deliveryRoutes = require("./src/routes/delivery.routes");
+const chatRoutes = require("./src/routes/chat.routes");
 
 const app = express();
 
@@ -80,6 +81,7 @@ app.use("/api/admin", adminRoutes);
 app.use("/api/newsletter", newsletterRoutes);
 app.use("/api/lab-reports", labReportRoutes);
 app.use("/api/delivery", deliveryRoutes);
+app.use("/api/chat", chatRoutes);
 
 app.all("*", (req, res) => {
   res.status(404).json({ message: `Route not found: ${req.method} ${req.originalUrl}` });

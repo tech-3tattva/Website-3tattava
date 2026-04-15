@@ -5,7 +5,7 @@ import { X } from "lucide-react";
 import { ANNOUNCEMENT_MESSAGES } from "@/lib/constants";
 import { motion, AnimatePresence } from "framer-motion";
 
-const STORAGE_KEY = "3tattva-announcement-dismissed";
+const STORAGE_KEY = "3tattava-announcement-dismissed";
 
 export default function AnnouncementBar() {
   const [dismissed, setDismissed] = useState(true);

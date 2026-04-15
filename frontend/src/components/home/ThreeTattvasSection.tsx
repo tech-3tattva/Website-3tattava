@@ -74,12 +74,14 @@ function TattvaRow({
           >
             {block.num}
           </span>
-          <p className="text-xs uppercase tracking-[0.28em] text-gold mb-3">Three Tattvas</p>
+          <p className="text-xs uppercase tracking-[0.28em] text-gold mb-3">
+            {block.num} &mdash; {block.title.toUpperCase()} &rarr; {block.outcome}
+          </p>
           <h3
             className="font-display text-4xl md:text-5xl text-text-dark mb-5"
             style={{ fontFamily: "Cormorant Garamond, serif" }}
           >
-            {block.title}
+            {block.outcome}
           </h3>
           <p className="text-base leading-relaxed text-text-medium max-w-md">{block.body}</p>
         </motion.div>
@@ -91,14 +93,18 @@ function TattvaRow({
 export default function ThreeTattvasSection() {
   return (
     <section className="bg-[#faf7f2]" aria-labelledby="three-tattvas-heading">
-      <div className="text-center px-4 pt-20 pb-12 md:pt-24 md:pb-14">
+      <div className="text-center px-4 pt-20 pb-12 md:pt-24 md:pb-14 max-w-3xl mx-auto">
+        <p className="text-xs uppercase tracking-[0.3em] text-gold mb-3">The 3TATTAVA System</p>
         <h2
           id="three-tattvas-heading"
           className="font-display text-4xl md:text-[46px] text-text-dark"
           style={{ fontFamily: "Cormorant Garamond, serif" }}
         >
-          Three Tattvas
+          Three Elements. One Performance System.
         </h2>
+        <p className="mt-5 text-base md:text-lg text-text-medium leading-relaxed">
+          3TATTAVA is built on the three fundamental energies that govern your body &mdash; Vata, Pitta, Kapha. When they&apos;re balanced and fuelled, you perform. When they&apos;re depleted, you crash. <span className="text-text-dark font-medium">We fix the foundation.</span>
+        </p>
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           whileInView={{ opacity: 1, y: 0 }}

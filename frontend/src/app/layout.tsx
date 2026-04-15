@@ -7,6 +7,8 @@ import Footer from "@/components/layout/Footer";
 import IntroSplash from "@/components/layout/IntroSplash";
 import CartDrawer from "@/components/cart/CartDrawer";
 import Providers from "@/components/providers/Providers";
+import { OrganizationSchema } from "@/components/seo/JsonLd";
+import ChatWidget from "@/components/chat/ChatWidget";
 
 const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
@@ -36,9 +38,48 @@ const notoDevanagari = Noto_Serif_Devanagari({
 });
 
 export const metadata: Metadata = {
-  title: "3Tattva Ayurveda & Wellness | Balance. Build. Become.",
+  metadataBase: new URL("https://www.3tattava.com"),
+  title: {
+    default: "3TATTAVA — Performance Ayurveda | Himalayan Shilajit Resin & Honey Sticks",
+    template: "%s | 3TATTAVA",
+  },
   description:
-    "Authentic Ayurveda — Formulated by certified Ayurvedacharyas. Premium wellness products for Skin, Hair, Body. Discover your dosha.",
+    "India's first Performance Ayurveda brand. Pure Himalayan Shilajit Resin & Honey Sticks. Lab-certified, doctor-formulated. 80+ trace minerals. Shop now.",
+  applicationName: "3TATTAVA",
+  authors: [{ name: "Dr. Kashish Gupta, BAMS" }],
+  keywords: [
+    "Shilajit",
+    "Himalayan Shilajit",
+    "Shilajit resin",
+    "Shilajit honey sticks",
+    "Performance Ayurveda",
+    "3TATTAVA",
+    "Ayurveda supplements",
+    "fulvic acid",
+    "trace minerals",
+    "Dr. Kashish",
+  ],
+  openGraph: {
+    type: "website",
+    locale: "en_IN",
+    url: "https://www.3tattava.com",
+    siteName: "3TATTAVA",
+    title: "3TATTAVA — Performance Ayurveda | Himalayan Shilajit Resin & Honey Sticks",
+    description:
+      "India's first Performance Ayurveda brand. Pure Himalayan Shilajit Resin & Honey Sticks. Lab-certified, doctor-formulated.",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "3TATTAVA — Performance Ayurveda",
+    description:
+      "Pure Himalayan Shilajit. Lab-certified. Doctor-formulated. 80+ trace minerals.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1 },
+  },
+  alternates: { canonical: "https://www.3tattava.com" },
 };
 
 export const viewport: Viewport = {
@@ -59,6 +100,7 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="antialiased min-h-screen min-w-0 flex flex-col overflow-x-clip" suppressHydrationWarning>
+        <OrganizationSchema />
         <Providers>
           <IntroSplash />
           <AnnouncementBar />
@@ -68,6 +110,7 @@ export default function RootLayout({
           </main>
           <Footer />
           <CartDrawer />
+          <ChatWidget />
         </Providers>
       </body>
     </html>

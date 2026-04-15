@@ -9,10 +9,19 @@ import {
   VataGlyph,
 } from "@/components/vectors/education/DoshaGlyphs";
 import { DOSHA_GUIDE, EDUCATION_ARTICLES } from "@/lib/education-content";
+import { EDUCATION_HUB, PAGE_METADATA } from "@/lib/brand-content";
+import type { Metadata } from "next";
 
-export const metadata = {
-  title: "Education Hub | 3Tattva Ayurveda",
-  description: "5,000 years of Ayurvedic knowledge, made accessible for modern life.",
+export const metadata: Metadata = {
+  title: PAGE_METADATA.education.title,
+  description: PAGE_METADATA.education.description,
+  alternates: { canonical: "https://www.3tattava.com/education" },
+  openGraph: {
+    title: PAGE_METADATA.education.title,
+    description: PAGE_METADATA.education.description,
+    url: "https://www.3tattava.com/education",
+    type: "website",
+  },
 };
 
 function DoshaIcon({ type }: { type: "vata" | "pitta" | "kapha" }) {
@@ -30,14 +39,17 @@ export default function EducationPage() {
           <div className="relative overflow-hidden bg-[#2b2519] px-5 py-12 sm:px-8 sm:py-16 md:px-12 text-center text-white">
             <div className="pointer-events-none absolute -right-8 -top-8 h-40 w-40 rounded-full border border-gold/15" />
             <div className="pointer-events-none absolute -bottom-10 -left-10 h-48 w-48 rounded-full border border-gold/10" />
+            <p className="relative text-xs uppercase tracking-[0.3em] text-[#dcb375] mb-3">
+              Performance Ayurveda Knowledge Center
+            </p>
             <h1
               className="relative text-3xl sm:text-4xl md:text-5xl"
               style={{ fontFamily: "Cormorant Garamond, serif" }}
             >
-              The 3Tattva Education Hub
+              {EDUCATION_HUB.h1}
             </h1>
-            <p className="relative mt-4 text-white/80">
-              5,000 years of Ayurvedic knowledge. Made accessible.
+            <p className="relative mt-4 text-white/80 max-w-md mx-auto leading-relaxed">
+              {EDUCATION_HUB.subheadline}
             </p>
           </div>
 
@@ -152,6 +164,45 @@ export default function EducationPage() {
             </MotionSection>
           </div>
 
+          {/* 4 Content Pillars */}
+          <MotionSection>
+            <div className="text-center mb-8">
+              <p className="text-xs uppercase tracking-[0.24em] text-gold mb-2">Content Pillars</p>
+              <h2
+                className="text-3xl md:text-4xl text-text-dark"
+                style={{ fontFamily: "Cormorant Garamond, serif" }}
+              >
+                Learn Before You Buy.
+              </h2>
+              <p className="mt-3 text-sm text-text-medium max-w-xl mx-auto">
+                No fluff. No spiritual woo. Just the science that matters.
+              </p>
+            </div>
+          </MotionSection>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-10">
+            {EDUCATION_HUB.pillars.map((pillar, i) => (
+              <MotionSection key={pillar.name} delay={i * 0.06}>
+                <div className="rounded-xl border border-[#d9cdb8] bg-white p-5 h-full">
+                  <p className="text-xs uppercase tracking-[0.2em] text-gold mb-2">Pillar {i + 1}</p>
+                  <h3
+                    className="text-xl md:text-2xl text-text-dark mb-3"
+                    style={{ fontFamily: "Cormorant Garamond, serif" }}
+                  >
+                    {pillar.name}
+                  </h3>
+                  <ul className="space-y-1.5 text-sm text-text-medium">
+                    {pillar.articles.slice(0, 3).map((a) => (
+                      <li key={a} className="flex gap-2">
+                        <span className="text-gold mt-0.5" aria-hidden>&middot;</span>
+                        <span>{a}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </MotionSection>
+            ))}
+          </div>
+
           <MotionSection>
             <div className="text-center mb-8">
               <p className="text-xs text-text-light mb-2">Articles</p>
@@ -159,7 +210,7 @@ export default function EducationPage() {
                 className="text-4xl text-text-dark"
                 style={{ fontFamily: "Cormorant Garamond, serif" }}
               >
-                Explore Ayurvedic Wisdom
+                Latest from the Knowledge Center
               </h2>
             </div>
           </MotionSection>
