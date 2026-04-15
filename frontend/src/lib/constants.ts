@@ -1,18 +1,21 @@
-export const SITE_NAME = "3Tattva Ayurveda & Wellness";
-export const TAGLINE = "Balance. Build. Become.";
+export const SITE_NAME = "3TATTAVA";
+export const TAGLINE = "Performance Ayurveda for Modern Humans.";
+
+/** Retained export for backwards-compat — Hindi tagline no longer rendered on hero. */
 export const HINDI_TAGLINE = "हजारों वर्षों की परंपरा, आज के जीवन के लिए";
 
 export const ANNOUNCEMENT_MESSAGES = [
-  "Free delivery on orders above ₹999 | Code: WELCOME15 for 15% off your first order",
-  "Clinically tested. Authentically Ayurvedic. Crafted in GMP-certified facilities.",
-  "Authentic Ayurveda — Formulated by certified Ayurvedacharyas",
+  "FREE SHIPPING ABOVE ₹999  ·  LAB-CERTIFIED PURITY  ·  DOCTOR-FORMULATED BY DR. KASHISH (BAMS)",
+  "INDIA'S FIRST SHILAJIT HONEY STICKS — TEAR. SQUEEZE. PERFORM.",
+  "80+ TRACE MINERALS  ·  60%+ FULVIC ACID  ·  NABL LAB-CERTIFIED",
 ];
 
 export const MAIN_NAV_ITEMS = [
-  { label: "Shop All", href: "/products", hasMega: true },
-  { label: "Doshas", href: "/doshas", hasMega: false, featured: true },
+  { label: "Shop", href: "/products", hasMega: true },
+  { label: "Shilajit Resin", href: "/products/shilajit-resin", hasMega: false, featured: true },
+  { label: "Honey Sticks", href: "/products/shilajit-honey-sticks", hasMega: false },
   { label: "Our Story", href: "/about", hasMega: false },
-  { label: "Education Hub", href: "/education", hasMega: false },
+  { label: "Education", href: "/education", hasMega: false },
 ] as const;
 
 /** Social profiles — override via NEXT_PUBLIC_* in `.env.local` */
@@ -22,69 +25,65 @@ export const SOCIAL_LINKS = [
     label: "Instagram",
     href:
       process.env.NEXT_PUBLIC_INSTAGRAM_URL ??
-      "https://www.instagram.com/3tattva",
+      "https://www.instagram.com/3tattava",
   },
   {
     id: "email" as const,
     label: "Email",
     href:
       process.env.NEXT_PUBLIC_CONTACT_EMAIL_MAILTO ??
-      "mailto:care@3tattva.com?subject=Hello%203Tattva",
+      "mailto:care@3tattava.com?subject=Hello%203TATTAVA",
   },
   {
     id: "facebook" as const,
     label: "Facebook",
     href:
       process.env.NEXT_PUBLIC_FACEBOOK_URL ??
-      "https://www.facebook.com/3tattva",
+      "https://www.facebook.com/3tattava",
   },
   {
     id: "whatsapp" as const,
     label: "WhatsApp",
     href:
       process.env.NEXT_PUBLIC_WHATSAPP_URL ??
-      "https://wa.me/919999999999?text=Hi%203Tattva%2C%20",
+      "https://wa.me/919999999999?text=Hi%203TATTAVA%2C%20",
   },
 ];
 
 export const FOOTER_LINKS = {
   shop: [
-    { label: "All Products", href: "/products" },
-    { label: "Skin Care", href: "/products?category=skin-care" },
-    { label: "Hair Care", href: "/products?category=hair-care" },
-    { label: "Body Wellness", href: "/products?category=body-wellness" },
-    { label: "Gift Sets", href: "/gifting" },
+    { label: "Shilajit Resin", href: "/products/shilajit-resin" },
+    { label: "Shilajit Honey Sticks", href: "/products/shilajit-honey-sticks" },
+    { label: "The Starter Kit", href: "/products/starter-kit" },
+    { label: "Subscribe & Save", href: "/products/honey-sticks-subscription" },
   ],
   company: [
     { label: "Our Story", href: "/about" },
-    { label: "Product Journey", href: "/product-journey" },
-    { label: "Ayurveda Education", href: "/education" },
-    { label: "Blog", href: "/blog" },
+    { label: "Dr. Kashish", href: "/about#founder" },
+    { label: "Sourcing & Lab Reports", href: "/product-journey" },
+    { label: "Blog", href: "/education" },
     { label: "Careers", href: "/careers" },
   ],
   help: [
-    { label: "Track Order", href: "/track-order" },
-    { label: "Returns & Refunds", href: "/returns" },
+    { label: "What Is Shilajit?", href: "/education/what-is-shilajit" },
+    { label: "Shilajit for Women", href: "/education/shilajit-for-women" },
+    { label: "Performance Ayurveda Guide", href: "/education/what-is-performance-ayurveda" },
     { label: "FAQs", href: "/faqs" },
-    { label: "Contact Us", href: "/contact" },
-    { label: "Store Locator", href: "/stores" },
+    { label: "Track Order", href: "/track-order" },
   ],
 };
 
 export const TRUST_STRIP_ITEMS = [
-  { icon: "🌿", text: "100% Natural" },
-  { icon: "🔬", text: "Clinically Tested" },
-  { icon: "⛰️", text: "Himalayan Sourced" },
-  { icon: "✓", text: "GMP Certified" },
+  { icon: "⛰️", text: "Sourced at 10,000–16,000 ft" },
+  { icon: "🔬", text: "NABL Lab-Certified" },
+  { icon: "⚕️", text: "Doctor-Formulated (BAMS)" },
+  { icon: "🍯", text: "80+ Trace Minerals" },
+  { icon: "✓", text: "FSSAI & GMP Certified" },
 ];
 
 export const CATEGORIES = [
-  { name: "Skin Care", slug: "skin-care", color: "#E8DCC8" },
-  { name: "Hair Care", slug: "hair-care", color: "#D4A574" },
-  { name: "Body Wellness", slug: "body-wellness", color: "#6B5344" },
-  { name: "Stress & Sleep", slug: "stress-sleep", color: "#4a3728" },
-  { name: "Digestion", slug: "digestion", color: "#E8C99A" },
-  { name: "Immunity", slug: "immunity", color: "#F5EFE6" },
-  { name: "Women's Health", slug: "womens-health", color: "#E2D9CE" },
-  { name: "Gift Sets", slug: "gift-sets", color: "#FAF7F2" },
+  { name: "Shilajit Resin", slug: "shilajit-resin", color: "#5c4033" },
+  { name: "Honey Sticks", slug: "honey-sticks", color: "#D4A574" },
+  { name: "Bundles", slug: "bundles", color: "#7a5c4e" },
+  { name: "Subscribe & Save", slug: "subscribe-save", color: "#E8C99A" },
 ];

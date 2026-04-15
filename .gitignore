@@ -38,3 +38,11 @@ Thumbs.db
 
 # ── Uploaded product images (local dev) ──
 backend/uploads/
+
+# ── TypeScript build cache ──
+*.tsbuildinfo
+frontend/tsconfig.tsbuildinfo
+
+# ── Internal handoff docs (contain credentials, NEVER commit) ──
+aws setup.md
+Website rewrite 3tattava.md
