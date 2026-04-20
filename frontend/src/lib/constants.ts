@@ -15,6 +15,7 @@ export const MAIN_NAV_ITEMS = [
   { label: "Shilajit Resin", href: "/products/shilajit-resin", hasMega: false, featured: true },
   { label: "Honey Sticks", href: "/products/shilajit-honey-sticks", hasMega: false },
   { label: "Our Story", href: "/about", hasMega: false },
+  { label: "Find a Doctor", href: "/doctors", hasMega: false, featured: true },
   { label: "Education", href: "/education", hasMega: false },
 ] as const;
 
