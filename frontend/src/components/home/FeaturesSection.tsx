@@ -212,9 +212,10 @@ export default function FeaturesSection() {
           <p className="feat-section-sub">Not wellness. Not supplements. Cellular-level performance architecture.</p>
         </div>
 
-        {features.map((feat, i) => (
+        {features.map((feat) => (
           <div key={feat.number} className={`feature-card${!feat.imageLeft ? ' reverse' : ''}`}>
             <div className="feature-img-col">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={feat.image} alt={feat.title} className="feature-img" />
             </div>
             <div className="feature-text-col feature-text">

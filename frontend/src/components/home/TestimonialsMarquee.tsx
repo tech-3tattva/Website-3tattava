@@ -164,7 +164,7 @@ export default function TestimonialsMarquee() {
       {/* Footer note */}
       <p className="text-center mt-10 text-[12px] text-[rgba(245,240,235,0.3)]"
         style={{ fontFamily: 'var(--font-jost), sans-serif' }}>
-        These are real customers. We don't edit reviews. We don't pay for testimonials.
+        These are real customers. We don&apos;t edit reviews. We don&apos;t pay for testimonials.
       </p>
     </section>
   )

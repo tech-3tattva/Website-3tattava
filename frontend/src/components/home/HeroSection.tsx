@@ -268,7 +268,7 @@ export default function HeroSection() {
 
         <div className="hero-content">
           <div className="hero-left">
-            <p className="hero-eyebrow">India's First Performance Ayurveda Brand</p>
+            <p className="hero-eyebrow">India&apos;s First Performance Ayurveda Brand</p>
             <div className="hero-accent-line" />
             <h1 className="hero-h1-1">Performance Ayurveda.</h1>
             <h1 className="hero-h1-2">

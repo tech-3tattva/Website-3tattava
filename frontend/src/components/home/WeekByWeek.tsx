@@ -266,7 +266,7 @@ export default function WeekByWeek() {
           <div className="week-header">
             <p className="week-eyebrow">The Performance Timeline</p>
             <h2 className="week-title">What to Expect — Week by Week</h2>
-            <p className="week-sub">Real performance doesn't happen overnight. Here's what actually changes.</p>
+            <p className="week-sub">Real performance doesn&apos;t happen overnight. Here&apos;s what actually changes.</p>
           </div>
 
           <div className="week-timeline">
