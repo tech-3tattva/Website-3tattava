@@ -16,6 +16,16 @@ const nextConfig = {
         port: "5000",
         pathname: "/uploads/**",
       },
+      {
+        protocol: "https",
+        hostname: "media.3tattava.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "api.3tattava.com",
+        pathname: "/uploads/**",
+      },
     ],
   },
   webpack: (config, { dev }) => {

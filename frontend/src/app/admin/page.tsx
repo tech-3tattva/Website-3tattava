@@ -1,194 +1,197 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { api } from "@/lib/api";
+import AdminProducts from "@/components/admin/AdminProducts";
+import AdminInventory from "@/components/admin/AdminInventory";
+import AdminOrders from "@/components/admin/AdminOrders";
 
-type TopProductRow = {
-  productId: string;
-  name: string;
-  unitsSold: number;
-  revenue: number;
-};
+type Tab = "overview" | "products" | "inventory" | "orders";
 
-type DashboardData = {
+type Stats = {
   revenue: { today: number; month: number; year: number };
   orders: { total: number; pending: number };
   inventory: { lowStockProducts: number; inventoryValue: number };
-  products: { totalActive: number; totalFeatured: number };
-  topProducts: TopProductRow[];
-  ordersByStatus: Record<string, number>;
-  customers: { newThisMonth: number };
+  products: { totalActive: number };
 };
 
-const STATUS_ORDER = [
-  "pending",
-  "confirmed",
-  "processing",
-  "shipped",
-  "delivered",
-  "cancelled",
-];
-
 export default function AdminDashboardPage() {
-  const [data, setData] = useState<DashboardData | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
+  const [tab, setTab] = useState<Tab>("overview");
+  const [stats, setStats] = useState<Stats | null>(null);
+  const [adminName, setAdminName] = useState("Admin");
+  const [authChecked, setAuthChecked] = useState(false);
 
   useEffect(() => {
-    async function load() {
-      try {
-        const result = await api.get<DashboardData>("/admin/dashboard");
-        setData(result);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "Failed to load dashboard");
-      }
-    }
-    void load();
-  }, []);
+    const name = localStorage.getItem("adminName");
+    if (name) setAdminName(name.split("—")[0].trim());
 
-  const maxStatusCount =
-    data && Object.keys(data.ordersByStatus).length > 0
-      ? Math.max(...Object.values(data.ordersByStatus), 1)
-      : 1;
+    api.get<Stats>("/admin/dashboard")
+      .then(setStats)
+      .catch(() => router.replace("/admin/login"))
+      .finally(() => setAuthChecked(true));
+  }, [router]);
+
+  const handleLogout = async () => {
+    try { await api.post("/auth/admin/auth/logout", {}); } catch {}
+    localStorage.removeItem("adminName");
+    router.push("/admin/login");
+  };
+
+  if (!authChecked) {
+    return (
+      <div style={{ minHeight: "100vh", background: "#0f0f0f", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <div style={{ width: 32, height: 32, border: "2px solid rgba(200,150,62,0.2)", borderTopColor: "#C8963E", borderRadius: "50%", animation: "spin 0.8s linear infinite" }} />
+        <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+      </div>
+    );
+  }
+
+  const NAV = [
+    { id: "overview" as Tab, label: "Overview", icon: "◈" },
+    { id: "products" as Tab, label: "Products", icon: "◉" },
+    { id: "inventory" as Tab, label: "Inventory", icon: "▣" },
+    { id: "orders" as Tab, label: "Orders", icon: "◎" },
+  ];
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-10">
-      <div className="rounded-2xl border border-[#3d2e26] p-6 mb-6 bg-gradient-to-r from-[#2a211c] to-[#5c4033] text-white shadow-xl">
-        <p className="text-[#E8C99A] text-xs uppercase tracking-[0.2em] mb-2 font-semibold">
-          Operations Center
-        </p>
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <h1 className="font-display text-4xl text-white">Admin Dashboard</h1>
-          <div className="flex flex-wrap gap-3">
-            <Link
-              href="/admin/orders"
-              className="inline-flex items-center justify-center rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-text-dark shadow-md hover:bg-gold-light transition-colors"
-            >
-              Orders
-            </Link>
-            <Link
-              href="/admin/inventory"
-              className="inline-flex items-center justify-center rounded-full bg-[#D4A574] px-5 py-2.5 text-sm font-semibold text-text-dark shadow-md hover:bg-[#E8C99A] transition-colors"
-            >
-              Inventory
-            </Link>
-            <Link
-              href="/admin/products/new"
-              className="inline-flex items-center justify-center rounded-full border-2 border-white/90 px-5 py-2.5 text-sm font-semibold text-white hover:bg-white/15 transition-colors"
-            >
-              Add product
-            </Link>
-          </div>
-        </div>
-      </div>
+    <>
+      <style>{`
+        * { box-sizing: border-box; }
+        .ad-shell { display: flex; min-height: 100vh; background: #0f0f0f; color: #F5F0EB; font-family: var(--font-jost,'Jost'),sans-serif; }
+        /* sidebar */
+        .ad-sidebar { width: 228px; min-height: 100vh; background: #141414; border-right: 1px solid rgba(200,150,62,0.1); display: flex; flex-direction: column; position: sticky; top: 0; height: 100vh; padding: 28px 0; flex-shrink: 0; }
+        .ad-logo { padding: 0 24px 28px; border-bottom: 1px solid rgba(200,150,62,0.08); }
+        .ad-logo-name { font-family: var(--font-cormorant,'Cormorant Garamond'),serif; font-size: 21px; font-weight: 700; color: #F5F0EB; letter-spacing: 0.05em; }
+        .ad-logo-sub { font-size: 9px; letter-spacing: 0.3em; color: #C8963E; text-transform: uppercase; margin-top: 2px; }
+        .ad-nav { flex: 1; padding: 20px 10px; display: flex; flex-direction: column; gap: 3px; }
+        .ad-nav-btn { display: flex; align-items: center; gap: 11px; padding: 10px 14px; border-radius: 3px; cursor: pointer; font-size: 13px; font-weight: 400; color: rgba(245,240,235,0.42); transition: all 0.18s; background: transparent; border: none; width: 100%; text-align: left; letter-spacing: 0.02em; }
+        .ad-nav-btn:hover { color: rgba(245,240,235,0.82); background: rgba(200,150,62,0.06); }
+        .ad-nav-btn.active { color: #F5F0EB; background: rgba(200,150,62,0.1); border-left: 2px solid #C8963E; }
+        .ad-nav-icon { font-size: 15px; width: 18px; text-align: center; }
+        .ad-sidebar-foot { padding: 18px 10px; border-top: 1px solid rgba(200,150,62,0.08); }
+        .ad-logout { display: flex; align-items: center; gap: 9px; width: 100%; padding: 10px 14px; background: transparent; border: 1px solid rgba(200,150,62,0.14); color: rgba(245,240,235,0.38); font-family: var(--font-jost,'Jost'),sans-serif; font-size: 12px; letter-spacing: 0.08em; cursor: pointer; transition: all 0.18s; border-radius: 3px; }
+        .ad-logout:hover { border-color: rgba(200,150,62,0.4); color: rgba(245,240,235,0.75); }
+        /* main */
+        .ad-main { flex: 1; padding: 36px 40px; overflow-y: auto; min-width: 0; }
+        .ad-topbar { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 36px; }
+        .ad-page-title { font-family: var(--font-cormorant,'Cormorant Garamond'),serif; font-size: 34px; font-weight: 700; color: #F5F0EB; }
+        .ad-page-sub { font-size: 12px; color: rgba(245,240,235,0.32); margin-top: 3px; font-weight: 300; }
+        .ad-greeting { text-align: right; }
+        .ad-greeting-name { font-size: 13px; color: rgba(245,240,235,0.38); }
+        .ad-greeting-name strong { color: #C8963E; font-weight: 500; }
+        .ad-greeting-date { font-size: 11px; color: rgba(245,240,235,0.2); margin-top: 2px; }
+        /* stat cards */
+        .ad-stats { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; margin-bottom: 36px; }
+        .ad-stat { background: #1a1a1a; border: 1px solid rgba(200,150,62,0.1); padding: 22px; position: relative; overflow: hidden; border-radius: 3px; animation: adStatIn 0.5s ease both; }
+        .ad-stat:nth-child(1){animation-delay:0.04s} .ad-stat:nth-child(2){animation-delay:0.08s} .ad-stat:nth-child(3){animation-delay:0.12s} .ad-stat:nth-child(4){animation-delay:0.16s}
+        @keyframes adStatIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+        .ad-stat::before { content:''; position:absolute; top:0;left:0;right:0; height:2px; background:linear-gradient(90deg,transparent,rgba(200,150,62,0.35),transparent); }
+        .ad-stat-label { font-size: 9px; letter-spacing: 0.26em; text-transform: uppercase; color: rgba(245,240,235,0.32); margin-bottom: 10px; }
+        .ad-stat-value { font-family: var(--font-cormorant,'Cormorant Garamond'),serif; font-size: 38px; font-weight: 700; color: #F5F0EB; line-height: 1; margin-bottom: 5px; }
+        .ad-stat-value.gold { color: #C8963E; }
+        .ad-stat-value.alert { color: #ff7b7b; }
+        .ad-stat-sub { font-size: 11px; color: rgba(245,240,235,0.25); font-weight: 300; }
+        /* section heading */
+        .ad-section-title { font-family: var(--font-cormorant,'Cormorant Garamond'),serif; font-size: 22px; font-weight: 600; color: #F5F0EB; margin-bottom: 18px; }
+        @media (max-width: 900px) {
+          .ad-stats { grid-template-columns: repeat(2,1fr); }
+          .ad-main { padding: 24px 20px; }
+          .ad-sidebar { display: none; }
+        }
+      `}</style>
 
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="font-display text-2xl text-text-dark">Business Snapshot</h2>
-        <span className="text-xs uppercase tracking-wider text-text-light">Live from database</span>
-      </div>
-
-      {error && <p className="text-red-600 text-sm mb-4">{error}</p>}
-
-      {data && (
-        <>
-          <div className="grid md:grid-cols-3 gap-4 mb-10">
-            <div className="premium-card p-5">
-              <p className="text-sm text-text-medium">Revenue (Today)</p>
-              <p className="text-2xl font-semibold text-text-dark">Rs {data.revenue.today}</p>
-            </div>
-            <div className="premium-card p-5">
-              <p className="text-sm text-text-medium">Revenue (Month)</p>
-              <p className="text-2xl font-semibold text-text-dark">Rs {data.revenue.month}</p>
-            </div>
-            <div className="premium-card p-5">
-              <p className="text-sm text-text-medium">Revenue (Year)</p>
-              <p className="text-2xl font-semibold text-text-dark">Rs {data.revenue.year}</p>
-            </div>
-            <div className="premium-card p-5">
-              <p className="text-sm text-text-medium">Total Orders</p>
-              <p className="text-2xl font-semibold text-text-dark">{data.orders.total}</p>
-            </div>
-            <div className="premium-card p-5">
-              <p className="text-sm text-text-medium">Pending / Active</p>
-              <p className="text-2xl font-semibold text-text-dark">{data.orders.pending}</p>
-            </div>
-            <div className="premium-card p-5">
-              <p className="text-sm text-text-medium">Low Stock SKUs</p>
-              <p className="text-2xl font-semibold text-text-dark">{data.inventory.lowStockProducts}</p>
-            </div>
-            <div className="premium-card p-5">
-              <p className="text-sm text-text-medium">Inventory value (active)</p>
-              <p className="text-2xl font-semibold text-text-dark">Rs {data.inventory.inventoryValue}</p>
-            </div>
-            <div className="premium-card p-5">
-              <p className="text-sm text-text-medium">Active products</p>
-              <p className="text-2xl font-semibold text-text-dark">{data.products.totalActive}</p>
-            </div>
-            <div className="premium-card p-5">
-              <p className="text-sm text-text-medium">Featured products</p>
-              <p className="text-2xl font-semibold text-text-dark">{data.products.totalFeatured}</p>
-            </div>
-            <div className="premium-card p-5 md:col-span-2">
-              <p className="text-sm text-text-medium">New customers (this month)</p>
-              <p className="text-2xl font-semibold text-text-dark">{data.customers.newThisMonth}</p>
-            </div>
+      <div className="ad-shell">
+        {/* Sidebar */}
+        <aside className="ad-sidebar">
+          <div className="ad-logo">
+            <div className="ad-logo-name">3TATTAVA</div>
+            <div className="ad-logo-sub">Operations Center</div>
           </div>
 
-          <div className="grid lg:grid-cols-2 gap-6 mb-10">
-            <div className="premium-card p-6">
-              <h3 className="font-display text-xl text-text-dark mb-4">Orders by status</h3>
-              <ul className="space-y-3">
-                {STATUS_ORDER.map((status) => {
-                  const count = data.ordersByStatus[status] ?? 0;
-                  const pct = Math.round((count / maxStatusCount) * 100);
-                  return (
-                    <li key={status}>
-                      <div className="flex justify-between text-sm mb-1">
-                        <span className="capitalize text-text-medium">{status}</span>
-                        <span className="font-semibold text-text-dark">{count}</span>
-                      </div>
-                      <div className="h-2 rounded-full bg-beige overflow-hidden">
-                        <div
-                          className="h-full rounded-full bg-primary-green"
-                          style={{ width: `${pct}%` }}
-                        />
-                      </div>
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
+          <nav className="ad-nav">
+            {NAV.map((n) => (
+              <button
+                key={n.id}
+                className={`ad-nav-btn${tab === n.id ? " active" : ""}`}
+                onClick={() => setTab(n.id)}
+              >
+                <span className="ad-nav-icon">{n.icon}</span>
+                {n.label}
+              </button>
+            ))}
+          </nav>
 
-            <div className="premium-card p-6">
-              <h3 className="font-display text-xl text-text-dark mb-4">Top products (by revenue)</h3>
-              {data.topProducts.length === 0 ? (
-                <p className="text-sm text-text-light">No sales recorded yet.</p>
-              ) : (
-                <div className="overflow-x-auto">
-                  <table className="w-full text-sm">
-                    <thead>
-                      <tr className="text-left text-text-medium border-b border-border">
-                        <th className="pb-2 pr-2">Product</th>
-                        <th className="pb-2 pr-2 text-right">Units</th>
-                        <th className="pb-2 text-right">Revenue</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {data.topProducts.map((row) => (
-                        <tr key={row.productId} className="border-b border-border/60">
-                          <td className="py-2 pr-2 text-text-dark font-medium">{row.name}</td>
-                          <td className="py-2 pr-2 text-right text-text-medium">{row.unitsSold}</td>
-                          <td className="py-2 text-right text-text-dark">Rs {row.revenue}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+          <div className="ad-sidebar-foot">
+            <button className="ad-logout" onClick={handleLogout}>
+              <span>↩</span> Sign Out
+            </button>
+          </div>
+        </aside>
+
+        {/* Main */}
+        <main className="ad-main">
+          <div className="ad-topbar">
+            <div>
+              <h1 className="ad-page-title">
+                {tab === "overview" && "Dashboard"}
+                {tab === "products" && "Products"}
+                {tab === "inventory" && "Inventory"}
+                {tab === "orders" && "Orders"}
+              </h1>
+              <p className="ad-page-sub">
+                {tab === "overview" && "Live business snapshot"}
+                {tab === "products" && "Manage your product catalogue"}
+                {tab === "inventory" && "Track and update stock levels"}
+                {tab === "orders" && "View and manage customer orders"}
+              </p>
+            </div>
+            <div className="ad-greeting">
+              <p className="ad-greeting-name">Welcome, <strong>{adminName}</strong></p>
+              <p className="ad-greeting-date">
+                {new Date().toLocaleDateString("en-IN", { weekday: "long", day: "numeric", month: "long" })}
+              </p>
+            </div>
+          </div>
+
+          {tab === "overview" && (
+            <>
+              <div className="ad-stats">
+                <div className="ad-stat">
+                  <p className="ad-stat-label">Revenue Today</p>
+                  <p className="ad-stat-value gold">₹{stats?.revenue.today.toLocaleString("en-IN") ?? "—"}</p>
+                  <p className="ad-stat-sub">All non-cancelled orders</p>
                 </div>
-              )}
-            </div>
-          </div>
-        </>
-      )}
-    </div>
+                <div className="ad-stat">
+                  <p className="ad-stat-label">Revenue This Month</p>
+                  <p className="ad-stat-value gold">₹{stats?.revenue.month.toLocaleString("en-IN") ?? "—"}</p>
+                  <p className="ad-stat-sub">MTD</p>
+                </div>
+                <div className="ad-stat">
+                  <p className="ad-stat-label">Total Orders</p>
+                  <p className="ad-stat-value">{stats?.orders.total ?? "—"}</p>
+                  <p className="ad-stat-sub">{stats?.orders.pending ?? 0} pending</p>
+                </div>
+                <div className="ad-stat">
+                  <p className="ad-stat-label">Low Stock SKUs</p>
+                  <p className={`ad-stat-value${(stats?.inventory.lowStockProducts ?? 0) > 0 ? " alert" : ""}`}>
+                    {stats?.inventory.lowStockProducts ?? "—"}
+                  </p>
+                  <p className="ad-stat-sub">Below threshold</p>
+                </div>
+              </div>
+
+              <p className="ad-section-title">Product Overview</p>
+              <AdminProducts readOnly />
+            </>
+          )}
+
+          {tab === "products" && <AdminProducts />}
+          {tab === "inventory" && <AdminInventory />}
+          {tab === "orders" && <AdminOrders />}
+        </main>
+      </div>
+    </>
   );
 }

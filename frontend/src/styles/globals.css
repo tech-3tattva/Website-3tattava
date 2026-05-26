@@ -20,6 +20,20 @@
   --color-border: #E2D9CE;
   --color-white: #FFFFFF;
 
+  /* 3TATTAVA Dark Brand System — used by WhatsAppWidget, LeadCaptureModal,
+     ProductHeroSection, VaidyaConnect and any future dark-mode components */
+  --3t-black:        #0E0C09;
+  --3t-black-2:      #1A1710;
+  --3t-black-3:      #252118;
+  --3t-text:         #E8E0D0;
+  --3t-text-muted:   #8A7F6A;
+  --3t-gold:         #C9A84C;
+  --3t-gold-light:   #E8C97A;
+  --3t-gold-pale:    #F5E8C4;
+  --3t-shahjeet:     #CD872A;
+  --3t-border:       rgba(201,168,76,0.15);
+  --3t-border-hover: rgba(201,168,76,0.35);
+
   /* Spacing scale (base 4px) */
   --space-1: 4px;
   --space-2: 8px;

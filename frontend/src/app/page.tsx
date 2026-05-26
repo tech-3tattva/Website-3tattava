@@ -1,9 +1,10 @@
-import HeroCarousel from "@/components/home/HeroCarousel";
+import HeroSection from "@/components/home/HeroSection";
 import TrustStrip from "@/components/home/TrustStrip";
-import ThreeTattvasSection from "@/components/home/ThreeTattvasSection";
+import ProductHeroSection from "@/components/home/ProductHeroSection";
 import FeaturedProductSpotlight from "@/components/home/FeaturedProductSpotlight";
-import ResultsTimeline from "@/components/home/ResultsTimeline";
-import Testimonials from "@/components/home/Testimonials";
+import FeaturesSection from "@/components/home/FeaturesSection";
+import WeekByWeek from "@/components/home/WeekByWeek";
+import TestimonialsMarquee from "@/components/home/TestimonialsMarquee";
 import FounderSection from "@/components/home/FounderSection";
 import EducationPreview from "@/components/home/EducationPreview";
 import { WebsiteSchema } from "@/components/seo/JsonLd";
@@ -16,12 +17,13 @@ export default async function HomePage() {
   return (
     <>
       <WebsiteSchema />
-      <HeroCarousel heroProduct={spotlight} />
+      <HeroSection />
       <TrustStrip />
-      <ThreeTattvasSection />
+      <ProductHeroSection />
       {spotlight && <FeaturedProductSpotlight product={spotlight} />}
-      <ResultsTimeline />
-      <Testimonials />
+      <FeaturesSection />
+      <WeekByWeek />
+      <TestimonialsMarquee />
       <FounderSection />
       <EducationPreview />
     </>
