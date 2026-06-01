@@ -8,12 +8,13 @@ export function middleware(request: NextRequest) {
   }
 
   // Block everything else — clean empty response, no error page
-  return new NextResponse(null, {
-    status: 200,
+  return new NextResponse('', {
+    status: 503,
     headers: {
       'Content-Type': 'text/html',
       'X-Robots-Tag': 'noindex, nofollow',
-      'Cache-Control': 'no-store',
+      'Cache-Control': 'no-store, no-cache',
+      'Retry-After': '86400',
     },
   })
 }
