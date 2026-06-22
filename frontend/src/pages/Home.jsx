@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { ArrowRight, Stethoscope, Medal, FlaskConical, Mountain, ShieldCheck, Plus, Minus, ScanLine, MapPin, Sparkles, Check } from "lucide-react";
 import { getProducts, getKnowledge } from "../lib/api";
 import { BRAND, PILLARS, TRUST_STRIP, EVIDENCE_PILLARS, WEEKS, FOUNDER, ATHLETE, COMPARE, TESTIMONIALS, FAQ_HOME } from "../lib/brandContent";
+import { MEDIA } from "../lib/assets";
 
 const IconMap = { Stethoscope, Medal, FlaskConical, Mountain, ShieldCheck };
 
@@ -59,11 +60,17 @@ function Hero() {
 
   return (
     <section data-testid="hero" className="relative min-h-[92vh] bg-3t-black overflow-hidden grain">
-      <img
-        src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=2200&q=85&auto=format&fit=crop"
-        alt="Himalayan range"
-        className="absolute inset-0 w-full h-full object-cover opacity-50"
-      />
+      <video
+        autoPlay
+        muted
+        loop
+        playsInline
+        preload="auto"
+        poster="https://3tattava-media-prod.s3.ap-south-1.amazonaws.com/features/resin-mountain.png"
+        className="absolute inset-0 w-full h-full object-cover opacity-55"
+      >
+        <source src={MEDIA.heroVideo} type="video/mp4" />
+      </video>
       <div className="absolute inset-0 hero-overlay" />
       <div ref={particlesRef} className="absolute inset-0 pointer-events-none" />
 
@@ -194,10 +201,10 @@ function ProductPanel({ slug, eyebrow, title, sub, product, bg, glow, accent, bo
       </div>
 
       {/* Product visual */}
-      <div className="absolute right-[-40px] md:right-[-20px] top-1/2 -translate-y-1/2 w-[220px] md:w-[320px] h-[280px] md:h-[420px] hidden md:block">
+      <div className="absolute right-[-40px] md:right-[-20px] top-1/2 -translate-y-1/2 w-[260px] md:w-[380px] h-[300px] md:h-[480px] hidden md:block">
         <div
-          className="w-full h-full relative transition-transform duration-300"
-          style={{ transform: `perspective(1000px) rotateY(${tilt.x}deg) rotateX(${tilt.y}deg)`, background: boxBg, borderRadius: 8, boxShadow: "0 40px 80px rgba(0,0,0,0.55)" }}
+          className="w-full h-full relative transition-transform duration-500"
+          style={{ transform: `perspective(1000px) rotateY(${tilt.x}deg) rotateX(${tilt.y}deg)`, filter: "drop-shadow(0 40px 80px rgba(0,0,0,0.55))" }}
         >
           {drip && (
             <>
@@ -206,12 +213,14 @@ function ProductPanel({ slug, eyebrow, title, sub, product, bg, glow, accent, bo
               <div className="honey-drip animate-drip" style={{ left: "75%", animationDelay: "2.4s" }} />
             </>
           )}
-          <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
-            <div className="font-display text-cream text-3xl tracking-widest" style={{ fontVariationSettings: "'wdth' 75, 'wght' 800" }}>3T</div>
-            <div className="eyebrow text-cream/80 mt-2">{title}</div>
-            <div className="w-12 h-px bg-cream/40 my-4" />
-            <div className="text-cream/70 text-[10px] eyebrow">Doctor-Led · Lab-Tested</div>
-          </div>
+          {product?.image && (
+            <img
+              src={product.image}
+              alt={product.name}
+              className="w-full h-full object-contain"
+              style={{ transform: drip ? "rotate(-4deg)" : "rotate(2deg)" }}
+            />
+          )}
         </div>
       </div>
     </div>

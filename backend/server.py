@@ -1,5 +1,5 @@
 """3Tattava — Performance Ayurveda backend."""
-from fastapi import FastAPI, APIRouter, HTTPException, Header, Depends
+from fastapi import FastAPI, APIRouter, HTTPException, Header, Depends, Request
 from fastapi.responses import StreamingResponse
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
@@ -22,8 +22,11 @@ from email_service import (
     tpl_order_confirmation,
     tpl_assessment_result,
     tpl_booking_confirmation,
+    tpl_cart_abandonment,
 )
 from chat_service import chat_stream
+from webhook_service import push_to_n8n
+from payments_service import create_razorpay_order, verify_payment_signature, verify_webhook_signature, KEY_ID as RZP_KEY_ID
 
 mongo_url = os.environ["MONGO_URL"]
 client = AsyncIOMotorClient(mongo_url)
@@ -79,6 +82,7 @@ class Product(BaseModel):
     accent_color: str = "#C8963E"
     in_stock: bool = True
     is_featured: bool = False
+    regulatory: Optional[Dict[str, str]] = None
 
 
 class NewsletterIn(BaseModel):
@@ -155,56 +159,70 @@ PRODUCTS_SEED = [
         "price": 1299,
         "compare_at": 1599,
         "category": "Shilajit Resin",
-        "image": "https://images.unsplash.com/photo-1610113151529-c0e0743a9c9f?w=900&q=80&auto=format&fit=crop",
+        "image": "https://media.3tattava.com/products/Rockresin-hero.jpeg",
         "gallery": [
-            "https://images.unsplash.com/photo-1610113151529-c0e0743a9c9f?w=1400&q=80&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1547139762-bd34af49ab64?w=1400&q=80&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1502230831726-fe5549140034?w=1400&q=80&auto=format&fit=crop",
+            "https://media.3tattava.com/products/Rockresin-hero.jpeg",
+            "https://media.3tattava.com/products/rockresin-float.jpeg",
+            "https://media.3tattava.com/features/resin-mountain.png",
+            "https://media.3tattava.com/features/resin-pulled.png",
         ],
-        "short_desc": "Traditional Himalayan Shilajit Resin, Triphala-purified. Built for those who appreciate the depth of Ayurveda.",
-        "long_desc": "RockResin is our flagship Shodhit Shilajit Resin — sourced from above 16,000 ft Himalayan deposits, purified through classical Triphala Shodhana and verified through NABL third-party labs. For people who want to build a daily ritual rooted in patience, consistency and long-term vitality.",
+        "short_desc": "RockResin® · Shodhit Shilajit Resin — Ancient Mineral Elixir For Modern Vitality. ENERGY · STRENGTH · LONGEVITY. \"रसायनं बल्यं जीवनाय\"",
+        "long_desc": "Born of Altitude. Refined by Ayurveda. RockResin is 100% pure Shodhit Shilajit resin — Triphala-purified through classical Shodhana — preserving ≥70% natural fulvic acid and 80+ trace minerals. No capsules. No fillers. No artificial additives. Just Shilajit, exactly as nature intended. Revered in Ayurveda as a Rasayana for holistic vitality and systemic balance.",
         "benefits": [
-            "Traditional Resin Form",
-            "Triphala Purified (Shodhit)",
-            "70%+ Fulvic Acid",
-            "80+ Trace Minerals",
+            "Supports Energy, Strength & Recovery",
+            "Supports Focus & Hormonal Balance",
+            "Supports Bone Health & Healthy Aging",
+            "≥70% Natural Fulvic Acid",
+            "≥80 Trace Minerals",
             "NABL 3rd-Party Lab Tested",
-            "AYUSH GMP Manufactured",
-            "US-FDA Registered Facility",
+            "Pure Resin · No Fillers · No Capsules",
         ],
         "ingredients": [
-            {"name": "Shodhit Shilajit", "benefit": "Traditional Rasayana, Triphala purified"},
+            {"name": "Shudh Shilajit (Asphaltum Punjabianum)", "benefit": "1000mg per 1g RockResin — Triphala-purified Shodhit Shilajit, classical Rasayana"},
         ],
         "how_to_use": [
-            {"step": "01", "title": "Dip", "desc": "Dip the hook into a rice-grain portion of resin."},
-            {"step": "02", "title": "Hook", "desc": "Lift gently — the resin will stretch like honey."},
-            {"step": "03", "title": "Swirl", "desc": "Swirl into warm water or milk. Not stir. A ritual."},
+            {"step": "01", "title": "Dip", "desc": "Dip the spatula to lift a pea-sized portion (300–500mg)."},
+            {"step": "02", "title": "Hook", "desc": "The resin will stretch like honey — that's the authenticity test."},
+            {"step": "03", "title": "Swirl", "desc": "Swirl into warm water or warm milk, post-meal. Once or twice daily."},
         ],
         "specs": [
             {"label": "Format", "value": "100% Pure Resin"},
-            {"label": "Net Weight", "value": "20g"},
+            {"label": "Net Weight", "value": "20 g"},
+            {"label": "Dosage", "value": "300–500mg (pea-sized) once or twice daily"},
             {"label": "Fulvic Acid", "value": "≥ 70%"},
-            {"label": "Source Altitude", "value": "16,000+ ft"},
-            {"label": "Ideal For", "value": "16+ years, all genders"},
+            {"label": "Trace Minerals", "value": "≥ 80"},
+            {"label": "Source Altitude", "value": "16,000+ ft (Himalayas)"},
+            {"label": "Mfg. Lic. No.", "value": "RJ-926Ayu E"},
+            {"label": "Type", "value": "Ayurvedic Proprietary Medicine"},
+            {"label": "For", "value": "Men & Women · Adults"},
         ],
         "pillars": [
-            {"title": "Himalayan Sourcing", "desc": "Above 16,000 ft."},
-            {"title": "Classical Shodhana", "desc": "Triphala-based purification."},
-            {"title": "NABL Tested", "desc": "Heavy metals, microbes, fulvic acid."},
-            {"title": "US-FDA Facility", "desc": "Global manufacturing standards."},
-            {"title": "AYUSH GMP", "desc": "Certified Ayurvedic production."},
-            {"title": "QR Verified", "desc": "Scan. Verify. Trust."},
-            {"title": "Transparency First", "desc": "Open lab reports per batch."},
+            {"title": "From the Roof of the World", "desc": "Himalayan Shilajit, sourced at 16,000+ ft."},
+            {"title": "Ancient Wisdom, Uncompromised", "desc": "Classical Triphala Shodhana purification."},
+            {"title": "Absorption You Can Feel", "desc": "Resin form — no capsule shell, no fillers."},
+            {"title": "Nature's Complete Mineral Complex", "desc": "≥80 trace minerals · ≥70% fulvic acid."},
+            {"title": "3rd Party Verified", "desc": "NABL-accredited Eurofins testing per batch."},
+            {"title": "Govt-Certified Quality", "desc": "AYUSH GMP · US-FDA registered facility."},
+            {"title": "Pure Resin · No Shortcuts", "desc": "100% resin. No capsules. No artificial anything."},
         ],
         "faqs": [
-            {"q": "What is RockResin?", "a": "RockResin is 100% pure Shodhit Shilajit resin sourced from Himalayan deposits and purified using a Triphala-based classical Ayurvedic process."},
-            {"q": "How do I use it?", "a": "Dip the spatula into a rice-grain portion of resin. Hook. Swirl into warm water or milk. Consume once daily, preferably morning."},
-            {"q": "Is it safe for women?", "a": "Yes. RockResin is formulated for both men and women aged 16 and above. Vitality is a human goal — not gender-specific."},
-            {"q": "How is it tested?", "a": "Every batch is verified through NABL-accredited third-party labs (Eurofins) for heavy metals, microbes, fulvic acid and identity."},
+            {"q": "What is RockResin?", "a": "RockResin is 100% pure Shodhit Shilajit resin — Triphala-purified, NABL-tested, sourced from Himalayan deposits above 16,000 ft. Each 1g contains 1000mg of Shudh Shilajit (Asphaltum Punjabianum)."},
+            {"q": "What's the recommended dosage?", "a": "300–500mg (pea-sized, one dip) once or twice daily. Take with warm water or milk post-meal. Pitta-dominant individuals: prefer a milk or ghee-based anupaan, or follow your Ayurvedic physician's guidance."},
+            {"q": "Is it tested?", "a": "Yes — every batch is verified through NABL-accredited 3rd-party labs (Eurofins) for heavy metals, microbes, fulvic acid and identity. Scan the QR on pack for the report."},
+            {"q": "Is it safe during pregnancy?", "a": "No — avoid during pregnancy and lactation. RockResin is for adult use only. Keep out of reach of children."},
+            {"q": "Can people on chronic medication take it?", "a": "Consult your physician first if you have chronic conditions (diabetes, hypertension, kidney issues) or are on long-term medications."},
         ],
-        "badges": ["NABL Tested", "AYUSH GMP", "US-FDA Facility", "Triphala Purified"],
+        "badges": ["NABL Tested", "AYUSH GMP", "Triphala Shodhit", "≥70% Fulvic Acid", "Pure Resin"],
         "accent_color": "#C9A84C",
         "is_featured": True,
+        "regulatory": {
+            "mfg_lic": "RJ-926Ayu E",
+            "manufacturer": "URMI LIFESCIENCES LLP, A2/101 Site 5, UPSIDC Kasna, Greater Noida, UP, 201308. Unit at Facher, 312601, Rajasthan.",
+            "marketer": "SankalpaSiddhi Ayupharma Pvt. Ltd., 690A/1, Kabool Nagar, Shahdara, Delhi - 110032",
+            "care_email": "info@3tattava.com",
+            "care_phone": "+91 95601 49956",
+            "disclaimer": "This is an Ayurvedic Proprietary Medicine. Adult use only. Use as directed. Not for the diagnosis, treatment, cure, or prevention of disease. Avoid during pregnancy and lactation. Keep out of reach of children. Store in a cool, dry place, tightly closed, away from direct sunlight and moisture. Do not use if the safety seal is damaged or missing.",
+        },
     },
     {
         "slug": "shahjeet-sticks",
@@ -214,55 +232,65 @@ PRODUCTS_SEED = [
         "price": 999,
         "compare_at": 1199,
         "category": "Honey Sticks",
-        "image": "https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=900&q=80&auto=format&fit=crop",
+        "image": "https://media.3tattava.com/products/shahjeet-box.png",
         "gallery": [
-            "https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=1400&q=80&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1558642452-9d2a7deb7f62?w=1400&q=80&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1471943311424-646960669fbc?w=1400&q=80&auto=format&fit=crop",
+            "https://media.3tattava.com/products/shahjeet-box.png",
+            "https://media.3tattava.com/features/shahjeet-sachet.png",
         ],
-        "short_desc": "Shodhit Shilajit + traditional Madhu, in a portable single-serve stick. Tear. Squeeze. Perform.",
-        "long_desc": "Shahjeet is India's first Shilajit Honey Stick — designed for the entrepreneur, the athlete, the parent, the traveller. 600mg of Triphala-purified Shilajit combined with 7.4g of authentic Madhu in every stick. Built for consistency without complexity.",
+        "short_desc": "India's first Shilajit + Madhu honey stick. 600mg Shodhit Shilajit + 7.4g Madhu per stick. Tear · Squeeze · Perform.",
+        "long_desc": "Shahjeet is engineered for the modern human in motion — the entrepreneur, the athlete, the parent, the traveller. Each portable single-serve stick combines 600mg of Triphala-purified Shilajit with 7.4g of traditional Madhu (honey) — the classical Yogavahi carrier that supports bioavailability. No measuring. No mixing. No spoons. Just consistency, on the go.",
         "benefits": [
-            "600mg Shilajit Per Stick",
-            "Honey Infused (Madhu)",
-            "No Measuring",
-            "No Mixing",
-            "Travel Friendly",
-            "Performance Focused",
-            "Doctor Reviewed",
+            "600 mg Shodhit Shilajit per stick",
+            "7.4 g Traditional Madhu (Yogavahi carrier)",
+            "Single-serve · Travel-friendly",
+            "No measuring · No mixing · No cleanup",
+            "Doctor-formulated · BAMS reviewed",
+            "NABL 3rd-Party Lab Tested",
+            "Triphala-Shodhit",
         ],
         "ingredients": [
-            {"name": "Shodhit Shilajit", "benefit": "600mg per stick — Triphala purified"},
-            {"name": "Madhu (Honey)", "benefit": "7.4g — Yogavahi carrier, traditional companion"},
+            {"name": "Shudh Shilajit (Asphaltum Punjabianum)", "benefit": "600mg per stick — Triphala-purified Shodhit form, classical Rasayana"},
+            {"name": "Madhu (Honey)", "benefit": "7.4g per stick — Yogavahi carrier, traditional companion herb"},
         ],
         "how_to_use": [
-            {"step": "01", "title": "Tear", "desc": "Open. Anytime. Anywhere. No jars. No spoons."},
-            {"step": "02", "title": "Squeeze", "desc": "Squeeze the stick directly. No measuring."},
-            {"step": "03", "title": "Perform", "desc": "Continue your day. No mixing. No cleanup."},
+            {"step": "01", "title": "Tear", "desc": "Tear the sachet open — anytime, anywhere. No jars. No spoons."},
+            {"step": "02", "title": "Squeeze", "desc": "Squeeze the stick directly. No measuring required."},
+            {"step": "03", "title": "Perform", "desc": "Continue your day. Once daily, post-meal or pre-training."},
         ],
         "specs": [
-            {"label": "Pack Size", "value": "30 Sticks"},
-            {"label": "Shilajit per Stick", "value": "600mg"},
-            {"label": "Honey per Stick", "value": "7.4g"},
-            {"label": "Format", "value": "Single-serve Sachet"},
-            {"label": "Ideal For", "value": "16+ years, on-the-go"},
+            {"label": "Pack Size", "value": "30 Single-Serve Sticks"},
+            {"label": "Shilajit per Stick", "value": "600 mg"},
+            {"label": "Madhu per Stick", "value": "7.4 g"},
+            {"label": "Dosage", "value": "1 stick daily"},
+            {"label": "Format", "value": "Portable Sachet"},
+            {"label": "Type", "value": "Ayurvedic Proprietary Medicine"},
+            {"label": "For", "value": "Men & Women · Adults"},
         ],
         "pillars": [
-            {"title": "Himalayan Shilajit", "desc": "Authentic source material."},
+            {"title": "Himalayan Shilajit", "desc": "Authentic source material above 16,000 ft."},
             {"title": "Triphala Purification", "desc": "Classical Shodhana process."},
-            {"title": "Traditional Madhu", "desc": "Yogavahi honey carrier."},
-            {"title": "Single-Serve", "desc": "No measuring, repeatable."},
-            {"title": "Quality Verified", "desc": "Lab tested per batch."},
+            {"title": "Traditional Madhu", "desc": "Yogavahi honey carrier — bioavailability."},
+            {"title": "Single-Serve Format", "desc": "No measuring · repeatable ritual."},
+            {"title": "Quality Verified", "desc": "NABL 3rd-party tested per batch."},
         ],
         "faqs": [
-            {"q": "What is Shahjeet?", "a": "A portable formulation that combines Triphala-purified Shilajit with traditional honey in a convenient single-serve stick."},
-            {"q": "Can I take it daily?", "a": "Yes. Shahjeet is designed as a daily ritual. Follow the serving recommendations on pack."},
-            {"q": "Can people with diabetes take it?", "a": "Because Shahjeet contains honey, individuals with diabetes or those monitoring blood sugar should consult their healthcare professional before use."},
-            {"q": "How is it different from RockResin?", "a": "RockResin is the Deep Ritual — traditional resin form. Shahjeet is the Fast Ritual — portable, no-prep format. Same philosophy, different moments."},
+            {"q": "What is Shahjeet?", "a": "India's first Shilajit + Madhu honey stick. Each portable single-serve sachet combines 600mg of Triphala-purified Shilajit with 7.4g of traditional Madhu (honey). Tear, squeeze, perform."},
+            {"q": "How is it different from RockResin?", "a": "RockResin is the Deep Ritual — traditional 20g resin for home. Shahjeet is the Fast Ritual — 30 portable sticks for everywhere else. Same source, same standards, different formats."},
+            {"q": "Can I take it daily?", "a": "Yes — Shahjeet is designed as a daily ritual. One stick per day. Pre-training, post-meal, or anytime."},
+            {"q": "Can people with diabetes take it?", "a": "Because Shahjeet contains honey (Madhu), individuals with diabetes or those monitoring blood sugar should consult their healthcare professional before use."},
+            {"q": "Is the packaging recyclable?", "a": "The outer box is fully recyclable. The single-serve sachets are designed for hygienic single-use; please dispose responsibly."},
         ],
-        "badges": ["NABL Tested", "AYUSH GMP", "Doctor Reviewed", "Triphala Purified"],
+        "badges": ["NABL Tested", "AYUSH GMP", "Doctor Reviewed", "Triphala Shodhit", "Travel-Ready"],
         "accent_color": "#CD872A",
         "is_featured": True,
+        "regulatory": {
+            "mfg_lic": "RJ-926Ayu E",
+            "manufacturer": "URMI LIFESCIENCES LLP, A2/101 Site 5, UPSIDC Kasna, Greater Noida, UP, 201308. Unit at Facher, 312601, Rajasthan.",
+            "marketer": "SankalpaSiddhi Ayupharma Pvt. Ltd., 690A/1, Kabool Nagar, Shahdara, Delhi - 110032",
+            "care_email": "info@3tattava.com",
+            "care_phone": "+91 95601 49956",
+            "disclaimer": "This is an Ayurvedic Proprietary Medicine. Adult use only. Use as directed. Not for the diagnosis, treatment, cure, or prevention of disease. Avoid during pregnancy and lactation. Keep out of reach of children. Individual stick is not for sale. Consult your physician if you have any chronic conditions or are on long-term medications.",
+        },
     },
     {
         "slug": "starter-kit",
@@ -272,13 +300,14 @@ PRODUCTS_SEED = [
         "price": 1799,
         "compare_at": 2298,
         "category": "Bundles",
-        "image": "https://images.unsplash.com/photo-1607006333439-505849ef4f76?w=900&q=80&auto=format&fit=crop",
+        "image": "https://media.3tattava.com/banners/preview.webp",
         "gallery": [
-            "https://images.unsplash.com/photo-1607006333439-505849ef4f76?w=1400&q=80&auto=format&fit=crop",
+            "https://media.3tattava.com/banners/preview.webp",
+            "https://media.3tattava.com/banners/preview-3.webp",
         ],
         "short_desc": "RockResin + Shahjeet Sticks. The Deep Ritual for home. The Fast Ritual for everywhere else.",
         "long_desc": "The Starter Kit pairs our two flagship rituals so you never miss a day. RockResin grounds your mornings at home. Shahjeet travels with you everywhere else.",
-        "benefits": ["RockResin 20g", "Shahjeet 30 Sticks", "Save ₹499", "Free Shipping", "Performance Assessment included"],
+        "benefits": ["RockResin 20g · Pure Resin", "Shahjeet 30 Sticks · 600mg each", "Save ₹499 vs separate", "Free Shipping", "Performance Assessment included"],
         "specs": [
             {"label": "Includes", "value": "RockResin + Shahjeet"},
             {"label": "Value", "value": "₹2,298"},
@@ -296,8 +325,8 @@ PRODUCTS_SEED = [
         "price": 799,
         "compare_at": 999,
         "category": "Subscribe & Save",
-        "image": "https://images.unsplash.com/photo-1556909114-44e3e70034e2?w=900&q=80&auto=format&fit=crop",
-        "gallery": ["https://images.unsplash.com/photo-1556909114-44e3e70034e2?w=1400&q=80&auto=format&fit=crop"],
+        "image": "https://media.3tattava.com/banners/preview-4.webp",
+        "gallery": ["https://media.3tattava.com/banners/preview-4.webp"],
         "short_desc": "Auto-delivered every month. 25% off. Cancel anytime.",
         "long_desc": "Because consistency compounds. Get 30 Shahjeet sticks delivered to your door every month — at 25% off retail.",
         "benefits": ["25% off forever", "Free monthly delivery", "Skip / cancel anytime", "Priority customer support"],
@@ -433,12 +462,18 @@ WTF_LOCATIONS_SEED = [
 
 
 async def seed():
-    """Seed products / doctors / knowledge / locations if collections empty."""
-    if await db.products.count_documents({}) == 0:
-        for p in PRODUCTS_SEED:
+    """Seed products / doctors / knowledge / locations (upsert products on every startup, others on first run)."""
+    # Products: upsert by slug so packaging/image updates apply on each deploy
+    for p in PRODUCTS_SEED:
+        existing = await db.products.find_one({"slug": p["slug"]})
+        if existing:
+            update = {**p}
+            update["id"] = existing.get("id") or new_id()
+            await db.products.update_one({"slug": p["slug"]}, {"$set": update})
+        else:
             obj = Product(**p).model_dump()
             await db.products.insert_one(obj)
-        log.info("Seeded %d products", len(PRODUCTS_SEED))
+    log.info("Upserted %d products", len(PRODUCTS_SEED))
 
     if await db.doctors.count_documents({}) == 0:
         for d in DOCTORS_SEED:
@@ -513,6 +548,11 @@ async def get_doctor(slug: str):
 async def book_doctor(b: DoctorBooking):
     doc = {"id": new_id(), "created_at": now_iso(), "status": "pending", **b.model_dump()}
     await db.bookings.insert_one(doc)
+    doctor = await db.doctors.find_one({"slug": b.doctor_slug}, {"_id": 0, "name": 1})
+    doctor_name = doctor["name"] if doctor else "the Vaidya"
+    subject, html = tpl_booking_confirmation(b.name, doctor_name, b.preferred_date, doc["id"])
+    asyncio.create_task(send_email(b.email, subject, html))
+    asyncio.create_task(push_to_n8n("doctor.booking", {**b.model_dump(), "booking_id": doc["id"], "doctor_name": doctor_name}))
     return {"ok": True, "booking_id": doc["id"]}
 
 
@@ -545,6 +585,7 @@ async def newsletter(payload: NewsletterIn):
     await db.newsletter.insert_one({"id": new_id(), "created_at": now_iso(), **payload.model_dump()})
     subject, html = tpl_newsletter_welcome(payload.email)
     asyncio.create_task(send_email(payload.email, subject, html))
+    asyncio.create_task(push_to_n8n("newsletter.subscribed", payload.model_dump()))
     return {"ok": True}
 
 
@@ -575,6 +616,7 @@ async def assessment(payload: AssessmentIn):
     await db.assessments.insert_one(doc)
     subject, html = tpl_assessment_result(payload.name, result)
     asyncio.create_task(send_email(payload.email, subject, html))
+    asyncio.create_task(push_to_n8n("assessment.completed", {**payload.model_dump(), "result": result}))
     return {"ok": True, "result": result}
 
 
@@ -621,6 +663,7 @@ async def create_order(payload: OrderIn):
     await db.orders.insert_one(order)
     subject, html = tpl_order_confirmation(order)
     asyncio.create_task(send_email(payload.email, subject, html))
+    asyncio.create_task(push_to_n8n("order.created", {**order}))
     return {"ok": True, "order_id": order["id"], "subtotal": subtotal, "shipping": shipping, "total": total}
 
 
@@ -762,6 +805,135 @@ async def chat_stream_endpoint(payload: ChatIn):
         media_type="text/event-stream",
         headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no", "Connection": "keep-alive"},
     )
+
+
+class CartAbandonIn(BaseModel):
+    name: Optional[str] = None
+    email: EmailStr
+    items: List[CartItem]
+    subtotal: int
+
+
+@api.post("/cart/abandoned")
+async def cart_abandoned(payload: CartAbandonIn):
+    # Dedupe: only one outreach per email per day
+    today = datetime.now(timezone.utc).date().isoformat()
+    existing = await db.cart_recovery.find_one({"email": payload.email, "date": today})
+    if existing:
+        return {"ok": True, "duplicate": True}
+    doc = {"id": new_id(), "created_at": now_iso(), "date": today, "status": "queued", **payload.model_dump()}
+    await db.cart_recovery.insert_one(doc)
+    subject, html = tpl_cart_abandonment(payload.name or "There", payload.items, payload.subtotal)
+    asyncio.create_task(send_email(payload.email, subject, html))
+    asyncio.create_task(push_to_n8n("cart.abandoned", payload.model_dump()))
+    return {"ok": True}
+
+
+class RzpOrderIn(BaseModel):
+    customer_name: str
+    email: EmailStr
+    phone: str
+    address: str
+    city: str
+    state: str
+    pincode: str
+    items: List[CartItem]
+    notes: Optional[str] = None
+
+
+@api.post("/payments/razorpay/order")
+async def rzp_order(payload: RzpOrderIn):
+    subtotal = sum(it.price * it.qty for it in payload.items)
+    shipping = 0 if subtotal >= 999 else 49
+    total = subtotal + shipping
+
+    internal = {
+        "id": new_id(),
+        "created_at": now_iso(),
+        "status": "pending_payment",
+        "subtotal": subtotal,
+        "shipping": shipping,
+        "total": total,
+        "currency": "INR",
+        "payment_method": "razorpay",
+        **payload.model_dump(),
+    }
+    await db.orders.insert_one(internal)
+
+    rzp = create_razorpay_order(total, receipt=f"3T-{internal['id'][:18]}", notes={"customer": payload.customer_name})
+    await db.orders.update_one(
+        {"id": internal["id"]},
+        {"$set": {"rzp_order_id": rzp.get("id"), "rzp_mock": rzp.get("mock", False)}},
+    )
+    return {
+        "ok": True,
+        "order_id": internal["id"],
+        "rzp_order_id": rzp.get("id"),
+        "amount": rzp.get("amount", total * 100),
+        "currency": "INR",
+        "key_id": RZP_KEY_ID,
+        "mock": rzp.get("mock", False),
+        "subtotal": subtotal,
+        "shipping": shipping,
+        "total": total,
+    }
+
+
+class RzpVerifyIn(BaseModel):
+    order_id: str  # internal
+    rzp_order_id: str
+    rzp_payment_id: str
+    rzp_signature: str
+
+
+@api.post("/payments/razorpay/verify")
+async def rzp_verify(payload: RzpVerifyIn):
+    ok = verify_payment_signature(payload.rzp_order_id, payload.rzp_payment_id, payload.rzp_signature)
+    status = "paid" if ok else "payment_failed"
+    await db.orders.update_one(
+        {"id": payload.order_id},
+        {"$set": {
+            "status": status,
+            "rzp_payment_id": payload.rzp_payment_id,
+            "rzp_signature": payload.rzp_signature,
+            "paid_at": now_iso() if ok else None,
+        }},
+    )
+    if ok:
+        order = await db.orders.find_one({"id": payload.order_id}, {"_id": 0})
+        if order:
+            subject, html = tpl_order_confirmation(order)
+            asyncio.create_task(send_email(order["email"], subject, html))
+            asyncio.create_task(push_to_n8n("order.paid", order))
+    return {"ok": ok, "status": status}
+
+
+@app.post("/api/payments/razorpay/webhook")
+async def rzp_webhook(request: Request):
+    body = await request.body()
+    sig = request.headers.get("X-Razorpay-Signature", "")
+    if not verify_webhook_signature(body, sig):
+        raise HTTPException(400, "Invalid signature")
+    import json as _json
+    try:
+        event = _json.loads(body)
+    except Exception:
+        raise HTTPException(400, "Invalid JSON")
+    event_type = event.get("event", "")
+    payment = event.get("payload", {}).get("payment", {}).get("entity", {})
+    rzp_order_id = payment.get("order_id")
+    payment_id = payment.get("id")
+    if rzp_order_id:
+        await db.orders.update_one(
+            {"rzp_order_id": rzp_order_id},
+            {"$set": {"webhook_event": event_type, "webhook_payment_id": payment_id, "webhook_at": now_iso()}},
+        )
+    return {"ok": True}
+
+
+@api.get("/admin/cart-recovery", dependencies=[Depends(require_admin)])
+async def admin_cart_recovery():
+    return await db.cart_recovery.find({}, {"_id": 0}).sort("created_at", -1).to_list(200)
 
 
 app.include_router(api)

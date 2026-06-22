@@ -137,3 +137,19 @@ def tpl_booking_confirmation(name: str, doctor_name: str, date: str, booking_id:
         f"<p style='font-size:13px;color:#7a6f5a;margin-top:20px;'>Our team will reach out within 24 hours to confirm your slot via WhatsApp or phone.</p>"
     )
     return subject, _wrap(f"Hi {name}, your consultation is confirmed.", "Thank you for booking with VaidyaConnect.", content, "PREPARE FOR YOUR SESSION", "https://www.3tattava.com/vaidyaconnect")
+
+
+def tpl_cart_abandonment(name: str, items, subtotal: int) -> tuple[str, str]:
+    subject = "You left your ritual behind."
+    rows = "".join(
+        f"<tr><td style='padding:10px 0;border-bottom:1px solid #ede4d0;font-size:14px;'>{getattr(i, 'name', None) or (i.get('name') if isinstance(i, dict) else '')} × {getattr(i, 'qty', None) or (i.get('qty', 1) if isinstance(i, dict) else 1)}</td>"
+        f"<td style='padding:10px 0;border-bottom:1px solid #ede4d0;text-align:right;font-size:14px;'>₹{(getattr(i, 'price', None) or (i.get('price', 0) if isinstance(i, dict) else 0))*(getattr(i, 'qty', None) or (i.get('qty', 1) if isinstance(i, dict) else 1)):,}</td></tr>"
+        for i in (items or [])
+    ) or "<tr><td style='padding:10px 0;font-size:14px;color:#7a6f5a;'>Your ritual basket</td></tr>"
+    content = (
+        f"<p style='font-size:14px;color:#3a2d18;line-height:1.7;'>{name}, your selection is still saved — and free shipping is yours above ₹999.</p>"
+        f"<table width='100%' cellpadding='0' cellspacing='0' style='margin-top:18px;'>{rows}"
+        f"<tr><td style='padding:14px 0;font-weight:700;'>Subtotal</td><td style='padding:14px 0;text-align:right;font-weight:700;'>₹{subtotal:,}</td></tr></table>"
+        f"<p style='font-size:13px;color:#7a6f5a;margin-top:18px;'>Daily rituals are built one decision at a time. Come back when ready.</p>"
+    )
+    return subject, _wrap("Your ritual is waiting.", "We saved your cart. Resume in a single click.", content, "RESUME CHECKOUT", "https://www.3tattava.com/checkout")

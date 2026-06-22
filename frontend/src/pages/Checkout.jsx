@@ -1,15 +1,30 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ArrowRight, Plus, Minus, Trash2 } from "lucide-react";
+import { ArrowRight, Plus, Minus, Trash2, CreditCard, Banknote } from "lucide-react";
 import { useCart } from "../context/CartContext";
-import { createOrder } from "../lib/api";
+import { api, createOrder } from "../lib/api";
+
+const RAZORPAY_SCRIPT = "https://checkout.razorpay.com/v1/checkout.js";
+
+function loadRazorpayScript() {
+  return new Promise((resolve) => {
+    if (window.Razorpay) return resolve(true);
+    const s = document.createElement("script");
+    s.src = RAZORPAY_SCRIPT;
+    s.onload = () => resolve(true);
+    s.onerror = () => resolve(false);
+    document.body.appendChild(s);
+  });
+}
 
 export default function Checkout() {
-  const { items, total, count, remove, updateQty, clear } = useCart();
+  const { items, total, count, remove, updateQty, clear, captureRecoveryEmail } = useCart();
   const navigate = useNavigate();
   const [step, setStep] = useState(0); // 0 cart, 1 address, 2 payment
   const [form, setForm] = useState({ customer_name: "", email: "", phone: "", address: "", city: "", state: "", pincode: "", notes: "" });
+  const [method, setMethod] = useState("razorpay"); // razorpay | cod
   const [placing, setPlacing] = useState(false);
+  const [error, setError] = useState("");
 
   if (items.length === 0) {
     return (
@@ -26,16 +41,87 @@ export default function Checkout() {
   const shipping = total >= 999 ? 0 : 49;
   const grand = total + shipping;
 
-  const placeOrder = async () => {
+  const placeOrderCOD = async () => {
     setPlacing(true);
+    setError("");
     try {
       const res = await createOrder({ ...form, items });
       clear();
       navigate(`/order-confirmation/${res.order_id}`);
+    } catch (e) {
+      setError("Couldn't place order. Please try again.");
     } finally {
       setPlacing(false);
     }
   };
+
+  const placeOrderRazorpay = async () => {
+    setPlacing(true);
+    setError("");
+    try {
+      const ok = await loadRazorpayScript();
+      if (!ok) throw new Error("Razorpay script failed to load");
+      const res = await api.post("/payments/razorpay/order", { ...form, items }).then((r) => r.data);
+      const internalId = res.order_id;
+
+      // Placeholder mode — auto-verify with mock signature so the UI flow can be exercised
+      if (res.mock || res.key_id === "rzp_test_placeholder") {
+        const verify = await api.post("/payments/razorpay/verify", {
+          order_id: internalId,
+          rzp_order_id: res.rzp_order_id,
+          rzp_payment_id: "pay_mock",
+          rzp_signature: "mock-ok",
+        }).then((r) => r.data);
+        if (verify.ok) {
+          clear();
+          navigate(`/order-confirmation/${internalId}`);
+        } else {
+          setError("Payment verification failed (test mode).");
+        }
+        return;
+      }
+
+      // Real flow
+      const rzpOptions = {
+        key: res.key_id,
+        amount: res.amount,
+        currency: res.currency,
+        name: "3Tattava",
+        description: "Performance Ayurveda Order",
+        order_id: res.rzp_order_id,
+        prefill: { name: form.customer_name, email: form.email, contact: form.phone },
+        theme: { color: "#C8963E" },
+        handler: async (response) => {
+          try {
+            const verify = await api.post("/payments/razorpay/verify", {
+              order_id: internalId,
+              rzp_order_id: response.razorpay_order_id,
+              rzp_payment_id: response.razorpay_payment_id,
+              rzp_signature: response.razorpay_signature,
+            }).then((r) => r.data);
+            if (verify.ok) {
+              clear();
+              navigate(`/order-confirmation/${internalId}`);
+            } else {
+              setError("Payment verification failed. Please contact support.");
+            }
+          } catch {
+            setError("Verification call failed.");
+          }
+        },
+        modal: { ondismiss: () => setPlacing(false) },
+      };
+      const rzp = new window.Razorpay(rzpOptions);
+      rzp.on("payment.failed", () => setError("Payment failed. You can try again or switch to Cash on Delivery."));
+      rzp.open();
+    } catch (e) {
+      setError("Couldn't start payment. Please try again or switch to COD.");
+    } finally {
+      setPlacing(false);
+    }
+  };
+
+  const place = () => (method === "cod" ? placeOrderCOD() : placeOrderRazorpay());
 
   return (
     <div className="bg-cream min-h-[80vh]" data-testid="checkout-page">
@@ -90,7 +176,7 @@ export default function Checkout() {
                 <div className="eyebrow text-ink/60 mb-4">Delivery Address</div>
                 <div className="grid md:grid-cols-2 gap-5">
                   <input required placeholder="FULL NAME" data-testid="co-name" className="luxe-input md:col-span-2" value={form.customer_name} onChange={(e) => setForm({ ...form, customer_name: e.target.value })} />
-                  <input required type="email" placeholder="EMAIL" data-testid="co-email" className="luxe-input" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
+                  <input required type="email" placeholder="EMAIL" data-testid="co-email" className="luxe-input" value={form.email} onChange={(e) => { setForm({ ...form, email: e.target.value }); if (e.target.value.includes("@")) captureRecoveryEmail(e.target.value); }} />
                   <input required placeholder="PHONE" data-testid="co-phone" className="luxe-input" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
                   <input required placeholder="STREET ADDRESS" data-testid="co-address" className="luxe-input md:col-span-2" value={form.address} onChange={(e) => setForm({ ...form, address: e.target.value })} />
                   <input required placeholder="CITY" data-testid="co-city" className="luxe-input" value={form.city} onChange={(e) => setForm({ ...form, city: e.target.value })} />
@@ -115,16 +201,31 @@ export default function Checkout() {
             {step === 2 && (
               <>
                 <div className="eyebrow text-ink/60 mb-4">Payment</div>
-                <div className="bg-cream-deep/40 border border-ink/10 p-8">
-                  <div className="font-display text-xl mb-2" style={{ fontVariationSettings: "'wdth' 88, 'wght' 700" }}>Cash On Delivery</div>
-                  <p className="text-sm text-ink/70 mb-6">Pay at delivery. We'll send a confirmation to {form.email}.</p>
-                  <p className="text-xs text-ink/60 mb-6">Online payments (Razorpay / Stripe) — coming soon.</p>
-                  <div className="flex gap-3">
-                    <button onClick={() => setStep(1)} className="btn-outline-dark">Back</button>
-                    <button onClick={placeOrder} disabled={placing} data-testid="co-place-order" className="btn-primary">
-                      {placing ? "Placing..." : `Place Order · ₹${grand.toLocaleString("en-IN")}`} <ArrowRight size={14} />
-                    </button>
-                  </div>
+                <div className="space-y-3 mb-8">
+                  <label className={`flex items-start gap-4 p-5 border cursor-pointer transition-all ${method === "razorpay" ? "border-gold bg-cream-deep/40" : "border-ink/15 hover:border-gold/50"}`} data-testid="pay-razorpay">
+                    <input type="radio" name="pay" value="razorpay" checked={method === "razorpay"} onChange={() => setMethod("razorpay")} className="mt-1 accent-gold" />
+                    <CreditCard size={20} className="text-gold-dark shrink-0 mt-0.5" />
+                    <div className="flex-1">
+                      <div className="font-display text-base" style={{ fontVariationSettings: "'wdth' 88, 'wght' 700" }}>Pay Online · Razorpay</div>
+                      <div className="text-xs text-ink/65 mt-1">UPI · Cards · Net Banking · Wallets. Powered by Razorpay (secure).</div>
+                    </div>
+                    <span className="eyebrow text-[10px] text-gold-dark">Recommended</span>
+                  </label>
+                  <label className={`flex items-start gap-4 p-5 border cursor-pointer transition-all ${method === "cod" ? "border-gold bg-cream-deep/40" : "border-ink/15 hover:border-gold/50"}`} data-testid="pay-cod">
+                    <input type="radio" name="pay" value="cod" checked={method === "cod"} onChange={() => setMethod("cod")} className="mt-1 accent-gold" />
+                    <Banknote size={20} className="text-gold-dark shrink-0 mt-0.5" />
+                    <div className="flex-1">
+                      <div className="font-display text-base" style={{ fontVariationSettings: "'wdth' 88, 'wght' 700" }}>Cash on Delivery</div>
+                      <div className="text-xs text-ink/65 mt-1">Pay in cash when the package arrives.</div>
+                    </div>
+                  </label>
+                </div>
+                {error && <div data-testid="co-error" className="text-sm text-terracotta border-l-2 border-terracotta pl-3 mb-4">{error}</div>}
+                <div className="flex gap-3">
+                  <button onClick={() => setStep(1)} className="btn-outline-dark">Back</button>
+                  <button onClick={place} disabled={placing} data-testid="co-place-order" className="btn-primary">
+                    {placing ? "Processing…" : `Place Order · ₹${grand.toLocaleString("en-IN")}`} <ArrowRight size={14} />
+                  </button>
                 </div>
               </>
             )}

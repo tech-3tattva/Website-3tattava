@@ -185,6 +185,49 @@ export default function ProductDetail() {
           </div>
         </div>
       </section>
+
+      {/* Regulatory / Packaging info */}
+      {p.regulatory && (
+        <section className="section bg-ink text-cream" data-testid="product-regulatory">
+          <div className="max-w-5xl mx-auto">
+            <div className="eyebrow text-gold mb-4">Regulatory · Packaging</div>
+            <h2 className="font-display text-2xl md:text-3xl mb-10" style={{ fontVariationSettings: "'wdth' 88, 'wght' 700" }}>What's on the pack.</h2>
+            <div className="grid md:grid-cols-2 gap-x-12 gap-y-8 text-sm">
+              <div>
+                <div className="eyebrow text-gold-dark text-[10px] mb-2">Manufacturing License</div>
+                <div className="text-cream/90">{p.regulatory.mfg_lic}</div>
+              </div>
+              <div>
+                <div className="eyebrow text-gold-dark text-[10px] mb-2">Product Type</div>
+                <div className="text-cream/90">Ayurvedic Proprietary Medicine</div>
+              </div>
+              <div>
+                <div className="eyebrow text-gold-dark text-[10px] mb-2">Manufactured By</div>
+                <div className="text-cream/85 leading-relaxed">{p.regulatory.manufacturer}</div>
+              </div>
+              <div>
+                <div className="eyebrow text-gold-dark text-[10px] mb-2">Marketed By</div>
+                <div className="text-cream/85 leading-relaxed">{p.regulatory.marketer}</div>
+              </div>
+              <div>
+                <div className="eyebrow text-gold-dark text-[10px] mb-2">Customer Care</div>
+                <div className="text-cream/85">
+                  <a href={`mailto:${p.regulatory.care_email}`} className="hover:text-gold">{p.regulatory.care_email}</a><br />
+                  <a href={`tel:${p.regulatory.care_phone}`} className="hover:text-gold">{p.regulatory.care_phone}</a>
+                </div>
+              </div>
+              <div>
+                <div className="eyebrow text-gold-dark text-[10px] mb-2">Storage</div>
+                <div className="text-cream/85">Cool & dry place, away from direct sunlight and moisture. Keep tightly closed.</div>
+              </div>
+            </div>
+            <div className="mt-10 p-6 border border-gold/20 bg-3t-black-2/60">
+              <div className="eyebrow text-gold-dark text-[10px] mb-3">Disclaimer</div>
+              <p className="text-xs text-cream/70 leading-relaxed">{p.regulatory.disclaimer}</p>
+            </div>
+          </div>
+        </section>
+      )}
     </div>
   );
 }
