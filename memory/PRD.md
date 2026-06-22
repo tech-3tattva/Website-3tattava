@@ -67,3 +67,19 @@ Env vars in `/app/backend/.env`:
 - Razorpay placeholder mode accepts only `mock-ok` signature for verify.
 
 Last updated: Jan 2026 — iteration 3 (Razorpay + n8n + cart recovery + S3 media + packaging data).
+
+## Implemented — Iteration 4 (Jan 2026 · UX Polish)
+- **Logo system**: dedicated `<Logo />` component (Logo.jsx) — uses the artistic wordmark consistently in Header + Footer, with auto inversion on dark contexts, hover gold-shimmer pass, and standardized sizes (sm/md/lg/xl). Removed text-styled fallback.
+- **Scroll-reveal microanimations**: reusable `<ScrollReveal />` (Intersection-Observer based, honours `prefers-reduced-motion`) wraps Founder, Athlete, Evidence, Pillars, Knowledge preview cards — content fades + slides in with staggered delays as the user scrolls.
+- **Balance · Build · Become scroll companion**: fixed-right `<PillarJourney />` indicator that ties the page to the philosophy. As user scrolls, a gold gradient thread fills + the active pillar dot enlarges with halo + the Sanskrit label slides in. Auto-hides at top + near footer. Honours mobile (hidden < md).
+- **Find Us — geolocation**: "Find My Nearest Center" CTA requests browser geo permission, draws a blue user-position marker with pulsing ring + 5km radius circle on Leaflet, sorts locations by Haversine distance, auto-flies map to nearest, and shows a "Nearest to you" banner above the listing with one-click Get Directions.
+- **Mobile responsiveness audit**: hero text uses fluid clamp(); all major sections moved from gap-12 to gap-10 md:gap-12; Find Us list+map layout reorders on `lg:` breakpoint (map above list on small screens, side-by-side on large); founder image height reduced on mobile; chatbot and WhatsApp floats sit at opposite bottom corners (no overlap).
+- **Vector decoration**: gold mountain silhouette SVG layer in Find Us hero, decorative `blob-gold` radial glow in Founder section, `<BalanceBuildBecomeGlyph />` component available for future use (connecting-thread SVG with circle/chevron/starburst marks).
+- Pillars cards: changed from hairline-grid style to spaced cards with subtle scale-on-active.
+
+## Next tasks (suggested)
+1. Razorpay real test keys (drop the placeholder).
+2. SES domain verification + cart-abandonment cron.
+3. Admin JWT auth (envs already exist).
+4. Replace generated favicon with the actual 3T monogram.
+5. Apply ScrollReveal to remaining pages (ProductDetail, OurStory) for site-wide consistency.

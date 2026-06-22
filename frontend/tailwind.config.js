@@ -49,6 +49,7 @@ module.exports = {
         floatUp: { "0%": { transform: "translateY(0)", opacity: 0.4 }, "100%": { transform: "translateY(-24px)", opacity: 0.9 } },
         drip: { "0%": { transform: "translateY(-100%) scaleY(0.5)", opacity: 0 }, "20%": { opacity: 1 }, "100%": { transform: "translateY(220%) scaleY(1.2)", opacity: 0 } },
         shimmer: { "0%": { backgroundPosition: "0% 50%" }, "100%": { backgroundPosition: "200% 50%" } },
+        pulseRing: { "0%": { transform: "translate(-50%,-50%) scale(0.6)", opacity: 0.6 }, "100%": { transform: "translate(-50%,-50%) scale(2)", opacity: 0 } },
       },
     },
   },

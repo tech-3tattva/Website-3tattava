@@ -4,6 +4,7 @@ import { ArrowRight, Stethoscope, Medal, FlaskConical, Mountain, ShieldCheck, Pl
 import { getProducts, getKnowledge } from "../lib/api";
 import { BRAND, PILLARS, TRUST_STRIP, EVIDENCE_PILLARS, WEEKS, FOUNDER, ATHLETE, COMPARE, TESTIMONIALS, FAQ_HOME } from "../lib/brandContent";
 import { MEDIA } from "../lib/assets";
+import ScrollReveal from "../components/ScrollReveal";
 
 const IconMap = { Stethoscope, Medal, FlaskConical, Mountain, ShieldCheck };
 
@@ -230,21 +231,22 @@ function ProductPanel({ slug, eyebrow, title, sub, product, bg, glow, accent, bo
 /* ---------------- FOUNDER ---------------- */
 function FounderSection() {
   return (
-    <section data-testid="founder-section" className="section bg-cream-deep/40 grid md:grid-cols-2 gap-12 items-center">
-      <div className="relative">
-        <img src={FOUNDER.photo} alt={FOUNDER.name} className="w-full h-[520px] object-cover" />
+    <section data-testid="founder-section" className="section bg-cream-deep/40 grid md:grid-cols-2 gap-10 md:gap-12 items-center relative overflow-hidden">
+      <div className="blob-gold" style={{ top: "-160px", right: "-200px" }} />
+      <ScrollReveal direction="left" className="relative">
+        <img src={FOUNDER.photo} alt={FOUNDER.name} className="w-full h-[420px] md:h-[520px] object-cover" />
         <div className="absolute -bottom-6 -right-6 bg-ink text-cream p-6 max-w-[280px] hidden md:block">
           <div className="eyebrow text-gold mb-2">Founder</div>
           <div className="font-display text-xl" style={{ fontVariationSettings: "'wdth' 85, 'wght' 700" }}>{FOUNDER.name}</div>
           <div className="text-xs text-cream/70 mt-1">{FOUNDER.credentials}</div>
         </div>
-      </div>
-      <div>
+      </ScrollReveal>
+      <ScrollReveal direction="right" delay={120}>
         <div className="eyebrow text-ink/60 mb-4">Section 01 — The Founder</div>
-        <h2 className="font-display text-4xl md:text-5xl mb-6" style={{ fontVariationSettings: "'wdth' 88, 'wght' 700", lineHeight: 1.05 }}>
+        <h2 className="font-display text-3xl sm:text-4xl md:text-5xl mb-6" style={{ fontVariationSettings: "'wdth' 88, 'wght' 700", lineHeight: 1.05 }}>
           {FOUNDER.headline}
         </h2>
-        <p className="font-italic-light text-lg text-ink/80 mb-8" style={{ fontFamily: "Fraunces, Georgia, serif", fontStyle: "italic" }}>
+        <p className="font-italic-light text-base md:text-lg text-ink/80 mb-8" style={{ fontFamily: "Fraunces, Georgia, serif", fontStyle: "italic" }}>
           "{FOUNDER.quote}"
         </p>
         <div className="space-y-4 mb-8">
@@ -261,7 +263,7 @@ function FounderSection() {
           ))}
         </div>
         <Link to="/our-story" data-testid="founder-cta" className="btn-outline-dark">Discover Performance Ayurveda</Link>
-      </div>
+      </ScrollReveal>
     </section>
   );
 }
@@ -367,13 +369,13 @@ function EvidenceSection() {
           We believe you deserve to understand the sourcing, testing and processes behind every product. Not after the purchase. Before it.
         </p>
 
-        <div className="grid md:grid-cols-3 gap-px bg-ink/10 border border-ink/10">
-          {EVIDENCE_PILLARS.map((p) => (
-            <div key={p.title} className="bg-white p-8 hover:bg-cream-deep/30 transition-colors">
+        <div className="grid md:grid-cols-3 gap-6">
+          {EVIDENCE_PILLARS.slice(0, 6).map((p, i) => (
+            <ScrollReveal key={p.title} delay={i * 100} className="bg-white p-7 md:p-8 border border-ink/10 hover:border-gold/40 transition-all">
               <div className="font-display text-5xl text-gold/40 mb-4" style={{ fontVariationSettings: "'wdth' 80, 'wght' 700" }}>{p.num}</div>
               <div className="font-display text-xl mb-2" style={{ fontVariationSettings: "'wdth' 88, 'wght' 700" }}>{p.title}</div>
               <p className="text-sm text-ink/70">{p.desc}</p>
-            </div>
+            </ScrollReveal>
           ))}
         </div>
 
@@ -404,27 +406,28 @@ function PillarsSection() {
           Ayurveda was never just about treating illness. It was about supporting human potential.
         </p>
 
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-3 gap-4 md:gap-6">
           {PILLARS.map((p, i) => (
-            <button
-              key={p.key}
-              data-testid={`pillar-${p.key}`}
-              onMouseEnter={() => setActive(i)}
-              className={`text-left p-10 transition-all duration-500 border ${active === i ? "bg-ink text-cream border-gold" : "bg-white text-ink border-ink/10 hover:border-gold/50"}`}
-            >
-              <div className="font-sanskrit text-3xl mb-2" style={{ color: active === i ? p.accent : "#1c1304" }}>{p.sanskrit}</div>
-              <div className="eyebrow text-[10px] opacity-70 mb-4">{p.transliteration}</div>
-              <div className="font-display text-4xl mb-2" style={{ fontVariationSettings: "'wdth' 80, 'wght' 800" }}>{p.title}</div>
-              <div className="font-italic-light text-sm opacity-80 mb-6" style={{ fontFamily: "Fraunces, Georgia, serif", fontStyle: "italic" }}>{p.headline}</div>
-              <p className="text-sm opacity-80 mb-6">{p.body}</p>
-              <ul className="space-y-1.5">
-                {p.areas.map((a) => (
-                  <li key={a} className="eyebrow text-[10px] flex items-center gap-2 opacity-75">
-                    <span className="w-1 h-1 rounded-full" style={{ background: p.accent }} /> {a}
-                  </li>
-                ))}
-              </ul>
-            </button>
+            <ScrollReveal key={p.key} delay={i * 140} direction="up">
+              <button
+                data-testid={`pillar-${p.key}`}
+                onMouseEnter={() => setActive(i)}
+                className={`text-left p-7 md:p-10 transition-all duration-700 border w-full h-full ${active === i ? "bg-ink text-cream border-gold scale-[1.015]" : "bg-white text-ink border-ink/10 hover:border-gold/50"}`}
+              >
+                <div className="font-sanskrit text-3xl mb-2" style={{ color: active === i ? p.accent : "#1c1304" }}>{p.sanskrit}</div>
+                <div className="eyebrow text-[10px] opacity-70 mb-4">{p.transliteration}</div>
+                <div className="font-display text-3xl md:text-4xl mb-2" style={{ fontVariationSettings: "'wdth' 80, 'wght' 800" }}>{p.title}</div>
+                <div className="font-italic-light text-sm opacity-80 mb-5" style={{ fontFamily: "Fraunces, Georgia, serif", fontStyle: "italic" }}>{p.headline}</div>
+                <p className="text-sm opacity-80 mb-5">{p.body}</p>
+                <ul className="space-y-1.5">
+                  {p.areas.map((a) => (
+                    <li key={a} className="eyebrow text-[10px] flex items-center gap-2 opacity-75">
+                      <span className="w-1 h-1 rounded-full" style={{ background: p.accent }} /> {a}
+                    </li>
+                  ))}
+                </ul>
+              </button>
+            </ScrollReveal>
           ))}
         </div>
 

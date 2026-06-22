@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { Search, User, Heart, ShoppingBag, Menu, X } from "lucide-react";
 import { useCart } from "../../context/CartContext";
-import { LOGO_WORDMARK } from "../../lib/assets";
+import Logo from "../Logo";
 
 const NAV = [
   { to: "/shop", label: "Shop" },
@@ -38,10 +38,8 @@ export default function Header() {
     >
       {/* Tier 1 */}
       <div className="flex items-center justify-between px-6 md:px-12 py-4">
-        <Link to="/" data-testid="site-logo" className="flex items-center gap-2 group">
-          <span className={`font-display text-2xl md:text-3xl ${textCls}`} style={{ fontVariationSettings: "'wdth' 75, 'wght' 800" }}>
-            3<span className="gold-gradient-text">TATTAVA</span>
-          </span>
+        <Link to="/" data-testid="site-logo" className="flex items-center group">
+          <Logo dark={isDark} size="md" />
         </Link>
 
         <nav className="hidden lg:flex items-center gap-8">

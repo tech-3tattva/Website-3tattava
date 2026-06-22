@@ -5,6 +5,7 @@ import AnnouncementBar from "./AnnouncementBar";
 import CartDrawer from "../CartDrawer";
 import Chatbot from "../Chatbot";
 import WhatsAppFloat from "../WhatsAppFloat";
+import PillarJourney from "../PillarJourney";
 
 export default function Layout({ children }) {
   return (
@@ -16,6 +17,7 @@ export default function Layout({ children }) {
       <CartDrawer />
       <Chatbot />
       <WhatsAppFloat />
+      <PillarJourney />
     </div>
   );
 }

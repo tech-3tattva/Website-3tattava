@@ -42,6 +42,29 @@ body {
 
 ::selection { background: var(--gold); color: var(--ink); }
 
+/* Smooth global scroll + motion-safe */
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
+}
+
+/* Leaflet pulse ring (used in Find Us) */
+@keyframes pulseRing {
+  0% { transform: translate(-50%, -50%) scale(0.6); opacity: 0.6; }
+  100% { transform: translate(-50%, -50%) scale(2); opacity: 0; }
+}
+
+/* Soft blob — used as section accent */
+.blob-gold {
+  position: absolute;
+  width: 520px; height: 520px;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(200,150,62,0.18), transparent);
+  filter: blur(40px);
+  pointer-events: none;
+}
+
 /* Typography utility classes */
 .font-display {
   font-family: "Archivo", system-ui, sans-serif;
