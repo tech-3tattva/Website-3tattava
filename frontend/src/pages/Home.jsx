@@ -5,6 +5,7 @@ import { getProducts, getKnowledge } from "../lib/api";
 import { BRAND, PILLARS, TRUST_STRIP, EVIDENCE_PILLARS, WEEKS, FOUNDER, ATHLETE, COMPARE, TESTIMONIALS, FAQ_HOME } from "../lib/brandContent";
 import { MEDIA } from "../lib/assets";
 import ScrollReveal from "../components/ScrollReveal";
+import ThreeActs from "../components/ThreeActs";
 
 const IconMap = { Stethoscope, Medal, FlaskConical, Mountain, ShieldCheck };
 
@@ -25,11 +26,11 @@ export default function Home() {
       <Hero />
       <TrustStrip />
       <ProductSplit rockresin={rockresin} shahjeet={shahjeet} />
+      <ThreeActs />
       <FounderSection />
       <AthleteSection />
       <WTFEcosystem />
       <EvidenceSection />
-      <PillarsSection />
       <ChooseRitualSection rockresin={rockresin} shahjeet={shahjeet} />
       <WeeksSection />
       <SupportSystem />

@@ -83,3 +83,16 @@ Last updated: Jan 2026 — iteration 3 (Razorpay + n8n + cart recovery + S3 medi
 3. Admin JWT auth (envs already exist).
 4. Replace generated favicon with the actual 3T monogram.
 5. Apply ScrollReveal to remaining pages (ProductDetail, OurStory) for site-wide consistency.
+
+## Implemented — Iteration 5 (Jan 2026 · Cinematic Storytelling)
+- **`<ThreeActs />` scroll narrative** — a 3 × 100vh scroll-pinned stage that replaces the previous boxy PillarsSection. As the user descends, the page physically embodies Balance → Build → Become:
+  - Act I · Samatva · Balance · "Restore the foundations." · accent #7AAA8A (calm green) · icons Energy / Sleep / Calm
+  - Act II · Bala · Build · "Develop strength." · accent #CD872A (terracotta-gold) · icons Stamina / Focus / Discipline
+  - Act III · Utkarsha · Become · "Reach higher potential." · accent #C9A84C (deep gold) · icons Peak / Mastery / Longevity
+- Each act has: massive Sanskrit character with hue-matched glow, large display headline, directive line, single italic micro-story, and a trio of icon medallions that replace text bullets.
+- Left-rail vertical chapter navigator (Act I / II / III) — current dot enlarges with halo, label fades in; clickable to skip ahead.
+- Cross-fading radial hue backdrops shift the section tone as the active act changes.
+- Ghost "0X" anchor + chapter-ring SVG that draws when each act becomes active.
+- Bottom progress thread is a tri-stop gradient (green → terracotta → gold) that fills as the user scrolls through the section — visualises the journey at all times.
+- Manifesto + CTA reveal on Act III nearing completion ("Performance is not a destination. It is a continuous process of becoming." → "Find Your Starting Stage").
+- All transitions use the same `cubic-bezier(0.16,1,0.3,1)` easing as the rest of the site for consistency.
