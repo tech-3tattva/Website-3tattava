@@ -46,3 +46,7 @@ frontend/tsconfig.tsbuildinfo
 # ── Internal handoff docs (contain credentials, NEVER commit) ──
 aws setup.md
 Website rewrite 3tattava.md
+backend/3TATTAVA-n8n-FINAL-SETUP.md
+scripts/setup-n8n.js
+*n8n-setup*
+*credentials*

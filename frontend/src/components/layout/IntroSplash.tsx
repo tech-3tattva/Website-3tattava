@@ -1,16 +1,16 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
+import Image from "next/image";
 import { useEffect, useState } from "react";
-import { MAHABHUTA_SEQUENCE } from "@/components/vectors/splash/MahabhutaElements";
 
 const SPLASH_KEY = "3tattva-intro-played";
-const TOTAL_MS = 3000;
-const FADE_START_MS = 2400;
+const TOTAL_MS = 3600;
+const FADE_START_MS = 3000;
 
 export default function IntroSplash() {
   const [show, setShow] = useState(false);
-  const [phase, setPhase] = useState<"enter" | "gather" | "out">("enter");
+  const [fading, setFading] = useState(false);
 
   useEffect(() => {
     try {
@@ -21,12 +21,10 @@ export default function IntroSplash() {
     }
     setShow(true);
 
-    const gather = window.setTimeout(() => setPhase("gather"), 1100);
-    const fade = window.setTimeout(() => setPhase("out"), FADE_START_MS);
+    const fade = window.setTimeout(() => setFading(true), FADE_START_MS);
     const done = window.setTimeout(() => setShow(false), TOTAL_MS);
 
     return () => {
-      window.clearTimeout(gather);
       window.clearTimeout(fade);
       window.clearTimeout(done);
     };
@@ -38,86 +36,84 @@ export default function IntroSplash() {
         <motion.div
           key="splash"
           initial={{ opacity: 1 }}
-          animate={{ opacity: phase === "out" ? 0 : 1 }}
+          animate={{ opacity: fading ? 0 : 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: phase === "out" ? 0.55 : 0.35 }}
+          transition={{ duration: fading ? 0.6 : 0.35, ease: [0.16, 1, 0.3, 1] }}
           className="fixed inset-0 z-[120] flex flex-col items-center justify-center overflow-hidden"
           style={{
             background:
-              "radial-gradient(ellipse 80% 70% at 50% 45%, #2a221c 0%, #0f0c0a 65%, #080706 100%)",
-            ["--splash-gold" as string]: "#D4A574",
+              "radial-gradient(ellipse 80% 70% at 50% 45%, #241a08 0%, #14100a 60%, #0b0805 100%)",
           }}
           aria-hidden
         >
-          <div className="relative flex flex-col items-center justify-center gap-10 px-6">
+          {/* Soft gold glow behind the wordmark */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.6 }}
+            animate={{ opacity: 0.55, scale: 1 }}
+            transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1] }}
+            className="pointer-events-none absolute"
+            style={{
+              width: "min(60vw, 620px)",
+              height: "min(60vw, 620px)",
+              background:
+                "radial-gradient(circle, rgba(200,150,62,0.30) 0%, rgba(200,150,62,0.07) 45%, transparent 70%)",
+              filter: "blur(8px)",
+            }}
+          />
+
+          <div className="relative flex flex-col items-center justify-center gap-6 px-6">
+            {/* 3tattava wordmark — screen blend drops the black background so the
+                letters glow against the dark canvas */}
             <motion.div
-              className="relative flex items-center justify-center gap-2 sm:gap-4 md:gap-6"
-              animate={
-                phase === "gather"
-                  ? { gap: "0.35rem" }
-                  : phase === "out"
-                    ? { gap: "0.25rem", scale: 0.92 }
-                    : { gap: "1rem" }
-              }
-              transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
+              initial={{ opacity: 0, scale: 0.94, filter: "blur(6px)" }}
+              animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+              transition={{ duration: 0.95, ease: [0.16, 1, 0.3, 1] }}
+              className="relative"
+              style={{
+                width: "min(72vw, 420px)",
+                height: "min(22vw, 128px)",
+                mixBlendMode: "screen",
+              }}
             >
-              {MAHABHUTA_SEQUENCE.map(({ id, label, Glyph }, i) => (
-                <motion.div
-                  key={id}
-                  initial={{ opacity: 0, scale: 0.2, y: 36, rotate: -12 }}
-                  animate={
-                    phase === "gather" || phase === "out"
-                      ? {
-                          opacity: phase === "out" ? 0.25 : 1,
-                          scale: 1,
-                          y: 0,
-                          rotate: 0,
-                        }
-                      : {
-                          opacity: 1,
-                          scale: 1,
-                          y: 0,
-                          rotate: 0,
-                        }
-                  }
-                  transition={{
-                    delay: i * 0.12,
-                    duration: 0.75,
-                    ease: [0.16, 1, 0.3, 1],
-                  }}
-                  className="flex flex-col items-center"
-                  title={label}
-                >
-                  <Glyph className="h-11 w-11 sm:h-12 sm:w-12 md:h-14 md:w-14" />
-                </motion.div>
-              ))}
+              <Image
+                src="/logos/3tattava-wordmark.png"
+                alt="3tattava"
+                fill
+                priority
+                sizes="420px"
+                className="object-contain object-center"
+                style={{
+                  filter:
+                    "sepia(0.55) saturate(2.2) hue-rotate(-7deg) brightness(1.18)",
+                }}
+              />
             </motion.div>
 
+            {/* Gold underline that draws in */}
             <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              animate={{
-                opacity: phase === "gather" || phase === "out" ? 1 : 0,
-                y: phase === "out" ? -8 : 0,
+              initial={{ scaleX: 0, opacity: 0 }}
+              animate={{ scaleX: 1, opacity: 1 }}
+              transition={{ duration: 0.7, delay: 0.65, ease: [0.16, 1, 0.3, 1] }}
+              className="h-px w-40 origin-center"
+              style={{
+                background:
+                  "linear-gradient(90deg, transparent, #C8963E 20%, #E4C079 50%, #C8963E 80%, transparent)",
               }}
-              transition={{ duration: 0.5, delay: phase === "enter" ? 0.9 : 0 }}
-              className="pointer-events-none text-center"
+            />
+
+            {/* Brand line */}
+            <motion.p
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.95, ease: [0.16, 1, 0.3, 1] }}
+              className="text-[11px] sm:text-xs uppercase text-[#E4C079]"
+              style={{
+                fontFamily: "var(--font-primary), system-ui, sans-serif",
+                letterSpacing: "0.42em",
+              }}
             >
-              <motion.div
-                initial={{ scaleX: 0 }}
-                animate={{ scaleX: phase === "gather" || phase === "out" ? 1 : 0 }}
-                transition={{ duration: 0.45, delay: 1.05 }}
-                className="mx-auto mb-4 h-px w-32 origin-center bg-gold/60"
-              />
-              <p
-                className="font-display text-3xl sm:text-4xl tracking-[0.12em] text-[#E8C99A]"
-                style={{ fontFamily: "Cormorant Garamond, serif" }}
-              >
-                3tattava
-              </p>
-              <p className="mt-2 text-[10px] uppercase tracking-[0.35em] text-white/45">
-                Pancha Mahabhuta · The five elements
-              </p>
-            </motion.div>
+              Balance · Build · Become
+            </motion.p>
           </div>
         </motion.div>
       )}

@@ -87,6 +87,49 @@ export async function apiFetch<T>(
   return response.json() as Promise<T>;
 }
 
+// ── Admin token helpers ──────────────────────────────────
+// Admin uses sessionStorage Bearer token to bypass cross-origin cookie issues.
+export function getAdminToken(): string | null {
+  if (typeof window === "undefined") return null;
+  return sessionStorage.getItem("adminToken");
+}
+
+export function clearAdminToken(): void {
+  if (typeof window !== "undefined") sessionStorage.removeItem("adminToken");
+}
+
+export async function adminFetch<T>(path: string, options: Omit<ApiFetchOptions, "auth"> = {}): Promise<T> {
+  const token = getAdminToken();
+  const headers: Record<string, string> = {
+    ...(options.isFormData ? {} : { "Content-Type": "application/json" }),
+    ...(options.headers as Record<string, string>),
+  };
+  if (token) headers["Authorization"] = `Bearer ${token}`;
+
+  const response = await fetch(`${BASE_URL}${path}`, {
+    ...options,
+    headers,
+    credentials: "include",
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({ message: "Request failed" }));
+    throw new Error(typeof errorData.message === "string" ? errorData.message : "Request failed");
+  }
+  if (response.status === 204) return undefined as T;
+  return response.json() as Promise<T>;
+}
+
+export const adminApi = {
+  get:    <T>(path: string) => adminFetch<T>(path, { method: "GET" }),
+  post:   <T>(path: string, body: unknown) => adminFetch<T>(path, { method: "POST", body: JSON.stringify(body) }),
+  put:    <T>(path: string, body: unknown) => adminFetch<T>(path, { method: "PUT", body: JSON.stringify(body) }),
+  patch:  <T>(path: string, body: unknown) => adminFetch<T>(path, { method: "PATCH", body: JSON.stringify(body) }),
+  delete: <T>(path: string) => adminFetch<T>(path, { method: "DELETE" }),
+  upload: <T>(path: string, formData: FormData) => adminFetch<T>(path, { method: "POST", body: formData, isFormData: true }),
+  patchUpload: <T>(path: string, formData: FormData) => adminFetch<T>(path, { method: "PATCH", body: formData, isFormData: true }),
+};
+
 // ── Convenience methods ──────────────────────────────────
 export const api = {
   get: <T>(path: string, auth = false) =>

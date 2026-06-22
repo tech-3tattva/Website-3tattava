@@ -17,7 +17,13 @@ function verifyToken(req, res, next) {
 }
 
 function verifyAdmin(req, res, next) {
-  const token = req.cookies?.adminToken;
+  // Accept cookie (production same-origin) OR Bearer token (dev cross-origin / mobile)
+  const cookieToken = req.cookies?.adminToken;
+  const bearerToken = req.headers.authorization?.startsWith("Bearer ")
+    ? req.headers.authorization.slice(7)
+    : null;
+  const token = cookieToken || bearerToken;
+
   if (!token) return next(new ApiError(401, "No admin token provided"));
 
   try {

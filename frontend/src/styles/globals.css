@@ -1,27 +1,80 @@
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Noto+Serif+Devanagari:wght@400;500;600;700&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  /* 3Tattva Design System — primary/secondary use legacy Tailwind names
-     (primary-green / secondary-green) but values are umber/rust to match gold & cream */
-  --color-primary-green: #5c4033;
-  --color-secondary-green: #7a5c4e;
-  --color-gold: #D4A574;
-  --color-gold-light: #E8C99A;
-  --color-beige: #F5EFE6;
-  --color-beige-dark: #E8DCC8;
-  --color-cream: #FAF7F2;
-  --color-text-dark: #1A1A1A;
-  --color-text-medium: #4A4A4A;
-  --color-text-light: #8A8A8A;
-  --color-border: #E2D9CE;
-  --color-white: #FFFFFF;
+  /* ── Typography ── */
+  --font-primary:  var(--font-primary, 'Archivo', system-ui, sans-serif);
+  --font-italic:   'Archivo Italic', system-ui, sans-serif;
+  --font-display:  var(--font-primary, 'Archivo', system-ui, sans-serif);
+  --font-body:     var(--font-primary, 'Archivo', system-ui, sans-serif);
+  /* Legacy font variable aliases → all resolve to Archivo */
+  --font-cormorant: var(--font-primary, system-ui, sans-serif);
+  --font-jost:      var(--font-primary, system-ui, sans-serif);
+  --font-dm-sans:   var(--font-primary, system-ui, sans-serif);
+  --font-libre:     var(--font-primary, system-ui, sans-serif);
 
-  /* 3TATTAVA Dark Brand System — used by WhatsAppWidget, LeadCaptureModal,
-     ProductHeroSection, VaidyaConnect and any future dark-mode components */
+  /* ── Ink palette ── */
+  --ink:      #1c1304;
+  --ink-60:   rgba(28,19,4,0.60);
+  --ink-30:   rgba(28,19,4,0.30);
+  --ink-10:   rgba(28,19,4,0.10);
+  --ink-soft: rgba(28,19,4,0.60);
+
+  /* ── Gold palette ── */
+  --gold:          #C8963E;
+  --gold-dark:     #A67B2F;
+  --gold-soft:     #E4C079;
+  --gold-dim:      rgba(200,150,62,0.10);
+  --gold-grad:     linear-gradient(105deg,#a67b2f 0%,#e4c079 45%,#c8963e 70%,#a67b2f 100%);
+  --gold-gradient: linear-gradient(105deg,#a67b2f 0%,#e4c079 45%,#c8963e 70%,#a67b2f 100%);
+
+  /* ── Neutral palette ── */
+  --cream:      #f7f0e2;
+  --cream-deep: #ede4d0;
+  --white:      #ffffff;
+  --taupe:      #b7a392;
+  --green:      #2a1a08;
+  --line:       rgba(28,19,4,0.10);
+
+  /* ── Spacing scale ── */
+  --space-xs:  8px;
+  --space-sm:  16px;
+  --space-md:  24px;
+  --space-lg:  40px;
+  --space-xl:  72px;
+  --space-2xl: 120px;
+  /* Legacy 4px base scale kept for backward compat */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-24: 96px;
+  --space-32: 128px;
+
+  /* ── Easing ── */
+  --ease-out:    cubic-bezier(0.16,1,0.3,1);
+  --ease-spring: cubic-bezier(0.34,1.56,0.64,1);
+
+  /* ── Legacy design system tokens kept for components that use them ── */
+  --color-primary-green:   #5c4033;
+  --color-secondary-green: #7a5c4e;
+  --color-gold:            #D4A574;
+  --color-gold-light:      #E8C99A;
+  --color-beige:           #F5EFE6;
+  --color-beige-dark:      #E8DCC8;
+  --color-cream:           #FAF7F2;
+  --color-text-dark:       #1A1A1A;
+  --color-text-medium:     #4A4A4A;
+  --color-text-light:      #8A8A8A;
+  --color-border:          #E2D9CE;
+  --color-white:           #FFFFFF;
+
+  /* ── 3TATTAVA Dark Brand System ── */
   --3t-black:        #0E0C09;
   --3t-black-2:      #1A1710;
   --3t-black-3:      #252118;
@@ -33,18 +86,6 @@
   --3t-shahjeet:     #CD872A;
   --3t-border:       rgba(201,168,76,0.15);
   --3t-border-hover: rgba(201,168,76,0.35);
-
-  /* Spacing scale (base 4px) */
-  --space-1: 4px;
-  --space-2: 8px;
-  --space-3: 12px;
-  --space-4: 16px;
-  --space-6: 24px;
-  --space-8: 32px;
-  --space-12: 48px;
-  --space-16: 64px;
-  --space-24: 96px;
-  --space-32: 128px;
 }
 
 * {
@@ -60,12 +101,11 @@ html {
 }
 
 body {
-  color: var(--color-text-dark);
-  background: var(--color-white);
-  font-family: 'DM Sans', sans-serif;
+  color: var(--ink);
+  background: var(--cream);
+  font-family: var(--font-primary), system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-image: radial-gradient(circle at 12% 8%, rgba(212,165,116,0.08), transparent 30%);
   overflow-x: clip;
 }
 
@@ -94,16 +134,37 @@ body {
 
 /* Typography utility classes */
 .font-display {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: var(--font-primary), system-ui, sans-serif;
 }
 .font-heading {
-  font-family: 'Libre Baskerville', serif;
+  font-family: var(--font-primary), system-ui, sans-serif;
 }
 .font-body {
-  font-family: 'DM Sans', sans-serif;
+  font-family: var(--font-primary), system-ui, sans-serif;
 }
 .font-devanagari {
   font-family: 'Noto Serif Devanagari', serif;
+}
+
+/* Nav link — gold underline draws left→right on hover */
+.nav-link {
+  position: relative;
+  text-decoration: none;
+}
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: -3px;
+  left: 0;
+  width: 100%;
+  height: 1.5px;
+  background: var(--gold);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 300ms var(--ease-out, cubic-bezier(0.16,1,0.3,1));
+}
+.nav-link:hover::after {
+  transform: scaleX(1);
 }
 
 @layer utilities {
@@ -137,7 +198,7 @@ body {
 }
 
 .premium-section-title {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: var(--font-primary), system-ui, sans-serif;
   letter-spacing: 0.02em;
 }
 

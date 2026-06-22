@@ -25,13 +25,42 @@ export default function CheckoutCartPage() {
     (p) => !items.some((i) => i.productId === p.id)
   ).slice(0, 3);
 
+  const [promoMsg, setPromoMsg] = useState<string | null>(null);
+
   async function handleApplyCoupon() {
-    if (!couponCode.trim()) return;
+    const raw = couponCode.trim();
+    if (!raw) return;
     setCouponError(null);
+    setPromoMsg(null);
+
+    // First try the existing flat/percent coupon system
     try {
-      await applyCoupon(couponCode.trim());
+      await applyCoupon(raw);
+      return;
+    } catch {
+      // Coupon not found — fall through to influencer promo system
+    }
+
+    // Try influencer promo code
+    try {
+      const BACKEND = process.env.NEXT_PUBLIC_API_URL ?? "/api";
+      const resp = await fetch(`${BACKEND}/promo/validate`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code: raw }),
+      });
+      const data = await resp.json() as { valid: boolean; discountPercent?: number; message?: string; code?: string };
+      if (!data.valid) {
+        setCouponError(data.message ?? "Invalid or expired code");
+        return;
+      }
+      // Apply as a coupon-style discount in CartContext
+      await applyCoupon(raw);
+      // Store influencer promo in localStorage for webhook attribution on payment
+      localStorage.setItem("influencerPromoCode", data.code ?? raw.toUpperCase());
+      setPromoMsg(`${data.message} — influencer code applied!`);
     } catch (error) {
-      setCouponError(error instanceof Error ? error.message : "Failed to apply coupon");
+      setCouponError(error instanceof Error ? error.message : "Failed to apply code");
     }
   }
 
@@ -142,6 +171,7 @@ export default function CheckoutCartPage() {
                 </p>
               )}
               {couponError && <p className="text-sm text-red-600">{couponError}</p>}
+              {promoMsg && <p className="text-sm text-amber-700">{promoMsg}</p>}
               <div className="bg-beige rounded-lg p-4 border border-border">
                 <p className="font-medium text-text-dark mb-1">
                   Add Gift Box with Personal Card!

@@ -1,0 +1,229 @@
+{
+  "name": "3TATTAVA WhatsApp Bot",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "3tattava-whatsapp",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "node-webhook",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [240, 300],
+      "webhookId": "3tattava-whatsapp"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": true, "typeValidation": "strict" },
+          "conditions": [
+            {
+              "id": "c1",
+              "leftValue": "={{ $json.body.typeWebhook }}",
+              "rightValue": "incomingMessageReceived",
+              "operator": { "type": "string", "operation": "equals" }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "node-if-type",
+      "name": "Is Incoming Message?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": true, "typeValidation": "strict" },
+          "conditions": [
+            {
+              "id": "c2",
+              "leftValue": "={{ $json.body.senderData.chatId }}",
+              "rightValue": "@g.us",
+              "operator": { "type": "string", "operation": "notContains" }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "node-if-group",
+      "name": "Is Direct Message?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [680, 200]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            { "id": "a1", "name": "chatId", "value": "={{ $json.body.senderData.chatId }}", "type": "string" },
+            { "id": "a2", "name": "senderName", "value": "={{ $json.body.senderData.senderName }}", "type": "string" },
+            { "id": "a3", "name": "senderPhone", "value": "={{ $json.body.senderData.sender }}", "type": "string" },
+            { "id": "a4", "name": "messageText", "value": "={{ $json.body.messageData.textMessageData.textMessage }}", "type": "string" },
+            { "id": "a5", "name": "timestamp", "value": "={{ $now.toISO() }}", "type": "string" }
+          ]
+        },
+        "options": {}
+      },
+      "id": "node-extract",
+      "name": "Extract Message Data",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [900, 200]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": false, "typeValidation": "strict" },
+          "conditions": [
+            {
+              "id": "c3",
+              "leftValue": "={{ $json.messageText }}",
+              "rightValue": "hi",
+              "operator": { "type": "string", "operation": "equals" }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "node-if-welcome",
+      "name": "Is Hi Message?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [1120, 200]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://7107.api.greenapi.com/waInstance7107633382/sendMessage/e34a1998d2f6457ca77cb9555b2c8deea5a22632718d4b0daf",
+        "sendHeaders": true,
+        "headerParameters": { "parameters": [{ "name": "Content-Type", "value": "application/json" }] },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={\n  \"chatId\": \"{{ $json.chatId }}\",\n  \"message\": \"Namaste! 👋 I'm 3TATTAVA's assistant — trained by Dr. Kashish (BAMS) to answer your questions about Performance Ayurveda, Shilajit, and our products.\\n\\nYou can ask me:\\n• About our products (RockResin / Shahjeet Sticks)\\n• Shilajit benefits for your specific goal\\n• Ayurveda basics and dosha types\\n• How to use our products correctly\\n\\nWhat brings you here today?\"\n}",
+        "options": {}
+      },
+      "id": "node-welcome",
+      "name": "Send Welcome Message",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1340, 80]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.anthropic.com/v1/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "x-api-key", "value": "YOUR_ANTHROPIC_API_KEY_HERE" },
+            { "name": "anthropic-version", "value": "2023-06-01" },
+            { "name": "content-type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={\n  \"model\": \"claude-sonnet-4-20250514\",\n  \"max_tokens\": 500,\n  \"system\": \"You are the 3TATTAVA WhatsApp assistant — an intelligent, warm, and authoritative health guide representing India's first Performance Ayurveda brand.\\n\\nCreated by Dr. Kashish Gupta (BAMS), founder of 3TATTAVA and SankalpaSiddhi Ayupharma Pvt Ltd.\\n\\nPERSONALITY:\\n- Warm but authoritative like a knowledgeable friend who happens to be a doctor\\n- Never preachy, never over-spiritual, never use ancient wisdom clichés\\n- Sharp and specific, give real answers not vague wellness advice\\n- Guide toward 3TATTAVA products where genuinely relevant\\n- Keep replies under 200 words, WhatsApp is not a blog\\n- Use WhatsApp formatting: *bold* with asterisks, line breaks between points\\n- End every reply with one clear next step or question\\n\\nPRODUCTS:\\n1. ROCKRESIN — Himalayan Shilajit Resin 20g jar — MRP Rs 1299\\n   1000mg Shodhit Shilajit per serving, 80+ trace minerals, NABL tested, AYUSH-GMP certified\\n   Use: Dip Hook Swirl in warm water or milk, rice-grain sized amount\\n   Best for: gym, fitness, testosterone, energy, recovery, biohackers\\n\\n2. SHAHJEET STICKS — Honey + Shilajit sachets 30 sticks — MRP Rs 999\\n   600mg Shilajit + 7.4g pure honey per stick, NABL tested, AYUSH-GMP certified\\n   Use: Tear Squeeze Perform, direct consumption, no measuring\\n   Best for: women, working professionals, daily ritual, travel\\n   Honey is the Anupana enhancing absorption\\n\\n3. STARTER KIT — RockResin + Shahjeet Sticks bundle — MRP Rs 1799\\nSUBSCRIPTION: Rs 799 per month for Shahjeet Sticks, save 25 percent\\n\\nAYURVEDA KNOWLEDGE:\\n- Three doshas: Vata air+space, Pitta fire+water, Kapha earth+water\\n- Shilajit: Rasayana in Ayurveda, formed over centuries in Himalayan rocks\\n- Fulvic acid: Primary compound, transports minerals into cells, improves mitochondria\\n- Anupana: carrier substance enhancing herb absorption, honey warm milk ghee are common\\n- Triphala: Amalaki Bibhitaki Haritaki used for purification\\n- Ashwagandha: adaptogen reduces cortisol supports testosterone, coming soon in 3TATTAVA\\n- Shatavari: primary women herb for hormonal balance and iron absorption\\n\\nHEALTH TOPICS:\\n- Iron deficiency: affects 50 percent Indian women, Shilajit fulvic acid improves iron absorption\\n- Testosterone: Shilajit increases free testosterone via Leydig cell stimulation\\n- Energy and fatigue: root cause is mineral depletion and mitochondrial dysfunction\\n- Workout recovery: reduces muscle damage supports ATP production\\n- Brain fog: Dibenzo-alpha-pyrones DBPs in Shilajit support cognitive function\\n- Sleep: adaptogenic properties regulate cortisol\\n\\nBUYING:\\n- Website: www.3tattava.com\\n- Also at WTF Gyms 50+ locations across India\\n\\nCONTACT:\\n- Email: info@3tattava.com\\n- Instagram: @3tattava\\n\\nRULES:\\n- Buy intent: give website link www.3tattava.com and help with product choice\\n- Medical condition: give Ayurvedic guidance and recommend VaidyaConnect at 3tattava.com/vaidyaconnect\\n- Unknown question: say let me get Dr Kashish team to answer, email info@3tattava.com\\n- Competitor question: never name them, explain what makes 3TATTAVA different\\n- Rude or spam: politely disengage\",\n  \"messages\": [{ \"role\": \"user\", \"content\": \"{{ $('Extract Message Data').item.json.messageText }}\" }]\n}",
+        "options": {}
+      },
+      "id": "node-claude",
+      "name": "Ask Claude API",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1340, 320]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            { "id": "r1", "name": "botReply", "value": "={{ $json.content[0].text }}", "type": "string" },
+            { "id": "r2", "name": "chatId", "value": "={{ $('Extract Message Data').item.json.chatId }}", "type": "string" },
+            { "id": "r3", "name": "senderPhone", "value": "={{ $('Extract Message Data').item.json.senderPhone }}", "type": "string" },
+            { "id": "r4", "name": "senderName", "value": "={{ $('Extract Message Data').item.json.senderName }}", "type": "string" },
+            { "id": "r5", "name": "messageText", "value": "={{ $('Extract Message Data').item.json.messageText }}", "type": "string" },
+            { "id": "r6", "name": "timestamp", "value": "={{ $('Extract Message Data').item.json.timestamp }}", "type": "string" }
+          ]
+        },
+        "options": {}
+      },
+      "id": "node-prepare",
+      "name": "Prepare Reply",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [1560, 320]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://7107.api.greenapi.com/waInstance7107633382/sendMessage/e34a1998d2f6457ca77cb9555b2c8deea5a22632718d4b0daf",
+        "sendHeaders": true,
+        "headerParameters": { "parameters": [{ "name": "Content-Type", "value": "application/json" }] },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={\n  \"chatId\": \"{{ $json.chatId }}\",\n  \"message\": \"{{ $json.botReply }}\"\n}",
+        "options": {}
+      },
+      "id": "node-send",
+      "name": "Send Bot Reply",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1780, 320]
+    },
+    {
+      "parameters": { "respondWith": "text", "responseBody": "OK", "options": {} },
+      "id": "node-ok-1",
+      "name": "Respond OK",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [2000, 320]
+    },
+    {
+      "parameters": { "respondWith": "text", "responseBody": "OK", "options": {} },
+      "id": "node-ok-2",
+      "name": "Respond OK 2",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [680, 420]
+    }
+  ],
+  "connections": {
+    "Webhook": { "main": [[{ "node": "Is Incoming Message?", "type": "main", "index": 0 }]] },
+    "Is Incoming Message?": {
+      "main": [
+        [{ "node": "Is Direct Message?", "type": "main", "index": 0 }],
+        [{ "node": "Respond OK 2", "type": "main", "index": 0 }]
+      ]
+    },
+    "Is Direct Message?": {
+      "main": [
+        [{ "node": "Extract Message Data", "type": "main", "index": 0 }],
+        [{ "node": "Respond OK 2", "type": "main", "index": 0 }]
+      ]
+    },
+    "Extract Message Data": { "main": [[{ "node": "Is Hi Message?", "type": "main", "index": 0 }]] },
+    "Is Hi Message?": {
+      "main": [
+        [{ "node": "Send Welcome Message", "type": "main", "index": 0 }],
+        [{ "node": "Ask Claude API", "type": "main", "index": 0 }]
+      ]
+    },
+    "Ask Claude API": { "main": [[{ "node": "Prepare Reply", "type": "main", "index": 0 }]] },
+    "Prepare Reply": { "main": [[{ "node": "Send Bot Reply", "type": "main", "index": 0 }]] },
+    "Send Bot Reply": { "main": [[{ "node": "Respond OK", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" },
+  "staticData": null,
+  "meta": { "templateCredsSetupCompleted": true },
+  "pinData": {}
+}

@@ -16,7 +16,7 @@ export default function Testimonials() {
           <h2
             id="testimonials-heading"
             className="font-display text-4xl md:text-5xl text-text-dark"
-            style={{ fontFamily: "Cormorant Garamond, serif" }}
+            style={{ fontFamily: "var(--font-primary), system-ui, sans-serif" }}
           >
             {TESTIMONIALS.header}
           </h2>

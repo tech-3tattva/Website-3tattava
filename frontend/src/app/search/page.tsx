@@ -13,7 +13,7 @@ export default function SearchPage() {
       <section className="max-w-3xl mx-auto premium-card p-8 text-center">
         <h1
           className="text-4xl md:text-5xl text-primary-green mb-3"
-          style={{ fontFamily: "Cormorant Garamond, serif" }}
+          style={{ fontFamily: "var(--font-primary), system-ui, sans-serif" }}
         >
           Search
         </h1>

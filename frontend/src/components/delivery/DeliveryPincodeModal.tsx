@@ -69,7 +69,7 @@ export default function DeliveryPincodeModal() {
           <h2
             id="delivery-pincode-title"
             className="font-display text-2xl tracking-wide text-text-dark"
-            style={{ fontFamily: "Cormorant Garamond, serif" }}
+            style={{ fontFamily: "var(--font-primary), system-ui, sans-serif" }}
           >
             Enter delivery pincode
           </h2>

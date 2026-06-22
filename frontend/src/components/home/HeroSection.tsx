@@ -1,5 +1,6 @@
 'use client'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
+import { useRouter } from 'next/navigation'
 
 interface Particle {
   id: number
@@ -70,8 +71,8 @@ const heroCSS = `
   }
 
   .hero-eyebrow {
-    font-family: var(--font-jost), sans-serif;
-    font-weight: 400;
+    font-family: var(--font-primary), system-ui, sans-serif;
+    font-variation-settings: 'wdth' 75, 'wght' 400;
     font-size: 11px;
     letter-spacing: 0.28em;
     color: #C8963E;
@@ -90,36 +91,78 @@ const heroCSS = `
     animation-delay: 0.35s;
   }
   .hero-h1-1 {
-    font-family: var(--font-cormorant), serif;
-    font-weight: 700;
-    font-size: clamp(56px, 6.5vw, 88px);
-    color: #F5F0EB;
+    font-family: var(--font-primary), system-ui, sans-serif;
+    font-variation-settings: 'wdth' 85, 'wght' 800;
+    font-size: clamp(52px, 9vw, 108px);
+    letter-spacing: -0.03em;
+    color: #f7f0e2;
     line-height: 0.93;
     margin: 0;
     animation: heroFadeUp 0.9s ease both;
     animation-delay: 0.4s;
   }
   .hero-h1-2 {
-    font-family: var(--font-cormorant), serif;
-    font-weight: 300;
+    font-family: var(--font-primary), system-ui, sans-serif;
     font-style: italic;
-    font-size: clamp(38px, 4.5vw, 60px);
+    font-variation-settings: 'wdth' 100, 'wght' 300;
+    font-size: clamp(22px, 3.5vw, 44px);
     color: #C8963E;
-    line-height: 1.1;
+    line-height: 1.2;
     margin: 0 0 32px 0;
     animation: heroFadeUp 0.9s ease both;
     animation-delay: 0.6s;
   }
   .hero-body {
-    font-family: var(--font-jost), sans-serif;
-    font-weight: 300;
+    font-family: var(--font-primary), system-ui, sans-serif;
+    font-variation-settings: 'wdth' 90, 'wght' 300;
     font-size: 17px;
     line-height: 1.75;
-    color: rgba(245,240,235,0.65);
+    color: rgba(247,240,226,0.65);
     max-width: 520px;
     margin-bottom: 48px;
     animation: heroFadeUp 0.7s ease both;
     animation-delay: 0.8s;
+  }
+
+  /* ── Scroll annotation (GSAP-triggered) ── */
+  .scroll-annotation {
+    position: absolute;
+    right: clamp(40px, 6vw, 100px);
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    opacity: 0;
+    transition: opacity 0.6s ease;
+    pointer-events: none;
+  }
+  .scroll-annotation.visible {
+    opacity: 1;
+  }
+  .scroll-annotation-line {
+    width: 0;
+    height: 1px;
+    background: #C8963E;
+    transition: width 1.2s cubic-bezier(0.16,1,0.3,1);
+  }
+  .scroll-annotation.visible .scroll-annotation-line {
+    width: 80px;
+  }
+  .scroll-annotation-label {
+    font-family: var(--font-primary), system-ui, sans-serif;
+    font-variation-settings: 'wdth' 75, 'wght' 500;
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: #C8963E;
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.6s ease 0.8s;
+  }
+  .scroll-annotation.visible .scroll-annotation-label {
+    opacity: 1;
   }
   .hero-buttons {
     display: flex;
@@ -129,14 +172,15 @@ const heroCSS = `
     animation-delay: 1.0s;
   }
   .hero-btn-primary {
-    font-family: var(--font-jost), sans-serif;
-    font-weight: 500;
+    font-family: var(--font-primary), system-ui, sans-serif;
+    font-variation-settings: 'wdth' 85, 'wght' 600;
     font-size: 12px;
-    letter-spacing: 0.2em;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
     background: #C8963E;
-    color: #1A1A1A;
+    color: #1c1304;
     border: none;
+    border-radius: 0;
     padding: 18px 40px;
     cursor: pointer;
     transition: background 0.3s ease, transform 0.2s ease;
@@ -146,14 +190,15 @@ const heroCSS = `
     transform: translateY(-2px);
   }
   .hero-btn-secondary {
-    font-family: var(--font-jost), sans-serif;
-    font-weight: 400;
+    font-family: var(--font-primary), system-ui, sans-serif;
+    font-variation-settings: 'wdth' 85, 'wght' 500;
     font-size: 12px;
-    letter-spacing: 0.2em;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
     background: transparent;
-    color: #F5F0EB;
+    color: #f7f0e2;
     border: 1px solid rgba(200,150,62,0.45);
+    border-radius: 0;
     padding: 18px 40px;
     cursor: pointer;
     transition: border-color 0.3s ease, background 0.3s ease;
@@ -196,7 +241,7 @@ const heroCSS = `
     animation-delay: 2s;
   }
   .scroll-text {
-    font-family: var(--font-jost), sans-serif;
+    font-family: var(--font-primary), sans-serif;
     font-size: 9px;
     letter-spacing: 0.45em;
     color: rgba(245,240,235,0.28);
@@ -219,15 +264,18 @@ const heroCSS = `
 `
 
 export default function HeroSection() {
+  const router = useRouter()
   const [particles, setParticles] = useState<Particle[]>([])
+  const annotationRef = useRef<HTMLDivElement>(null)
+  const sectionRef = useRef<HTMLElement>(null)
 
   useEffect(() => {
     setParticles(
-      Array.from({ length: 22 }, (_, i) => ({
+      Array.from({ length: 12 }, (_, i) => ({
         id: i,
         size: Math.random() * 3 + 1.5,
-        top: Math.random() * 90 + 5,
-        left: Math.random() * 90 + 5,
+        top: Math.random() * 85 + 5,
+        left: Math.random() * 85 + 5,
         opacity: Math.random() * 0.35 + 0.1,
         duration: Math.random() * 5 + 3,
         delay: Math.random() * 6,
@@ -235,17 +283,36 @@ export default function HeroSection() {
     )
   }, [])
 
+  useEffect(() => {
+    const onScroll = () => {
+      if (!sectionRef.current || !annotationRef.current) return
+      const rect = sectionRef.current.getBoundingClientRect()
+      const scrolled = -rect.top / rect.height
+      if (scrolled > 0.10) {
+        annotationRef.current.classList.add('visible')
+      }
+    }
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+
   return (
     <>
       <style dangerouslySetInnerHTML={{ __html: heroCSS }} />
 
-      <section className="hero-section">
+      <section className="hero-section" ref={sectionRef}>
         <video
           className="hero-video"
           src="https://media.3tattava.com/videos/hero-bg.mp4"
           autoPlay loop muted playsInline
         />
         <div className="hero-overlay" />
+
+        {/* Scroll annotation — appears at 10% scroll into hero */}
+        <div className="scroll-annotation" ref={annotationRef}>
+          <div className="scroll-annotation-line" />
+          <span className="scroll-annotation-label">Sourced at 16,000ft</span>
+        </div>
 
         {/* Gold particles across full hero */}
         <div className="particles-container">
@@ -279,8 +346,8 @@ export default function HeroSection() {
               your body will actually absorb. Resin for the purist. Honey Sticks for the daily ritual.
             </p>
             <div className="hero-buttons">
-              <button className="hero-btn-primary">Shop Shilajit Resin</button>
-              <button className="hero-btn-secondary">Try Honey Sticks</button>
+              <button className="hero-btn-primary" onClick={() => router.push('/products/shodhit-shilajit-resin')}>Shop Shilajit Resin</button>
+              <button className="hero-btn-secondary" onClick={() => router.push('/products/shahjeet-sticks')}>Try Honey Sticks</button>
             </div>
           </div>
         </div>

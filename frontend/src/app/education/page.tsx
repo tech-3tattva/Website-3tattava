@@ -44,7 +44,7 @@ export default function EducationPage() {
             </p>
             <h1
               className="relative text-3xl sm:text-4xl md:text-5xl"
-              style={{ fontFamily: "Cormorant Garamond, serif" }}
+              style={{ fontFamily: "var(--font-primary), system-ui, sans-serif" }}
             >
               {EDUCATION_HUB.h1}
             </h1>
@@ -58,7 +58,7 @@ export default function EducationPage() {
           <div id="doshas" className="flex-1 px-5 py-10 md:px-8 border-t-4 border-[#c5a87b]">
             <h2
               className="text-center text-3xl text-text-dark mb-8"
-              style={{ fontFamily: "Cormorant Garamond, serif" }}
+              style={{ fontFamily: "var(--font-primary), system-ui, sans-serif" }}
             >
               Dosha Guide
             </h2>
@@ -73,7 +73,7 @@ export default function EducationPage() {
                       <div className="min-w-0 flex-1">
                         <h3
                           className="text-2xl sm:text-3xl text-text-dark"
-                          style={{ fontFamily: "Cormorant Garamond, serif" }}
+                          style={{ fontFamily: "var(--font-primary), system-ui, sans-serif" }}
                         >
                           {dosha.key}
                         </h3>
@@ -129,7 +129,7 @@ export default function EducationPage() {
                 </p>
                 <h2
                   className="text-3xl md:text-4xl text-text-dark"
-                  style={{ fontFamily: "Cormorant Garamond, serif" }}
+                  style={{ fontFamily: "var(--font-primary), system-ui, sans-serif" }}
                 >
                   What is Shilajit?
                 </h2>
@@ -170,7 +170,7 @@ export default function EducationPage() {
               <p className="text-xs uppercase tracking-[0.24em] text-gold mb-2">Content Pillars</p>
               <h2
                 className="text-3xl md:text-4xl text-text-dark"
-                style={{ fontFamily: "Cormorant Garamond, serif" }}
+                style={{ fontFamily: "var(--font-primary), system-ui, sans-serif" }}
               >
                 Learn Before You Buy.
               </h2>
@@ -186,7 +186,7 @@ export default function EducationPage() {
                   <p className="text-xs uppercase tracking-[0.2em] text-gold mb-2">Pillar {i + 1}</p>
                   <h3
                     className="text-xl md:text-2xl text-text-dark mb-3"
-                    style={{ fontFamily: "Cormorant Garamond, serif" }}
+                    style={{ fontFamily: "var(--font-primary), system-ui, sans-serif" }}
                   >
                     {pillar.name}
                   </h3>
@@ -208,7 +208,7 @@ export default function EducationPage() {
               <p className="text-xs text-text-light mb-2">Articles</p>
               <h2
                 className="text-4xl text-text-dark"
-                style={{ fontFamily: "Cormorant Garamond, serif" }}
+                style={{ fontFamily: "var(--font-primary), system-ui, sans-serif" }}
               >
                 Latest from the Knowledge Center
               </h2>

@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Cormorant_Garamond, DM_Sans, Jost, Libre_Baskerville, Noto_Serif_Devanagari } from "next/font/google";
+import { Archivo, Noto_Serif_Devanagari } from "next/font/google";
 import "../styles/globals.css";
 import AnnouncementBar from "@/components/layout/AnnouncementBar";
 import Header from "@/components/layout/Header";
@@ -12,24 +12,11 @@ import ChatWidget from "@/components/chat/ChatWidget";
 import WhatsAppWidget from "@/components/WhatsAppWidget";
 import LeadCaptureModal from "@/components/LeadCaptureModal";
 
-const cormorant = Cormorant_Garamond({
+const archivo = Archivo({
   subsets: ["latin"],
   display: "swap",
-  variable: "--font-cormorant",
-  weight: ["400", "500", "600", "700"],
-});
-
-const dmSans = DM_Sans({
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-dm-sans",
-});
-
-const libreBaskerville = Libre_Baskerville({
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-libre",
-  weight: ["400", "700"],
+  variable: "--font-primary",
+  axes: ["wdth"],
 });
 
 const notoDevanagari = Noto_Serif_Devanagari({
@@ -37,13 +24,6 @@ const notoDevanagari = Noto_Serif_Devanagari({
   display: "swap",
   variable: "--font-devanagari",
   weight: ["400", "500", "600", "700"],
-});
-
-const jost = Jost({
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-jost",
-  weight: ["300", "400", "500", "600"],
 });
 
 export const metadata: Metadata = {
@@ -105,9 +85,11 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${cormorant.variable} ${dmSans.variable} ${libreBaskerville.variable} ${notoDevanagari.variable} ${jost.variable}`}
+      className={`${archivo.variable} ${notoDevanagari.variable}`}
       suppressHydrationWarning
     >
+      {/* eslint-disable-next-line @next/next/no-sync-scripts */}
+      <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
       <body className="antialiased min-h-screen min-w-0 flex flex-col overflow-x-clip" suppressHydrationWarning>
         <OrganizationSchema />
         <Providers>

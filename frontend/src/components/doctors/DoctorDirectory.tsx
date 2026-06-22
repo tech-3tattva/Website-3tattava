@@ -80,7 +80,7 @@ export default function DoctorDirectory() {
           </p>
           <h1
             className="font-display text-4xl md:text-6xl leading-tight"
-            style={{ fontFamily: "Cormorant Garamond, serif" }}
+            style={{ fontFamily: "var(--font-primary), system-ui, sans-serif" }}
           >
             Find a Verified Ayurveda Doctor Near You
           </h1>
@@ -186,7 +186,7 @@ export default function DoctorDirectory() {
         <div className="mt-16 rounded-2xl border border-border bg-white p-8 md:p-10 text-center max-w-3xl mx-auto">
           <h2
             className="font-display text-2xl md:text-3xl text-text-dark mb-4"
-            style={{ fontFamily: "Cormorant Garamond, serif" }}
+            style={{ fontFamily: "var(--font-primary), system-ui, sans-serif" }}
           >
             Our 3-Step Verification Process
           </h2>

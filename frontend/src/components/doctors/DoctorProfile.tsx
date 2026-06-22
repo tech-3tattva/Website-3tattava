@@ -152,7 +152,7 @@ export default function DoctorProfile({ slug }: { slug: string }) {
                 </div>
               )}
               <div>
-                <h1 className="font-display text-2xl md:text-3xl text-text-dark" style={{ fontFamily: "Cormorant Garamond, serif" }}>
+                <h1 className="font-display text-2xl md:text-3xl text-text-dark" style={{ fontFamily: "var(--font-primary), system-ui, sans-serif" }}>
                   {doctor.personal.fullName}
                 </h1>
                 <p className="text-sm text-text-medium mt-1">
@@ -184,13 +184,13 @@ export default function DoctorProfile({ slug }: { slug: string }) {
 
           {/* About */}
           <div className="rounded-2xl border border-border bg-white p-6">
-            <h2 className="font-display text-xl text-text-dark mb-3" style={{ fontFamily: "Cormorant Garamond, serif" }}>About</h2>
+            <h2 className="font-display text-xl text-text-dark mb-3" style={{ fontFamily: "var(--font-primary), system-ui, sans-serif" }}>About</h2>
             <p className="text-sm text-text-medium leading-relaxed whitespace-pre-line">{doctor.practice.bio}</p>
           </div>
 
           {/* Clinic Details */}
           <div className="rounded-2xl border border-border bg-white p-6">
-            <h2 className="font-display text-xl text-text-dark mb-3" style={{ fontFamily: "Cormorant Garamond, serif" }}>Clinic Details</h2>
+            <h2 className="font-display text-xl text-text-dark mb-3" style={{ fontFamily: "var(--font-primary), system-ui, sans-serif" }}>Clinic Details</h2>
             <div className="space-y-2 text-sm text-text-medium">
               <div className="flex items-start gap-2">
                 <MapPin size={14} className="text-gold mt-0.5 shrink-0" />
@@ -237,7 +237,7 @@ export default function DoctorProfile({ slug }: { slug: string }) {
           {/* Reviews */}
           {reviews.length > 0 ? (
             <div className="rounded-2xl border border-border bg-white p-6">
-              <h2 className="font-display text-xl text-text-dark mb-4" style={{ fontFamily: "Cormorant Garamond, serif" }}>
+              <h2 className="font-display text-xl text-text-dark mb-4" style={{ fontFamily: "var(--font-primary), system-ui, sans-serif" }}>
                 Patient Reviews ({doctor.ratings.count})
               </h2>
               {/* Rating breakdown */}
@@ -296,7 +296,7 @@ export default function DoctorProfile({ slug }: { slug: string }) {
         {/* Right: Booking Panel (2 cols) */}
         <div className="lg:col-span-2" id="book">
           <div className="sticky top-24 rounded-2xl border border-border bg-white p-5 md:p-6 shadow-[0_12px_32px_rgba(24,24,24,0.06)]">
-            <h2 className="font-display text-xl text-text-dark mb-4" style={{ fontFamily: "Cormorant Garamond, serif" }}>
+            <h2 className="font-display text-xl text-text-dark mb-4" style={{ fontFamily: "var(--font-primary), system-ui, sans-serif" }}>
               Book a Consultation
             </h2>
 

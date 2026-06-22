@@ -69,7 +69,7 @@ function TattvaRow({
         >
           <span
             className="font-display text-7xl leading-none text-text-dark/12 block mb-2 md:mb-3"
-            style={{ fontFamily: "Cormorant Garamond, serif" }}
+            style={{ fontFamily: "var(--font-primary), system-ui, sans-serif" }}
             aria-hidden
           >
             {block.num}
@@ -79,7 +79,7 @@ function TattvaRow({
           </p>
           <h3
             className="font-display text-4xl md:text-5xl text-text-dark mb-5"
-            style={{ fontFamily: "Cormorant Garamond, serif" }}
+            style={{ fontFamily: "var(--font-primary), system-ui, sans-serif" }}
           >
             {block.outcome}
           </h3>
@@ -98,7 +98,7 @@ export default function ThreeTattvasSection() {
         <h2
           id="three-tattvas-heading"
           className="font-display text-4xl md:text-[46px] text-text-dark"
-          style={{ fontFamily: "Cormorant Garamond, serif" }}
+          style={{ fontFamily: "var(--font-primary), system-ui, sans-serif" }}
         >
           Three Elements. One Performance System.
         </h2>

@@ -45,7 +45,7 @@ export default function WishlistClient() {
         <section className="max-w-3xl mx-auto premium-card p-8 text-center">
           <h1
             className="text-4xl md:text-5xl text-primary-green mb-3"
-            style={{ fontFamily: "Cormorant Garamond, serif" }}
+            style={{ fontFamily: "var(--font-primary), system-ui, sans-serif" }}
           >
             Wishlist
           </h1>
@@ -61,7 +61,7 @@ export default function WishlistClient() {
         <section className="max-w-3xl mx-auto premium-card p-8 text-center">
           <h1
             className="text-4xl md:text-5xl text-primary-green mb-3"
-            style={{ fontFamily: "Cormorant Garamond, serif" }}
+            style={{ fontFamily: "var(--font-primary), system-ui, sans-serif" }}
           >
             Wishlist
           </h1>
@@ -80,7 +80,7 @@ export default function WishlistClient() {
           <div className="premium-card p-6 md:p-8 mb-8 bg-gradient-to-r from-cream to-beige">
             <h1
               className="font-display text-4xl md:text-5xl text-text-dark mb-2"
-              style={{ fontFamily: "Cormorant Garamond, serif" }}
+              style={{ fontFamily: "var(--font-primary), system-ui, sans-serif" }}
             >
               Wishlist
             </h1>

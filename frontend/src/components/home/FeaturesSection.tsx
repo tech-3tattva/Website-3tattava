@@ -8,7 +8,9 @@ const features = [
     number: '01',
     eyebrow: 'BALANCE → CELLULAR ENERGY',
     title: 'Cellular Energy',
-    body: "Your mitochondria need 80+ trace minerals to produce ATP — your body's real energy currency. Shilajit delivers what caffeine can't: energy that builds over weeks, not minutes.",
+    body: "Your mitochondria cannot produce ATP without the 80+ ionic minerals that most modern diets have stripped away. Shilajit is the only natural substance that delivers all of them simultaneously — with fulvic acid to carry them directly into your cells. The result is energy that builds week over week, not a spike that collapses.",
+    quote: '"Most of my patients were not tired. They were mineral-depleted. There is a difference." — Dr. Kashish Gupta, BAMS',
+    disclaimer: 'These statements have not been evaluated by any regulatory authority. This product is not intended to diagnose, treat, cure, or prevent any disease.',
     image: 'https://media.3tattava.com/features/resin-pulled.png',
     imageLeft: true,
   },
@@ -16,7 +18,7 @@ const features = [
     number: '02',
     eyebrow: 'BUILD → MINERAL FOUNDATION',
     title: 'The Daily Ritual',
-    body: "600mg of Himalayan Shilajit in every honey stick. No measuring. No mixing. No excuses. 10 seconds every morning. The most consistent supplement ritual you'll ever build.",
+    body: "600mg of Himalayan Shilajit per Shahjeet Stick, delivered in raw Himalayan honey — nature's Anupana (potency enhancer). Anupana is the Ayurvedic principle that a carrier substance amplifies absorption. Honey is the classical Anupana for Shilajit. No measuring. No mixing. 10 seconds every morning.",
     image: 'https://media.3tattava.com/features/shahjeet-sachet.png',
     imageLeft: false,
   },
@@ -24,7 +26,8 @@ const features = [
     number: '03',
     eyebrow: 'BECOME → LONGEVITY',
     title: 'The Source',
-    body: 'Formed over 300 years under extreme Himalayan pressure. Purified using classical Triphala Shodhan. NABL-tested for heavy metals and fulvic acid. This is the real thing.',
+    body: 'Formed over 300 years under extreme Himalayan pressure at 10,000–16,000ft. Purified using classical Triphala Shodhan — the same method prescribed in Ashtanga Hridayam. Every batch third-party tested by NABL-accredited laboratory.',
+    nablLink: 'https://media.3tattava.com/lab-reports/RK2024-08.pdf',
     image: 'https://media.3tattava.com/features/resin-mountain.png',
     imageLeft: true,
   },
@@ -32,32 +35,32 @@ const features = [
 
 const featuresCSS = `
   .features-section {
-    background: #1A1A1A;
+    background: var(--cream);
   }
   .features-header {
     text-align: center;
     padding: 120px 24px 80px;
   }
   .feat-section-eyebrow {
-    font-family: var(--font-jost), sans-serif;
+    font-family: var(--font-primary), sans-serif;
     font-size: 11px;
     letter-spacing: 0.3em;
-    color: #C8963E;
+    color: var(--gold-dark);
     text-transform: uppercase;
     margin-bottom: 16px;
   }
   .feat-section-title {
-    font-family: var(--font-cormorant), serif;
+    font-family: var(--font-primary), serif;
     font-weight: 700;
     font-size: clamp(40px, 5vw, 60px);
-    color: #F5F0EB;
+    color: var(--ink);
     margin: 0 0 16px 0;
   }
   .feat-section-sub {
-    font-family: var(--font-jost), sans-serif;
+    font-family: var(--font-primary), sans-serif;
     font-weight: 300;
     font-size: 18px;
-    color: rgba(245,240,235,0.5);
+    color: var(--ink-soft);
     max-width: 480px;
     margin: 0 auto;
   }
@@ -90,14 +93,14 @@ const featuresCSS = `
     transform: scale(1.08);
   }
   .feature-text-col {
-    background: #1A1A1A;
+    background: var(--white);
     padding: clamp(48px, 6vw, 88px) clamp(36px, 5vw, 72px);
     display: flex;
     flex-direction: column;
     justify-content: center;
     position: relative;
     overflow: hidden;
-    border-left: 2px solid transparent;
+    border-left: 1px solid var(--line);
     transition: border-left-color 0.4s ease;
   }
   .feature-text-col:hover {
@@ -108,50 +111,55 @@ const featuresCSS = `
     right: -12px;
     top: 50%;
     transform: translateY(-50%);
-    font-family: var(--font-cormorant), serif;
+    font-family: var(--font-primary), serif;
     font-weight: 300;
     font-size: 200px;
-    color: #C8963E;
-    opacity: 0.035;
+    color: var(--taupe);
+    opacity: 0.2;
     line-height: 1;
     pointer-events: none;
     user-select: none;
   }
   .feat-eyebrow {
-    font-family: var(--font-jost), sans-serif;
+    font-family: var(--font-primary), sans-serif;
     font-size: 10px;
     letter-spacing: 0.28em;
-    color: #C8963E;
+    color: var(--gold-dark);
     text-transform: uppercase;
     margin-bottom: 18px;
   }
   .feat-line {
     width: 36px;
     height: 1px;
-    background: #C8963E;
+    background: var(--gold);
     margin-bottom: 26px;
   }
   .feat-title {
-    font-family: var(--font-cormorant), serif;
+    font-family: var(--font-primary), serif;
     font-weight: 700;
     font-size: clamp(40px, 4vw, 58px);
-    color: #F5F0EB;
+    color: var(--ink);
     line-height: 1;
     margin: 0 0 24px 0;
   }
   .feat-body {
-    font-family: var(--font-jost), sans-serif;
+    font-family: var(--font-primary), sans-serif;
     font-weight: 300;
     font-size: 16px;
     line-height: 1.78;
-    color: rgba(245,240,235,0.6);
+    color: var(--ink-soft);
     max-width: 390px;
   }
   @media (max-width: 768px) {
+    .features-header { padding: 72px 20px 48px; }
+    .feat-section-title { font-size: clamp(30px, 8vw, 46px); }
     .feature-card { grid-template-columns: 1fr; }
     .feature-card.reverse .feature-img-col { order: 0; }
     .feature-card.reverse .feature-text-col { order: 0; }
-    .feature-img-col { min-height: 300px; }
+    .feature-img-col { min-height: 260px; }
+    .feature-text-col { padding: 40px 24px; border-left: none; border-top: 1px solid var(--line); }
+    .feat-title { font-size: clamp(32px, 8vw, 46px); }
+    .feat-body { font-size: 15px; max-width: 100%; }
   }
 `
 
@@ -224,6 +232,45 @@ export default function FeaturesSection() {
               <div className="feat-line" />
               <h3 className="feat-title">{feat.title}</h3>
               <p className="feat-body">{feat.body}</p>
+              {'quote' in feat && feat.quote && (
+                <blockquote style={{
+                  marginTop: '24px',
+                  paddingLeft: '16px',
+                  borderLeft: '2px solid #C8963E',
+                  fontStyle: 'italic',
+                  fontSize: '14px',
+                  lineHeight: 1.6,
+                  color: 'var(--ink-60, rgba(28,19,4,0.6))',
+                  fontFamily: 'var(--font-primary), system-ui, sans-serif',
+                }}>{feat.quote}</blockquote>
+              )}
+              {'disclaimer' in feat && feat.disclaimer && (
+                <p style={{
+                  marginTop: '16px',
+                  fontSize: '10px',
+                  lineHeight: 1.5,
+                  color: 'rgba(28,19,4,0.35)',
+                  fontFamily: 'var(--font-primary), system-ui, sans-serif',
+                }}>{feat.disclaimer}</p>
+              )}
+              {'nablLink' in feat && feat.nablLink && (
+                <a
+                  href={feat.nablLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    display: 'inline-block',
+                    marginTop: '20px',
+                    fontSize: '11px',
+                    letterSpacing: '0.1em',
+                    color: '#C8963E',
+                    textDecoration: 'underline',
+                    fontFamily: 'var(--font-primary), system-ui, sans-serif',
+                  }}
+                >
+                  NABL Batch Report: #RK2024-08 · View Full COA →
+                </a>
+              )}
             </div>
           </div>
         ))}
