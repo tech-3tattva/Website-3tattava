@@ -91,7 +91,7 @@ export default function FeaturedProductSpotlight({
           </p>
           <h2
             className="text-4xl md:text-5xl text-text-dark mb-5"
-            style={{ fontFamily: "Cormorant Garamond, serif" }}
+            style={{ fontFamily: "var(--font-primary), system-ui, sans-serif" }}
           >
             {product.name}
           </h2>
@@ -127,7 +127,7 @@ export default function FeaturedProductSpotlight({
           <div className="flex flex-wrap items-center gap-4">
             <span
               className="text-3xl text-text-dark"
-              style={{ fontFamily: "Cormorant Garamond, serif" }}
+              style={{ fontFamily: "var(--font-primary), system-ui, sans-serif" }}
             >
               {formatPrice(product.price)}
             </span>

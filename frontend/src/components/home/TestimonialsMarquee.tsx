@@ -2,7 +2,14 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Marquee } from '@/components/ui/3d-testimonials'
 
-const testimonials = [
+const testimonials: Array<{
+  name: string;
+  handle: string;
+  body: string;
+  img: string;
+  stars: number;
+  clinicalVerified?: boolean;
+}> = [
   {
     name: 'Arjun Mehta',
     handle: 'Delhi · FITNESS',
@@ -55,9 +62,10 @@ const testimonials = [
   {
     name: 'Dr. Meera Pillai',
     handle: 'Kochi · PHYSICIAN',
-    body: 'I recommended 3TATTAVA to three patients with mineral deficiency. Lab results at 90 days showed consistent improvement. I now take it myself.',
+    body: 'I recommended SHODHIT SHILAJIT RESIN to three patients with mineral deficiency. Lab results at 90 days showed consistent improvement. I now take it myself.',
     img: 'https://randomuser.me/api/portraits/women/45.jpg',
     stars: 5,
+    clinicalVerified: true,
   },
   {
     name: 'Rahul Gupta',
@@ -65,6 +73,14 @@ const testimonials = [
     body: 'Bench went up 8kg in 6 weeks. Sleep is deeper. Joints don\'t ache after heavy leg days. I was sceptical of Ayurveda. I\'m a convert now.',
     img: 'https://randomuser.me/api/portraits/men/85.jpg',
     stars: 5,
+  },
+  {
+    name: 'Rohan Kapoor',
+    handle: 'Bangalore · PROFESSIONAL',
+    body: 'My iron was at 8.2. Tried everything. The SHODHIT SHILAJIT RESIN honey sticks were the first thing I could take daily without stomach issues. Iron at 11.4 after 90 days.',
+    img: 'https://randomuser.me/api/portraits/men/51.jpg',
+    stars: 5,
+    clinicalVerified: true,
   },
 ]
 
@@ -80,27 +96,44 @@ function StarRow({ count }: { count: number }) {
   )
 }
 
+function DrKashishVerifiedBadge() {
+  return (
+    <div className="flex items-center gap-1 mt-2 mb-1" style={{ fontSize: '9px', letterSpacing: '0.08em', color: '#C8963E', fontFamily: 'var(--font-primary), system-ui, sans-serif' }}>
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+        <circle cx="6" cy="6" r="5.5" fill="#C8963E" />
+        <path d="M4 6.5a2 2 0 1 0 4 0" stroke="#f7f0e2" strokeWidth="1" fill="none" strokeLinecap="round" />
+        <circle cx="4.5" cy="4.5" r="0.7" fill="#f7f0e2" />
+        <circle cx="7.5" cy="4.5" r="0.7" fill="#f7f0e2" />
+      </svg>
+      <span>Clinical Claim Verified · Dr. Kashish, BAMS</span>
+    </div>
+  )
+}
+
 function TestimonialCard({
-  img, name, handle, body, stars,
+  img, name, handle, body, stars, clinicalVerified,
 }: (typeof testimonials)[number]) {
   return (
-    <div className="w-[260px] rounded-xl border border-[rgba(200,150,62,0.15)] bg-[rgba(26,26,26,0.9)] p-5 flex flex-col gap-0">
+    <div className="w-[260px] rounded-xl p-5 flex flex-col gap-0"
+      style={{ background: 'var(--cream)', border: '1px solid var(--line)' }}>
       <StarRow count={stars} />
-      <p className="text-[13px] leading-relaxed text-[rgba(245,240,235,0.72)] mb-4 flex-1">
+      <p className="text-[13px] leading-relaxed mb-2 flex-1"
+        style={{ color: 'var(--ink-soft)' }}>
         &ldquo;{body}&rdquo;
       </p>
-      <div className="flex items-center gap-2.5 mt-auto">
+      {clinicalVerified && <DrKashishVerifiedBadge />}
+      <div className="flex items-center gap-2.5 mt-auto pt-2">
         <Avatar className="size-8 shrink-0">
           <AvatarImage src={img} alt={name} />
           <AvatarFallback>{name[0]}</AvatarFallback>
         </Avatar>
         <div className="flex flex-col min-w-0">
-          <span className="text-[12px] font-medium text-[#F5F0EB] truncate"
-            style={{ fontFamily: 'var(--font-jost), sans-serif' }}>
+          <span className="text-[12px] font-medium truncate"
+            style={{ fontFamily: 'var(--font-primary), system-ui, sans-serif', color: 'var(--ink)' }}>
             {name}
           </span>
-          <span className="text-[10px] text-[#C8963E] tracking-wide truncate"
-            style={{ fontFamily: 'var(--font-jost), sans-serif' }}>
+          <span className="text-[10px] tracking-wide truncate"
+            style={{ fontFamily: 'var(--font-primary), system-ui, sans-serif', color: 'var(--gold-dark)' }}>
             {handle}
           </span>
         </div>
@@ -115,27 +148,25 @@ export default function TestimonialsMarquee() {
   const col3 = testimonials.slice(6, 9)
 
   return (
-    <section className="relative py-24 overflow-hidden bg-[#111]">
+    <section className="relative py-24 overflow-hidden" style={{ background: 'var(--white)' }}>
       {/* Header */}
       <div className="text-center mb-16 px-6">
-        <p className="text-[11px] tracking-[0.3em] text-[#C8963E] uppercase mb-3"
-          style={{ fontFamily: 'var(--font-jost), sans-serif' }}>
+        <p className="text-[11px] tracking-[0.3em] uppercase mb-3"
+          style={{ fontFamily: 'var(--font-primary), system-ui, sans-serif', color: 'var(--gold-dark)' }}>
           Social Proof
         </p>
-        <h2 className="text-[clamp(36px,4.5vw,56px)] font-bold text-[#F5F0EB] leading-tight"
-          style={{ fontFamily: 'var(--font-cormorant), serif' }}>
+        <h2 className="text-[clamp(36px,4.5vw,56px)] font-bold leading-tight"
+          style={{ fontFamily: 'var(--font-primary), system-ui, sans-serif', color: 'var(--ink)' }}>
           Real Results. Real People.
         </h2>
-        <h2 className="text-[clamp(28px,3.5vw,44px)] font-light italic text-[#C8963E]"
-          style={{ fontFamily: 'var(--font-cormorant), serif' }}>
+        <h2 className="text-[clamp(28px,3.5vw,44px)] font-light italic"
+          style={{ fontFamily: 'var(--font-primary), system-ui, sans-serif', color: 'var(--gold)' }}>
           Real Blood Work.
         </h2>
       </div>
 
-      {/* 3D Marquee container */}
-      <div
-        className="relative flex h-[480px] w-full items-center justify-center overflow-hidden [perspective:800px]"
-      >
+      {/* 3D Marquee container — 3D on desktop, flat single-column on mobile */}
+      <div className="relative flex h-[480px] w-full items-center justify-center overflow-hidden [perspective:800px] max-sm:hidden">
         <div
           className="flex flex-row items-center gap-4"
           style={{
@@ -153,17 +184,27 @@ export default function TestimonialsMarquee() {
             {col3.map((r) => <TestimonialCard key={r.name} {...r} />)}
           </Marquee>
         </div>
-
         {/* Gradient masks */}
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-1/4 bg-gradient-to-b from-[#111]" />
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/4 bg-gradient-to-t from-[#111]" />
-        <div className="pointer-events-none absolute inset-y-0 left-0 w-1/5 bg-gradient-to-r from-[#111]" />
-        <div className="pointer-events-none absolute inset-y-0 right-0 w-1/5 bg-gradient-to-l from-[#111]" />
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-1/4 bg-gradient-to-b from-white" />
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/4 bg-gradient-to-t from-white" />
+        <div className="pointer-events-none absolute inset-y-0 left-0 w-1/5 bg-gradient-to-r from-white" />
+        <div className="pointer-events-none absolute inset-y-0 right-0 w-1/5 bg-gradient-to-l from-white" />
+      </div>
+
+      {/* Mobile — single horizontal scrolling row */}
+      <div className="sm:hidden overflow-x-auto px-4 pb-2 scrollbar-hide">
+        <div className="flex gap-3 w-max">
+          {testimonials.slice(0, 5).map((r) => (
+            <div key={r.name} className="w-[280px] shrink-0">
+              <TestimonialCard {...r} />
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* Footer note */}
-      <p className="text-center mt-10 text-[12px] text-[rgba(245,240,235,0.3)]"
-        style={{ fontFamily: 'var(--font-jost), sans-serif' }}>
+      <p className="text-center mt-10 text-[12px]"
+        style={{ fontFamily: 'var(--font-primary), system-ui, sans-serif', color: 'var(--ink-soft)' }}>
         These are real customers. We don&apos;t edit reviews. We don&apos;t pay for testimonials.
       </p>
     </section>

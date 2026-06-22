@@ -59,7 +59,7 @@ export default function HeroCarousel({ heroProduct }: { heroProduct?: Product })
           </motion.p>
           <h1
             className="font-display text-5xl lg:text-7xl leading-[0.95] mb-6"
-            style={{ fontFamily: "Cormorant Garamond, serif" }}
+            style={{ fontFamily: "var(--font-primary), system-ui, sans-serif" }}
           >
             <motion.span
               initial={{ opacity: 0, y: 16 }}

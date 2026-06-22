@@ -27,7 +27,7 @@ export default function NotFound() {
         </p>
         <h1
           className="font-display text-4xl md:text-6xl text-text-dark leading-tight mb-6"
-          style={{ fontFamily: "Cormorant Garamond, serif" }}
+          style={{ fontFamily: "var(--font-primary), system-ui, sans-serif" }}
         >
           {NOT_FOUND.headline}
         </h1>

@@ -153,13 +153,13 @@ export default function ProductPageClient({
               </div>
               <h1
                 className="font-display text-4xl md:text-5xl text-text-dark mb-2 tracking-wide"
-                style={{ fontFamily: "Cormorant Garamond, serif" }}
+                style={{ fontFamily: "var(--font-primary), system-ui, sans-serif" }}
               >
                 {product.name}
               </h1>
               <h2
                 className="font-display italic text-xl text-text-medium mb-4"
-                style={{ fontFamily: "Cormorant Garamond, serif" }}
+                style={{ fontFamily: "var(--font-primary), system-ui, sans-serif" }}
               >
                 {product.shortDescription || "Pure Himalayan Shilajit Resin"}
               </h2>
@@ -317,7 +317,7 @@ export default function ProductPageClient({
       <section className="mb-12 border border-border rounded-lg p-6 md:p-8 bg-[#faf7f2]">
         <h2
           className="font-display text-3xl text-text-dark mb-6"
-          style={{ fontFamily: "Cormorant Garamond, serif" }}
+          style={{ fontFamily: "var(--font-primary), system-ui, sans-serif" }}
         >
           How to Use
         </h2>

@@ -17,7 +17,7 @@ export default function ResultsTimeline() {
           <h2
             id="results-timeline-heading"
             className="font-display text-4xl md:text-5xl text-text-dark"
-            style={{ fontFamily: "Cormorant Garamond, serif" }}
+            style={{ fontFamily: "var(--font-primary), system-ui, sans-serif" }}
           >
             {RESULTS_TIMELINE.header}
           </h2>
@@ -75,7 +75,7 @@ export default function ResultsTimeline() {
                     </p>
                     <h3
                       className="relative font-display text-2xl md:text-3xl text-text-dark mb-3 transition-colors duration-300 group-hover:text-primary-green"
-                      style={{ fontFamily: "Cormorant Garamond, serif" }}
+                      style={{ fontFamily: "var(--font-primary), system-ui, sans-serif" }}
                     >
                       {week.title}
                     </h3>

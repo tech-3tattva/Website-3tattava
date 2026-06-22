@@ -16,11 +16,13 @@ export default function AdminLoginPage() {
     setLoading(true);
     setError("");
     try {
-      const data = await api.post<{ ok: boolean; admin: { name: string; email: string; role: string } }>(
+      const data = await api.post<{ ok: boolean; token?: string; admin: { name: string; email: string; role: string } }>(
         "/auth/admin/auth/login",
         { email, password }
       );
       localStorage.setItem("adminName", data.admin.name);
+      // Store token for Bearer auth (used when cookie is blocked cross-origin in dev)
+      if (data.token) sessionStorage.setItem("adminToken", data.token);
       router.push("/admin");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Login failed");

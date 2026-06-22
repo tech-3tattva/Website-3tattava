@@ -17,7 +17,7 @@ export default function DoshaQuizBanner() {
         <div>
           <h2
             className="font-display text-4xl md:text-[52px] text-primary-green mb-4"
-            style={{ fontFamily: "Cormorant Garamond, serif" }}
+            style={{ fontFamily: "var(--font-primary), system-ui, sans-serif" }}
           >
             What&apos;s Your Dosha?
           </h2>

@@ -51,7 +51,7 @@ export default function Logo({
       aria-label="3tattava — Home"
     >
       <div
-        className={`relative isolate ${className}`}
+        className={`relative ${className}`}
         style={{ width, height }}
       >
         <Image

@@ -279,6 +279,7 @@ router.post("/admin/auth/login", async (req, res, next) => {
 
     return res.json({
       ok: true,
+      token: adminToken, // also returned in body so client can use Bearer when cross-origin
       admin: {
         id: user._id.toString(),
         email: user.email,

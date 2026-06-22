@@ -96,7 +96,7 @@ export default function DoctorApplicationForm() {
           className="max-w-md text-center rounded-2xl border border-border bg-white p-8 shadow-lg"
         >
           <CheckCircle2 size={56} className="mx-auto text-primary-green mb-4" />
-          <h1 className="font-display text-2xl text-text-dark mb-3" style={{ fontFamily: "Cormorant Garamond, serif" }}>
+          <h1 className="font-display text-2xl text-text-dark mb-3" style={{ fontFamily: "var(--font-primary), system-ui, sans-serif" }}>
             Application Received!
           </h1>
           <p className="text-sm text-text-medium leading-relaxed">
@@ -116,7 +116,7 @@ export default function DoctorApplicationForm() {
       {/* Hero */}
       <section className="bg-[linear-gradient(135deg,#5c4033_0%,#3a2f26_100%)] text-white py-14 md:py-18 px-4 text-center">
         <p className="text-xs uppercase tracking-[0.3em] text-[#dcb375] mb-3">For Ayurveda Practitioners</p>
-        <h1 className="font-display text-3xl md:text-5xl" style={{ fontFamily: "Cormorant Garamond, serif" }}>
+        <h1 className="font-display text-3xl md:text-5xl" style={{ fontFamily: "var(--font-primary), system-ui, sans-serif" }}>
           Join the 3TATTAVA Doctor Network
         </h1>
         <p className="mt-4 text-white/80 max-w-2xl mx-auto leading-relaxed text-sm md:text-base">
@@ -145,7 +145,7 @@ export default function DoctorApplicationForm() {
       <form onSubmit={handleSubmit} className="max-w-3xl mx-auto px-4 py-10 space-y-8">
         {/* Personal */}
         <fieldset className="rounded-2xl border border-border bg-white p-6 space-y-4">
-          <legend className="font-display text-lg text-text-dark px-2" style={{ fontFamily: "Cormorant Garamond, serif" }}>Personal Information</legend>
+          <legend className="font-display text-lg text-text-dark px-2" style={{ fontFamily: "var(--font-primary), system-ui, sans-serif" }}>Personal Information</legend>
           <input required placeholder="Full Name *" value={fullName} onChange={(e) => setFullName(e.target.value)} className="w-full rounded-xl border border-border px-4 py-2.5 text-sm" />
           <div className="grid grid-cols-2 gap-3">
             <input required type="tel" placeholder="Phone *" value={phone} onChange={(e) => setPhone(e.target.value)} className="rounded-xl border border-border px-4 py-2.5 text-sm" />
@@ -160,7 +160,7 @@ export default function DoctorApplicationForm() {
 
         {/* Qualifications */}
         <fieldset className="rounded-2xl border border-border bg-white p-6 space-y-4">
-          <legend className="font-display text-lg text-text-dark px-2" style={{ fontFamily: "Cormorant Garamond, serif" }}>Qualifications</legend>
+          <legend className="font-display text-lg text-text-dark px-2" style={{ fontFamily: "var(--font-primary), system-ui, sans-serif" }}>Qualifications</legend>
           <select required value={degree} onChange={(e) => setDegree(e.target.value)} className="w-full rounded-xl border border-border px-4 py-2.5 text-sm text-text-dark">
             {DEGREES.map((d) => <option key={d} value={d}>{d}</option>)}
           </select>
@@ -175,7 +175,7 @@ export default function DoctorApplicationForm() {
 
         {/* Clinic */}
         <fieldset className="rounded-2xl border border-border bg-white p-6 space-y-4">
-          <legend className="font-display text-lg text-text-dark px-2" style={{ fontFamily: "Cormorant Garamond, serif" }}>Clinic Details</legend>
+          <legend className="font-display text-lg text-text-dark px-2" style={{ fontFamily: "var(--font-primary), system-ui, sans-serif" }}>Clinic Details</legend>
           <input required placeholder="Clinic Name *" value={clinicName} onChange={(e) => setClinicName(e.target.value)} className="w-full rounded-xl border border-border px-4 py-2.5 text-sm" />
           <input required placeholder="Address Line 1 *" value={addressLine1} onChange={(e) => setAddressLine1(e.target.value)} className="w-full rounded-xl border border-border px-4 py-2.5 text-sm" />
           <div className="grid grid-cols-2 gap-3">
@@ -192,7 +192,7 @@ export default function DoctorApplicationForm() {
 
         {/* Practice */}
         <fieldset className="rounded-2xl border border-border bg-white p-6 space-y-4">
-          <legend className="font-display text-lg text-text-dark px-2" style={{ fontFamily: "Cormorant Garamond, serif" }}>Practice Details</legend>
+          <legend className="font-display text-lg text-text-dark px-2" style={{ fontFamily: "var(--font-primary), system-ui, sans-serif" }}>Practice Details</legend>
 
           <p className="text-xs uppercase tracking-wider text-text-light">Specializations *</p>
           <div className="flex flex-wrap gap-2">
@@ -245,7 +245,7 @@ export default function DoctorApplicationForm() {
 
         {/* Agreement */}
         <fieldset className="rounded-2xl border border-border bg-white p-6 space-y-3">
-          <legend className="font-display text-lg text-text-dark px-2" style={{ fontFamily: "Cormorant Garamond, serif" }}>Agreement</legend>
+          <legend className="font-display text-lg text-text-dark px-2" style={{ fontFamily: "var(--font-primary), system-ui, sans-serif" }}>Agreement</legend>
           <label className="flex items-start gap-2 text-xs text-text-medium cursor-pointer">
             <input type="checkbox" required checked={agreed} onChange={(e) => setAgreed(e.target.checked)} className="rounded mt-0.5" />
             I confirm all information is accurate, I agree to display 3TATTAVA co-branding materials in my clinic, and I agree to the Doctor Network Terms of Service.

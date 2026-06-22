@@ -31,6 +31,17 @@ async function connectDb() {
   await Cart.syncIndexes();
   await Cart.collection.updateMany({ user: null }, { $unset: { user: "" } });
 
+  // Influencer referral system — critical unique indexes must exist before
+  // any webhook or promo code request is served.
+  const Influencer = require("../models/Influencer");
+  const PromoCode  = require("../models/PromoCode");
+  const Redemption = require("../models/Redemption");
+  await Promise.all([
+    Influencer.syncIndexes(),
+    PromoCode.syncIndexes(),
+    Redemption.syncIndexes(), // razorpayEventId unique index — idempotency
+  ]);
+
   // eslint-disable-next-line no-console
   console.log("[backend] connected to MongoDB");
 }

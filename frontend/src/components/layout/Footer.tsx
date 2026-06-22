@@ -7,6 +7,101 @@ import Logo from "./Logo";
 import { FOOTER_LINKS, SOCIAL_LINKS } from "@/lib/constants";
 import { FOOTER, NEWSLETTER } from "@/lib/brand-content";
 
+// ─── ANIMATED SOCIAL ICONS ───────────────────────────────────────────────────
+
+function FooterSocials() {
+  return (
+    <div style={{ position:"relative" }}>
+      <style suppressHydrationWarning>{`
+        @keyframes ft-shake {
+          0%,100% { transform: rotate(0deg) scale(1); }
+          20%     { transform: rotate(-12deg) scale(1.05); }
+          40%     { transform: rotate(10deg)  scale(1.05); }
+          60%     { transform: rotate(-8deg)  scale(1.02); }
+          80%     { transform: rotate(7deg)   scale(1.02); }
+        }
+        .ft-link {
+          display: flex; flex-direction: column; align-items: center;
+          text-decoration: none; position: relative; cursor: pointer;
+        }
+        .ft-ring {
+          width: 54px; height: 54px; border-radius: 50%;
+          display: flex; align-items: center; justify-content: center;
+          background: rgba(255,255,255,.13);
+          border: 1px solid rgba(255,255,255,.22);
+          backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+          box-shadow: 0 4px 14px rgba(0,0,0,.18);
+          transition: transform .34s cubic-bezier(.16,1,.3,1), box-shadow .32s ease, border-color .28s ease;
+          position: relative; overflow: hidden;
+        }
+        .ft-ring::after {
+          content: '';
+          position: absolute; inset: 0; border-radius: 50%;
+          background: linear-gradient(145deg,#A67B2F,#E4C079,#C8963E);
+          opacity: 0;
+          transition: opacity .32s ease;
+          z-index: 0;
+        }
+        .ft-ring svg { position: relative; z-index: 1; }
+        .ft-link:hover .ft-ring {
+          transform: translateY(-11px) scale(1.13);
+          border-color: rgba(200,150,62,.60);
+          background: transparent;
+          box-shadow:
+            0 0 0 2.5px rgba(200,150,62,.40),
+            0 0 26px rgba(200,150,62,.60),
+            0 16px 32px rgba(0,0,0,.22);
+        }
+        .ft-link:hover .ft-ring::after { opacity: 1; }
+        .ft-link:hover .ft-ring svg { animation: ft-shake .44s ease-in-out; }
+        .ft-lbl {
+          position: absolute; top: 62px; left: 50%;
+          transform: translateX(-50%) translateY(5px);
+          font-size: 9px; letter-spacing: .16em; text-transform: uppercase;
+          color: rgba(255,255,255,0);
+          transition: color .24s ease, transform .24s ease;
+          font-variation-settings: 'wdth' 75,'wght' 500;
+          font-family: var(--font-primary), system-ui, sans-serif;
+          white-space: nowrap; pointer-events: none;
+        }
+        .ft-link:hover .ft-lbl {
+          color: rgba(255,255,255,.82);
+          transform: translateX(-50%) translateY(0);
+        }
+      `}</style>
+
+      <p style={{
+        fontSize:"9px", letterSpacing:".28em", textTransform:"uppercase",
+        fontVariationSettings:"'wdth' 75,'wght' 500",
+        fontFamily:"var(--font-primary), system-ui, sans-serif",
+        color:"rgba(255,255,255,.42)",
+        marginBottom:"14px",
+      }}>
+        Connect With Us
+      </p>
+
+      <div style={{ display:"flex", gap:"16px", alignItems:"center", flexWrap:"wrap", paddingBottom:"30px" }}>
+        {SOCIAL_LINKS.map((item) => (
+          <Link
+            key={item.id}
+            href={item.href}
+            className="ft-link"
+            {...(item.id === "email" ? {} : { target:"_blank", rel:"noopener noreferrer" })}
+            aria-label={item.label}
+          >
+            <div className="ft-ring">
+              <SocialIcon id={item.id} className="h-5 w-5 text-white" />
+            </div>
+            <span className="ft-lbl">{item.label}</span>
+          </Link>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+
 function SocialIcon({
   id,
   className = "h-5 w-5",
@@ -37,31 +132,19 @@ export default function Footer() {
             <Logo variant="white" size="lg" className="mb-4" />
             <p
               className="text-[#f5efe6] font-display text-lg"
-              style={{ fontFamily: "Cormorant Garamond, serif" }}
+              style={{ fontFamily: "var(--font-primary), system-ui, sans-serif" }}
             >
               {FOOTER.tagline}
             </p>
             <p className="text-sm text-white/80 mt-2">{FOOTER.email}</p>
-            <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 mt-4">
-              {SOCIAL_LINKS.map((item) => (
-                <Link
-                  key={item.id}
-                  href={item.href}
-                  {...(item.id === "email"
-                    ? {}
-                    : { target: "_blank", rel: "noopener noreferrer" })}
-                  className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/15 text-white hover:bg-white/25 transition-colors"
-                  aria-label={item.label}
-                >
-                  <SocialIcon id={item.id} className="h-5 w-5 text-white" />
-                </Link>
-              ))}
+            <div className="mt-4 flex justify-center md:justify-start">
+              <FooterSocials />
             </div>
           </div>
           <div className="md:max-w-md w-full">
             <h3
               className="font-display text-2xl text-white mb-1"
-              style={{ fontFamily: "Cormorant Garamond, serif" }}
+              style={{ fontFamily: "var(--font-primary), system-ui, sans-serif" }}
             >
               {NEWSLETTER.headline}
             </h3>
@@ -172,7 +255,7 @@ export default function Footer() {
               </span>
             ))}
             <span className="inline-flex items-center gap-1 rounded-full border border-[#c9ba9f] bg-white/60 px-3 py-1 text-xs uppercase tracking-[0.14em] text-text-dark">
-              {FOOTER.legal.fssaiLicense}
+              {FOOTER.legal.complianceLine}
             </span>
           </div>
           <p className="text-xs text-text-medium text-center md:text-left leading-relaxed">

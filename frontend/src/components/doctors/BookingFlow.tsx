@@ -109,7 +109,7 @@ export default function BookingFlow({
           className="w-full max-w-lg rounded-2xl border border-border bg-white p-8 text-center shadow-[0_16px_40px_rgba(24,24,24,0.08)]"
         >
           <CheckCircle2 size={56} className="mx-auto text-primary-green mb-4" />
-          <h1 className="font-display text-3xl text-text-dark mb-2" style={{ fontFamily: "Cormorant Garamond, serif" }}>
+          <h1 className="font-display text-3xl text-text-dark mb-2" style={{ fontFamily: "var(--font-primary), system-ui, sans-serif" }}>
             Booking Confirmed!
           </h1>
           <p className="text-sm text-text-medium mb-6">
@@ -175,7 +175,7 @@ export default function BookingFlow({
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="rounded-2xl border border-border bg-white p-6 space-y-4">
-          <h2 className="font-display text-xl text-text-dark" style={{ fontFamily: "Cormorant Garamond, serif" }}>
+          <h2 className="font-display text-xl text-text-dark" style={{ fontFamily: "var(--font-primary), system-ui, sans-serif" }}>
             Your Details
           </h2>
 

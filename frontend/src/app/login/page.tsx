@@ -73,7 +73,7 @@ function LoginContent() {
         ) : null}
         <h1
           className="text-[36px] sm:text-[42px] md:text-[44px] leading-none font-display text-center text-gray-900 mb-6 sm:mb-7"
-          style={{ fontFamily: "Cormorant Garamond, serif" }}
+          style={{ fontFamily: "var(--font-primary), system-ui, sans-serif" }}
         >
           Welcome Back
         </h1>

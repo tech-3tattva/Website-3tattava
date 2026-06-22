@@ -40,7 +40,7 @@ export const TRUST_BADGES = [
   { icon: "flask", label: "NABL Lab-Certified Purity" },
   { icon: "stethoscope", label: "Doctor-Formulated (BAMS)" },
   { icon: "droplet", label: "80+ Trace Minerals" },
-  { icon: "shield-check", label: "FSSAI & GMP Certified" },
+  { icon: "shield-check", label: "AYUSH-GMP · US-FDA Registered Facility" },
 ] as const;
 
 export const THREE_PILLARS = {
@@ -256,10 +256,11 @@ export const FOOTER = {
     },
   },
   legal: {
-    fssaiLicense: "FSSAI Lic. No. [XXXXX]",
-    certifications: ["FSSAI Licensed", "GMP Certified", "NABL Lab Tested"],
+    complianceLine:
+      "AYUSH-GMP Certified Facility \u00B7 US-FDA Registered Facility \u00B7 NABL 3rd-Party Lab Tested (Eurofins)",
+    certifications: ["NABL 3rd-Party Lab Tested", "AYUSH-GMP Certified", "US-FDA Registered Facility"],
     companyLine:
-      "3TATTAVA Ayurveda Pvt. Ltd. \u00B7 Registered under MCA \u00B7 DPIIT Startup India Recognized \u00B7 Udyam MSME Registered",
+      "Marketed by SankalpaSiddhi Ayupharma Pvt. Ltd., 690A/1, Kabool Nagar, Shahdara, Delhi \u2013 110032 \u00B7 Manufactured by URMI Lifesciences LLP, A2/101 Site 5 UPSIDC Kasna, Greater Noida",
   },
 } as const;
 
@@ -302,25 +303,25 @@ export const OUR_STORY = {
       {
         number: "01",
         title: "Sourcing",
-        body: "Our Shilajit is harvested from high-altitude Himalayan deposits between 10,000\u201316,000 feet \u2014 the altitude range where resin maturity and mineral concentration peak.",
+        body: "Raw Shilajit (Asphaltum Punjabanum) is harvested from Himalayan deposits at 10,000\u201316,000ft altitude \u2014 where mineral concentration and resin maturity peak. The ore is sourced from verified Himalayan sites with known geological provenance.",
       },
       {
         number: "02",
-        title: "Purification",
-        body: "Every batch undergoes traditional Shodhana purification \u2014 the same process used for centuries to remove impurities while preserving bioactive compounds. No chemicals. No shortcuts.",
+        title: "Purification (Triphala Shodhan)",
+        body: "Every batch undergoes classical Triphala Shodhan purification \u2014 as prescribed in Ashtanga Hridayam. Conducted by URMI Lifesciences LLP (Mfg. Lic. No. RJ-926AYU E, Rajasthan), an AYUSH-GMP certified facility. This removes heavy metals and rock impurities while preserving fulvic acid integrity.",
       },
       {
         number: "03",
-        title: "Lab Testing",
-        body: "Before a single jar ships, it passes NABL-accredited testing for: fulvic acid concentration (60%+), heavy metals (below WHO limits), microbial contamination, and stability.",
+        title: "NABL Lab Testing",
+        body: "Before a single jar ships, every batch is tested by an independent NABL-accredited third-party laboratory for: fulvic acid concentration (\u226570%), heavy metals (Lead, Mercury, Arsenic \u2014 below AYUSH limits), microbial contamination, and stability. NABL Batch Report: #RK2024-08.",
       },
       {
         number: "04",
-        title: "Your Ritual",
-        body: "Glass jar (never plastic). Gold-standard packaging. QR code on every pack linking to batch-specific lab reports.",
+        title: "Packaging & QR Verification",
+        body: "Glass jar (never plastic \u2014 plastic leaches into resin). Every pack carries a QR code linking to the batch-specific NABL 3rd-party lab report. Marketed by SankalpaSiddhi Ayupharma Pvt. Ltd., 690A/1 Kabool Nagar, Shahdara, Delhi. Manufactured in an AYUSH-GMP certified, US-FDA registered facility.",
       },
     ],
-    certifications: ["NABL Lab Tested", "GMP Certified", "FSSAI Licensed", "Export Quality"],
+    certifications: ["NABL 3rd-Party Lab Tested", "AYUSH-GMP Certified", "US-FDA Registered Facility", "Triphala Shodhan Purified"],
     cta: { label: "View Our Latest Lab Report", href: "/lab-reports" },
   },
 } as const;

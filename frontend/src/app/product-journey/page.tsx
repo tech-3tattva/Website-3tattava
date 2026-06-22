@@ -7,7 +7,7 @@ const STAGES = [
   { num: "01", name: "Sourcing", desc: "We identify every ingredient at its most potent geographic source." },
   { num: "02", name: "Testing", desc: "All raw materials are tested for heavy metals, microbial contamination, and potency." },
   { num: "03", name: "Formulation", desc: "Our Ayurvedacharyas co-develop formulations using classical texts as the foundation." },
-  { num: "04", name: "Manufacturing", desc: "GMP-certified, FSSAI-approved facilities. Batch-coded for traceability." },
+  { num: "04", name: "Manufacturing", desc: "AYUSH-GMP certified, US-FDA registered facility. Batch-coded for traceability." },
   { num: "05", name: "Quality Control", desc: "Triple-stage QC: Pre-production, in-process, and finished goods testing." },
   { num: "06", name: "Delivery", desc: "Eco-friendly packaging. Carbon-neutral last-mile delivery (in progress)." },
 ];
@@ -19,7 +19,7 @@ export default function ProductJourneyPage() {
         <div className="absolute inset-0 opacity-20 bg-[url('/placeholder.svg')] bg-cover" />
         <h1
           className="relative z-10 font-display text-4xl md:text-5xl text-white text-center px-4"
-          style={{ fontFamily: "Cormorant Garamond, serif" }}
+          style={{ fontFamily: "var(--font-primary), system-ui, sans-serif" }}
         >
           From Nature to You — Our Promise of Purity
         </h1>

@@ -9,6 +9,13 @@ const Order = require("../models/Order");
 const Product = require("../models/Product");
 const User = require("../models/User");
 const InventoryLog = require("../models/InventoryLog");
+const mongoose = require("mongoose");
+const Influencer = require("../models/Influencer");
+const Redemption = require("../models/Redemption");
+const NewsletterSub = require("../models/NewsletterSub");
+const Booking = require("../models/Booking");
+// Lead model is registered by leads.routes.js at startup — access lazily
+function getLead() { return mongoose.models.Lead || null; }
 
 const router = express.Router();
 
@@ -508,6 +515,243 @@ router.patch("/products/:id", uploadMiddleware, async (req, res, next) => {
 
     await product.save();
     return res.json(product);
+  } catch (err) {
+    return next(err);
+  }
+});
+
+// ==========================================================================
+// SHIPMENTS PANEL
+// ==========================================================================
+
+// GET /api/admin/shipments — list orders with shipment data
+router.get("/shipments", async (req, res, next) => {
+  try {
+    const { status, page = "1", limit = "20" } = req.query;
+    const pageNum = Math.max(1, Number(page) || 1);
+    const limitNum = Math.min(100, Number(limit) || 20);
+
+    const filter = {};
+    if (status) filter["shipment.nimbusStatus"] = status;
+
+    // Orders that have been shipped (have a shipment subdocument)
+    if (!status) filter["shipment.awbNumber"] = { $exists: true };
+
+    const [orders, total] = await Promise.all([
+      Order.find(filter)
+        .sort({ createdAt: -1 })
+        .skip((pageNum - 1) * limitNum)
+        .limit(limitNum)
+        .select("orderNumber status shipment tracking shippingAddress total createdAt")
+        .lean()
+        .exec(),
+      Order.countDocuments(filter),
+    ]);
+
+    return res.json({ orders, total, page: pageNum, totalPages: Math.ceil(total / limitNum) });
+  } catch (err) {
+    return next(err);
+  }
+});
+
+// GET /api/admin/shipments/pending — orders paid but not yet shipped
+router.get("/shipments/pending", async (req, res, next) => {
+  try {
+    const orders = await Order.find({
+      "payment.status": "captured",
+      "shipment.awbNumber": { $exists: false },
+      status: { $in: ["confirmed", "processing"] },
+    })
+      .sort({ createdAt: -1 })
+      .select("orderNumber shippingAddress items total payment createdAt")
+      .lean()
+      .exec();
+
+    return res.json(orders);
+  } catch (err) {
+    return next(err);
+  }
+});
+
+// GET /api/admin/shipments/ndr — NDR orders
+router.get("/shipments/ndr", async (req, res, next) => {
+  try {
+    const orders = await Order.find({ "shipment.nimbusStatus": { $in: ["ndr", "rto", "rto_initiated"] } })
+      .sort({ createdAt: -1 })
+      .select("orderNumber status shipment shippingAddress total")
+      .lean()
+      .exec();
+
+    return res.json(orders);
+  } catch (err) {
+    return next(err);
+  }
+});
+
+// ==========================================================================
+// LEADS & FORM SUBMISSIONS PANEL
+// ==========================================================================
+
+// GET /api/admin/leads — all lead captures from the modal
+router.get("/leads", async (req, res, next) => {
+  try {
+    const Lead = getLead();
+    if (!Lead) return res.json({ leads: [], total: 0, note: "Lead model not loaded yet" });
+
+    const { converted, page = "1", limit = "50" } = req.query;
+    const pageNum = Math.max(1, Number(page) || 1);
+    const limitNum = Math.min(200, Number(limit) || 50);
+
+    const filter = {};
+    if (converted !== undefined) filter.converted = converted === "true";
+
+    const [leads, total] = await Promise.all([
+      Lead.find(filter)
+        .sort({ createdAt: -1 })
+        .skip((pageNum - 1) * limitNum)
+        .limit(limitNum)
+        .lean()
+        .exec(),
+      Lead.countDocuments(filter),
+    ]);
+
+    return res.json({ leads, total, page: pageNum, totalPages: Math.ceil(total / limitNum) });
+  } catch (err) {
+    return next(err);
+  }
+});
+
+// PATCH /api/admin/leads/:id/convert — mark lead as converted
+router.patch("/leads/:id/convert", async (req, res, next) => {
+  try {
+    const Lead = getLead();
+    if (!Lead) throw new ApiError(503, "Lead model not available");
+
+    const lead = await Lead.findByIdAndUpdate(
+      req.params.id,
+      { $set: { converted: true } },
+      { new: true }
+    ).exec();
+
+    if (!lead) throw new ApiError(404, "Lead not found");
+    return res.json(lead);
+  } catch (err) {
+    return next(err);
+  }
+});
+
+// GET /api/admin/newsletter — newsletter subscribers
+router.get("/newsletter", async (req, res, next) => {
+  try {
+    const { page = "1", limit = "50" } = req.query;
+    const pageNum = Math.max(1, Number(page) || 1);
+    const limitNum = Math.min(200, Number(limit) || 50);
+
+    const [subscribers, total] = await Promise.all([
+      NewsletterSub.find({})
+        .sort({ createdAt: -1 })
+        .skip((pageNum - 1) * limitNum)
+        .limit(limitNum)
+        .lean()
+        .exec(),
+      NewsletterSub.countDocuments(),
+    ]);
+
+    return res.json({ subscribers, total, page: pageNum, totalPages: Math.ceil(total / limitNum) });
+  } catch (err) {
+    return next(err);
+  }
+});
+
+// GET /api/admin/bookings — doctor consultation bookings
+router.get("/bookings", async (req, res, next) => {
+  try {
+    const { status, page = "1", limit = "50" } = req.query;
+    const pageNum = Math.max(1, Number(page) || 1);
+    const limitNum = Math.min(200, Number(limit) || 50);
+
+    const filter = {};
+    if (status) filter.status = status;
+
+    const [bookings, total] = await Promise.all([
+      Booking.find(filter)
+        .sort({ createdAt: -1 })
+        .skip((pageNum - 1) * limitNum)
+        .limit(limitNum)
+        .populate("doctor", "name specialization")
+        .lean()
+        .exec(),
+      Booking.countDocuments(filter),
+    ]);
+
+    return res.json({ bookings, total, page: pageNum, totalPages: Math.ceil(total / limitNum) });
+  } catch (err) {
+    return next(err);
+  }
+});
+
+// GET /api/admin/influencers/overview — quick stats for admin dashboard
+router.get("/influencers/overview", async (req, res, next) => {
+  try {
+    const [micros, totalRedemptions, totalRevenue, rewardQueue] = await Promise.all([
+      Influencer.find({ tier: "micro", status: "active" })
+        .select("name promoCode deal counters")
+        .lean()
+        .exec(),
+      Redemption.countDocuments({ status: "completed" }),
+      Redemption.aggregate([
+        { $match: { status: "completed" } },
+        { $group: { _id: null, total: { $sum: "$netAmount" } } },
+      ]),
+      Influencer.countDocuments({ "deal.rewardStatus": "earned" }),
+    ]);
+
+    const totalRevenueVal = totalRevenue[0]?.total || 0;
+
+    return res.json({
+      micros: micros.map((m) => ({
+        id: m._id,
+        name: m.name,
+        code: m.promoCode,
+        directRedemptions: m.counters.directRedemptions,
+        rollupRedemptions: m.counters.rollupRedemptions,
+        rollupRevenue: m.counters.rollupRevenue,
+        goalPct: m.deal.goalRedemptions
+          ? Math.round((m.counters.rollupRedemptions / m.deal.goalRedemptions) * 100)
+          : null,
+        rewardStatus: m.deal.rewardStatus,
+      })),
+      totals: { redemptions: totalRedemptions, revenue: Math.round(totalRevenueVal) },
+      rewardQueueCount: rewardQueue,
+    });
+  } catch (err) {
+    return next(err);
+  }
+});
+
+// GET /api/admin/inventory/logs — full inventory log with pagination
+router.get("/inventory/logs", async (req, res, next) => {
+  try {
+    const { productId, changeType, page = "1", limit = "50" } = req.query;
+    const pageNum = Math.max(1, Number(page) || 1);
+    const limitNum = Math.min(200, Number(limit) || 50);
+
+    const filter = {};
+    if (productId) filter.product = productId;
+    if (changeType) filter.changeType = changeType;
+
+    const [logs, total] = await Promise.all([
+      InventoryLog.find(filter)
+        .sort({ createdAt: -1 })
+        .skip((pageNum - 1) * limitNum)
+        .limit(limitNum)
+        .populate("product", "name sku")
+        .lean()
+        .exec(),
+      InventoryLog.countDocuments(filter),
+    ]);
+
+    return res.json({ logs, total, page: pageNum, totalPages: Math.ceil(total / limitNum) });
   } catch (err) {
     return next(err);
   }

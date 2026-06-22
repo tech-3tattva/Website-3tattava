@@ -57,7 +57,7 @@ export default function WhatsAppWidget() {
         }
 
         .wa-tooltip-eyebrow {
-          font-family: 'DM Sans', sans-serif;
+          font-family: var(--font-primary), system-ui, sans-serif;
           font-size: 9px;
           letter-spacing: 2.5px;
           text-transform: uppercase;
@@ -67,7 +67,7 @@ export default function WhatsAppWidget() {
         }
 
         .wa-tooltip-text {
-          font-family: 'Cormorant Garamond', serif;
+          font-family: var(--font-primary), system-ui, sans-serif;
           font-size: 15px;
           font-weight: 400;
           color: #E8E0D0;
@@ -76,7 +76,7 @@ export default function WhatsAppWidget() {
         }
 
         .wa-tooltip-sub {
-          font-family: 'DM Sans', sans-serif;
+          font-family: var(--font-primary), system-ui, sans-serif;
           font-size: 11px;
           color: #8A7F6A;
           font-weight: 300;
@@ -100,19 +100,19 @@ export default function WhatsAppWidget() {
           width: 58px;
           height: 58px;
           border-radius: 50%;
-          background: #25D366;
-          border: none;
+          background: linear-gradient(145deg, #2a1d08 0%, #1c1304 100%);
+          border: 1px solid rgba(200,150,62,0.55);
           cursor: pointer;
           display: flex;
           align-items: center;
           justify-content: center;
-          box-shadow: 0 4px 20px rgba(37,211,102,0.35);
+          box-shadow: 0 6px 24px rgba(28,19,4,0.45), inset 0 1px 0 rgba(228,192,121,0.18);
           transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
 
         .wa-btn:hover {
           transform: scale(1.08);
-          box-shadow: 0 6px 28px rgba(37,211,102,0.5);
+          box-shadow: 0 8px 30px rgba(28,19,4,0.55), 0 0 22px rgba(200,150,62,0.28);
         }
 
         .wa-btn:active { transform: scale(0.93); }
@@ -140,7 +140,7 @@ export default function WhatsAppWidget() {
           width: 58px;
           height: 58px;
           border-radius: 50%;
-          border: 1px solid rgba(37,211,102,0.4);
+          border: 1px solid rgba(228,192,121,0.35);
           animation: wa-gold-ring 2.5s ease-out infinite 1.2s;
         }
 
@@ -158,7 +158,7 @@ export default function WhatsAppWidget() {
           display: flex;
           align-items: center;
           justify-content: center;
-          font-family: 'DM Sans', sans-serif;
+          font-family: var(--font-primary), system-ui, sans-serif;
           font-size: 9px;
           font-weight: 500;
           color: #0E0C09;

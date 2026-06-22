@@ -91,6 +91,35 @@ const orderSchema = new mongoose.Schema(
       estimatedDelivery: { type: String },
     },
 
+    // NimbusPost shipment data (populated after payment captured)
+    shipment: {
+      awbNumber: { type: String },
+      shipmentId: { type: String },
+      courierName: { type: String },
+      labelUrl: { type: String },
+      paymentType: { type: String, enum: ["prepaid", "cod"], default: "prepaid" },
+      nimbusStatus: { type: String },
+      checkpoints: [
+        {
+          status: String,
+          location: String,
+          timestamp: Date,
+          remarks: String,
+          _id: false,
+        },
+      ],
+      createdAt: { type: Date },
+      lastTrackedAt: { type: Date },
+    },
+
+    // Influencer referral attribution
+    promoCode: {
+      code: { type: String },
+      influencerId: { type: mongoose.Schema.Types.ObjectId, ref: "Influencer" },
+      parentInfluencerId: { type: mongoose.Schema.Types.ObjectId, ref: "Influencer" },
+      discountPercent: { type: Number, default: 0 },
+    },
+
     giftBox: { type: Boolean, default: false },
     giftMessage: { type: String },
     wellnessClub: { type: Boolean, default: false },

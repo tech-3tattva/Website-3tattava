@@ -99,7 +99,7 @@ export default function LabReportLookup() {
             <h2
               id="lab-report-dialog-title"
               className="font-display text-2xl text-text-dark pr-8 mb-1"
-              style={{ fontFamily: "Cormorant Garamond, serif" }}
+              style={{ fontFamily: "var(--font-primary), system-ui, sans-serif" }}
             >
               Verify lab report
             </h2>

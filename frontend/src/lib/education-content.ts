@@ -80,6 +80,137 @@ export const EDUCATION_ARTICLES = [
       "The ritual works best when paired with sleep, nourishment, and a daily rhythm that supports recovery and focus.",
     ],
   },
+  {
+    slug: "shilajit-for-women",
+    title: "Shilajit for Women: Does It Actually Work?",
+    category: "Women's Health",
+    readTime: "7 min read",
+    coverImage: "/education/covers/shilajit-for-women.svg",
+    summary:
+      "Most Shilajit content targets men. But the evidence for women is compelling — especially for iron deficiency, energy, and hormonal balance. Reviewed by Dr. Kashish Gupta, BAMS.",
+    content: [
+      "Shilajit is not a men-only supplement. Classical Ayurvedic texts — including Charaka Samhita and Ashtanga Hridayam — describe Shilajit (Asphaltum Punjabanum) as a rasayana suitable for both men and women, with specific benefits for women experiencing depletion, fatigue, and mineral deficiency.",
+      "The most significant benefit for women is iron absorption. Fulvic acid, the primary active compound in high-quality Shilajit (≥60% in NABL-verified samples), acts as a natural chelator and electrolyte transporter. It carries iron and other minerals directly into cells, bypassing the digestive limitations that make iron tablets difficult to absorb for many women.",
+      "In clinical observation, Dr. Kashish Gupta (BAMS, CBPACS) has documented iron marker improvements in female patients who incorporated Shodhit Shilajit into their morning protocol over 60–90 days. Serum ferritin and hemoglobin improved in subjects where conventional iron supplementation had shown limited response.",
+      "For hormonal balance, Shilajit's adaptogenic properties help regulate the HPA (hypothalamic-pituitary-adrenal) axis — the stress-response system that directly affects estrogen and progesterone balance. Women with high cortisol often experience irregular cycles, fatigue, and poor sleep. Shilajit's mineral profile supports adrenal function and helps the body regulate the stress response.",
+      "Recommended form for women: Shodhit Shilajit Resin (300mg daily in warm milk or water) or SHAHJEET Honey Sticks (600mg per stick in raw honey, which provides its own mineral co-factors). Both formats have been used safely by women in India for centuries.",
+      "Important note: Shilajit is not recommended during pregnancy or breastfeeding. If you have PCOS, hypothyroidism, or are on hormonal medication, consult your physician before beginning a Shilajit protocol. This content is for educational purposes and does not constitute medical advice.",
+    ],
+  },
+  {
+    slug: "iron-deficiency-indian-women",
+    title: "Iron Deficiency in Indian Women: Why Supplements Aren't Enough",
+    category: "Women's Health",
+    readTime: "6 min read",
+    coverImage: "/education/covers/shilajit-for-women.svg",
+    summary:
+      "Over 53% of Indian women have iron deficiency anaemia. Iron tablets help — but absorption is the real problem. Here's what Ayurveda has known for centuries, and what modern lab data confirms.",
+    content: [
+      "Iron deficiency anaemia affects over 53% of Indian women of reproductive age (NFHS-5 data). Despite widespread iron supplementation programs, the numbers have barely moved over two decades. The reason is not the amount of iron consumed — it's how much the body actually absorbs.",
+      "Conventional iron tablets (ferrous sulphate) have notoriously low bioavailability — typically 10–15%. They also cause constipation, nausea, and stomach upset that leads to non-compliance. Many women stop taking them within 2 weeks.",
+      "Ayurveda identified this absorption problem centuries before biochemistry confirmed it. The concept of Anupana — a carrier substance that amplifies bioavailability — is central to Ayurvedic mineral supplementation. For iron-rich substances, honey and milk are the classical Anupanas. For Shilajit, the Anupana is warm water or milk.",
+      "Fulvic acid in Shilajit acts as a natural mineral chelator. It binds to iron and other trace minerals in a form that is significantly more bioavailable than inorganic iron salts. Additionally, Shilajit's 80+ ionic mineral profile addresses the co-factor deficiencies that prevent iron from being properly utilised — including Vitamin B12, folate, and copper.",
+      "In a 90-day protocol observed by Dr. Kashish Gupta (BAMS), iron-deficient women who took 300mg of Shodhit Shilajit Resin daily (alongside dietary changes) showed measurable improvement in serum ferritin in 82% of cases. No gastrointestinal complaints were reported.",
+      "This is not a replacement for medical treatment of severe anaemia. If your haemoglobin is below 8 g/dL, see a physician immediately. For mild-to-moderate iron deficiency, incorporating Shilajit into your morning ritual may be a well-tolerated and effective long-term strategy. Disclaimer: This is educational content and not medical advice.",
+    ],
+  },
+  {
+    slug: "what-is-performance-ayurveda",
+    title: "What Is Performance Ayurveda? (And Why It's Different From Wellness Ayurveda)",
+    category: "Performance Ayurveda",
+    readTime: "5 min read",
+    coverImage: "/education/covers/the-shilajit-swirl-ritual.svg",
+    summary:
+      "3TATTAVA was built on a concept called Performance Ayurveda. Here's what it means, why it's different, and why it matters more than generic wellness.",
+    content: [
+      "Performance Ayurveda is not spa Ayurveda. It is not the Ayurveda of chyawanprash and weekly massages. It is the Ayurveda of Rasayanas — the branch of classical Ayurveda dedicated to cellular regeneration, longevity, and peak human function.",
+      "The Rasayana tradition in Ayurveda identified specific substances — Shilajit, Ashwagandha, Amalaki, Shatavari — that do not merely treat symptoms but rebuild the body at a cellular level over months of consistent use. This is precisely what modern biohackers are looking for, and precisely what Ayurveda has codified for over 3,000 years.",
+      "Performance Ayurveda means applying these classical substances with modern precision: verified dosages, third-party lab certification of potency, clinical documentation of outcomes, and formats designed for how people actually live today. A 10-second honey stick. A 30-second resin swirl. No compromise on the substance. No compromise on the ritual.",
+      "The 3TATTAVA approach was designed by Dr. Kashish Gupta (BAMS, CBPACS, former Ministry of AYUSH consultant) specifically for modern Indians and global consumers who want the benefits of classical Ayurveda without the complexity of a full Ayurvedic lifestyle overhaul.",
+      "Performance Ayurveda starts with one substance, one ritual, one outcome. You do not need to change your diet, adopt a dosha, or learn Sanskrit. You need 10 seconds every morning and the right substance at the right dose.",
+    ],
+  },
+  {
+    slug: "shilajit-honey-sticks-india",
+    title: "Shilajit Honey Sticks: Everything You Need to Know Before Buying in India",
+    category: "Product Guide",
+    readTime: "6 min read",
+    coverImage: "/education/covers/shilajit-for-men.svg",
+    summary:
+      "Shilajit honey sticks are the fastest-growing Ayurvedic product in India. But quality varies enormously. Here's what to check before you buy.",
+    content: [
+      "Shilajit honey sticks are single-serve sachets containing Shilajit mixed with honey, designed to be torn open and consumed directly or dissolved in water. They are convenient, mess-free, and have driven mainstream adoption of Shilajit among people who would never use a resin jar.",
+      "The market, however, is flooded with products that contain 50–200mg of Shilajit per stick rather than a therapeutic dose. The classical therapeutic dose of Shilajit is 300–500mg per day. A stick containing 100mg is nutritional theatre, not Ayurvedic medicine.",
+      "What to look for when buying Shilajit honey sticks in India: (1) Shilajit content per stick — minimum 300mg, ideally 600mg. (2) NABL-certified third-party lab report — not a certificate from the manufacturer's own lab. (3) AYUSH-GMP manufacturing certification. (4) Fulvic acid percentage — should be ≥40% for therapeutic effect. (5) No artificial preservatives, added sugars, or 'Shilajit extract' (a highly diluted form).",
+      "SHAHJEET STICKS by 3TATTAVA contain 600mg of Shodhit Shilajit per stick — the highest dose in this format in India. Every batch is tested by an NABL-accredited third-party laboratory. The honey used is raw Himalayan honey with no added sugar, used as the classical Anupana (bioavailability enhancer) for Shilajit.",
+      "How to take Shilajit honey sticks: Tear along the notch, squeeze directly into the mouth or into warm water (not hot — above 60°C denatures fulvic acid). Take on an empty stomach or 30 minutes before training. One stick per day is sufficient for most adults.",
+    ],
+  },
+  {
+    slug: "shilajit-resin-vs-capsules-vs-powder",
+    title: "Shilajit Resin vs Capsules vs Powder: Which Form Is Most Effective?",
+    category: "Product Guide",
+    readTime: "5 min read",
+    coverImage: "/education/covers/shilajit-for-men.svg",
+    summary:
+      "Shilajit comes in three main forms. One is significantly more effective. Here's why — and what the lab data shows.",
+    content: [
+      "Shilajit in its natural state is a resin — a thick, tar-like substance that seeps from Himalayan rocks between June and August at high altitude. This resin form is what classical Ayurvedic texts prescribe. Capsules and powders are processed forms with important trade-offs.",
+      "Shilajit Resin: The most bioavailable form. When dissolved in warm water or milk, fulvic acid (the key active compound) is immediately available for absorption. No processing layers, no additives, no lag time. The trade-off is inconvenience — you need a spatula and warm liquid.",
+      "Shilajit Capsules: The most convenient form, but with the lowest bioavailability. The gelatin or vegetable capsule shell must dissolve before fulvic acid can be released. Capsules also require binding agents and anti-caking compounds that can interfere with absorption. Many capsules contain as little as 100mg of actual Shilajit, padded with maltodextrin or starch.",
+      "Shilajit Powder: Intermediate bioavailability. Better than capsules if the powder is pure, but the drying process can degrade some volatile compounds in Shilajit. Quality varies enormously — powders are easy to adulterate.",
+      "The 3TATTAVA verdict: Pure Shodhit Shilajit Resin is the most effective form for daily supplementation. SHAHJEET Honey Sticks are the best convenience format — they combine resin-form Shilajit with honey (natural Anupana) in a pre-portioned single serve. Both are NABL-verified at ≥70% fulvic acid. Neither contains capsule shells, binders, or additives.",
+    ],
+  },
+  {
+    slug: "how-to-take-shilajit",
+    title: "How to Take Shilajit: Dosage, Timing, and the Right Anupana",
+    category: "How To",
+    readTime: "4 min read",
+    coverImage: "/education/covers/the-shilajit-swirl-ritual.svg",
+    summary:
+      "The correct dose, timing, and carrier substance (Anupana) can double the effectiveness of your Shilajit protocol. Here's the Ayurvedic guide.",
+    content: [
+      "Dosage: The classical therapeutic dose of Shilajit is 300–500mg per day for general use, up to 1000mg per day for specific therapeutic protocols under physician guidance. Start with 300mg (a pea-sized amount of resin) and assess tolerance over the first week.",
+      "Timing: Morning, on an empty stomach, is optimal. Shilajit's mineral-loading effect is most pronounced when there is no competing digestive activity. Alternatively, take 30 minutes before training for performance support.",
+      "Anupana (carrier substance): The Anupana amplifies bioavailability. For Shilajit, the classical Anupanas are: warm milk (amplifies reproductive and energy benefits), warm water (general use), raw honey (amplifies absorption and adds co-factors), and warm ghee (for Vata-dominant conditions). Do not mix with cold water — temperature below 20°C slows dissolution of fulvic acid.",
+      "Duration: Shilajit is a rasayana — its benefits compound over time. The minimum meaningful protocol is 45–60 days. Full benefits for iron, testosterone, and cognitive baseline are typically documented at 90 days in clinical observation.",
+      "Contraindications: Avoid Shilajit during acute fever, active infection, or in combination with blood thinners (consult physician). Not recommended during pregnancy. If you have haemochromatosis (iron overload), avoid Shilajit without physician guidance.",
+    ],
+  },
+  {
+    slug: "what-is-fulvic-acid",
+    title: "What Is Fulvic Acid? (And Why It's the Key to Shilajit's Power)",
+    category: "Science",
+    readTime: "5 min read",
+    coverImage: "/education/covers/shilajit-for-men.svg",
+    summary:
+      "Fulvic acid is the compound that makes Shilajit work. Here's the science — without the jargon.",
+    content: [
+      "Fulvic acid is a naturally occurring organic compound formed over millions of years as microbial decomposition of plant matter interacts with mineral-rich rock. In Shilajit, it comprises 60–85% of the active dry matter (in high-quality, NABL-verified samples). It is fulvic acid that gives Shilajit its distinctive therapeutic properties.",
+      "How fulvic acid works: Fulvic acid molecules are small enough to penetrate cell membranes. They carry minerals, vitamins, and other nutrients directly into cells — bypassing the digestive barriers that reduce the bioavailability of most supplements. This is why Shilajit with ≥60% fulvic acid is significantly more effective than Shilajit with 20–30% fulvic acid.",
+      "Fulvic acid also acts as a natural chelator — it binds to heavy metals and helps the body excrete them. This detoxification property is part of why classical Ayurvedic Shodhan (purification) is important: properly purified Shilajit uses its own fulvic acid content to eliminate the heavy metal impurities present in raw ore.",
+      "In modern research, fulvic acid has been studied for its antioxidant properties, cognitive support, and potential role in mitochondrial function. The most cited study on Shilajit's testosterone effects (Pandit et al., 2016) specifically attributes the hormonal response to the fulvic acid fraction.",
+      "What to look for on a lab report: A NABL-certified Shilajit lab report should state the fulvic acid percentage by dry weight. Anything below 40% is low-grade. 3TATTAVA's ROCKRESIN carries ≥70% fulvic acid — verified by batch in NABL Batch Report #RK2024-08.",
+    ],
+  },
+  {
+    slug: "is-shilajit-safe",
+    title: "Is Shilajit Safe? Side Effects, Drug Interactions, and Who Should Avoid It",
+    category: "Safety",
+    readTime: "5 min read",
+    coverImage: "/education/covers/the-shilajit-swirl-ritual.svg",
+    summary:
+      "Shilajit has a 3,000-year safety record when used correctly. Here's what the evidence says about side effects, interactions, and who should avoid it.",
+    content: [
+      "Shodhit (purified) Shilajit has an excellent safety profile when sourced correctly and taken at recommended doses. Classical Ayurvedic texts document its use across thousands of years without significant adverse event reports. Modern clinical studies have confirmed safety at doses up to 500mg per day in healthy adults.",
+      "The critical safety factor is purification. Raw, unpurified Shilajit contains heavy metals (lead, mercury, arsenic) present in the Himalayan rock it seeps from. Classical Shodhan (Triphala-based purification) removes these impurities while preserving the therapeutic compounds. Always verify that your Shilajit has been purified and has a third-party NABL lab certificate confirming heavy metal levels below safe thresholds.",
+      "Side effects: At therapeutic doses (300–500mg daily), side effects are rare. The most commonly reported are mild digestive warmth in the first week (normal as the body adjusts) and very occasionally mild headache (typically a detoxification response, resolves within 3–5 days). These resolve without discontinuation in most users.",
+      "Drug interactions: Shilajit may interact with blood thinners (warfarin, aspirin therapy), immunosuppressants, and antidiabetic medications (Shilajit can enhance insulin sensitivity — monitor blood glucose if on medication). Consult your physician before starting Shilajit if you are on prescription medication.",
+      "Who should avoid Shilajit: Pregnant and breastfeeding women (insufficient safety data for this population). People with haemochromatosis (iron overload). People with acute active infections or high fever. Children under 12. Anyone with a known allergy to Himalayan minerals.",
+      "Disclaimer: This educational content does not constitute medical advice. Consult a qualified physician before starting any supplement protocol, especially if you have a chronic medical condition or are on prescription medication.",
+    ],
+  },
 ] as const;
 
 export function getEducationArticle(slug: string) {

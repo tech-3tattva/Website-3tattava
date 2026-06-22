@@ -9,7 +9,7 @@ export default function CategoryScroll() {
     <section className="py-12 md:py-16 px-4 bg-cream">
       <h2
         className="font-display text-3xl md:text-[42px] text-center text-text-dark mb-8"
-        style={{ fontFamily: "Cormorant Garamond, serif" }}
+        style={{ fontFamily: "var(--font-primary), system-ui, sans-serif" }}
       >
         Explore by Need
       </h2>
@@ -29,7 +29,7 @@ export default function CategoryScroll() {
                 <div className="w-16 h-16 rounded-full bg-white/50 mb-3" />
                 <span
                   className="font-sans text-sm uppercase tracking-wider text-text-dark text-center"
-                  style={{ fontFamily: "DM Sans, sans-serif" }}
+                  style={{ fontFamily: "var(--font-primary), system-ui, sans-serif" }}
                 >
                   {cat.name}
                 </span>

@@ -55,7 +55,7 @@ function RegisterContent() {
       <div className="relative z-10 w-full max-w-[28rem] bg-white rounded-lg shadow-[0_18px_50px_rgba(0,0,0,0.25)] p-5 sm:p-6 md:p-8 border border-[#ede6d8]">
         <h1
           className="text-[36px] sm:text-[42px] md:text-[44px] leading-none font-display text-center text-gray-900 mb-6 sm:mb-7"
-          style={{ fontFamily: "Cormorant Garamond, serif" }}
+          style={{ fontFamily: "var(--font-primary), system-ui, sans-serif" }}
         >
           Create Account
         </h1>
