@@ -38,15 +38,7 @@ async def chat_stream(session_id: str, message: str, history: List[Dict[str, str
         system_message=SYSTEM_PROMPT,
     ).with_model("anthropic", ANTHROPIC_MODEL)
 
-    # Replay last N turns by prepending into the message (LlmChat manages context but session_id keys it)
-    convo = ""
-    if history:
-        for h in history[-8:]:
-            role = "User" if h.get("role") == "user" else "Assistant"
-            convo += f"{role}: {h.get('content','')}\n"
-    if convo:
-        message = f"{convo}User: {message}"
-
+    # LlmChat keeps history per session_id; just send the new message.
     try:
         async for ev in chat.stream_message(UserMessage(text=message)):
             if isinstance(ev, TextDelta):

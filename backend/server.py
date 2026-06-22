@@ -713,6 +713,8 @@ async def admin_update_product(slug: str, p: ProductIn):
     if not existing:
         raise HTTPException(404, "Product not found")
     update = p.model_dump()
+    # Path slug is authoritative — ignore any divergent slug in body to prevent accidental rename
+    update["slug"] = slug
     update["id"] = existing["id"]
     await db.products.update_one({"slug": slug}, {"$set": update})
     update.pop("_id", None)
@@ -744,12 +746,15 @@ class ChatIn(BaseModel):
     history: List[Dict[str, str]] = []
 
 
+import json
+
+
 @api.post("/chat/stream")
 async def chat_stream_endpoint(payload: ChatIn):
     async def event_gen():
         async for token in chat_stream(payload.session_id, payload.message, payload.history):
-            # SSE format
-            yield f"data: {token}\n\n"
+            # JSON-encode each token so SSE spec doesn't strip leading whitespace and so newlines/control chars survive
+            yield f"data: {json.dumps({'t': token})}\n\n"
         yield "event: done\ndata: [DONE]\n\n"
 
     return StreamingResponse(

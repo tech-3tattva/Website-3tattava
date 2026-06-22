@@ -10,6 +10,25 @@ const SUGGESTIONS = [
   "How is Shahjeet different from RockResin?",
 ];
 
+// Lightweight markdown: **bold**, [label](href), single newlines.
+function renderRich(text) {
+  if (!text) return text;
+  const escape = (s) => s.replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
+  let html = escape(text);
+  // [label](url) — internal links use react-router-friendly anchor, external opens new tab
+  html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_, label, href) => {
+    const external = /^https?:\/\//i.test(href);
+    return `<a href="${href}" ${external ? 'target="_blank" rel="noreferrer"' : ""} style="color:#A67B2F;text-decoration:underline;text-underline-offset:3px;">${label}</a>`;
+  });
+  // **bold**
+  html = html.replace(/\*\*([^*]+)\*\*/g, '<strong style="font-weight:700;color:#1c1304;">$1</strong>');
+  // *italic*
+  html = html.replace(/(^|[^*])\*([^*\n]+)\*/g, '$1<em>$2</em>');
+  // line breaks
+  html = html.replace(/\n/g, "<br/>");
+  return html;
+}
+
 export default function Chatbot() {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState([
@@ -52,11 +71,19 @@ export default function Chatbot() {
         buf = lines.pop() || "";
         for (const line of lines) {
           if (!line.startsWith("data:")) continue;
-          const data = line.slice(5).trim();
-          if (data === "[DONE]") continue;
+          const raw = line.slice(5).replace(/^\s/, ""); // drop only the single optional space per SSE spec
+          if (!raw || raw === "[DONE]") continue;
+          let token;
+          try {
+            const obj = JSON.parse(raw);
+            token = typeof obj.t === "string" ? obj.t : "";
+          } catch {
+            token = raw;
+          }
+          if (!token) continue;
           setMessages((m) => {
             const next = [...m];
-            next[next.length - 1] = { ...next[next.length - 1], content: next[next.length - 1].content + data };
+            next[next.length - 1] = { ...next[next.length - 1], content: next[next.length - 1].content + token };
             return next;
           });
         }
