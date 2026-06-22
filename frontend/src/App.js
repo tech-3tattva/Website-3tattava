@@ -1,56 +1,62 @@
-import { useEffect } from "react";
-import "@/App.css";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import axios from "axios";
-import { HOME } from "@/constants/testIds";
+import React, { useEffect } from "react";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import Layout from "./components/layout/Layout";
+import { CartProvider } from "./context/CartContext";
+import Home from "./pages/Home";
+import Shop from "./pages/Shop";
+import ProductDetail from "./pages/ProductDetail";
+import OurStory from "./pages/OurStory";
+import KnowledgeCenter from "./pages/KnowledgeCenter";
+import ArticleDetail from "./pages/ArticleDetail";
+import ResearchTesting from "./pages/ResearchTesting";
+import Community from "./pages/Community";
+import FindUs from "./pages/FindUs";
+import VaidyaConnect from "./pages/VaidyaConnect";
+import DoshaQuiz from "./pages/DoshaQuiz";
+import PerformanceAssessment from "./pages/PerformanceAssessment";
+import Checkout from "./pages/Checkout";
+import OrderConfirmation from "./pages/OrderConfirmation";
+import Admin from "./pages/Admin";
+import NotFound from "./pages/NotFound";
+import "./index.css";
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
-
-const Home = () => {
-  const helloWorldApi = async () => {
-    try {
-      const response = await axios.get(`${API}/`);
-      console.log(response.data.message);
-    } catch (e) {
-      console.error(e, `errored out requesting / api`);
-    }
-  };
-
-  useEffect(() => {
-    helloWorldApi();
-  }, []);
-
-  return (
-    <div>
-      <header className="App-header">
-        <a
-          data-testid={HOME.emergentLink}
-          className="App-link"
-          href="https://emergent.sh"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <img src="https://avatars.githubusercontent.com/in/1201222?s=120&u=2686cf91179bbafbc7a71bfbc43004cf9ae1acea&v=4" />
-        </a>
-        <p className="mt-5">Building something incredible ~!</p>
-      </header>
-    </div>
-  );
-};
-
-function App() {
-  return (
-    <div className="App">
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home />}>
-            <Route index element={<Home />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
-    </div>
-  );
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  useEffect(() => { window.scrollTo({ top: 0, behavior: "instant" }); }, [pathname]);
+  return null;
 }
 
-export default App;
+export default function App() {
+  return (
+    <CartProvider>
+      <BrowserRouter>
+        <ScrollToTop />
+        <Layout>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/shop" element={<Shop />} />
+            <Route path="/products" element={<Shop />} />
+            <Route path="/products/:slug" element={<ProductDetail />} />
+            <Route path="/our-story" element={<OurStory />} />
+            <Route path="/about" element={<OurStory />} />
+            <Route path="/knowledge-center" element={<KnowledgeCenter />} />
+            <Route path="/education/:slug" element={<ArticleDetail />} />
+            <Route path="/research-testing" element={<ResearchTesting />} />
+            <Route path="/community" element={<Community />} />
+            <Route path="/find-us" element={<FindUs />} />
+            <Route path="/vaidyaconnect" element={<VaidyaConnect />} />
+            <Route path="/dosha-quiz" element={<DoshaQuiz />} />
+            <Route path="/assessment" element={<PerformanceAssessment />} />
+            <Route path="/checkout" element={<Checkout />} />
+            <Route path="/checkout/cart" element={<Checkout />} />
+            <Route path="/checkout/address" element={<Checkout />} />
+            <Route path="/checkout/payment" element={<Checkout />} />
+            <Route path="/order-confirmation/:id" element={<OrderConfirmation />} />
+            <Route path="/admin" element={<Admin />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </Layout>
+      </BrowserRouter>
+    </CartProvider>
+  );
+}

@@ -1,82 +1,56 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-    darkMode: ["class"],
-    content: [
-    "./src/**/*.{js,jsx,ts,tsx}",
-    "./public/index.html"
-  ],
+  darkMode: ["class"],
+  content: ["./src/**/*.{js,jsx,ts,tsx}", "./public/index.html"],
   theme: {
     extend: {
-      borderRadius: {
-        lg: 'var(--radius)',
-        md: 'calc(var(--radius) - 2px)',
-        sm: 'calc(var(--radius) - 4px)'
-      },
       colors: {
-        background: 'hsl(var(--background))',
-        foreground: 'hsl(var(--foreground))',
-        card: {
-          DEFAULT: 'hsl(var(--card))',
-          foreground: 'hsl(var(--card-foreground))'
-        },
-        popover: {
-          DEFAULT: 'hsl(var(--popover))',
-          foreground: 'hsl(var(--popover-foreground))'
-        },
-        primary: {
-          DEFAULT: 'hsl(var(--primary))',
-          foreground: 'hsl(var(--primary-foreground))'
-        },
-        secondary: {
-          DEFAULT: 'hsl(var(--secondary))',
-          foreground: 'hsl(var(--secondary-foreground))'
-        },
-        muted: {
-          DEFAULT: 'hsl(var(--muted))',
-          foreground: 'hsl(var(--muted-foreground))'
-        },
-        accent: {
-          DEFAULT: 'hsl(var(--accent))',
-          foreground: 'hsl(var(--accent-foreground))'
-        },
-        destructive: {
-          DEFAULT: 'hsl(var(--destructive))',
-          foreground: 'hsl(var(--destructive-foreground))'
-        },
-        border: 'hsl(var(--border))',
-        input: 'hsl(var(--input))',
-        ring: 'hsl(var(--ring))',
-        chart: {
-          '1': 'hsl(var(--chart-1))',
-          '2': 'hsl(var(--chart-2))',
-          '3': 'hsl(var(--chart-3))',
-          '4': 'hsl(var(--chart-4))',
-          '5': 'hsl(var(--chart-5))'
-        }
+        ink: "#1c1304",
+        cream: "#f7f0e2",
+        "cream-deep": "#ede4d0",
+        gold: "#C8963E",
+        "gold-dark": "#A67B2F",
+        "gold-soft": "#E4C079",
+        "3t-black": "#0E0C09",
+        "3t-black-2": "#1A1710",
+        "3t-black-3": "#252118",
+        "3t-text": "#E8E0D0",
+        "3t-text-muted": "#8A7F6A",
+        "3t-gold": "#C9A84C",
+        "3t-gold-light": "#E8C97A",
+        "3t-shahjeet": "#CD872A",
+        terracotta: "#b35e34",
+        sand: "#eae5db",
+        taupe: "#b7a392",
       },
-      keyframes: {
-        'accordion-down': {
-          from: {
-            height: '0'
-          },
-          to: {
-            height: 'var(--radix-accordion-content-height)'
-          }
-        },
-        'accordion-up': {
-          from: {
-            height: 'var(--radix-accordion-content-height)'
-          },
-          to: {
-            height: '0'
-          }
-        }
+      fontFamily: {
+        sans: ["Archivo", "system-ui", "sans-serif"],
+        serif: ["Fraunces", "Georgia", "serif"],
+        devanagari: ['"Noto Serif Devanagari"', "serif"],
+      },
+      letterSpacing: {
+        eyebrow: "0.25em",
+        wider2: "0.18em",
       },
       animation: {
-        'accordion-down': 'accordion-down 0.2s ease-out',
-        'accordion-up': 'accordion-up 0.2s ease-out'
-      }
-    }
+        "fade-up": "fadeUp .9s cubic-bezier(0.16,1,0.3,1) both",
+        "fade-in": "fadeIn 1s ease-out both",
+        "line-grow": "lineGrow 1.2s cubic-bezier(0.16,1,0.3,1) both",
+        "marquee": "marquee 38s linear infinite",
+        "float-up": "floatUp 6s ease-in-out infinite alternate",
+        "drip": "drip 3s ease-in infinite",
+        "shimmer": "shimmer 8s linear infinite",
+      },
+      keyframes: {
+        fadeUp: { "0%": { opacity: 0, transform: "translateY(28px)" }, "100%": { opacity: 1, transform: "translateY(0)" } },
+        fadeIn: { "0%": { opacity: 0 }, "100%": { opacity: 1 } },
+        lineGrow: { "0%": { transform: "scaleX(0)" }, "100%": { transform: "scaleX(1)" } },
+        marquee: { "0%": { transform: "translateX(0)" }, "100%": { transform: "translateX(-50%)" } },
+        floatUp: { "0%": { transform: "translateY(0)", opacity: 0.4 }, "100%": { transform: "translateY(-24px)", opacity: 0.9 } },
+        drip: { "0%": { transform: "translateY(-100%) scaleY(0.5)", opacity: 0 }, "20%": { opacity: 1 }, "100%": { transform: "translateY(220%) scaleY(1.2)", opacity: 0 } },
+        shimmer: { "0%": { backgroundPosition: "0% 50%" }, "100%": { backgroundPosition: "200% 50%" } },
+      },
+    },
   },
   plugins: [require("tailwindcss-animate")],
 };
