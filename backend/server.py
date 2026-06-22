@@ -590,17 +590,21 @@ async def contact(payload: ContactIn):
 
 @api.post("/orders")
 async def create_order(payload: OrderIn):
-    total = sum(it.price * it.qty for it in payload.items)
+    subtotal = sum(it.price * it.qty for it in payload.items)
+    shipping = 0 if subtotal >= 999 else 49
+    total = subtotal + shipping
     order = {
         "id": new_id(),
         "created_at": now_iso(),
         "status": "confirmed",
+        "subtotal": subtotal,
+        "shipping": shipping,
         "total": total,
         "currency": "INR",
         **payload.model_dump(),
     }
     await db.orders.insert_one(order)
-    return {"ok": True, "order_id": order["id"], "total": total}
+    return {"ok": True, "order_id": order["id"], "subtotal": subtotal, "shipping": shipping, "total": total}
 
 
 @api.get("/orders/{order_id}")
