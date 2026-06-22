@@ -96,3 +96,14 @@ Last updated: Jan 2026 — iteration 3 (Razorpay + n8n + cart recovery + S3 medi
 - Bottom progress thread is a tri-stop gradient (green → terracotta → gold) that fills as the user scrolls through the section — visualises the journey at all times.
 - Manifesto + CTA reveal on Act III nearing completion ("Performance is not a destination. It is a continuous process of becoming." → "Find Your Starting Stage").
 - All transitions use the same `cubic-bezier(0.16,1,0.3,1)` easing as the rest of the site for consistency.
+
+
+## Implemented — Iteration 6 (Feb 2026 · PDP Scroll-Reveal)
+- Applied cinematic ScrollReveal treatment to Product Detail Pages (`ProductDetail.jsx`) — RockResin & Shahjeet pages now fade/slide content as user scrolls:
+  - "The Pillars of Quality" heading reveal + staggered pillar cards (100ms cascade) with accent-tinted radial glow backdrop.
+  - "The Story" italic narrative wrap reveals on scroll, matching homepage cadence.
+  - Specifications, Regulatory and FAQ blocks gated by ScrollReveal for premium pacing.
+- Fixed unescaped apostrophes (`'` → `&apos;`) in PDP copy that previously blocked the ESLint pass — "Quality doesn&apos;t happen by accident." and "What&apos;s on the pack." Both PDPs now lint clean.
+- Self-tested: screenshots on /products/rockresin and /products/shahjeet-sticks confirm full render, pillar cards visible, regulatory + FAQ sections in place.
+
+Last updated: Feb 2026 — iteration 6 (PDP cinematic scroll-reveal).

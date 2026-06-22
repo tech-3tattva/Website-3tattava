@@ -3,6 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import { ArrowLeft, Plus, Minus, Check, ShieldCheck, FlaskConical, ScanLine, ArrowRight } from "lucide-react";
 import { getProduct } from "../lib/api";
 import { useCart } from "../context/CartContext";
+import ScrollReveal from "../components/ScrollReveal";
 
 export default function ProductDetail() {
   const { slug } = useParams();
@@ -22,17 +23,32 @@ export default function ProductDetail() {
 
   return (
     <div data-testid={`product-page-${slug}`} className="bg-cream">
-      {/* Hero */}
-      <section className="px-6 md:px-16 pt-10 pb-16 grid md:grid-cols-2 gap-12">
-        <div className="max-w-7xl">
-          <Link to="/shop" className="eyebrow text-ink/60 inline-flex items-center gap-2 mb-6"><ArrowLeft size={12} /> All Rituals</Link>
-          <div className="bg-3t-black p-12 grain relative overflow-hidden">
-            <img src={p.image} alt={p.name} className="w-full h-[480px] object-contain" data-testid="product-image" />
-            <div className="absolute top-4 left-4 eyebrow text-cream/90 text-[10px]" style={{ color: p.accent_color }}>{p.ritual_name}</div>
-          </div>
+      {/* Hero — sticky product, scrolling narrative on the right */}
+      <section className="px-6 md:px-16 pt-10 pb-16 grid md:grid-cols-2 gap-10 md:gap-14 relative overflow-hidden">
+        {/* Accent radial backdrop */}
+        <div
+          aria-hidden="true"
+          className="absolute -top-32 -right-40 w-[640px] h-[640px] rounded-full pointer-events-none"
+          style={{ background: `radial-gradient(closest-side, ${p.accent_color}22, transparent 70%)`, filter: "blur(12px)" }}
+        />
+        <div className="md:sticky md:top-28 md:self-start max-w-7xl">
+          <Link to="/shop" className="eyebrow text-ink/60 inline-flex items-center gap-2 mb-6 hover:text-gold-dark transition-colors"><ArrowLeft size={12} /> All Rituals</Link>
+          <ScrollReveal direction="scale" duration={1000}>
+            <div className="bg-3t-black p-8 md:p-12 grain relative overflow-hidden shadow-[0_30px_80px_rgba(28,19,4,0.18)]">
+              <div
+                aria-hidden="true"
+                className="absolute inset-0 opacity-50"
+                style={{ background: `radial-gradient(55% 55% at 50% 60%, ${p.accent_color}33, transparent 70%)` }}
+              />
+              <img src={p.image} alt={p.name} className="w-full h-[420px] md:h-[480px] object-contain relative z-10 transition-transform duration-700 hover:scale-[1.02]" data-testid="product-image" />
+              <div className="absolute top-4 left-4 eyebrow text-cream/90 text-[10px]" style={{ color: p.accent_color }}>{p.ritual_name}</div>
+            </div>
+          </ScrollReveal>
           <div className="grid grid-cols-3 gap-3 mt-4">
             {p.gallery?.slice(0, 3).map((g, i) => (
-              <div key={i} className="aspect-square bg-cream-deep/40 overflow-hidden"><img src={g} alt="" className="w-full h-full object-cover" /></div>
+              <ScrollReveal key={i} delay={120 + i * 100} className="aspect-square bg-cream-deep/40 overflow-hidden group cursor-pointer">
+                <img src={g} alt="" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+              </ScrollReveal>
             ))}
           </div>
         </div>
@@ -73,45 +89,62 @@ export default function ProductDetail() {
             ))}
           </div>
 
-          {/* Ritual usage */}
+          {/* Ritual usage — sequential reveal */}
           <div className="mt-10 border-t border-ink/10 pt-8">
             <div className="eyebrow text-ink/60 mb-4">The Ritual</div>
             <div className="grid grid-cols-3 gap-3">
-              {p.how_to_use?.map((s) => (
-                <div key={s.step} className="bg-cream-deep/40 p-5">
-                  <div className="font-display text-3xl gold-gradient-text mb-2" style={{ fontVariationSettings: "'wdth' 80, 'wght' 700" }}>{s.step}</div>
-                  <div className="font-display text-base mb-1" style={{ fontVariationSettings: "'wdth' 88, 'wght' 700" }}>{s.title}</div>
-                  <p className="text-xs text-ink/70">{s.desc}</p>
-                </div>
+              {p.how_to_use?.map((s, i) => (
+                <ScrollReveal key={s.step} delay={i * 180} direction="up" className="bg-cream-deep/40 p-5 relative overflow-hidden group">
+                  <div
+                    aria-hidden="true"
+                    className="absolute -bottom-6 -right-6 w-20 h-20 rounded-full opacity-30 group-hover:opacity-60 transition-opacity"
+                    style={{ background: `radial-gradient(closest-side, ${p.accent_color}, transparent)` }}
+                  />
+                  <div className="font-display text-3xl mb-2 relative" style={{ fontVariationSettings: "'wdth' 80, 'wght' 700", color: p.accent_color }}>{s.step}</div>
+                  <div className="font-display text-base mb-1 relative" style={{ fontVariationSettings: "'wdth' 88, 'wght' 700" }}>{s.title}</div>
+                  <p className="text-xs text-ink/70 relative">{s.desc}</p>
+                </ScrollReveal>
               ))}
             </div>
           </div>
         </div>
       </section>
 
-      {/* Long description */}
-      <section className="section bg-cream-deep/30">
+      {/* Long description — quiet, italic moment */}
+      <section className="section bg-cream-deep/30 relative overflow-hidden">
+        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-gold/40 to-transparent" />
         <div className="max-w-4xl mx-auto">
-          <div className="eyebrow text-ink/60 mb-4">The Story</div>
-          <p className="font-italic-light text-2xl md:text-3xl leading-relaxed" style={{ fontFamily: "Fraunces, Georgia, serif", fontStyle: "italic" }}>{p.long_desc}</p>
+          <ScrollReveal>
+            <div className="eyebrow text-ink/60 mb-4">The Story</div>
+          </ScrollReveal>
+          <ScrollReveal delay={140}>
+            <p className="font-italic-light text-xl md:text-2xl lg:text-3xl leading-relaxed" style={{ fontFamily: "Fraunces, Georgia, serif", fontStyle: "italic" }}>{p.long_desc}</p>
+          </ScrollReveal>
         </div>
       </section>
 
-      {/* Pillars */}
+      {/* Pillars — cinematic stagger on dark */}
       {p.pillars?.length > 0 && (
-        <section className="section bg-ink text-cream grain">
-          <div className="max-w-7xl mx-auto">
-            <div className="eyebrow text-gold mb-4">The Pillars of Quality</div>
-            <h2 className="font-display text-3xl md:text-5xl mb-12" style={{ fontVariationSettings: "'wdth' 85, 'wght' 700", lineHeight: 1.05 }}>
-              Quality doesn't happen by accident. <span className="gold-gradient-text">It happens by design.</span>
-            </h2>
-            <div className="grid md:grid-cols-3 lg:grid-cols-5 gap-px bg-gold/15 border border-gold/15">
+        <section className="section bg-ink text-cream grain relative overflow-hidden">
+          <div
+            aria-hidden="true"
+            className="absolute -top-40 left-1/2 -translate-x-1/2 w-[900px] h-[900px] rounded-full pointer-events-none opacity-30"
+            style={{ background: `radial-gradient(closest-side, ${p.accent_color}55, transparent 70%)`, filter: "blur(20px)" }}
+          />
+          <div className="max-w-7xl mx-auto relative">
+            <ScrollReveal>
+              <div className="eyebrow mb-4" style={{ color: p.accent_color }}>The Pillars of Quality</div>
+              <h2 className="font-display text-3xl sm:text-4xl md:text-5xl mb-12 max-w-3xl" style={{ fontVariationSettings: "'wdth' 85, 'wght' 700", lineHeight: 1.05 }}>
+                Quality doesn&apos;t happen by accident. <span style={{ color: p.accent_color }}>It happens by design.</span>
+              </h2>
+            </ScrollReveal>
+            <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
               {p.pillars.map((pillar, i) => (
-                <div key={pillar.title} className="bg-3t-black p-6 hover:bg-3t-black-2 transition-colors">
-                  <div className="font-display text-3xl text-gold mb-3" style={{ fontVariationSettings: "'wdth' 80, 'wght' 700" }}>0{i + 1}</div>
+                <ScrollReveal key={pillar.title} delay={i * 100} direction="up" className="bg-3t-black-2/70 backdrop-blur-sm p-5 md:p-6 border border-cream/8 hover:border-cream/25 transition-all duration-500 hover:-translate-y-1">
+                  <div className="font-display text-3xl mb-3" style={{ fontVariationSettings: "'wdth' 80, 'wght' 700", color: p.accent_color }}>0{i + 1}</div>
                   <div className="font-display text-base mb-2" style={{ fontVariationSettings: "'wdth' 88, 'wght' 700" }}>{pillar.title}</div>
                   <p className="text-xs text-cream/65">{pillar.desc}</p>
-                </div>
+                </ScrollReveal>
               ))}
             </div>
           </div>
@@ -168,19 +201,31 @@ export default function ProductDetail() {
       </section>
 
       {/* FAQs */}
-      <section className="section bg-cream-deep/30">
+      <section className="section bg-cream-deep/30 relative overflow-hidden">
+        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-gold/40 to-transparent" />
         <div className="max-w-3xl mx-auto">
-          <div className="eyebrow text-ink/60 mb-4">FAQs</div>
-          <h2 className="font-display text-3xl md:text-4xl mb-10" style={{ fontVariationSettings: "'wdth' 85, 'wght' 700" }}>The honest answers.</h2>
+          <ScrollReveal>
+            <div className="eyebrow text-ink/60 mb-4">FAQs</div>
+            <h2 className="font-display text-3xl md:text-4xl mb-10" style={{ fontVariationSettings: "'wdth' 85, 'wght' 700" }}>The honest answers.</h2>
+          </ScrollReveal>
           <div className="border-y border-ink/10 divide-y divide-ink/10">
             {p.faqs?.map((f, i) => (
-              <button key={i} onClick={() => setOpenFaq(openFaq === i ? -1 : i)} className="w-full text-left py-5 flex items-start gap-6">
-                <div className="flex-1">
-                  <div className="font-display text-base md:text-lg" style={{ fontVariationSettings: "'wdth' 88, 'wght' 600" }}>{f.q}</div>
-                  {openFaq === i && <p className="text-sm text-ink/70 mt-3">{f.a}</p>}
-                </div>
-                {openFaq === i ? <Minus size={16} className="text-gold mt-1" /> : <Plus size={16} className="text-ink/50 mt-1" />}
-              </button>
+              <ScrollReveal key={i} delay={i * 80}>
+                <button onClick={() => setOpenFaq(openFaq === i ? -1 : i)} className="w-full text-left py-5 flex items-start gap-6 group">
+                  <div className="flex-1">
+                    <div className="font-display text-base md:text-lg group-hover:text-gold-dark transition-colors" style={{ fontVariationSettings: "'wdth' 88, 'wght' 600" }}>{f.q}</div>
+                    <div
+                      className="overflow-hidden transition-all duration-500"
+                      style={{ maxHeight: openFaq === i ? "320px" : "0px", opacity: openFaq === i ? 1 : 0 }}
+                    >
+                      <p className="text-sm text-ink/70 mt-3">{f.a}</p>
+                    </div>
+                  </div>
+                  <span className="mt-1 transition-transform duration-500" style={{ transform: openFaq === i ? "rotate(180deg)" : "rotate(0deg)" }}>
+                    {openFaq === i ? <Minus size={16} className="text-gold" /> : <Plus size={16} className="text-ink/50" />}
+                  </span>
+                </button>
+              </ScrollReveal>
             ))}
           </div>
         </div>
@@ -191,7 +236,7 @@ export default function ProductDetail() {
         <section className="section bg-ink text-cream" data-testid="product-regulatory">
           <div className="max-w-5xl mx-auto">
             <div className="eyebrow text-gold mb-4">Regulatory · Packaging</div>
-            <h2 className="font-display text-2xl md:text-3xl mb-10" style={{ fontVariationSettings: "'wdth' 88, 'wght' 700" }}>What's on the pack.</h2>
+            <h2 className="font-display text-2xl md:text-3xl mb-10" style={{ fontVariationSettings: "'wdth' 88, 'wght' 700" }}>What&apos;s on the pack.</h2>
             <div className="grid md:grid-cols-2 gap-x-12 gap-y-8 text-sm">
               <div>
                 <div className="eyebrow text-gold-dark text-[10px] mb-2">Manufacturing License</div>
