@@ -176,7 +176,7 @@ export default function Checkout() {
                 <div className="eyebrow text-ink/60 mb-4">Delivery Address</div>
                 <div className="grid md:grid-cols-2 gap-5">
                   <input required placeholder="FULL NAME" data-testid="co-name" className="luxe-input md:col-span-2" value={form.customer_name} onChange={(e) => setForm({ ...form, customer_name: e.target.value })} />
-                  <input required type="email" placeholder="EMAIL" data-testid="co-email" className="luxe-input" value={form.email} onChange={(e) => { setForm({ ...form, email: e.target.value }); if (e.target.value.includes("@")) captureRecoveryEmail(e.target.value); }} />
+                  <input required type="email" placeholder="EMAIL" data-testid="co-email" className="luxe-input" value={form.email} onChange={(e) => { setForm({ ...form, email: e.target.value }); if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e.target.value)) captureRecoveryEmail(e.target.value); }} />
                   <input required placeholder="PHONE" data-testid="co-phone" className="luxe-input" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
                   <input required placeholder="STREET ADDRESS" data-testid="co-address" className="luxe-input md:col-span-2" value={form.address} onChange={(e) => setForm({ ...form, address: e.target.value })} />
                   <input required placeholder="CITY" data-testid="co-city" className="luxe-input" value={form.city} onChange={(e) => setForm({ ...form, city: e.target.value })} />
