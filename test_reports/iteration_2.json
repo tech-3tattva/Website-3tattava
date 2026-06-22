@@ -1,0 +1,57 @@
+{
+  "summary": "Iteration 2 — end-to-end backend + frontend test for new Leaflet map, AWS SES background emails, Anthropic Claude SSE chatbot, Admin Product CRUD, WhatsApp + Chatbot floating launchers. Backend: 32/32 pytest pass (14 new + 18 regression). Frontend: WhatsApp float opens wa.me/919810012345; Chatbot launcher opens panel with header 'Concierge · Online · Powered by Claude', 4 suggested questions, SSE stream from claude-haiku-4-5-20251001 returns real on-brand content mentioning RockResin/Shahjeet Sticks/Ayurveda. Find-Us renders Leaflet map with 12+ tiles, all 29 gold markers, popups, FlyTo on card click. Admin: login with '3tattava-admin-2026' works, Products tab lists 4 seeded products with Edit/Delete + 'New Product' modal (admin-product-form), full CREATE→EDIT→DELETE round-trip verified (slug disabled on edit). assessments + contacts tabs load. Background email tasks (newsletter/order/assessment/booking) do not block responses — SES may silently fail in sandbox, endpoints still return ok:true.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "Chatbot SSE stream rendering",
+        "issue": "Streamed Claude tokens have missing whitespace between many words (observed: 'demandsfor energy', 'lifestyleUtkarsha**', 'butformulated for', 'rituals[Dosha Quiz]'). Root cause: server yields `data: {token}\\n\\n` and the SSE spec / browser EventSource (or the client's manual line.slice/trim) strips ONE leading space after 'data:' — so any token chunk that starts with a space loses it. Markdown bold ** also bleeds through unparsed because the panel renders raw text, not markdown.",
+        "selector": "[data-testid='chatbot-panel']",
+        "priority": "MEDIUM"
+      }
+    ],
+    "integration_issues": [],
+    "design_issues": [
+      {
+        "screen": "Header logo",
+        "issues": ["Header still appears to render the wordmark as styled text '3TATTAVA' on home + find-us + admin (cream + ink variants). If LOGO_WORDMARK is supposed to be an <img>, confirm it is wrapped in <img src=LOGO_WORDMARK> and not a fallback CSS text. Screenshot review only — may already be correct since the CDN image renders identically to a styled wordmark."]
+      }
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_3tattava_iteration2.py",
+    "/app/backend/tests/test_3tattava_api.py",
+    "/app/test_reports/pytest/iteration_2.xml"
+  ],
+  "action_items": [
+    "FIX (medium): Chatbot SSE whitespace loss. In /app/backend/server.py change `yield f\"data: {token}\\n\\n\"` to `yield f\"data:{token}\\n\\n\"` (no space after the colon) OR base64/JSON-encode the token. The frontend Chatbot.jsx consumer also needs to honour the change. Alternatively render markdown in the panel and replace newlines properly.",
+    "ENHANCEMENT (optional): Markdown rendering in chatbot panel — Claude outputs **bold** + [Dosha Quiz](/dosha-quiz) markdown links which currently appear as raw asterisks/brackets.",
+    "VERIFY (cosmetic): Confirm Header.jsx + Footer.jsx render <img src={LOGO_WORDMARK}> (not styled text fallback). Screenshot shows wordmark that could be either."
+  ],
+  "critical_code_review_comments": [
+    "server.py SSE generator concatenates tokens without preserving leading whitespace — SSE spec strips one space after `data:`. See: https://html.spec.whatwg.org/multipage/server-sent-events.html#dispatchMessage — fix as above.",
+    "chat_service.py history replay prepends `User: ...\\nAssistant: ...` into the user message, which can confuse Claude since the same context is also keyed by session_id in LlmChat. Prefer passing only the new user message — LlmChat already maintains history per session_id (if it persists).",
+    "email_service.py — boto3 SES client created per-call inside `asyncio.to_thread`. For sustained traffic, cache the client at module level (still thread-safe). Currently fine for low volume.",
+    "server.py /api/admin/products PUT — accepts new slug in body but uses path slug for lookup; if body.slug != path slug, the body slug overwrites the path slug. Either ignore body.slug on update or validate they match.",
+    "server.py admin product CREATE returns doc that may include _id (line 706 `doc.pop('_id', None)` AFTER insert_one — motor mutates the dict in place adding _id. The pop fixes it; verified test response had no `_id`. Good.)",
+    "server.py — chat_stream endpoint passes raw token text in SSE without escaping; tokens may contain `\\n` or even literal `\\ndata:` substrings — could break parsing. JSON-encoded payloads are safer."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_3tattava_iteration2.py (created)",
+    "/app/test_reports/pytest/iteration_2.xml (created)",
+    "/app/test_reports/iteration_2.json (created)"
+  ],
+  "success_rate": {
+    "backend": "100% (32/32 pytest)",
+    "frontend": "100% on new flows except minor SSE whitespace bug"
+  },
+  "test_credentials": "Admin bearer token: 3tattava-admin-2026 (verified via /api/admin/verify, /admin UI login). Anthropic API key + AWS SES creds live in backend/.env — not modified.",
+  "seed_data_creation": "4 seeded products + 2 doctors + 6 articles + 29 WTF locations all still present. New test data created (TEST_-prefixed) and cleaned up where possible: temporary product test-ui-prod-iter2/2b created+deleted via admin CRUD, test assessment/contact rows added for admin listing assertions.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Re-run regression: `REACT_APP_BACKEND_URL=<url> pytest /app/backend/tests/test_3tattava_api.py /app/backend/tests/test_3tattava_iteration2.py -v` (32 tests, ~4s). Confirmed testids: admin-token-input, admin-login-submit, admin-dashboard, admin-logout, admin-tab-{stats|products|orders|leads|newsletter|bookings|assessments|contacts}, admin-add-product, admin-product-form, admin-product-save, admin-edit-{slug}, admin-delete-{slug}, admin-product-{slug}, pf-slug/pf-name/pf-tagline/pf-ritual/pf-category/pf-accent/pf-price/pf-compare/pf-image/pf-short/pf-long/pf-benefits/pf-badges. Chatbot: chatbot-launcher, chatbot-panel. Map: leaflet-map. WhatsApp: whatsapp-float. Note: urllib hits to /api/products/{slug} returned 403 from the ingress for the playwright runner — use Python `requests` library or browser context; backend pytest with requests works fine.",
+  "rca of the issue": "Chatbot whitespace loss RCA: SSE spec (W3C) strips at most one leading U+0020 SPACE character from each `data:` line during parsing. Server emits `data: {token}\\n\\n`. When Claude streams a chunk like ` for`, the on-the-wire line is `data:  for` and parsers reconstruct it as ` for` (one space lost). Subsequent token concatenation produces 'demandsfor'. Fix: drop the space after `data:` on the server, or wrap each token in JSON e.g. `data:{\"t\":\"...\"}\\n\\n` and parse on client. Reproduction: open chatbot, click 'What is Performance Ayurveda?' — observe missing word boundaries in the response."
+}

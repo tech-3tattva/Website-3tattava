@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { Search, User, Heart, ShoppingBag, Menu, X } from "lucide-react";
 import { useCart } from "../../context/CartContext";
+import { LOGO_WORDMARK } from "../../lib/assets";
 
 const NAV = [
   { to: "/shop", label: "Shop" },

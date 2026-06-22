@@ -1,15 +1,50 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
+import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
 import { MapPin, Phone, Navigation } from "lucide-react";
 import { getLocations } from "../lib/api";
+
+// Custom gold pin icon (no default leaflet asset bundling needed)
+const goldIcon = L.divIcon({
+  className: "",
+  html: `<div style="position:relative;transform:translate(-50%,-100%);">
+    <div style="width:30px;height:30px;border-radius:50% 50% 50% 0;background:linear-gradient(135deg,#E4C079,#C8963E);transform:rotate(-45deg);border:2px solid #1c1304;box-shadow:0 4px 12px rgba(28,19,4,0.4);"></div>
+    <div style="position:absolute;left:50%;top:9px;width:10px;height:10px;border-radius:50%;background:#1c1304;transform:translateX(-50%);"></div>
+  </div>`,
+  iconSize: [30, 30],
+  iconAnchor: [15, 30],
+});
+
+const activeIcon = L.divIcon({
+  className: "",
+  html: `<div style="position:relative;transform:translate(-50%,-100%);">
+    <div style="width:38px;height:38px;border-radius:50% 50% 50% 0;background:linear-gradient(135deg,#E4C079,#C8963E);transform:rotate(-45deg);border:3px solid #1c1304;box-shadow:0 6px 18px rgba(200,150,62,0.6),0 0 0 8px rgba(200,150,62,0.15);"></div>
+    <div style="position:absolute;left:50%;top:11px;width:12px;height:12px;border-radius:50%;background:#1c1304;transform:translateX(-50%);"></div>
+  </div>`,
+  iconSize: [38, 38],
+  iconAnchor: [19, 38],
+});
+
+function FlyTo({ position }) {
+  const map = useMap();
+  useEffect(() => {
+    if (position) map.flyTo(position, 14, { duration: 0.9 });
+  }, [position, map]);
+  return null;
+}
 
 export default function FindUs() {
   const [locs, setLocs] = useState([]);
   const [city, setCity] = useState("All");
   const [active, setActive] = useState(null);
+  const listRef = useRef(null);
+
   useEffect(() => { getLocations().then(setLocs).catch(() => {}); }, []);
 
   const cities = ["All", ...Array.from(new Set(locs.map((l) => l.city)))];
   const filtered = city === "All" ? locs : locs.filter((l) => l.city === city);
+  const center = filtered.length ? [filtered[0].lat, filtered[0].lng] : [28.55, 77.20];
 
   return (
     <div data-testid="find-us-page" className="bg-cream">
@@ -33,7 +68,7 @@ export default function FindUs() {
                 <button key={c} onClick={() => setCity(c)} className={`eyebrow text-[10px] px-3 py-1.5 border transition ${city === c ? "bg-ink text-cream border-ink" : "border-ink/15 hover:border-gold"}`} data-testid={`city-filter-${c.toLowerCase()}`}>{c}</button>
               ))}
             </div>
-            <div className="max-h-[600px] overflow-y-auto pr-2 space-y-3" data-testid="locations-list">
+            <div ref={listRef} className="max-h-[600px] overflow-y-auto pr-2 space-y-3" data-testid="locations-list">
               {filtered.map((l) => (
                 <button
                   key={l.id || l.name}
@@ -54,44 +89,42 @@ export default function FindUs() {
             </div>
           </div>
 
-          {/* Map placeholder — stylized NCR grid */}
-          <div className="bg-3t-black text-cream relative overflow-hidden min-h-[600px] grain">
-            <div className="absolute inset-0 opacity-20" style={{ backgroundImage: "radial-gradient(circle, rgba(200,150,62,0.6) 1px, transparent 1px)", backgroundSize: "32px 32px" }} />
-            <div className="absolute inset-0 hero-overlay" />
-            <div className="relative h-full flex flex-col">
-              <div className="p-6 border-b border-gold/20">
-                <div className="eyebrow text-gold text-[10px]"><Navigation size={11} className="inline mr-2" /> NCR Network</div>
-                <div className="font-display text-2xl mt-2" style={{ fontVariationSettings: "'wdth' 85, 'wght' 700" }}>29+ Experience Centers</div>
-              </div>
-              <div className="flex-1 relative p-6">
-                {filtered.slice(0, 18).map((l, i) => {
-                  // map lat/lng to relative position (NCR bounding box approx 28.3-28.8 lat, 76.9-77.5 lng)
-                  const left = ((l.lng - 76.9) / 0.6) * 100;
-                  const top = (1 - (l.lat - 28.3) / 0.5) * 100;
-                  return (
-                    <button
-                      key={i}
-                      onClick={() => setActive(l)}
-                      style={{ left: `${Math.max(5, Math.min(95, left))}%`, top: `${Math.max(5, Math.min(90, top))}%` }}
-                      className={`absolute -translate-x-1/2 -translate-y-1/2 group`}
-                    >
-                      <span className={`block w-3 h-3 rounded-full ${active?.name === l.name ? "bg-gold ring-4 ring-gold/30" : "bg-gold/60 hover:bg-gold"} transition-all`} />
-                      <span className="absolute left-4 top-1/2 -translate-y-1/2 eyebrow text-[9px] text-cream/80 whitespace-nowrap opacity-0 group-hover:opacity-100 transition pointer-events-none">{l.name}</span>
-                    </button>
-                  );
-                })}
-              </div>
-              {active && (
-                <div className="p-6 border-t border-gold/20 bg-3t-black-2" data-testid="active-location-card">
-                  <div className="eyebrow text-gold mb-2 text-[10px]">Selected</div>
-                  <div className="font-display text-xl mb-1" style={{ fontVariationSettings: "'wdth' 85, 'wght' 700" }}>{active.name}</div>
-                  <div className="text-sm text-cream/70">{active.area}, {active.city}</div>
-                  <div className="text-xs eyebrow text-gold mt-3 flex items-center gap-2"><Phone size={11} /> {active.phone}</div>
-                  <div className="mt-4 flex gap-3 text-xs eyebrow">
-                    <a href={`https://www.google.com/maps?q=${active.lat},${active.lng}`} target="_blank" rel="noreferrer" className="px-4 py-2 border border-gold/40 hover:bg-gold hover:text-ink transition">Get Directions</a>
-                  </div>
-                </div>
-              )}
+          {/* Leaflet/OSM map */}
+          <div className="h-[600px] relative border border-ink/10 shadow-[0_22px_60px_rgba(28,19,4,0.10)]" data-testid="leaflet-map">
+            <MapContainer center={center} zoom={11} scrollWheelZoom={true} style={{ height: "100%", width: "100%" }}>
+              <TileLayer
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+              />
+              {filtered.map((l, i) => (
+                <Marker
+                  key={i}
+                  position={[l.lat, l.lng]}
+                  icon={active?.name === l.name ? activeIcon : goldIcon}
+                  eventHandlers={{ click: () => setActive(l) }}
+                >
+                  <Popup>
+                    <div style={{ fontFamily: "Archivo, sans-serif" }}>
+                      <div style={{ fontSize: 11, letterSpacing: "0.2em", textTransform: "uppercase", color: "#A67B2F" }}>WTF Center</div>
+                      <div style={{ fontSize: 15, fontWeight: 700, marginTop: 4 }}>{l.name}</div>
+                      <div style={{ fontSize: 12, color: "#6b5e45", marginTop: 4 }}>{l.area}, {l.city}</div>
+                      <div style={{ fontSize: 12, marginTop: 6, color: "#A67B2F", fontWeight: 600 }}>{l.phone}</div>
+                      <a
+                        href={`https://www.google.com/maps?q=${l.lat},${l.lng}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        style={{ display: "inline-block", marginTop: 8, fontSize: 11, letterSpacing: "0.2em", textTransform: "uppercase", textDecoration: "none", color: "#1c1304", borderBottom: "1px solid #C8963E", paddingBottom: 2 }}
+                      >
+                        Get Directions →
+                      </a>
+                    </div>
+                  </Popup>
+                </Marker>
+              ))}
+              {active && <FlyTo position={[active.lat, active.lng]} />}
+            </MapContainer>
+            <div className="absolute top-4 left-4 z-[400] bg-ink text-cream px-4 py-2 eyebrow text-[10px]" style={{ pointerEvents: "none" }}>
+              <Navigation size={11} className="inline mr-2" /> {filtered.length} Centers · NCR
             </div>
           </div>
         </div>

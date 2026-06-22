@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Instagram, Youtube, Twitter, Mail, Send } from "lucide-react";
 import { subscribeNewsletter } from "../../lib/api";
+import { LOGO_WORDMARK } from "../../lib/assets";
 
 export default function Footer() {
   const [email, setEmail] = useState("");
@@ -25,9 +26,7 @@ export default function Footer() {
       <div className="bg-[#b35e34] text-cream px-6 md:px-16 py-16">
         <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 items-center">
           <div>
-            <div className="font-display text-4xl md:text-5xl mb-4" style={{ fontVariationSettings: "'wdth' 80, 'wght' 700" }}>
-              3<span className="text-cream">TATTAVA</span>
-            </div>
+            <img src={LOGO_WORDMARK} alt="3Tattava" className="h-12 md:h-14 w-auto mb-5" style={{ filter: "invert(1) brightness(1.05)" }} />
             <p className="text-sm opacity-90 max-w-md">Performance Ayurveda for modern humans. Doctor-led. Athlete-backed. Lab-tested. Built daily.</p>
             <div className="flex items-center gap-3 mt-6">
               <a href="#" aria-label="Instagram" data-testid="social-instagram" className="w-10 h-10 rounded-full border border-cream/30 flex items-center justify-center hover:bg-gold hover:text-ink hover:border-gold transition-all"><Instagram size={16} /></a>

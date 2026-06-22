@@ -1,11 +1,13 @@
 """3Tattava — Performance Ayurveda backend."""
 from fastapi import FastAPI, APIRouter, HTTPException, Header, Depends
+from fastapi.responses import StreamingResponse
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
 import os
 import logging
 import uuid
+import asyncio
 from pathlib import Path
 from datetime import datetime, timezone
 from typing import List, Optional, Dict, Any
@@ -13,6 +15,15 @@ from pydantic import BaseModel, Field, EmailStr, ConfigDict
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / ".env")
+
+from email_service import (
+    send_email,
+    tpl_newsletter_welcome,
+    tpl_order_confirmation,
+    tpl_assessment_result,
+    tpl_booking_confirmation,
+)
+from chat_service import chat_stream
 
 mongo_url = os.environ["MONGO_URL"]
 client = AsyncIOMotorClient(mongo_url)
@@ -532,6 +543,8 @@ async def newsletter(payload: NewsletterIn):
     if existing:
         return {"ok": True, "duplicate": True}
     await db.newsletter.insert_one({"id": new_id(), "created_at": now_iso(), **payload.model_dump()})
+    subject, html = tpl_newsletter_welcome(payload.email)
+    asyncio.create_task(send_email(payload.email, subject, html))
     return {"ok": True}
 
 
@@ -560,6 +573,8 @@ async def assessment(payload: AssessmentIn):
     }
     doc = {"id": new_id(), "created_at": now_iso(), "result": result, **payload.model_dump()}
     await db.assessments.insert_one(doc)
+    subject, html = tpl_assessment_result(payload.name, result)
+    asyncio.create_task(send_email(payload.email, subject, html))
     return {"ok": True, "result": result}
 
 
@@ -604,6 +619,8 @@ async def create_order(payload: OrderIn):
         **payload.model_dump(),
     }
     await db.orders.insert_one(order)
+    subject, html = tpl_order_confirmation(order)
+    asyncio.create_task(send_email(payload.email, subject, html))
     return {"ok": True, "order_id": order["id"], "subtotal": subtotal, "shipping": shipping, "total": total}
 
 
@@ -652,6 +669,94 @@ async def admin_bookings():
 @api.post("/admin/verify", dependencies=[Depends(require_admin)])
 async def admin_verify():
     return {"ok": True}
+
+
+# ---------- Admin Product CRUD ----------
+class ProductIn(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    slug: str
+    name: str
+    tagline: str = ""
+    ritual_name: str = ""
+    price: int
+    compare_at: Optional[int] = None
+    category: str = "Shilajit Resin"
+    image: str = ""
+    gallery: List[str] = []
+    short_desc: str = ""
+    long_desc: str = ""
+    benefits: List[str] = []
+    ingredients: List[Dict[str, str]] = []
+    how_to_use: List[Dict[str, str]] = []
+    specs: List[Dict[str, str]] = []
+    pillars: List[Dict[str, str]] = []
+    faqs: List[Dict[str, str]] = []
+    badges: List[str] = []
+    accent_color: str = "#C8963E"
+    in_stock: bool = True
+    is_featured: bool = False
+
+
+@api.post("/admin/products", dependencies=[Depends(require_admin)])
+async def admin_create_product(p: ProductIn):
+    if await db.products.find_one({"slug": p.slug}):
+        raise HTTPException(400, "Slug already exists")
+    doc = Product(**p.model_dump()).model_dump()
+    await db.products.insert_one(doc)
+    doc.pop("_id", None)
+    return doc
+
+
+@api.put("/admin/products/{slug}", dependencies=[Depends(require_admin)])
+async def admin_update_product(slug: str, p: ProductIn):
+    existing = await db.products.find_one({"slug": slug})
+    if not existing:
+        raise HTTPException(404, "Product not found")
+    update = p.model_dump()
+    update["id"] = existing["id"]
+    await db.products.update_one({"slug": slug}, {"$set": update})
+    update.pop("_id", None)
+    return update
+
+
+@api.delete("/admin/products/{slug}", dependencies=[Depends(require_admin)])
+async def admin_delete_product(slug: str):
+    res = await db.products.delete_one({"slug": slug})
+    if res.deleted_count == 0:
+        raise HTTPException(404, "Product not found")
+    return {"ok": True}
+
+
+@api.get("/admin/assessments", dependencies=[Depends(require_admin)])
+async def admin_assessments():
+    return await db.assessments.find({}, {"_id": 0}).sort("created_at", -1).to_list(200)
+
+
+@api.get("/admin/contacts", dependencies=[Depends(require_admin)])
+async def admin_contacts():
+    return await db.contacts.find({}, {"_id": 0}).sort("created_at", -1).to_list(200)
+
+
+# ---------- Chatbot ----------
+class ChatIn(BaseModel):
+    session_id: str
+    message: str
+    history: List[Dict[str, str]] = []
+
+
+@api.post("/chat/stream")
+async def chat_stream_endpoint(payload: ChatIn):
+    async def event_gen():
+        async for token in chat_stream(payload.session_id, payload.message, payload.history):
+            # SSE format
+            yield f"data: {token}\n\n"
+        yield "event: done\ndata: [DONE]\n\n"
+
+    return StreamingResponse(
+        event_gen(),
+        media_type="text/event-stream",
+        headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no", "Connection": "keep-alive"},
+    )
 
 
 app.include_router(api)

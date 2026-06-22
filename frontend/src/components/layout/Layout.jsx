@@ -3,6 +3,8 @@ import Header from "./Header";
 import Footer from "./Footer";
 import AnnouncementBar from "./AnnouncementBar";
 import CartDrawer from "../CartDrawer";
+import Chatbot from "../Chatbot";
+import WhatsAppFloat from "../WhatsAppFloat";
 
 export default function Layout({ children }) {
   return (
@@ -12,6 +14,8 @@ export default function Layout({ children }) {
       <main className="flex-1">{children}</main>
       <Footer />
       <CartDrawer />
+      <Chatbot />
+      <WhatsAppFloat />
     </div>
   );
 }
