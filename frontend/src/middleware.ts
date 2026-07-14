@@ -19,8 +19,22 @@ const PUBLIC_ROUTES = new Set<string>([
   "/coming-soon",
 ]);
 
+// URL variants (typed / printed / QR) that permanently redirect to the canonical route.
+const REDIRECTS: Record<string, string> = {
+  "/labreports": "/lab-reports",
+  "/labreport": "/lab-reports",
+  "/lab-report": "/lab-reports",
+};
+
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
+
+  const redirectTo = REDIRECTS[pathname];
+  if (redirectTo) {
+    const dest = req.nextUrl.clone();
+    dest.pathname = redirectTo;
+    return NextResponse.redirect(dest, 308);
+  }
   if (PUBLIC_ROUTES.has(pathname)) return NextResponse.next();
 
   const url = req.nextUrl.clone();
