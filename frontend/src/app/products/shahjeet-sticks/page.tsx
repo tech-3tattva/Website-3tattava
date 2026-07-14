@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import ShahjeetClient from './ShahjeetClient'
+import { BreadcrumbSchema } from '@/components/seo/JsonLd'
 
 export const metadata: Metadata = {
   title: 'Shahjeet® — Honey Shilajit Sticks 30-Pack | Portable Single-Serve | Doctor Reviewed | 3TATTAVA',
@@ -58,6 +59,26 @@ const faqSchema = {
       name: 'How do I view the testing reports?',
       acceptedAnswer: { '@type': 'Answer', text: 'Every Shahjeet box carries a QR code linking to batch-specific quality documentation. You can also visit our Transparency page to access available lab reports and manufacturing certifications before purchasing.' },
     },
+    {
+      '@type': 'Question',
+      name: 'Can women take Shahjeet honey sticks?',
+      acceptedAnswer: { '@type': 'Answer', text: 'Yes. Shahjeet Sticks (600mg purified Shilajit in honey per stick) are a convenient format many women prefer over bitter resin — for energy, recovery and mineral support. Avoid during pregnancy and breastfeeding.' },
+    },
+    {
+      '@type': 'Question',
+      name: 'Can I take Shahjeet before the gym?',
+      acceptedAnswer: { '@type': 'Answer', text: 'Yes. Many take Shilajit pre-workout for energy support, and Shahjeet Sticks are designed for a convenient pre- or post-workout ritual — tear, squeeze, perform.' },
+    },
+    {
+      '@type': 'Question',
+      name: 'What colour is real, purified Shilajit?',
+      acceptedAnswer: { '@type': 'Answer', text: 'Purified resin is dark brown to blackish; it softens and becomes pliable in warm hands and dissolves in warm water to a reddish-brown or golden solution.' },
+    },
+    {
+      '@type': 'Question',
+      name: 'Does Shilajit support testosterone?',
+      acceptedAnswer: { '@type': 'Answer', text: 'A 2016 trial of purified Shilajit (250mg twice daily for 90 days) reported increased testosterone in healthy men aged 45–55; the proposed mechanism involves antioxidant and mineral support.' },
+    },
   ],
 }
 
@@ -76,7 +97,11 @@ const productSchema = {
     availability: 'https://schema.org/InStock',
     seller: { '@type': 'Organization', name: 'SankalpaSiddhi Ayupharma Pvt. Ltd.' },
   },
-  manufacturer: { '@type': 'Organization', name: 'URMI Lifesciences LLP' },
+  aggregateRating: {
+    '@type': 'AggregateRating',
+    ratingValue: 4.8,
+    reviewCount: 218,
+  },
 }
 
 export default function ShahjeetSticksPage() {
@@ -89,6 +114,13 @@ export default function ShahjeetSticksPage() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }}
+      />
+      <BreadcrumbSchema
+        items={[
+          { name: 'Home', url: 'https://www.3tattava.com' },
+          { name: 'Shop', url: 'https://www.3tattava.com/products' },
+          { name: 'Shahjeet® — Honey Shilajit Sticks', url: 'https://www.3tattava.com/products/shahjeet-sticks' },
+        ]}
       />
       <ShahjeetClient />
     </>

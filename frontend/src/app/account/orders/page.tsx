@@ -97,7 +97,7 @@ export default function OrderHistoryPage() {
 
   if (isLoading) {
     return (
-      <div className="max-w-3xl mx-auto px-4 py-16">
+      <div className="max-w-3xl mx-auto px-4 pt-28 pb-16">
         <p className="text-text-medium">Loading…</p>
       </div>
     );
@@ -105,7 +105,7 @@ export default function OrderHistoryPage() {
 
   if (!isLoggedIn) {
     return (
-      <div className="max-w-3xl mx-auto px-4 py-16">
+      <div className="max-w-3xl mx-auto px-4 pt-28 pb-16">
         <h1 className="font-display text-3xl text-text-dark mb-3">Order history</h1>
         <p className="text-text-medium mb-6">Sign in to see your orders.</p>
         <Link
@@ -119,7 +119,7 @@ export default function OrderHistoryPage() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto px-3 sm:px-4 py-9 sm:py-12 md:py-16">
+    <div className="max-w-3xl mx-auto px-3 sm:px-4 pt-28 pb-9 sm:pt-32 sm:pb-12 md:pb-16">
       <div className="mb-8 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
         <div>
           <Link

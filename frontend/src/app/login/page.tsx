@@ -3,9 +3,14 @@
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useCallback, useEffect, useState } from "react";
-import GoogleSignInButton from "@/components/auth/GoogleSignInButton";
+import { motion, useReducedMotion } from "framer-motion";
 import { useAuth } from "@/context/AuthContext";
 import { DEFAULT_POST_AUTH_PATH, getSafeRedirectPath } from "@/lib/auth-redirect";
+import AyurvedaLoader from "@/components/ui/AyurvedaLoader";
+import Logo from "@/components/layout/Logo";
+import GoogleSignInButton from "@/components/auth/GoogleSignInButton";
+
+const F = "var(--font-primary), system-ui, sans-serif";
 
 function LoginContent() {
   const router = useRouter();
@@ -13,9 +18,9 @@ function LoginContent() {
   const redirectParam = searchParams.get("redirect");
   const safeRedirect = getSafeRedirectPath(redirectParam);
   const afterAuth = safeRedirect ?? DEFAULT_POST_AUTH_PATH;
-  const isCheckoutFlow = Boolean(safeRedirect?.startsWith("/checkout"));
 
   const { login, isLoading, isLoggedIn } = useAuth();
+  const reduce = useReducedMotion();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -25,113 +30,101 @@ function LoginContent() {
   }, [router, afterAuth]);
 
   useEffect(() => {
-    if (!isLoading && isLoggedIn) {
-      router.replace(afterAuth);
-    }
+    if (!isLoading && isLoggedIn) router.replace(afterAuth);
   }, [isLoading, isLoggedIn, router, afterAuth]);
 
-  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setError(null);
 
+
+  const handleEmail = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
     try {
       await login(email, password);
       goAfterAuth();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Login failed");
     }
-  }
+  };
 
-  const registerHref =
-    safeRedirect != null
-      ? `/register?redirect=${encodeURIComponent(safeRedirect)}`
-      : "/register";
+  const registerHref = safeRedirect ? `/register?redirect=${encodeURIComponent(safeRedirect)}` : "/register";
+
+
+  const glassPanel: React.CSSProperties = {
+    background: "linear-gradient(155deg, rgba(255,253,248,0.66), rgba(247,240,226,0.56))",
+    border: "1px solid rgba(255,255,255,0.55)",
+    borderRadius: 24,
+    backdropFilter: "blur(22px) saturate(1.3)",
+    WebkitBackdropFilter: "blur(22px) saturate(1.3)",
+    boxShadow:
+      "0 24px 64px rgba(28,19,4,0.34), 0 6px 20px rgba(68,42,27,0.20), inset 0 1px 0 rgba(255,255,255,0.75), inset 0 0 30px rgba(255,255,255,0.10)",
+  };
 
   return (
-    <section className="relative min-h-[74vh] flex items-center justify-center px-3 sm:px-4 py-10 sm:py-14 overflow-hidden">
-      <div
-        className="absolute inset-0"
-        style={{
-          backgroundImage:
-            "url('https://lh3.googleusercontent.com/aida-public/AB6AXuDdbldRSZg9ltKAdZodR7Sa_yK9hqUYf4SItRkaeqKCrUdY6pETwWM4R0eWlB7JWaYm3IoH6Wi50JQd3WFTOZKByVfDsPJdjfu_Fi4rD6ENGWkhnGp6GpzG0EGxsIW_ZQc-ZO-lPGOEHkhJ9INbG0QXMcR0Ci1rB6OhI2sCKYqkIiZfvKPRbbEQ4SjNKzaj98Bx6_zbO5oUzpmYwWtahbGG4P1FKbfDS0yfA9jyS3fIpbACV72-3lPO1RZS0l0DgsctYonrvg74ypEG')",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        }}
-      />
+      <section className="relative min-h-[74vh] flex items-start justify-center px-3 sm:px-4 pt-28 pb-12 sm:pt-32 sm:pb-16 overflow-hidden">
+      <div className="absolute inset-0" style={{ backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuDdbldRSZg9ltKAdZodR7Sa_yK9hqUYf4SItRkaeqKCrUdY6pETwWM4R0eWlB7JWaYm3IoH6Wi50JQd3WFTOZKByVfDsPJdjfu_Fi4rD6ENGWkhnGp6GpzG0EGxsIW_ZQc-ZO-lPGOEHkhJ9INbG0QXMcR0Ci1rB6OhI2sCKYqkIiZfvKPRbbEQ4SjNKzaj98Bx6_zbO5oUzpmYwWtahbGG4P1FKbfDS0yfA9jyS3fIpbACV72-3lPO1RZS0l0DgsctYonrvg74ypEG')", backgroundSize: "cover", backgroundPosition: "center" }} />
       <div className="absolute inset-0 bg-[#7b3f1f]/42" />
 
-      <div className="relative z-10 w-full max-w-[28rem] bg-white rounded-lg shadow-[0_18px_50px_rgba(0,0,0,0.25)] p-5 sm:p-6 md:p-8 border border-[#ede6d8]">
-        {isCheckoutFlow ? (
-          <>
-            <p className="text-center text-xs uppercase tracking-[0.2em] text-[#8a6a4a] mb-2">
-              Checkout
-            </p>
-            <p className="text-center text-sm text-gray-600 mb-6">
-              Sign in to continue to shipping and payment.
-            </p>
-          </>
-        ) : null}
-        <h1
-          className="text-[36px] sm:text-[42px] md:text-[44px] leading-none font-display text-center text-gray-900 mb-6 sm:mb-7"
-          style={{ fontFamily: "var(--font-primary), system-ui, sans-serif" }}
-        >
+      {/* Animated liquid backdrop — slow-moving frosted gradient blobs */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
+        <motion.div
+          style={{ position: "absolute", top: "2%", left: "6%", width: "46vmin", height: "46vmin", borderRadius: "50%", filter: "blur(64px)", willChange: "transform", background: "radial-gradient(circle at 35% 30%, rgba(205,135,42,0.80), rgba(205,135,42,0) 70%)" }}
+          animate={reduce ? undefined : { x: [0, 70, -30, 0], y: [0, -40, 30, 0], scale: [1, 1.2, 0.9, 1] }}
+          transition={{ duration: 24, repeat: Infinity, ease: "easeInOut" }}
+        />
+        <motion.div
+          style={{ position: "absolute", bottom: "0%", right: "4%", width: "52vmin", height: "52vmin", borderRadius: "50%", filter: "blur(72px)", willChange: "transform", background: "radial-gradient(circle at 42% 42%, rgba(68,42,27,0.60), rgba(68,42,27,0) 70%)" }}
+          animate={reduce ? undefined : { x: [0, -60, 40, 0], y: [0, 30, -40, 0], scale: [1, 0.9, 1.15, 1] }}
+          transition={{ duration: 28, repeat: Infinity, ease: "easeInOut" }}
+        />
+        <motion.div
+          style={{ position: "absolute", top: "24%", left: "30%", width: "42vmin", height: "42vmin", borderRadius: "50%", filter: "blur(60px)", willChange: "transform", background: "radial-gradient(circle at 50% 45%, rgba(247,240,226,0.85), rgba(247,240,226,0) 72%)" }}
+          animate={reduce ? undefined : { x: [0, 44, -52, 0], y: [0, 52, -22, 0], scale: [1, 1.12, 0.94, 1] }}
+          transition={{ duration: 32, repeat: Infinity, ease: "easeInOut" }}
+        />
+      </div>
+
+      <div className="relative z-10 w-full max-w-[28rem] p-5 sm:p-6 md:p-8" style={glassPanel}>
+        <div style={{ display: "flex", justifyContent: "center", marginBottom: 18 }}>
+          <Logo variant="dark" size="lg" />
+        </div>
+        <h1 style={{ fontFamily: F, fontVariationSettings: "'wdth' 85,'wght' 800", fontSize: "clamp(28px,4vw,36px)", textAlign: "center", color: "#442a1b", marginBottom: 4 }}>
           Welcome Back
         </h1>
+        <p style={{ fontFamily: F, fontSize: 13, color: "#6f5a48", textAlign: "center", marginBottom: 20 }}>
+          Sign in to access your rituals, orders &amp; assessments.
+        </p>
 
-        <form onSubmit={handleSubmit} className="space-y-[18px]">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">Email</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full rounded-md border-2 border-[#c4a376] px-3 py-2.5 focus:border-[#ba5929] focus:outline-none"
-              required
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">Password</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full rounded-md border-2 border-[#c4a376] px-3 py-2.5 focus:border-[#ba5929] focus:outline-none"
-              required
-            />
-          </div>
-          {error && <p className="text-sm text-red-600">{error}</p>}
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="w-full rounded-md bg-[#ba5929] py-3 text-white text-base sm:text-lg font-medium hover:bg-[#9c4c23] transition-colors disabled:opacity-60"
-          >
-            {isLoading ? "Loading..." : "Sign in"}
-          </button>
-        </form>
 
-        <div className="my-6 flex items-center gap-3">
-          <hr className="w-full border-gray-300" />
-          <span className="text-sm text-gray-500">or</span>
-          <hr className="w-full border-gray-300" />
+
+          <form onSubmit={handleEmail} style={{ display: "grid", gap: 14 }}>
+            <div>
+              <label style={{ display: "block", fontFamily: F, fontSize: 12, fontWeight: 600, color: "#442a1b", marginBottom: 6 }}>Email</label>
+              <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required
+                style={{ width: "100%", fontFamily: F, fontSize: 15, padding: "10px 14px", border: "1px solid #b7a392", borderRadius: 4, outline: "none" }} />
+            </div>
+            <div>
+              <label style={{ display: "block", fontFamily: F, fontSize: 12, fontWeight: 600, color: "#442a1b", marginBottom: 6 }}>Password</label>
+              <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required
+                style={{ width: "100%", fontFamily: F, fontSize: 15, padding: "10px 14px", border: "1px solid #b7a392", borderRadius: 4, outline: "none" }} />
+            </div>
+            {error && <p style={{ fontFamily: F, fontSize: 12, color: "#b4452a" }}>{error}</p>}
+            <button type="submit" disabled={isLoading}
+              style={{ width: "100%", fontFamily: F, fontVariationSettings: "'wdth' 85,'wght' 700", fontSize: 14, color: "#442a1b", background: "linear-gradient(105deg,#A67B2F,#E4C079,#cd872a,#A67B2F)", border: "none", padding: "14px", borderRadius: 4, cursor: "pointer", opacity: isLoading ? 0.6 : 1 }}>
+              {isLoading ? "Signing in…" : "Sign In"}
+            </button>
+          </form>
+
+        <div style={{ marginTop: 18 }}>
+          <GoogleSignInButton onSuccess={goAfterAuth} onError={(m) => setError(m || null)} showDivider />
         </div>
 
-        <GoogleSignInButton
-          onError={(message) => setError(message || null)}
-          onSuccess={goAfterAuth}
-          showDivider={false}
-          buttonWidth={320}
-        />
-
-        <div className="mt-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-sm text-gray-800">
-          <p className="leading-relaxed">
+        <div style={{ marginTop: 20, textAlign: "center" }}>
+          <p style={{ fontFamily: F, fontSize: 13, color: "#6f5a48" }}>
             New here?{" "}
-            <Link href={registerHref} className="hover:underline text-[#4a4a4a] font-medium">
+            <Link href={registerHref} style={{ color: "#cd872a", fontWeight: 700, textDecoration: "none" }}>
               Create an account
             </Link>
           </p>
-          <button type="button" className="hover:underline">
-            Forgot password?
-          </button>
         </div>
       </div>
     </section>
@@ -140,13 +133,7 @@ function LoginContent() {
 
 export default function LoginPage() {
   return (
-    <Suspense
-      fallback={
-        <div className="min-h-[74vh] flex items-center justify-center bg-cream text-text-medium">
-          Loading…
-        </div>
-      }
-    >
+    <Suspense fallback={<div className="min-h-[74vh] flex items-center justify-center" style={{ background: "#f7f0e2" }}><AyurvedaLoader /></div>}>
       <LoginContent />
     </Suspense>
   );

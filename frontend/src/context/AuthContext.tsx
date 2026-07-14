@@ -9,6 +9,7 @@ interface AuthContextValue {
   isLoggedIn: boolean;
   isLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
+  loginWithOtp: (phone: string, otp: string) => Promise<void>;
   googleLogin: (credential: string) => Promise<void>;
   logout: () => Promise<void>;
   register: (email: string, password: string, name?: string) => Promise<void>;
@@ -31,6 +32,20 @@ function decodeJwtPayload(token: string): Record<string, unknown> | null {
   }
 }
 
+// A JS-readable hint that a session likely exists (the refresh token itself is an
+// httpOnly cookie the client can't read). Guests have no hint, so we skip the
+// /auth/refresh call entirely — avoiding the 401 console noise on every page.
+const SESSION_HINT = "3t_has_session";
+function markSession(on: boolean) {
+  if (typeof window === "undefined") return;
+  try {
+    if (on) window.localStorage.setItem(SESSION_HINT, "1");
+    else window.localStorage.removeItem(SESSION_HINT);
+  } catch {
+    /* storage unavailable — ignore */
+  }
+}
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -49,13 +64,30 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         if (!mounted) return;
         setAccessToken(response.accessToken);
         setUser(response.user);
+        markSession(true);
       } catch {
         if (!mounted) return;
         setAccessToken(null);
         setUser(null);
+        markSession(false);
       } finally {
         if (mounted) setIsLoading(false);
       }
+    }
+
+    // Guests have no session cookie — skip refresh (and its 401 noise) unless a
+    // prior login left a hint.
+    let hasHint = false;
+    try {
+      hasHint = typeof window !== "undefined" && window.localStorage.getItem(SESSION_HINT) === "1";
+    } catch {
+      hasHint = false;
+    }
+    if (!hasHint) {
+      setIsLoading(false);
+      return () => {
+        mounted = false;
+      };
     }
 
     void refreshSession();
@@ -78,6 +110,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // Merge guest cart into the authenticated cart immediately after login.
     await api.post("/cart/merge", {}, true).catch(() => undefined);
     setUser(response.user);
+    markSession(true);
+  }, []);
+
+  const loginWithOtp = useCallback(async (phone: string, otp: string) => {
+    const response = await api.post<AuthResponse>("/auth/verify-otp", { phone, otp });
+    setAccessToken(response.accessToken);
+    await api.post("/cart/merge", {}, true).catch(() => undefined);
+    setUser(response.user);
+    markSession(true);
   }, []);
 
   const googleLogin = useCallback(async (credential: string) => {
@@ -106,6 +147,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setAccessToken(response.accessToken);
     await api.post("/cart/merge", {}, true).catch(() => undefined);
     setUser(response.user);
+    markSession(true);
   }, []);
 
   const logout = useCallback(async () => {
@@ -114,6 +156,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
     setAccessToken(null);
     setUser(null);
+    markSession(false);
   }, []);
 
   const register = useCallback(async (email: string, password: string, name?: string) => {
@@ -130,6 +173,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     });
     setAccessToken(response.accessToken);
     setUser(response.user);
+    markSession(true);
   }, []);
 
   const updateUser = useCallback((updates: Partial<User>) => {
@@ -141,6 +185,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     isLoggedIn: !!user,
     isLoading,
     login,
+    loginWithOtp,
     googleLogin,
     logout,
     register,

@@ -1,5 +1,7 @@
+import { media } from "@/lib/media";
 import type { Metadata, Viewport } from "next";
-import { Archivo, Noto_Serif_Devanagari } from "next/font/google";
+import { Noto_Serif_Devanagari } from "next/font/google";
+import localFont from "next/font/local";
 import "../styles/globals.css";
 import AnnouncementBar from "@/components/layout/AnnouncementBar";
 import Header from "@/components/layout/Header";
@@ -7,16 +9,20 @@ import Footer from "@/components/layout/Footer";
 import IntroSplash from "@/components/layout/IntroSplash";
 import CartDrawer from "@/components/cart/CartDrawer";
 import Providers from "@/components/providers/Providers";
+import ScrollProgress from "@/components/motion/ScrollProgress";
 import { OrganizationSchema } from "@/components/seo/JsonLd";
 import ChatWidget from "@/components/chat/ChatWidget";
 import WhatsAppWidget from "@/components/WhatsAppWidget";
 import LeadCaptureModal from "@/components/LeadCaptureModal";
+import PurchaseNudge from "@/components/home/PurchaseNudge";
 
-const archivo = Archivo({
-  subsets: ["latin"],
+const archivo = localFont({
+  src: [
+    { path: "./fonts/Archivo-Variable.woff2", style: "normal", weight: "100 900" },
+    { path: "./fonts/Archivo-Italic-Variable.woff2", style: "italic", weight: "100 900" },
+  ],
   display: "swap",
   variable: "--font-primary",
-  axes: ["wdth"],
 });
 
 const notoDevanagari = Noto_Serif_Devanagari({
@@ -56,12 +62,14 @@ export const metadata: Metadata = {
     title: "3TATTAVA — Performance Ayurveda | Himalayan Shilajit Resin & Honey Sticks",
     description:
       "India's first Performance Ayurveda brand. Pure Himalayan Shilajit Resin & Honey Sticks. Lab-certified, doctor-formulated.",
+    images: [{ url: "/og-default.png", width: 1200, height: 630, alt: "3TATTAVA — Performance Ayurveda" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "3TATTAVA — Performance Ayurveda",
     description:
       "Pure Himalayan Shilajit. Lab-certified. Doctor-formulated. 80+ trace minerals.",
+    images: ["/og-default.png"],
   },
   robots: {
     index: true,
@@ -69,6 +77,10 @@ export const metadata: Metadata = {
     googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1 },
   },
   alternates: { canonical: "https://www.3tattava.com" },
+  icons: {
+    icon: media("/favicon-3t.png"),
+    apple: "/favicon-3t.png",
+  },
 };
 
 export const viewport: Viewport = {
@@ -93,6 +105,7 @@ export default function RootLayout({
       <body className="antialiased min-h-screen min-w-0 flex flex-col overflow-x-clip" suppressHydrationWarning>
         <OrganizationSchema />
         <Providers>
+          <ScrollProgress />
           <IntroSplash />
           <AnnouncementBar />
           <Header />
@@ -104,6 +117,7 @@ export default function RootLayout({
           <ChatWidget />
           <WhatsAppWidget />
           <LeadCaptureModal />
+          <PurchaseNudge />
         </Providers>
       </body>
     </html>

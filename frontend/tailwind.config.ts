@@ -24,7 +24,7 @@ const config: Config = {
       fontFamily: {
         display: ["Cormorant Garamond", "serif"],
         heading: ["Libre Baskerville", "serif"],
-        sans: ["DM Sans", "sans-serif"],
+        sans: ["var(--font-primary)", "system-ui", "sans-serif"],
         devanagari: ["Noto Serif Devanagari", "serif"],
       },
       spacing: {

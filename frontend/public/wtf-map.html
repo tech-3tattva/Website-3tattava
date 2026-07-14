@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>3Tattava Experience Centers</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 100%; height: 100%; font-family: system-ui, sans-serif; }
+  #map { width: 100%; height: 100%; }
+
+  /* Custom popup styles */
+  .leaflet-popup-content-wrapper {
+    background: #1c1304;
+    color: #f7f0e2;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.35);
+    border: 1px solid rgba(205,135,42,0.30);
+    padding: 0;
+  }
+  .leaflet-popup-content {
+    margin: 0;
+    min-width: 210px;
+  }
+  .leaflet-popup-tip {
+    background: #1c1304;
+  }
+  .leaflet-popup-close-button {
+    color: rgba(247,240,226,0.55) !important;
+    font-size: 18px !important;
+    top: 8px !important;
+    right: 10px !important;
+  }
+  .leaflet-popup-close-button:hover { color: #cd872a !important; }
+  .leaflet-control-zoom a {
+    background: #1c1304 !important;
+    color: #cd872a !important;
+    border-color: rgba(205,135,42,0.30) !important;
+  }
+  .leaflet-control-zoom a:hover { background: #2a1608 !important; }
+  .counter-badge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    z-index: 1000;
+    background: #1c1304;
+    color: #cd872a;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    border: 1px solid rgba(205,135,42,0.35);
+    pointer-events: none;
+  }
+</style>
+</head>
+<body>
+<div id="map"></div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+const centers = [
+  { id:1,  name:"WTF Sector 16 — World Trade Tower", city:"Noida",        address:"M Floor, World Trade Tower, Sector 16, Noida", lat:28.5686, lng:77.3196 },
+  { id:2,  name:"WTF Sector 22",                     city:"Noida",        address:"2nd Floor, C.S. Rana Complex, near Shiv Mandir, Sector 22, Noida", lat:28.5741, lng:77.3228 },
+  { id:3,  name:"WTF Sector 70",                     city:"Noida",        address:"BS-102, Basai, Sector 70, Noida", lat:28.5570, lng:77.3810 },
+  { id:4,  name:"WTF Indirapuram — Nayaykhand 3",    city:"Ghaziabad",    address:"441/4, Kala Pathar Rd, Indirapuram, Ghaziabad", lat:28.6447, lng:77.3571 },
+  { id:5,  name:"WTF Sector 122",                    city:"Noida",        address:"Basement, PK-09, Sector 122, Noida", lat:28.5330, lng:77.3540 },
+  { id:6,  name:"WTF Sector 116",                    city:"Noida",        address:"SD-06, Sector 116, Noida", lat:28.5210, lng:77.3480 },
+  { id:7,  name:"WTF Sector 121 — Parthala",         city:"Noida",        address:"PKA-8, Parthala Khanjarpur, Sector 121, Noida", lat:28.5174, lng:77.3400 },
+  { id:8,  name:"WTF Shalimar Garden",               city:"Ghaziabad",    address:"Ram Enclave, Shalimar Garden, Sahibabad, Ghaziabad", lat:28.6733, lng:77.3555 },
+  { id:9,  name:"WTF Noida West — Sector 1",         city:"Greater Noida",address:"NB Mart, Sector 1, Bisrakh Jalalpur, Greater Noida", lat:28.5960, lng:77.4300 },
+  { id:10, name:"WTF Dwarka — Sector 10",            city:"Delhi",        address:"DDA Market, Pocket 1, Sector 10 Dwarka, New Delhi", lat:28.5931, lng:77.0475 },
+  { id:11, name:"WTF Rohini — Sector 24",            city:"Delhi",        address:"102, above Bank of Baroda, Sector 24, Rohini, Delhi", lat:28.7455, lng:77.1005 },
+  { id:12, name:"WTF Rohini — Sector 23",            city:"Delhi",        address:"C-548, near Sunrise Traders, Sector 23, Rohini, Delhi", lat:28.7440, lng:77.1020 },
+  { id:13, name:"WTF Dwarka — Sector 17",            city:"Delhi",        address:"3rd & 4th Floor, Plot 17, Pocket C, Sector 17 Dwarka, Delhi", lat:28.5754, lng:77.0469 },
+  { id:14, name:"WTF Nehru Nagar",                   city:"Ghaziabad",    address:"near Zudio Store, Ram Nagar, Nehru Nagar, Ghaziabad", lat:28.6652, lng:77.4315 },
+  { id:15, name:"WTF Shakti Khand — Indirapuram",    city:"Ghaziabad",    address:"Plot No. 380, Lane 5, Shakti Khand 4, Indirapuram, Ghaziabad", lat:28.6375, lng:77.3574 },
+  { id:16, name:"WTF Mayur Vihar Phase-3",           city:"Delhi",        address:"Shop No. B-1/381, Mayur Vihar Phase-3, New Kondli", lat:28.6027, lng:77.3148 },
+  { id:17, name:"WTF Janakpuri",                     city:"Delhi",        address:"A-3, 233, SS Mota Singh Marg, Janakpuri, Delhi", lat:28.6289, lng:77.0815 },
+  { id:18, name:"WTF Greater Noida — Ace City",      city:"Greater Noida",address:"Mahaveer Plaza, behind ACE CITY, Sector 1, Greater Noida", lat:28.5780, lng:77.4415 },
+  { id:19, name:"WTF Greenfield, Faridabad",         city:"Faridabad",    address:"H. No. B-693, Greenfield Colony, Sector 43, Faridabad", lat:28.3934, lng:77.3120 },
+  { id:20, name:"WTF Shahdara",                      city:"Delhi",        address:"A-82, Jagat Puri Chowk, Shahdara, Delhi", lat:28.6680, lng:77.2863 },
+  { id:21, name:"WTF Punjabi Bagh",                  city:"Delhi",        address:"56/43, West Punjabi Bagh, Delhi", lat:28.6668, lng:77.1356 },
+  { id:22, name:"WTF Raj Nagar",                     city:"Ghaziabad",    address:"R-13/112, Sector 13, Raj Nagar, Ghaziabad", lat:28.6680, lng:77.4320 },
+  { id:23, name:"WTF Govindpuram",                   city:"Ghaziabad",    address:"C-5, near HDFC Bank, Balaji Enclave, Govindpuram, Ghaziabad", lat:28.7100, lng:77.4500 },
+  { id:24, name:"WTF Raj Nagar Extension",           city:"Ghaziabad",    address:"VVIP Assets, Plot No. 6, Raj Nagar Extension, Ghaziabad", lat:28.6770, lng:77.4158 },
+  { id:25, name:"WTF Gurugram — Sector 7",           city:"Gurugram",     address:"P21, Variman Point, Circular Rd, New Colony, Gurugram", lat:28.4785, lng:77.0207 },
+  { id:26, name:"WTF Gurugram — Sector 4",           city:"Gurugram",     address:"One Life Fitness, Cancon Enclave, Old Railway Rd, Sector 4, Gurugram", lat:28.4720, lng:77.0350 },
+  { id:27, name:"WTF Faridabad — Sector 82",         city:"Faridabad",    address:"Near Chandila Chowk, Bathola, Sector 82, Haryana", lat:28.3900, lng:77.3250 },
+  { id:28, name:"WTF New Ashok Nagar",               city:"Delhi",        address:"E-480, New Ashok Nagar Road, Near Vasundra Enclave, Delhi", lat:28.6127, lng:77.3120 },
+];
+
+// Custom amber marker SVG
+function createMarkerIcon(color) {
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 44" width="32" height="44">
+    <defs>
+      <radialGradient id="g" cx="40%" cy="35%">
+        <stop offset="0%" stop-color="#e4a84a"/>
+        <stop offset="100%" stop-color="#9a6015"/>
+      </radialGradient>
+    </defs>
+    <path d="M16 0C7.163 0 0 7.163 0 16c0 12 16 28 16 28S32 28 32 16C32 7.163 24.837 0 16 0z" fill="url(#g)"/>
+    <circle cx="16" cy="16" r="6" fill="#1c1304"/>
+    <circle cx="14" cy="14" r="2" fill="rgba(255,255,255,0.35)" />
+  </svg>`;
+  return L.divIcon({
+    html: svg,
+    className: '',
+    iconSize: [28, 40],
+    iconAnchor: [14, 40],
+    popupAnchor: [0, -42],
+  });
+}
+
+const map = L.map('map', {
+  center: [28.58, 77.22],
+  zoom: 11,
+  zoomControl: true,
+  scrollWheelZoom: false,
+  attributionControl: true,
+});
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+  maxZoom: 19,
+}).addTo(map);
+
+const icon = createMarkerIcon('#cd872a');
+
+centers.forEach(function(c) {
+  const popup = `
+    <div style="padding:14px 16px 12px">
+      <p style="font-size:9px;letter-spacing:0.16em;text-transform:uppercase;color:#cd872a;font-weight:700;margin-bottom:5px">${c.city}</p>
+      <p style="font-size:13px;font-weight:700;color:#f7f0e2;line-height:1.3;margin-bottom:6px">${c.name}</p>
+      <p style="font-size:11px;color:rgba(247,240,226,0.55);line-height:1.5;margin-bottom:10px">${c.address}</p>
+      <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(c.address)}" target="_blank"
+        style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:#cd872a;text-decoration:none;font-weight:700">
+        Open in Maps →
+      </a>
+    </div>`;
+  L.marker([c.lat, c.lng], { icon: icon }).addTo(map).bindPopup(popup);
+});
+
+// Counter badge
+const badge = document.createElement('div');
+badge.className = 'counter-badge';
+badge.textContent = centers.length + ' CENTERS';
+document.body.appendChild(badge);
+</script>
+</body>
+</html>

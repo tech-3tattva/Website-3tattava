@@ -1,11 +1,11 @@
 'use client';
 import { useState, useEffect, useCallback } from 'react';
 import { usePathname } from 'next/navigation';
+import { api } from '@/lib/api';
 
 const COOLDOWN_KEY = '3t_lead_cooldown';
 const COOLDOWN_MS  = 48 * 60 * 60 * 1000; // 48 hours
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'https://api.3tattava.com';
 
 type ModalState = 'hidden' | 'visible' | 'submitting' | 'success';
 
@@ -62,11 +62,7 @@ export default function LeadCaptureModal() {
     if (Object.keys(e).length) { setErrors(e); return; }
     setState('submitting');
     try {
-      await fetch(`${API_BASE}/api/leads`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, phone, source: 'website_popup' }),
-      });
+      await api.post('/leads', { name, phone, email: `p${phone}@lead.3tattava.local`, source: 'website_popup' });
       localStorage.setItem(COOLDOWN_KEY, String(Date.now()));
       setState('success');
     } catch {

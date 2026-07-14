@@ -55,7 +55,7 @@ export default function Testimonials() {
         <p className="mt-10 text-center text-sm text-text-medium max-w-xl mx-auto">
           {TESTIMONIALS.disclaimer}{" "}
           <a
-            href="/reviews"
+            href="/community"
             className="underline underline-offset-4 hover:text-text-dark transition-colors"
           >
             Read all reviews &rarr;

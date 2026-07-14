@@ -2,12 +2,14 @@
 
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence, useInView } from "framer-motion";
+import PurchaseGate, { LockedTeaser } from "@/components/purchase/PurchaseGate";
 
 // ─── TYPES & CONSTANTS ───────────────────────────────────────────────────────
 
 const FONT   = "var(--font-primary), system-ui, sans-serif";
 const EASE   = [0.16, 1, 0.3, 1] as const;
 const SPRING = { type:"spring", stiffness:380, damping:22 } as const;
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const GOLD   = "linear-gradient(105deg,#A67B2F,#E4C079,#C8963E,#A67B2F)";
 const GOLD3  = "linear-gradient(90deg,#A67B2F,#E4C079,#C8963E)";
 
@@ -156,8 +158,8 @@ function Ticker() {
 
 // ─── DOCTOR AVATAR (NEUMORPHIC) ───────────────────────────────────────────────
 
-function Avatar({ initial, size=96, verified=false, active=false }: {
-  initial:string; size?:number; verified?:boolean; active?:boolean;
+function Avatar({ initial, photo, size=96, verified=false, active=false }: {
+  initial:string; photo?:string; size?:number; verified?:boolean; active?:boolean;
 }) {
   const [hov, setHov] = useState(false);
   return (
@@ -203,14 +205,19 @@ function Avatar({ initial, size=96, verified=false, active=false }: {
               }}
             />
           )}
-          <span style={{
-            fontVariationSettings:"'wdth' 85,'wght' 800",
-            fontFamily:FONT,
-            fontSize:size*.42, color:"#1c1304", lineHeight:1,
-            position:"relative", zIndex:1,
-          }}>
-            {initial}
-          </span>
+          {photo ? (
+            /* eslint-disable-next-line @next/next/no-img-element */
+            <img src={photo} alt={initial} style={{ width:"100%", height:"100%", objectFit:"cover", borderRadius:"50%", position:"relative", zIndex:1 }} />
+          ) : (
+            <span style={{
+              fontVariationSettings:"'wdth' 85,'wght' 800",
+              fontFamily:FONT,
+              fontSize:size*.42, color:"#442a1b", lineHeight:1,
+              position:"relative", zIndex:1,
+            }}>
+              {initial}
+            </span>
+          )}
         </motion.div>
       </div>
 
@@ -360,7 +367,7 @@ function PopBtn({
 // ─── FEATURED DOCTOR CARD ────────────────────────────────────────────────────
 
 interface FeaturedDoc {
-  initial:string; name:string; role:string; credentials:string;
+  initial:string; photo?:string; name:string; role:string; credentials:string;
   badge:string; quote:string; specialties:string[];
   ctas:Array<{label:string;variant:"gold"|"ghost"|"ink";href?:string}>;
   consultNote?:string;
@@ -412,7 +419,7 @@ function FeaturedCard({ doc, idx }: { doc:FeaturedDoc; idx:number }) {
 
       {/* Avatar + header block */}
       <div style={{display:"flex",gap:"20px",alignItems:"flex-start",position:"relative",zIndex:1}}>
-        <Avatar initial={doc.initial} size={84} verified active />
+        <Avatar initial={doc.initial} photo={doc.photo} size={84} verified active />
         <div style={{flex:1}}>
           {/* Role badge */}
           <div style={{
@@ -717,7 +724,7 @@ const FEATURED_DOCTORS: FeaturedDoc[] = [
     ],
   },
   {
-    initial:"F",
+    initial:"F", photo:"/team/dr-falguni-chauhan.jpg",
     name:"Dr. Falguni Chauhan",
     role:"Performance Nutrition Expert",
     credentials:"BAMS · Ayurveda Dietician",
@@ -731,6 +738,7 @@ const FEATURED_DOCTORS: FeaturedDoc[] = [
     consultNote:"Paid personal consultations are ₹800/session. The starter diet guide is complimentary.",
   },
 ];
+
 
 export default function VaidyaConnectClient() {
   const [query, setQuery]           = useState("");
@@ -781,7 +789,7 @@ export default function VaidyaConnectClient() {
       {/* ── HERO ───────────────────────────────────────────────────────────── */}
       <section style={{
         position:"relative",overflow:"hidden",
-        background:"url('https://media.3tattava.com/banners/preview.webp') center/cover no-repeat #f7f0e2",
+        background:"url('/posters/vaidyaconnect/1.jpg') center/cover no-repeat #f7f0e2",
         padding:"96px 24px 80px",textAlign:"center",
       }}>
         {/* Overlay to keep text readable */}
@@ -1005,7 +1013,18 @@ export default function VaidyaConnectClient() {
               borderTop:"1px solid rgba(183,163,146,.20)",
               paddingTop:"32px",
             }}>
-              <AssessmentForm/>
+              <PurchaseGate
+                fallback={
+                  <LockedTeaser
+                    eyebrow="Unlock After Your First Ritual"
+                    title="Your Performance Assessment Awaits"
+                    body="Dr. Kashish's personalised six-domain assessment — and his 24-hour WhatsApp guidance — unlock the moment you begin your first ritual. Claim yours with a purchase."
+                    ctaLabel="Shop & Unlock"
+                  />
+                }
+              >
+                <AssessmentForm/>
+              </PurchaseGate>
             </div>
           </motion.div>
         </div>
@@ -1169,7 +1188,7 @@ export default function VaidyaConnectClient() {
                   </li>
                 ))}
               </ul>
-              <PopBtn href="#" variant="gold" style={{width:"100%",justifyContent:"center"}}>
+              <PopBtn href="#assessment" variant="gold" style={{width:"100%",justifyContent:"center"}}>
                 Book Consultation →
               </PopBtn>
             </motion.div>

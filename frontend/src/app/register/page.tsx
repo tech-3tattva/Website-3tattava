@@ -6,6 +6,7 @@ import { Suspense, useCallback, useState } from "react";
 import GoogleSignInButton from "@/components/auth/GoogleSignInButton";
 import { useAuth } from "@/context/AuthContext";
 import { DEFAULT_POST_AUTH_PATH, getSafeRedirectPath } from "@/lib/auth-redirect";
+import AyurvedaLoader from "@/components/ui/AyurvedaLoader";
 
 function RegisterContent() {
   const router = useRouter();
@@ -41,7 +42,7 @@ function RegisterContent() {
       : "/login";
 
   return (
-    <section className="relative min-h-[74vh] flex items-center justify-center px-3 sm:px-4 py-10 sm:py-14 overflow-hidden">
+    <section className="relative min-h-[74vh] flex items-start justify-center px-3 sm:px-4 pt-28 pb-12 sm:pt-32 sm:pb-16 overflow-hidden">
       <div
         className="absolute inset-0"
         style={{
@@ -128,8 +129,8 @@ export default function RegisterPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-[74vh] flex items-center justify-center bg-cream text-text-medium">
-          Loading…
+        <div className="min-h-[74vh] flex items-center justify-center bg-cream">
+          <AyurvedaLoader />
         </div>
       }
     >

@@ -10,7 +10,7 @@ const TICKER_MESSAGES = [
   "80+ Trace Minerals · 60%+ Fulvic Acid · NABL Lab-Certified",
   "Free Shipping Above ₹999 · Lab-Certified Purity · Doctor-Formulated",
   "SHODHIT SHILAJIT — Purified via Classical Triphala Shodhan",
-  "Manufactured by URMI Lifesciences · AYUSH-GMP Certified",
+  "AYUSH-GMP Certified Facility",
 ];
 
 export default function AnnouncementBar() {

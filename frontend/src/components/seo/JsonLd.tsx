@@ -206,3 +206,46 @@ export function BreadcrumbSchema({
   } as const;
   return <JsonLdScript data={data} />;
 }
+
+/** CollectionPage for hub/library pages (Knowledge Center). Optional ItemList of entries. */
+export function CollectionPageSchema({
+  name,
+  description,
+  url,
+  items,
+}: {
+  name: string;
+  description: string;
+  url: string;
+  items?: Array<{ name: string; url?: string }>;
+}) {
+  const data: Record<string, unknown> = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name,
+    description,
+    url,
+    inLanguage: "en",
+    isPartOf: { "@type": "WebSite", name: BRAND.name, url: BRAND.url },
+    about: "Ayurveda, Shilajit, Triphala, digestive health, Performance Ayurveda",
+    publisher: { "@type": "Organization", name: BRAND.name, url: BRAND.url },
+    reviewedBy: {
+      "@type": "Person",
+      name: `${BRAND.founderName}, ${BRAND.founderCredentials}`,
+      jobTitle: "Qualified Ayurveda Doctor (BAMS)",
+    },
+  };
+  if (items && items.length > 0) {
+    data.hasPart = {
+      "@type": "ItemList",
+      numberOfItems: items.length,
+      itemListElement: items.map((it, i) => ({
+        "@type": "ListItem",
+        position: i + 1,
+        name: it.name,
+        ...(it.url ? { url: it.url } : {}),
+      })),
+    };
+  }
+  return <JsonLdScript data={data} />;
+}

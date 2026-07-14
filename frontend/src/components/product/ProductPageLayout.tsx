@@ -864,7 +864,7 @@ export default function ProductPageLayout({ product }: { product: ProductData })
         <div className="pdp-wrap">
           <div className="pdp-crumb">
             <a onClick={() => router.push('/')}>Home</a> /
-            <a onClick={() => router.push('/shop')}>Shop</a> /
+            <a onClick={() => router.push('/products')}>Shop</a> /
             <span>{product.breadcrumbName}</span>
           </div>
         </div>

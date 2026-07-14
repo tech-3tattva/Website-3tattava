@@ -1,31 +1,33 @@
-import HeroSection from "@/components/home/HeroSection";
-import TrustStrip from "@/components/home/TrustStrip";
-import ProductHeroSection from "@/components/home/ProductHeroSection";
-import FeaturedProductSpotlight from "@/components/home/FeaturedProductSpotlight";
-import FeaturesSection from "@/components/home/FeaturesSection";
-import WeekByWeek from "@/components/home/WeekByWeek";
-import TestimonialsMarquee from "@/components/home/TestimonialsMarquee";
-import FounderSection from "@/components/home/FounderSection";
-import EducationPreview from "@/components/home/EducationPreview";
-import { WebsiteSchema } from "@/components/seo/JsonLd";
-import { getFeaturedProducts } from "@/lib/products";
+import HeroRevamp from "@/components/home-revamp/HeroRevamp";
+import TrinityPosterSection from "@/components/home-revamp/TrinityPosterSection";
+import PerformanceStory from "@/components/home-revamp/PerformanceStory";
+import PhilosophyRevamp from "@/components/home-revamp/PhilosophyRevamp";
+import TrustRevamp from "@/components/home-revamp/TrustRevamp";
+import DrKashishSection from "@/components/home-revamp/DrKashishSection";
+import TestimonialsRevamp from "@/components/home-revamp/TestimonialsRevamp";
+import FAQRevamp from "@/components/home-revamp/FAQRevamp";
+import ExperienceCenterMap from "@/components/home-revamp/ExperienceCenterMap";
+import NewsletterRevamp from "@/components/home-revamp/NewsletterRevamp";
+import SocialSidebar from "@/components/home-revamp/SocialSidebar";
+import { WebsiteSchema, FAQSchema } from "@/components/seo/JsonLd";
+import { HOME_FAQS } from "@/data/faqs/home";
 
-export default async function HomePage() {
-  const featuredProducts = await getFeaturedProducts();
-  const spotlight = featuredProducts[0];
-
+export default function HomePage() {
   return (
     <>
       <WebsiteSchema />
-      <HeroSection />
-      <TrustStrip />
-      <ProductHeroSection />
-      {spotlight && <FeaturedProductSpotlight product={spotlight} />}
-      <FeaturesSection />
-      <WeekByWeek />
-      <TestimonialsMarquee />
-      <FounderSection />
-      <EducationPreview />
+      <FAQSchema faqs={HOME_FAQS.map((f) => ({ question: f.question, answer: f.answer }))} />
+      <SocialSidebar />
+      <HeroRevamp />
+      <TrinityPosterSection />
+      <PerformanceStory />
+      <PhilosophyRevamp />
+      <TrustRevamp />
+      <DrKashishSection />
+      <TestimonialsRevamp />
+      <FAQRevamp />
+      <ExperienceCenterMap />
+      <NewsletterRevamp />
     </>
   );
 }

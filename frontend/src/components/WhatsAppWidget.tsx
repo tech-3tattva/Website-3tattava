@@ -100,19 +100,19 @@ export default function WhatsAppWidget() {
           width: 58px;
           height: 58px;
           border-radius: 50%;
-          background: linear-gradient(145deg, #2a1d08 0%, #1c1304 100%);
-          border: 1px solid rgba(200,150,62,0.55);
+          background: #25D366;
+          border: 1px solid rgba(37,211,102,0.7);
           cursor: pointer;
           display: flex;
           align-items: center;
           justify-content: center;
-          box-shadow: 0 6px 24px rgba(28,19,4,0.45), inset 0 1px 0 rgba(228,192,121,0.18);
+          box-shadow: 0 6px 24px rgba(37,211,102,0.35), inset 0 1px 0 rgba(255,255,255,0.18);
           transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
 
         .wa-btn:hover {
           transform: scale(1.08);
-          box-shadow: 0 8px 30px rgba(28,19,4,0.55), 0 0 22px rgba(200,150,62,0.28);
+          box-shadow: 0 8px 30px rgba(37,211,102,0.45), 0 0 22px rgba(37,211,102,0.28);
         }
 
         .wa-btn:active { transform: scale(0.93); }
@@ -123,7 +123,7 @@ export default function WhatsAppWidget() {
           width: 58px;
           height: 58px;
           border-radius: 50%;
-          border: 1.5px solid rgba(201,168,76,0.6);
+          border: 1.5px solid rgba(37,211,102,0.6);
           animation: wa-gold-ring 2.5s ease-out infinite;
         }
 
@@ -140,7 +140,7 @@ export default function WhatsAppWidget() {
           width: 58px;
           height: 58px;
           border-radius: 50%;
-          border: 1px solid rgba(228,192,121,0.35);
+          border: 1px solid rgba(37,211,102,0.35);
           animation: wa-gold-ring 2.5s ease-out infinite 1.2s;
         }
 

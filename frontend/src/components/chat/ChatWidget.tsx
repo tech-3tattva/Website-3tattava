@@ -427,12 +427,12 @@ export default function ChatWidget() {
         .tw-orb-core {
           position: absolute; inset: 0;
           border-radius: 50%;
-          background: radial-gradient(circle at 35% 30%,#2a2218,#1a1a1a 50%,#0f0f0f);
-          border: 1px solid rgba(200,150,62,.38);
+          background: radial-gradient(circle at 35% 30%, #ffffff, #f7f0e2 55%, #ece0c8);
+          border: 1px solid rgba(205,135,42,.6);
           box-shadow:
-            inset 0 1px 0 rgba(200,150,62,.2),
-            0 8px 32px rgba(0,0,0,.7),
-            0 2px 8px rgba(0,0,0,.5);
+            inset 0 1px 0 rgba(255,255,255,.7),
+            0 8px 30px rgba(0,0,0,.45),
+            0 0 24px rgba(205,135,42,.45);
           transition: all .32s cubic-bezier(0.34,1.56,0.64,1);
           overflow: hidden;
           display: flex; align-items: center; justify-content: center;
@@ -442,19 +442,19 @@ export default function ChatWidget() {
           top: 10px; left: 14px;
           width: 16px; height: 8px;
           border-radius: 50%;
-          background: rgba(200,150,62,.12);
+          background: rgba(255,255,255,.55);
           transform: rotate(-20deg);
           pointer-events: none;
         }
         .tw-orb-label {
           font-family: Georgia,serif;
           font-size: 18px; font-weight: 700;
-          color: #C8963E;
+          color: #442a1b;
           letter-spacing: -1px;
-          text-shadow: 0 0 18px rgba(200,150,62,.35);
+          text-shadow: none;
           user-select: none;
           transition: all .3s ease;
-          position: relative; z-index: 1;
+          position: relative; z-index: 1; display: flex; align-items: center; justify-content: center; width: 100%; height: 100%;
         }
         .tw-particles {
           position: absolute; inset: -22px;
@@ -476,8 +476,15 @@ export default function ChatWidget() {
             0 0 32px rgba(200,150,62,.18),
             0 12px 40px rgba(0,0,0,.8);
         }
-        .tw-orb-wrap:hover .tw-orb-label { color: #e8b458; text-shadow: 0 0 28px rgba(200,150,62,.6); }
+        .tw-orb-wrap:hover .tw-orb-label { color: #cd872a; }
         .tw-orb-wrap:active .tw-orb-core { transform: scale(.93); }
+        .tw-orb-logo {
+          width: 28px; height: 28px; object-fit: contain;
+          display: block;
+        }
+        .tw-orb-wrap:hover .tw-orb-logo {
+          transform: scale(1.05);
+        }
         .tw-tooltip {
           position: absolute;
           right: 76px; top: 50%;
@@ -606,7 +613,12 @@ export default function ChatWidget() {
           </div>
           <div className="tw-orb-core">
             <div className="tw-orb-shine" />
-            <span className="tw-orb-label">{open ? "×" : "3T"}</span>
+            <span className="tw-orb-label">
+              {open ? "×" : (
+                /* eslint-disable-next-line @next/next/no-img-element */
+                <img src="/brand/3t-icon.png" alt="3tattava" className="tw-orb-logo" />
+              )}
+            </span>
           </div>
           {!open && <div className="tw-tooltip">Ask us anything →</div>}
         </div>

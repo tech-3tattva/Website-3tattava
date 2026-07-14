@@ -9,13 +9,13 @@ import {
   useSpring,
   AnimatePresence,
 } from "framer-motion";
-import Link from "next/link";
+import BgVideo from "@/components/ui/BgVideo";
 
 const FONT = "var(--font-primary), system-ui, sans-serif";
 const EASE = [0.16, 1, 0.3, 1] as const;
 const SPRING = { type: "spring", stiffness: 380, damping: 22 } as const;
-const GOLD = "linear-gradient(105deg,#A67B2F,#E4C079,#C8963E,#A67B2F)";
-const GOLD_BORDER = "linear-gradient(90deg,#A67B2F,#E4C079,#C8963E)";
+const GOLD = "linear-gradient(105deg,#A67B2F,#E4C079,#cd872a,#A67B2F)";
+const GOLD_BORDER = "linear-gradient(90deg,#A67B2F,#E4C079,#cd872a)";
 
 // ─── DATA ────────────────────────────────────────────────────────────────────
 
@@ -45,6 +45,15 @@ const LAB_RESULTS = [
     detail: "100% Asphaltum Punjabanum (Himalayan Shilajit). No substitution detected.",
   },
 ];
+
+// ─── LAB REPORT CONFIG ───────────────────────────────────────────────────────
+// Drop the public PDF URL (or /lab-reports/<file>.pdf) into pdfUrl below and the
+// "View … COA" buttons open it inline. Empty pdfUrl shows a tasteful pending state.
+interface LabReport { id: string; label: string; pdfUrl: string }
+const LAB_REPORTS: Record<"rockresin" | "shahjeet", LabReport> = {
+  rockresin: { id: "rockresin", label: "RockResin — Eurofins NABL Certificate of Analysis", pdfUrl: "/lab-reports/rockresin-coa.pdf" },
+  shahjeet:  { id: "shahjeet",  label: "Shahjeet — Full NABL Certificate of Analysis",  pdfUrl: "" },
+};
 
 const PILLARS = [
   {
@@ -154,7 +163,7 @@ function HeroBg() {
         <div key={i} style={{
           position:"absolute",top:p.top,left:p.left,right:p.right,
           width:p.s,height:p.s,borderRadius:"50%",
-          background:"radial-gradient(circle,#E4C079,#C8963E)",
+          background:"radial-gradient(circle,#E4C079,#cd872a)",
           animation:p.d,pointerEvents:"none",zIndex:0,
         }}/>
       ))}
@@ -168,24 +177,24 @@ function ScanElement() {
   return (
     <div style={{
       display:"inline-flex",alignItems:"center",gap:"16px",
-      border:"1px solid rgba(200,150,62,.35)",
-      background:"rgba(200,150,62,.06)",
+      border:"1px solid rgba(205,135,42,.35)",
+      background:"rgba(205,135,42,.06)",
       padding:"14px 22px",
     }}>
       {/* QR placeholder */}
       <div style={{
         width:"56px",height:"56px",position:"relative",flexShrink:0,
-        border:"1.5px solid rgba(200,150,62,.50)",
+        border:"1.5px solid rgba(205,135,42,.50)",
       }}>
         {/* QR grid pattern */}
         <svg viewBox="0 0 56 56" width="56" height="56">
-          <rect x="4" y="4" width="18" height="18" rx="1" fill="none" stroke="#C8963E" strokeWidth="1.5"/>
-          <rect x="8" y="8" width="10" height="10" rx="0.5" fill="#C8963E" opacity=".8"/>
-          <rect x="34" y="4" width="18" height="18" rx="1" fill="none" stroke="#C8963E" strokeWidth="1.5"/>
-          <rect x="38" y="8" width="10" height="10" rx="0.5" fill="#C8963E" opacity=".8"/>
-          <rect x="4" y="34" width="18" height="18" rx="1" fill="none" stroke="#C8963E" strokeWidth="1.5"/>
-          <rect x="8" y="38" width="10" height="10" rx="0.5" fill="#C8963E" opacity=".8"/>
-          <g stroke="#C8963E" strokeWidth="1" opacity=".6">
+          <rect x="4" y="4" width="18" height="18" rx="1" fill="none" stroke="#cd872a" strokeWidth="1.5"/>
+          <rect x="8" y="8" width="10" height="10" rx="0.5" fill="#cd872a" opacity=".8"/>
+          <rect x="34" y="4" width="18" height="18" rx="1" fill="none" stroke="#cd872a" strokeWidth="1.5"/>
+          <rect x="38" y="8" width="10" height="10" rx="0.5" fill="#cd872a" opacity=".8"/>
+          <rect x="4" y="34" width="18" height="18" rx="1" fill="none" stroke="#cd872a" strokeWidth="1.5"/>
+          <rect x="8" y="38" width="10" height="10" rx="0.5" fill="#cd872a" opacity=".8"/>
+          <g stroke="#cd872a" strokeWidth="1" opacity=".6">
             {[34,38,42,46].map(x=>[28,32,36,40,44,48].map(y=>(
               <rect key={`${x}-${y}`} x={x} y={y} width="3" height="3" rx=".3"/>
             )))}
@@ -234,7 +243,7 @@ function PassedCard({ item, idx }: { item:typeof LAB_RESULTS[0]; idx:number }) {
       initial={{opacity:0,y:32}}
       animate={inView?{opacity:1,y:0}:{}}
       transition={{duration:.5,delay:idx*.1,ease:EASE}}
-      whileHover={{ y:-5, boxShadow:"0 20px 48px rgba(200,150,62,.16),0 4px 16px rgba(28,19,4,.08)" }}
+      whileHover={{ y:-5, boxShadow:"0 20px 48px rgba(205,135,42,.16),0 4px 16px rgba(28,19,4,.08)" }}
       style={{
         background:"#fff",
         border:"1px solid rgba(183,163,146,.28)",
@@ -255,7 +264,7 @@ function PassedCard({ item, idx }: { item:typeof LAB_RESULTS[0]; idx:number }) {
       <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:"16px"}}>
         <div style={{
           fontVariationSettings:"'wdth' 85,'wght' 700",
-          fontSize:"17px",color:"#1c1304",flex:1,lineHeight:1.3,
+          fontSize:"17px",color:"#442a1b",flex:1,lineHeight:1.3,
         }}>
           {item.test}
         </div>
@@ -350,12 +359,12 @@ function PillarCard({ p, idx }: { p:typeof PILLARS[0]; idx:number }) {
     >
       <div style={{
         background:"#fff",
-        border:hov?"1.5px solid rgba(200,150,62,.55)":"1px solid rgba(183,163,146,.28)",
+        border:hov?"1.5px solid rgba(205,135,42,.55)":"1px solid rgba(183,163,146,.28)",
         borderRadius:"4px",
         padding:"32px 28px",
         position:"relative",overflow:"hidden",
         boxShadow:hov
-          ?"0 24px 56px rgba(200,150,62,.16),0 6px 20px rgba(28,19,4,.09)"
+          ?"0 24px 56px rgba(205,135,42,.16),0 6px 20px rgba(28,19,4,.09)"
           :"0 1px 4px rgba(28,19,4,.05)",
         transition:"border .25s,box-shadow .28s",
         height:"100%",
@@ -372,7 +381,7 @@ function PillarCard({ p, idx }: { p:typeof PILLARS[0]; idx:number }) {
           position:"absolute",top:"12px",right:"16px",
           fontVariationSettings:"'wdth' 85,'wght' 900",
           fontSize:"68px",lineHeight:1,
-          color:"rgba(200,150,62,.08)",
+          color:"rgba(205,135,42,.08)",
           pointerEvents:"none",userSelect:"none",
         }}>
           {p.num}
@@ -382,7 +391,7 @@ function PillarCard({ p, idx }: { p:typeof PILLARS[0]; idx:number }) {
 
         <h3 style={{
           fontVariationSettings:"'wdth' 85,'wght' 700",
-          fontSize:"18px",color:"#1c1304",marginBottom:"6px",lineHeight:1.3,
+          fontSize:"18px",color:"#442a1b",marginBottom:"6px",lineHeight:1.3,
         }}>
           {p.title}
         </h3>
@@ -391,9 +400,9 @@ function PillarCard({ p, idx }: { p:typeof PILLARS[0]; idx:number }) {
           <span style={{
             fontSize:"9px",letterSpacing:".18em",textTransform:"uppercase",
             fontVariationSettings:"'wdth' 75,'wght' 600",
-            color:"#C8963E",
-            background:"rgba(200,150,62,.10)",
-            border:"1px solid rgba(200,150,62,.28)",
+            color:"#cd872a",
+            background:"rgba(205,135,42,.10)",
+            border:"1px solid rgba(205,135,42,.28)",
             padding:"3px 8px",
           }}>
             {p.badge}
@@ -416,7 +425,7 @@ function PillarCard({ p, idx }: { p:typeof PILLARS[0]; idx:number }) {
         </p>
 
         <div style={{
-          borderLeft:"2px solid rgba(200,150,62,.35)",
+          borderLeft:"2px solid rgba(205,135,42,.35)",
           paddingLeft:"14px",
           background:"rgba(28,19,4,.02)",
           padding:"10px 12px 10px 14px",
@@ -453,7 +462,7 @@ function DataBar({ label, value, pct }: { label:string; value:string; pct:number
         <span style={{
           fontSize:"13px",fontVariationSettings:"'wdth' 85,'wght' 700",
           fontFamily:FONT,
-          color:"#1c1304",
+          color:"#442a1b",
         }}>
           {value}
         </span>
@@ -476,33 +485,30 @@ function DataBar({ label, value, pct }: { label:string; value:string; pct:number
 // ─── POPABLE BUTTON ──────────────────────────────────────────────────────────
 
 function PopButton({
-  href, children, variant="gold",
+  href, onClick, children, variant = "gold",
 }: {
-  href:string; children:React.ReactNode; variant?:"gold"|"ghost"
+  href?: string; onClick?: () => void; children: React.ReactNode; variant?: "gold" | "ghost";
 }) {
+  const style: React.CSSProperties = {
+    display: "inline-flex", alignItems: "center", gap: "8px",
+    background: variant === "gold" ? "linear-gradient(145deg,#cd872a,#A67B2F)" : "transparent",
+    color: variant === "gold" ? "#442a1b" : "#f7f0e2",
+    fontVariationSettings: "'wdth' 85,'wght' 700", fontFamily: FONT,
+    fontSize: "11px", letterSpacing: ".15em", textTransform: "uppercase",
+    padding: "15px 36px", textDecoration: "none",
+    border: variant === "ghost" ? "1.5px solid rgba(247,240,226,.30)" : "none",
+    cursor: "pointer",
+  };
+  const hover = { scale: 1.06, y: -3, boxShadow: variant === "gold" ? "0 12px 32px rgba(205,135,42,.45)" : "0 8px 24px rgba(28,19,4,.18)" };
+  if (onClick) {
+    return (
+      <motion.button type="button" onClick={onClick} whileHover={hover} whileTap={{ scale: 0.96 }} transition={SPRING} style={style}>
+        {children}
+      </motion.button>
+    );
+  }
   return (
-    <motion.a
-      href={href}
-      whileHover={{ scale:1.06, y:-3, boxShadow: variant==="gold"
-        ? "0 12px 32px rgba(200,150,62,.45)"
-        : "0 8px 24px rgba(28,19,4,.18)"
-      }}
-      whileTap={{ scale:.96 }}
-      transition={SPRING}
-      style={{
-        display:"inline-flex",alignItems:"center",gap:"8px",
-        background:variant==="gold"
-          ? "linear-gradient(145deg,#C8963E,#A67B2F)"
-          : "transparent",
-        color:variant==="gold"?"#1c1304":"#f7f0e2",
-        fontVariationSettings:"'wdth' 85,'wght' 700",
-        fontFamily:FONT,
-        fontSize:"11px",letterSpacing:".15em",textTransform:"uppercase",
-        padding:"15px 36px",textDecoration:"none",
-        border:variant==="ghost"?"1.5px solid rgba(247,240,226,.30)":"none",
-        cursor:"pointer",
-      }}
-    >
+    <motion.a href={href} whileHover={hover} whileTap={{ scale: 0.96 }} transition={SPRING} style={style}>
       {children}
     </motion.a>
   );
@@ -510,21 +516,60 @@ function PopButton({
 
 // ─── MAIN ────────────────────────────────────────────────────────────────────
 
+function LabReportModal({ report, onClose }: { report: LabReport | null; onClose: () => void }) {
+  return (
+    <AnimatePresence>
+      {report && (
+        <motion.div
+          initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose}
+          style={{ position: "fixed", inset: 0, zIndex: 1300, background: "rgba(26,18,8,.72)", backdropFilter: "blur(4px)", display: "flex", alignItems: "center", justifyContent: "center", padding: "24px" }}
+        >
+          <motion.div
+            onClick={(e) => e.stopPropagation()}
+            initial={{ opacity: 0, y: 24, scale: 0.97 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 24 }} transition={{ duration: 0.35, ease: EASE }}
+            style={{ width: "min(880px,96vw)", height: "min(80vh,820px)", background: "#f7f0e2", borderRadius: 4, overflow: "hidden", display: "flex", flexDirection: "column", boxShadow: "0 30px 80px rgba(0,0,0,.5)" }}
+          >
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "15px 20px", background: "#442a1b" }}>
+              <p style={{ fontFamily: FONT, fontVariationSettings: "'wdth' 85,'wght' 700", fontSize: 13, color: "#f7f0e2", margin: 0 }}>{report.label}</p>
+              <button type="button" onClick={onClose} aria-label="Close" style={{ background: "none", border: "none", color: "#cd872a", fontSize: 22, lineHeight: 1, cursor: "pointer" }}>×</button>
+            </div>
+            {report.pdfUrl ? (
+              <iframe title={report.label} src={report.pdfUrl} style={{ flex: 1, width: "100%", border: "none", background: "#fff" }} />
+            ) : (
+              <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center", padding: "40px 28px", gap: 14 }}>
+                <div style={{ width: 56, height: 56, borderRadius: "50%", background: "rgba(205,135,42,.12)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#cd872a" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><path d="M14 2v6h6" /></svg>
+                </div>
+                <p style={{ fontFamily: FONT, fontVariationSettings: "'wdth' 85,'wght' 700", fontSize: 18, color: "#442a1b", margin: 0 }}>Report being finalized</p>
+                <p style={{ fontFamily: FONT, fontSize: 13.5, lineHeight: 1.6, color: "#6f5a48", maxWidth: 380, margin: 0 }}>The full NABL Certificate of Analysis for this batch will be available here shortly. For immediate access, request it from our team.</p>
+                <a href="mailto:orders@3tattava.com" style={{ fontFamily: FONT, fontVariationSettings: "'wdth' 85,'wght' 700", fontSize: 11, letterSpacing: ".14em", textTransform: "uppercase", color: "#442a1b", background: "linear-gradient(105deg,#A67B2F,#E4C079,#cd872a,#A67B2F)", padding: "12px 22px", textDecoration: "none" }}>Request the COA →</a>
+              </div>
+            )}
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+}
+
+
 export default function ResearchClient() {
   const complianceRef = useRef<HTMLElement>(null);
   const eduRef = useRef<HTMLElement>(null);
   const compInView = useInView(complianceRef, { once:true, margin:"-60px" });
   const eduInView   = useInView(eduRef,       { once:true, margin:"-60px" });
+  const [report, setReport] = useState<LabReport | null>(null);
 
   return (
-    <div style={{fontFamily:FONT,color:"#1c1304"}}>
+    <div style={{fontFamily:FONT,color:"#442a1b"}}>
 
       {/* ── HERO ─────────────────────────────────────────────────────────── */}
       <section style={{
         position:"relative",overflow:"hidden",
-        background:"url('https://media.3tattava.com/banners/preview-2.webp') center/cover no-repeat #1c1304",
+        background:"url('/posters/research/1.jpg') center/cover no-repeat #442a1b",
         padding:"96px 24px 80px",textAlign:"center",
       }}>
+        <BgVideo src="/videos/research-hero.mp4" />
         {/* Dark overlay to keep light text readable over lab banner */}
         <div style={{position:"absolute",inset:0,background:"rgba(20,14,4,0.72)",zIndex:0}}/>
         <HeroBg/>
@@ -536,7 +581,7 @@ export default function ResearchClient() {
               fontSize:"10px",letterSpacing:".32em",textTransform:"uppercase",
               fontVariationSettings:"'wdth' 75,'wght' 500",
               fontFamily:FONT,
-              color:"#C8963E",marginBottom:"20px",
+              color:"#cd872a",marginBottom:"20px",
             }}
           >
             Evidence Before Claims™
@@ -614,7 +659,7 @@ export default function ResearchClient() {
               fontSize:"10px",letterSpacing:".32em",textTransform:"uppercase",
               fontVariationSettings:"'wdth' 75,'wght' 500",
               fontFamily:FONT,
-              color:"#C8963E",marginBottom:"12px",
+              color:"#cd872a",marginBottom:"12px",
             }}>
               Batch Lab Results · ROCKRESIN
             </p>
@@ -622,9 +667,9 @@ export default function ResearchClient() {
               fontVariationSettings:"'wdth' 85,'wght' 700",
               fontFamily:FONT,
               fontSize:"clamp(24px,3.5vw,38px)",
-              letterSpacing:"-.02em",lineHeight:1.1,color:"#1c1304",
+              letterSpacing:"-.02em",lineHeight:1.1,color:"#442a1b",
             }}>
-              Four Tests. Four Passes.
+              <img src="/icons/lab-flask.svg" alt="" role="presentation" width={20} height={20} style={{ display:'inline', verticalAlign:'middle', marginRight:6 }} />Four Tests. Four Passes.
             </h2>
           </motion.div>
 
@@ -652,11 +697,11 @@ export default function ResearchClient() {
                 initial={{opacity:0,scale:.92}}
                 animate={compInView?{opacity:1,scale:1}:{}}
                 transition={{duration:.4,delay:i*.07,ease:EASE}}
-                whileHover={{ scale:1.07, y:-2, boxShadow:"0 8px 24px rgba(200,150,62,.20)" }}
+                whileHover={{ scale:1.07, y:-2, boxShadow:"0 8px 24px rgba(205,135,42,.20)" }}
                 whileTap={{ scale:.96 }}
                 style={{
                   background:"#fff",
-                  border:"1px solid rgba(200,150,62,.35)",
+                  border:"1px solid rgba(205,135,42,.35)",
                   padding:"12px 20px",textAlign:"center",
                   minWidth:"148px",cursor:"default",
                   boxShadow:"0 1px 4px rgba(28,19,4,.05)",
@@ -666,7 +711,7 @@ export default function ResearchClient() {
                   fontSize:"10.5px",letterSpacing:".08em",
                   fontVariationSettings:"'wdth' 85,'wght' 700",
                   fontFamily:FONT,
-                  color:"#1c1304",marginBottom:"3px",
+                  color:"#442a1b",marginBottom:"3px",
                 }}>
                   ✓ {b.label}
                 </p>
@@ -698,7 +743,7 @@ export default function ResearchClient() {
               fontSize:"10px",letterSpacing:".32em",textTransform:"uppercase",
               fontVariationSettings:"'wdth' 75,'wght' 500",
               fontFamily:FONT,
-              color:"#C8963E",marginBottom:"12px",
+              color:"#cd872a",marginBottom:"12px",
             }}>
               Our Protocol
             </p>
@@ -706,9 +751,9 @@ export default function ResearchClient() {
               fontVariationSettings:"'wdth' 85,'wght' 700",
               fontFamily:FONT,
               fontSize:"clamp(26px,3.5vw,40px)",
-              letterSpacing:"-.02em",lineHeight:1.1,color:"#1c1304",marginBottom:"14px",
+              letterSpacing:"-.02em",lineHeight:1.1,color:"#442a1b",marginBottom:"14px",
             }}>
-              Six Layers of Verification
+              <img src="/icons/lab-microscope.svg" alt="" role="presentation" width={20} height={20} style={{ display:'inline', verticalAlign:'middle', marginRight:6 }} />Six Layers of Verification
             </h2>
             <p style={{
               fontVariationSettings:"'wdth' 100,'wght' 300",
@@ -749,24 +794,24 @@ export default function ResearchClient() {
               fontSize:"10px",letterSpacing:".32em",textTransform:"uppercase",
               fontVariationSettings:"'wdth' 75,'wght' 500",
               fontFamily:FONT,
-              color:"#C8963E",marginBottom:"20px",
+              color:"#cd872a",marginBottom:"20px",
             }}>
-              Why Testing Matters
+              <img src="/icons/lab-test-tube.svg" alt="" role="presentation" width={20} height={20} style={{ display:'inline', verticalAlign:'middle', marginRight:6 }} />Why Testing Matters
             </p>
             <blockquote style={{
-              borderLeft:"3px solid #C8963E",paddingLeft:"24px",margin:0,
+              borderLeft:"3px solid #cd872a",paddingLeft:"24px",margin:0,
             }}>
               <p style={{
                 fontVariationSettings:"'wdth' 85,'wght' 600",
                 fontFamily:FONT,
                 fontSize:"clamp(18px,2.5vw,26px)",
-                lineHeight:1.45,color:"#1c1304",
+                lineHeight:1.45,color:"#442a1b",
                 fontStyle:"italic",marginBottom:"16px",
               }}>
                 &ldquo;Not all Shilajit is created equal. Source quality, purification methods, and laboratory verification all influence product quality and consistency.&rdquo;
               </p>
               <cite style={{
-                fontSize:"12px",color:"#C8963E",
+                fontSize:"12px",color:"#cd872a",
                 fontVariationSettings:"'wdth' 75,'wght' 600",
                 fontFamily:FONT,
                 letterSpacing:".08em",fontStyle:"normal",
@@ -799,7 +844,7 @@ export default function ResearchClient() {
             <h3 style={{
               fontVariationSettings:"'wdth' 85,'wght' 700",
               fontFamily:FONT,
-              fontSize:"20px",color:"#1c1304",marginBottom:"32px",letterSpacing:"-.01em",
+              fontSize:"20px",color:"#442a1b",marginBottom:"32px",letterSpacing:"-.01em",
             }}>
               ROCKRESIN Batch Performance
             </h3>
@@ -822,13 +867,13 @@ export default function ResearchClient() {
 
       {/* ── CTA ──────────────────────────────────────────────────────────── */}
       <section style={{
-        background:"#1c1304",padding:"88px 24px",textAlign:"center",
+        background:"#442a1b",padding:"88px 24px",textAlign:"center",
         position:"relative",overflow:"hidden",
       }}>
         {/* Subtle bg pattern */}
         <div style={{
           position:"absolute",inset:0,
-          backgroundImage:"radial-gradient(rgba(200,150,62,.06) 1px,transparent 1px)",
+          backgroundImage:"radial-gradient(rgba(205,135,42,.06) 1px,transparent 1px)",
           backgroundSize:"32px 32px",pointerEvents:"none",
         }}/>
         <div style={{position:"relative",zIndex:1}}>
@@ -842,7 +887,7 @@ export default function ResearchClient() {
               fontSize:"10px",letterSpacing:".32em",textTransform:"uppercase",
               fontVariationSettings:"'wdth' 75,'wght' 500",
               fontFamily:FONT,
-              color:"#C8963E",marginBottom:"16px",
+              color:"#cd872a",marginBottom:"16px",
             }}>
               Certificate of Analysis
             </p>
@@ -852,7 +897,7 @@ export default function ResearchClient() {
               fontSize:"clamp(26px,4vw,44px)",
               color:"#f7f0e2",letterSpacing:"-.02em",marginBottom:"16px",
             }}>
-              View the Full Lab Report
+              <img src="/icons/lab-certificate.svg" alt="" role="presentation" width={20} height={20} style={{ display:'inline', verticalAlign:'middle', marginRight:6 }} />View the Full Lab Report
             </h2>
             <p style={{
               fontVariationSettings:"'wdth' 100,'wght' 300",
@@ -863,10 +908,10 @@ export default function ResearchClient() {
               Every ROCKRESIN jar carries a QR code linking to the NABL COA for that specific batch. No generic certificates — batch-specific verification you can scan and check.
             </p>
             <div style={{display:"flex",gap:"16px",justifyContent:"center",flexWrap:"wrap"}}>
-              <PopButton href="/products/shodhit-shilajit-resin" variant="gold">
+              <PopButton onClick={() => setReport(LAB_REPORTS.rockresin)} variant="gold">
                 View RockResin COA →
               </PopButton>
-              <PopButton href="/products/shahjeet-sticks" variant="ghost">
+              <PopButton onClick={() => setReport(LAB_REPORTS.shahjeet)} variant="ghost">
                 View Shahjeet COA →
               </PopButton>
             </div>
@@ -889,6 +934,7 @@ export default function ResearchClient() {
         </p>
       </section>
 
+      <LabReportModal report={report} onClose={() => setReport(null)} />
     </div>
   );
 }

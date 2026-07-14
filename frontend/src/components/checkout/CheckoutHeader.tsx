@@ -16,7 +16,7 @@ interface CheckoutHeaderProps {
 
 export default function CheckoutHeader({ currentStep }: CheckoutHeaderProps) {
   return (
-    <header className="border-b border-border bg-white sticky top-0 z-20">
+    <header className="border-b border-border bg-white sticky top-[120px] z-20 mt-[120px]">
       <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
         <Link
           href={currentStep > 0 ? STEPS[currentStep - 1].path : "/"}

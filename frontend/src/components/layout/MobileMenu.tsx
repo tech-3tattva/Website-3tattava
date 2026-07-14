@@ -3,7 +3,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { X, ChevronRight } from "lucide-react";
 import Link from "next/link";
-import { MAIN_NAV_ITEMS } from "@/lib/constants";
+import { MAIN_NAV_ITEMS, SOCIAL_LINKS } from "@/lib/constants";
 import Logo from "./Logo";
 import DeliveryPincodeTrigger from "@/components/delivery/DeliveryPincodeTrigger";
 
@@ -59,7 +59,7 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
                 ))}
                 <li>
                   <Link
-                    href="/store-locator"
+                    href="/find-us"
                     className="flex items-center justify-between py-3 px-4 text-white hover:bg-white/5 transition-colors text-sm uppercase tracking-wider"
                     onClick={onClose}
                   >
@@ -87,16 +87,19 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
                   className="text-gold text-sm hover:underline"
                 />
               </div>
-              <div className="flex gap-4">
-                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="text-white hover:text-gold transition-colors" aria-label="Instagram">
-                  Instagram
-                </a>
-                <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="text-white hover:text-gold transition-colors" aria-label="Facebook">
-                  Facebook
-                </a>
-                <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" className="text-white hover:text-gold transition-colors" aria-label="YouTube">
-                  YouTube
-                </a>
+              <div className="flex gap-4 flex-wrap">
+                {SOCIAL_LINKS.map((s) => (
+                  <a
+                    key={s.id}
+                    href={s.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-white hover:text-gold transition-colors text-sm"
+                    aria-label={s.label}
+                  >
+                    {s.label}
+                  </a>
+                ))}
               </div>
             </div>
           </motion.aside>

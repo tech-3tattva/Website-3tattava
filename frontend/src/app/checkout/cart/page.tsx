@@ -8,9 +8,7 @@ import Link from "next/link";
 import Image from "@/components/ui/SafeImage";
 import CheckoutHeader from "@/components/checkout/CheckoutHeader";
 import QuantityStepper from "@/components/product/QuantityStepper";
-import ProductCard from "@/components/product/ProductCard";
 import { formatPrice } from "@/lib/utils";
-import { PLACEHOLDER_PRODUCTS } from "@/lib/placeholder-data";
 
 export default function CheckoutCartPage() {
   const { isLoggedIn } = useAuth();
@@ -21,9 +19,6 @@ export default function CheckoutCartPage() {
   const [couponCode, setCouponCode] = useState("");
   const [couponError, setCouponError] = useState<string | null>(null);
   const shipping = subtotal >= 999 ? 0 : 150;
-  const peopleAlsoBought = PLACEHOLDER_PRODUCTS.filter(
-    (p) => !items.some((i) => i.productId === p.id)
-  ).slice(0, 3);
 
   const [promoMsg, setPromoMsg] = useState<string | null>(null);
 
@@ -133,16 +128,6 @@ export default function CheckoutCartPage() {
                     </Link>
                   </div>
                 </details>
-                <div>
-                  <h3 className="font-display text-xl text-text-dark mb-4">
-                    People Also Bought
-                  </h3>
-                  <div className="grid grid-cols-3 gap-4">
-                    {peopleAlsoBought.map((p) => (
-                      <ProductCard key={p.id} product={p} />
-                    ))}
-                  </div>
-                </div>
               </div>
             )}
           </div>
