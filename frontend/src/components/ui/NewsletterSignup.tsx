@@ -53,7 +53,7 @@ export default function NewsletterSignup({
           placeholder={placeholder}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="flex-1 px-4 py-3 rounded border border-white/30 bg-white/10 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-gold"
+          className="flex-1 px-4 py-3 rounded border border-[#c9ba9f] bg-white text-[#442a1b] placeholder-[#8a7663] focus:outline-none focus:ring-2 focus:ring-gold"
         />
         <button
           type="submit"
@@ -63,7 +63,7 @@ export default function NewsletterSignup({
           {status === "loading" ? "Subscribing..." : buttonText}
         </button>
         {message ? (
-          <p className={`sm:basis-full text-xs ${status === "error" ? "text-red-200" : "text-white/80"}`}>
+          <p className={`sm:basis-full text-xs ${status === "error" ? "text-red-600" : "text-[#6f5a48]"}`}>
             {message}
           </p>
         ) : null}

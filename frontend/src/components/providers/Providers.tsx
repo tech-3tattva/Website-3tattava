@@ -2,6 +2,7 @@
 
 import OfflineBanner from "@/components/layout/OfflineBanner";
 import SmoothScrollProvider from "@/components/providers/SmoothScrollProvider";
+import CustomCursor from "@/components/providers/CustomCursor";
 import { CartProvider } from "@/context/CartContext";
 import { WishlistProvider } from "@/context/WishlistContext";
 import { AuthProvider } from "@/context/AuthContext";
@@ -16,6 +17,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
             <SmoothScrollProvider>
               {children}
               <OfflineBanner />
+              <CustomCursor />
             </SmoothScrollProvider>
           </CartProvider>
         </WishlistProvider>

@@ -3,6 +3,7 @@ import Link from "next/link";
 export const metadata = {
   title: "Dosha Quiz | 3Tattva Ayurveda",
   description: "Discover your unique Ayurvedic mind-body type.",
+  robots: { index: false, follow: true },
 };
 
 export default function DoshaQuizPage() {

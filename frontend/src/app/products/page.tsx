@@ -1,3 +1,4 @@
+import { media } from "@/lib/media";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { PAGE_METADATA } from "@/lib/brand-content";
@@ -26,11 +27,12 @@ const PRODUCTS = [
     price: 1299,
     mrp: 1499,
     discount: "13% OFF",
-    image: "https://media.3tattava.com/products/Rockresin-hero.jpeg",
+    image: media("/home/homepage-rockresins.png"),
     pills: ["≥70% Fulvic Acid", "NABL Tested", "Triphala Purified"],
     cta: "Begin Your Ritual",
     rating: 4.9,
     reviewCount: 312,
+    hideInfo: false,
   },
   {
     slug: "shahjeet-sticks",
@@ -43,13 +45,25 @@ const PRODUCTS = [
     price: 999,
     mrp: 1199,
     discount: "17% OFF",
-    image: "https://media.3tattava.com/products/shahjeet-box.png",
+    image: media("/hero/shahjeet-hero.png"),
     pills: ["600mg Per Stick", "NABL Tested", "AYUSH GMP"],
     cta: "Start Your Ritual",
     rating: 4.8,
     reviewCount: 218,
+    hideInfo: false,
   },
 ] as const;
+
+const itemListSchema = {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  itemListElement: PRODUCTS.map((p, i) => ({
+    "@type": "ListItem",
+    position: i + 1,
+    name: p.name,
+    url: `https://www.3tattava.com/products/${p.slug}`,
+  })),
+};
 
 const F = "var(--font-primary), system-ui, sans-serif";
 
@@ -122,25 +136,6 @@ function ProductCard({ p }: { p: (typeof PRODUCTS)[number] }) {
         {p.badge}
       </div>
 
-      {/* Discount */}
-      <div
-        style={{
-          position: "absolute",
-          top: "16px",
-          right: "16px",
-          zIndex: 2,
-          background: "rgba(200,150,62,.12)",
-          border: "1px solid rgba(200,150,62,.35)",
-          color: "#C8963E",
-          fontFamily: F,
-          fontVariationSettings: "'wdth' 75,'wght' 700",
-          fontSize: "9px",
-          letterSpacing: ".12em",
-          padding: "4px 10px",
-        }}
-      >
-        {p.discount}
-      </div>
 
       {/* Image */}
       <div
@@ -197,6 +192,27 @@ function ProductCard({ p }: { p: (typeof PRODUCTS)[number] }) {
           {p.subtitle}
         </p>
 
+        {p.hideInfo ? (
+          <div style={{ marginTop: "4px" }}>
+            <span
+              style={{
+                fontFamily: F,
+                fontVariationSettings: "'wdth' 75,'wght' 700",
+                fontSize: "10px",
+                letterSpacing: ".2em",
+                textTransform: "uppercase",
+                color: "#6f5a48",
+                border: "1px solid rgba(183,163,146,.55)",
+                background: "rgba(183,163,146,.14)",
+                padding: "6px 14px",
+                display: "inline-block",
+              }}
+            >
+              Coming Soon
+            </span>
+          </div>
+        ) : (
+          <>
         {/* Rating */}
         <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "14px" }}>
           <Stars value={p.rating} />
@@ -249,37 +265,6 @@ function ProductCard({ p }: { p: (typeof PRODUCTS)[number] }) {
           ))}
         </div>
 
-        {/* Price row */}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "10px",
-            marginBottom: "16px",
-          }}
-        >
-          <span
-            style={{
-              fontFamily: F,
-              fontVariationSettings: "'wdth' 85,'wght' 800",
-              fontSize: "26px",
-              color: "#1c1304",
-            }}
-          >
-            ₹{p.price}
-          </span>
-          <span
-            style={{
-              fontFamily: F,
-              fontVariationSettings: "'wdth' 100,'wght' 300",
-              fontSize: "15px",
-              color: "rgba(28,19,4,.35)",
-              textDecoration: "line-through",
-            }}
-          >
-            ₹{p.mrp}
-          </span>
-        </div>
 
         {/* CTA */}
         <div
@@ -299,6 +284,8 @@ function ProductCard({ p }: { p: (typeof PRODUCTS)[number] }) {
         >
           {p.cta} →
         </div>
+          </>
+        )}
       </div>
     </Link>
   );
@@ -308,6 +295,10 @@ function ProductCard({ p }: { p: (typeof PRODUCTS)[number] }) {
 export default function ProductsPage() {
   return (
     <div>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListSchema) }}
+      />
       {/* Hero banner */}
       <section
         style={{

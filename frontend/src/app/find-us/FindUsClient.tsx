@@ -3,6 +3,12 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, useInView, AnimatePresence, useMotionValue, useTransform, useSpring } from "framer-motion";
 import Link from "next/link";
+import dynamic from "next/dynamic";
+import BgVideo from "@/components/ui/BgVideo";
+
+const MapField3D = dynamic(() => import("@/components/find-us/MapField3D"), { ssr: false });
+const GoogleWTFMap = dynamic(() => import("@/components/maps/GoogleWTFMap"), { ssr: false });
+const MAPS_ON = Boolean(process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY && process.env.NEXT_PUBLIC_GOOGLE_MAPS_MAP_ID);
 
 // ─── REAL DATA FROM WTF GYM PDF ──────────────────────────────────────────────
 
@@ -51,8 +57,9 @@ const WTF_CENTERS: WTFCenter[] = [
 
 const CITY_TABS = ["All", "Delhi", "Noida", "Ghaziabad", "Greater Noida", "Gurugram", "Faridabad"] as const;
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const CITY_COLORS: Record<string, string> = {
-  Delhi: "#C8963E",
+  Delhi: "#cd872a",
   Noida: "#7a5c4e",
   Ghaziabad: "#5c7a4e",
   "Greater Noida": "#4e6b7a",
@@ -146,13 +153,13 @@ function AyurvedicBg() {
       <div style={{ position:"absolute", top:"-140px", right:"-140px", width:"560px", height:"560px", pointerEvents:"none", animation:"mandala-cw 220s linear infinite", opacity:0.055, zIndex:0 }}>
         <svg viewBox="0 0 560 560">
           {[40,85,130,175,220,265].map((r,i)=>(
-            <circle key={r} cx={280} cy={280} r={r} fill="none" stroke="#C8963E" strokeWidth={i%2===0?1.5:0.6}/>
+            <circle key={r} cx={280} cy={280} r={r} fill="none" stroke="#cd872a" strokeWidth={i%2===0?1.5:0.6}/>
           ))}
           {Array.from({length:12}).map((_,i)=>(
-            <line key={i} x1={280} y1={10} x2={280} y2={550} stroke="#C8963E" strokeWidth={0.4} transform={`rotate(${i*30} 280 280)`}/>
+            <line key={i} x1={280} y1={10} x2={280} y2={550} stroke="#cd872a" strokeWidth={0.4} transform={`rotate(${i*30} 280 280)`}/>
           ))}
           {Array.from({length:8}).map((_,i)=>(
-            <ellipse key={i} cx={280} cy={155} rx={22} ry={72} fill="none" stroke="#C8963E" strokeWidth={0.6} transform={`rotate(${i*45} 280 280)`}/>
+            <ellipse key={i} cx={280} cy={155} rx={22} ry={72} fill="none" stroke="#cd872a" strokeWidth={0.6} transform={`rotate(${i*45} 280 280)`}/>
           ))}
         </svg>
       </div>
@@ -180,7 +187,7 @@ function AyurvedicBg() {
         <div key={i} style={{
           position:"absolute", ...d,
           width:d.size, height:d.size, borderRadius:"50%",
-          background:"radial-gradient(circle, #E4C079, #C8963E)",
+          background:"radial-gradient(circle, #E4C079, #cd872a)",
           animation:d.anim, pointerEvents:"none", zIndex:0,
         }}/>
       ))}
@@ -246,7 +253,7 @@ function LocationCard({ center, idx, highlight }: { center: WTFCenter; idx: numb
           cursor: "pointer",
           position: "relative",
           boxShadow: expanded || highlight
-            ? "20px 20px 42px rgba(183,163,146,.55),-20px -20px 42px rgba(255,255,255,1),0 0 0 1.5px rgba(200,150,62,.42)"
+            ? "20px 20px 42px rgba(183,163,146,.55),-20px -20px 42px rgba(255,255,255,1),0 0 0 1.5px rgba(205,135,42,.42)"
             : hovered
             ? "14px 14px 28px rgba(183,163,146,.46),-14px -14px 28px rgba(255,255,255,.94)"
             : "10px 10px 24px rgba(183,163,146,.38),-10px -10px 24px rgba(255,255,255,.88)",
@@ -256,7 +263,7 @@ function LocationCard({ center, idx, highlight }: { center: WTFCenter; idx: numb
         {/* Gold border ring on hover/expand */}
         <div style={{
           position: "absolute", inset: 0, borderRadius: "16px",
-          border: "1.5px solid rgba(200,150,62,.55)",
+          border: "1.5px solid rgba(205,135,42,.55)",
           opacity: hovered || expanded || highlight ? 1 : 0,
           transition: "opacity .3s",
           pointerEvents: "none", zIndex: 10,
@@ -343,7 +350,7 @@ function LocationCard({ center, idx, highlight }: { center: WTFCenter; idx: numb
                 }}
               >
                 <svg width="28" height="36" viewBox="0 0 24 32" fill="none"
-                  style={{ filter:`drop-shadow(0 4px 12px rgba(200,150,62,.60))` }}
+                  style={{ filter:`drop-shadow(0 4px 12px rgba(205,135,42,.60))` }}
                 >
                   <path d="M12 0C7.13 0 3 4.13 3 9c0 7.5 9 17 9 17s9-9.5 9-17c0-4.87-4.13-9-9-9z"
                     fill={`url(#${pinId})`}/>
@@ -352,7 +359,7 @@ function LocationCard({ center, idx, highlight }: { center: WTFCenter; idx: numb
                     <linearGradient id={pinId} x1="3" y1="0" x2="21" y2="26" gradientUnits="userSpaceOnUse">
                       <stop offset="0%"   stopColor="#A67B2F"/>
                       <stop offset="50%"  stopColor="#E4C079"/>
-                      <stop offset="100%" stopColor="#C8963E"/>
+                      <stop offset="100%" stopColor="#cd872a"/>
                     </linearGradient>
                   </defs>
                 </svg>
@@ -387,7 +394,7 @@ function LocationCard({ center, idx, highlight }: { center: WTFCenter; idx: numb
                 fontSize:"11px",
                 fontVariationSettings:"'wdth' 75,'wght' 700",
                 fontFamily: FONT,
-                color: expanded || highlight ? "#1c1304" : "#C8963E",
+                color: expanded || highlight ? "#442a1b" : "#cd872a",
                 transition:"all .32s",
               }}>
                 {center.id}
@@ -417,8 +424,8 @@ function LocationCard({ center, idx, highlight }: { center: WTFCenter; idx: numb
             }}>
               <div style={{
                 width:6, height:6, borderRadius:"50%",
-                background:"#C8963E",
-                boxShadow:"0 0 6px rgba(200,150,62,.50)",
+                background:"#cd872a",
+                boxShadow:"0 0 6px rgba(205,135,42,.50)",
               }}/>
               <span style={{
                 fontSize:"9px", letterSpacing:".12em", textTransform:"uppercase",
@@ -437,7 +444,7 @@ function LocationCard({ center, idx, highlight }: { center: WTFCenter; idx: numb
               fontVariationSettings:"'wdth' 85,'wght' 700",
               fontFamily: FONT,
               fontSize:"14px", lineHeight:1.25,
-              letterSpacing:"-0.01em", color:"#1c1304",
+              letterSpacing:"-0.01em", color:"#442a1b",
               marginBottom:"4px",
             }}>
               {center.name}
@@ -503,8 +510,8 @@ function LocationCard({ center, idx, highlight }: { center: WTFCenter; idx: numb
                 transition={{ type:"spring", stiffness:380, damping:22 }}
                 style={{
                   display:"flex", alignItems:"center", justifyContent:"center", gap:"6px",
-                  background:"linear-gradient(145deg,#C8963E,#A67B2F)",
-                  color:"#1c1304",
+                  background:"linear-gradient(145deg,#cd872a,#A67B2F)",
+                  color:"#442a1b",
                   fontVariationSettings:"'wdth' 85,'wght' 700",
                   fontFamily:FONT,
                   fontSize:"10px", letterSpacing:".14em", textTransform:"uppercase",
@@ -514,7 +521,7 @@ function LocationCard({ center, idx, highlight }: { center: WTFCenter; idx: numb
                   width:"100%",
                 }}
               >
-                Open in Google Maps →
+                <img src="/icons/map-compass.svg" alt="" role="presentation" width={20} height={20} style={{ display:"inline", verticalAlign:"middle", marginRight:6 }} />Open in Google Maps →
               </motion.a>
             ) : (
               <motion.div
@@ -530,13 +537,13 @@ function LocationCard({ center, idx, highlight }: { center: WTFCenter; idx: numb
                   onClick={(e) => e.stopPropagation()}
                   style={{
                     fontSize:"10px", letterSpacing:".14em", textTransform:"uppercase",
-                    color: hovered || highlight ? "#C8963E" : "rgba(28,19,4,.40)",
+                    color: hovered || highlight ? "#cd872a" : "rgba(28,19,4,.40)",
                     fontVariationSettings:"'wdth' 75,'wght' 600",
                     fontFamily:FONT,
                     textDecoration:"none", transition:"color .2s",
                   }}
                 >
-                  Get Directions →
+                  <img src="/icons/map-compass.svg" alt="" role="presentation" width={20} height={20} style={{ display:"inline", verticalAlign:"middle", marginRight:6 }} />Get Directions →
                 </a>
                 <span style={{
                   fontSize:"9px", letterSpacing:".09em", textTransform:"uppercase",
@@ -557,7 +564,7 @@ function LocationCard({ center, idx, highlight }: { center: WTFCenter; idx: numb
 
 // ─── PINCODE SEARCH ───────────────────────────────────────────────────────────
 
-function PincodeSearch() {
+function PincodeSearch({ onLocate }: { onLocate?: (c: { lat: number; lng: number }) => void }) {
   const [pincode, setPincode] = useState("");
   const [results, setResults] = useState<(WTFCenter & { distance: number })[] | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -575,6 +582,7 @@ function PincodeSearch() {
       setResults(null);
       return;
     }
+    onLocate?.(coords);
     const sorted = [...WTF_CENTERS]
       .map((c) => ({ ...c, distance: haversine(coords.lat, coords.lng, c.lat, c.lng) }))
       .sort((a, b) => a.distance - b.distance)
@@ -588,10 +596,10 @@ function PincodeSearch() {
         <div style={{
           flex: 1, display:"flex", alignItems:"center",
           background: "#fff",
-          border: focused ? "1.5px solid #C8963E" : "1.5px solid rgba(183,163,146,0.55)",
+          border: focused ? "1.5px solid #cd872a" : "1.5px solid rgba(183,163,146,0.55)",
           borderRadius: "4px", overflow:"hidden",
           transition:"border-color 0.2s ease",
-          boxShadow: focused ? "0 0 0 3px rgba(200,150,62,0.12)" : "none",
+          boxShadow: focused ? "0 0 0 3px rgba(205,135,42,0.12)" : "none",
         }}>
           <span style={{ padding:"0 14px", fontSize:"16px", opacity:0.5 }}>📍</span>
           <input
@@ -605,7 +613,7 @@ function PincodeSearch() {
             maxLength={6}
             style={{
               flex:1, border:"none", outline:"none", padding:"14px 0",
-              fontSize:"16px", color:"#1c1304", background:"transparent",
+              fontSize:"16px", color:"#442a1b", background:"transparent",
               fontVariationSettings:"'wdth' 100, 'wght' 400",
               fontFamily:"var(--font-primary), system-ui, sans-serif",
             }}
@@ -617,9 +625,9 @@ function PincodeSearch() {
           style={{
             padding:"14px 24px",
             background: pincode.length === 6
-              ? "linear-gradient(135deg, #A67B2F 0%, #E4C079 50%, #C8963E 100%)"
+              ? "linear-gradient(135deg, #A67B2F 0%, #E4C079 50%, #cd872a 100%)"
               : "rgba(183,163,146,0.30)",
-            color: pincode.length === 6 ? "#1c1304" : "#b7a392",
+            color: pincode.length === 6 ? "#442a1b" : "#b7a392",
             border:"none", borderRadius:"4px", cursor: pincode.length === 6 ? "pointer" : "default",
             fontSize:"11px", letterSpacing:"0.15em", textTransform:"uppercase",
             fontVariationSettings:"'wdth' 75,'wght' 700",
@@ -654,7 +662,7 @@ function PincodeSearch() {
           >
             {error}{" "}
             {error.includes("pan-India") && (
-              <Link href="/products" style={{ color:"#C8963E", textDecoration:"none", fontVariationSettings:"'wdth' 75,'wght' 600" }}>
+              <Link href="/products" style={{ color:"#cd872a", textDecoration:"none", fontVariationSettings:"'wdth' 75,'wght' 600" }}>
                 Shop Online →
               </Link>
             )}
@@ -667,7 +675,7 @@ function PincodeSearch() {
           >
             <p style={{
               fontSize:"10px", letterSpacing:"0.2em", textTransform:"uppercase",
-              color:"#C8963E", marginBottom:"12px",
+              color:"#cd872a", marginBottom:"12px",
               fontVariationSettings:"'wdth' 75,'wght' 600",
               fontFamily:"var(--font-primary), system-ui, sans-serif",
             }}>
@@ -680,19 +688,19 @@ function PincodeSearch() {
                   initial={{ opacity:0, x:-16 }} animate={{ opacity:1, x:0 }}
                   transition={{ delay: i * 0.08 }}
                   style={{
-                    background:"#fff", border:"1.5px solid rgba(200,150,62,0.40)",
+                    background:"#fff", border:"1.5px solid rgba(205,135,42,0.40)",
                     borderRadius:"4px", padding:"16px 20px",
                     display:"flex", gap:"16px", alignItems:"flex-start",
-                    boxShadow:"0 4px 16px rgba(200,150,62,0.10)",
+                    boxShadow:"0 4px 16px rgba(205,135,42,0.10)",
                   }}
                 >
                   <div style={{
                     width:"40px", height:"40px", borderRadius:"50%", flexShrink:0,
-                    background: i===0 ? "linear-gradient(135deg,#A67B2F,#E4C079)" : "rgba(200,150,62,0.12)",
-                    border:"1px solid rgba(200,150,62,0.40)",
+                    background: i===0 ? "linear-gradient(135deg,#A67B2F,#E4C079)" : "rgba(205,135,42,0.12)",
+                    border:"1px solid rgba(205,135,42,0.40)",
                     display:"flex", alignItems:"center", justifyContent:"center",
                     fontSize:"11px", fontVariationSettings:"'wdth' 75,'wght' 700",
-                    color: i===0 ? "#1c1304" : "#C8963E",
+                    color: i===0 ? "#442a1b" : "#cd872a",
                     fontFamily:"var(--font-primary), system-ui, sans-serif",
                   }}>
                     #{i + 1}
@@ -701,13 +709,13 @@ function PincodeSearch() {
                     <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", gap:"8px", marginBottom:"4px" }}>
                       <p style={{
                         fontSize:"14px", fontVariationSettings:"'wdth' 85,'wght' 700",
-                        color:"#1c1304", fontFamily:"var(--font-primary), system-ui, sans-serif",
+                        color:"#442a1b", fontFamily:"var(--font-primary), system-ui, sans-serif",
                         lineHeight:1.25,
                       }}>
                         {c.name}
                       </p>
                       <span style={{
-                        fontSize:"10px", color:"#C8963E", whiteSpace:"nowrap",
+                        fontSize:"10px", color:"#cd872a", whiteSpace:"nowrap",
                         fontVariationSettings:"'wdth' 75,'wght' 600",
                         fontFamily:"var(--font-primary), system-ui, sans-serif",
                       }}>
@@ -728,11 +736,11 @@ function PincodeSearch() {
                       rel="noopener noreferrer"
                       style={{
                         fontSize:"10px", letterSpacing:"0.14em", textTransform:"uppercase",
-                        color:"#C8963E", fontVariationSettings:"'wdth' 75,'wght' 600",
+                        color:"#cd872a", fontVariationSettings:"'wdth' 75,'wght' 600",
                         textDecoration:"none", fontFamily:"var(--font-primary), system-ui, sans-serif",
                       }}
                     >
-                      Open in Google Maps →
+                      <img src="/icons/map-compass.svg" alt="" role="presentation" width={20} height={20} style={{ display:"inline", verticalAlign:"middle", marginRight:6 }} />Open in Google Maps →
                     </a>
                   </div>
                 </motion.div>
@@ -747,8 +755,11 @@ function PincodeSearch() {
 
 // ─── MAIN COMPONENT ───────────────────────────────────────────────────────────
 
+import PosterSlideshow from "@/components/ui/PosterSlideshow";
+
 export default function FindUsClient() {
   const [activeCity, setActiveCity] = useState<(typeof CITY_TABS)[number]>("All");
+  const [searchFocus, setSearchFocus] = useState<{ lat: number; lng: number } | null>(null);
 
   const filtered = activeCity === "All"
     ? WTF_CENTERS
@@ -762,25 +773,29 @@ export default function FindUsClient() {
   const statsRef = useRef<HTMLDivElement>(null);
 
   return (
-    <div style={{ fontFamily:"var(--font-primary), system-ui, sans-serif", color:"#1c1304", background:"#f7f0e2" }}>
+    <div style={{ fontFamily:"var(--font-primary), system-ui, sans-serif", color:"#442a1b", background:"#f7f0e2" }}>
+      <PosterSlideshow posters={[{ src: "/posters/find-us/1.jpg", alt: "Find Us — WTF Gym Experience Centers" }, { src: "/posters/find-us/2.jpg" }]} />
 
       {/* ── HERO ─────────────────────────────────────────────────────────────── */}
       <section style={{
         position:"relative", overflow:"hidden",
-        background:"url('https://media.3tattava.com/banners/preview-4.webp') center/cover no-repeat #f7f0e2",
-        padding:"96px 24px 80px", textAlign:"center",
+        background:"#1a1208",
+        padding:"clamp(96px,13vh,140px) 24px clamp(72px,9vh,90px)", textAlign:"center",
       }}>
-        {/* Overlay to keep dark text readable over gym banner */}
-        <div style={{position:"absolute",inset:0,background:"rgba(247,240,226,0.60)",zIndex:0}}/>
+        <BgVideo src="/videos/find-us-hero.mp4" />
+        {/* 3D animated map field background */}
+        <MapField3D />
+        {/* Legibility gradient over the 3D field */}
+        <div aria-hidden style={{position:"absolute",inset:0,zIndex:1,background:"radial-gradient(ellipse at center, rgba(26,18,8,0.30) 0%, rgba(26,18,8,0.74) 68%, rgba(26,18,8,0.92) 100%)",pointerEvents:"none"}}/>
         <AyurvedicBg />
 
-        <div style={{ position:"relative", zIndex:1 }}>
+        <div style={{ position:"relative", zIndex:2 }}>
           <motion.p
             initial={{ opacity:0, y:12 }} animate={{ opacity:1, y:0 }}
             transition={{ duration:0.6 }}
             style={{
               fontSize:"10px", letterSpacing:"0.32em", textTransform:"uppercase",
-              color:"#C8963E", fontVariationSettings:"'wdth' 75,'wght' 500", marginBottom:"16px",
+              color:"#cd872a", fontVariationSettings:"'wdth' 75,'wght' 500", marginBottom:"16px",
             }}
           >
             WTF Gym Experience Centers
@@ -792,13 +807,14 @@ export default function FindUsClient() {
             style={{
               fontVariationSettings:"'wdth' 85,'wght' 800",
               fontSize:"clamp(36px, 6vw, 76px)", lineHeight:1.03,
-              letterSpacing:"-0.025em", color:"#1c1304",
+              letterSpacing:"-0.025em", color:"#f7f0e2",
               marginBottom:"20px",
             }}
           >
+            <img src="/icons/map-pin.svg" alt="" role="presentation" width={24} height={24} style={{ display:"inline", verticalAlign:"middle", marginRight:8 }} />
             Experience 3Tattava
             <br />
-            <span style={{ background:"linear-gradient(105deg,#A67B2F,#E4C079,#C8963E)", WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent" }}>
+            <span style={{ background:"linear-gradient(105deg,#A67B2F,#E4C079,#cd872a)", WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent" }}>
               Offline
             </span>
           </motion.h1>
@@ -808,7 +824,7 @@ export default function FindUsClient() {
             transition={{ duration:0.6, delay:0.2 }}
             style={{
               fontVariationSettings:"'wdth' 100,'wght' 300",
-              fontSize:"clamp(15px, 2vw, 18px)", color:"rgba(28,19,4,0.62)",
+              fontSize:"clamp(15px, 2vw, 18px)", color:"rgba(247,240,226,0.72)",
               maxWidth:"560px", margin:"0 auto 12px", lineHeight:1.65,
             }}
           >
@@ -819,7 +835,7 @@ export default function FindUsClient() {
             initial={{ opacity:0 }} animate={{ opacity:1 }}
             transition={{ delay:0.35 }}
             style={{
-              fontSize:"11px", color:"rgba(28,19,4,0.38)", letterSpacing:"0.08em",
+              fontSize:"11px", color:"rgba(247,240,226,0.45)", letterSpacing:"0.08em",
               marginBottom:"40px",
             }}
           >
@@ -829,7 +845,7 @@ export default function FindUsClient() {
           {/* Gold divider */}
           <div style={{
             width:"48px", height:"1px", margin:"0 auto 40px",
-            background:"linear-gradient(90deg, transparent, #C8963E, transparent)",
+            background:"linear-gradient(90deg, transparent, #cd872a, transparent)",
           }}/>
 
           {/* PINCODE SEARCH */}
@@ -837,7 +853,7 @@ export default function FindUsClient() {
             initial={{ opacity:0, y:16 }} animate={{ opacity:1, y:0 }}
             transition={{ delay:0.3, duration:0.6 }}
           >
-            <PincodeSearch />
+            <PincodeSearch onLocate={setSearchFocus} />
           </motion.div>
         </div>
       </section>
@@ -846,7 +862,7 @@ export default function FindUsClient() {
       <section
         ref={statsRef}
         style={{
-          background:"linear-gradient(105deg,#A67B2F 0%,#E4C079 45%,#C8963E 70%,#A67B2F 100%)",
+          background:"linear-gradient(105deg,#A67B2F 0%,#E4C079 45%,#cd872a 70%,#A67B2F 100%)",
           padding:"56px 24px",
         }}
       >
@@ -856,7 +872,7 @@ export default function FindUsClient() {
             color:"rgba(28,19,4,0.70)", fontVariationSettings:"'wdth' 75,'wght' 600",
             marginBottom:"8px",
           }}>
-            Building India's Performance Ayurveda Network
+            Building India&apos;s Performance Ayurveda Network
           </p>
         </div>
         <div style={{
@@ -873,7 +889,7 @@ export default function FindUsClient() {
             <div key={stat.label} style={{ textAlign:"center" }}>
               <p style={{
                 fontVariationSettings:"'wdth' 85,'wght' 800",
-                fontSize:"clamp(28px,4vw,48px)", color:"#1c1304",
+                fontSize:"clamp(28px,4vw,48px)", color:"#442a1b",
                 lineHeight:1.1, marginBottom:"6px",
               }}>
                 <AnimatedCount target={stat.value} suffix={stat.suffix}/>
@@ -906,7 +922,7 @@ export default function FindUsClient() {
               fontSize:"clamp(22px,3vw,32px)", letterSpacing:"-0.015em",
               marginBottom:"8px",
             }}>
-              All Experience Centers
+              <img src="/icons/map-pin.svg" alt="" role="presentation" width={24} height={24} style={{ display:"inline", verticalAlign:"middle", marginRight:8 }} />All Experience Centers
             </h2>
             <p style={{
               fontVariationSettings:"'wdth' 100,'wght' 300",
@@ -923,9 +939,9 @@ export default function FindUsClient() {
                   onClick={() => setActiveCity(city)}
                   style={{
                     padding:"6px 16px", borderRadius:"32px",
-                    border: activeCity===city ? "1.5px solid #C8963E" : "1px solid rgba(183,163,146,0.55)",
-                    background: activeCity===city ? "linear-gradient(105deg,#A67B2F,#E4C079,#C8963E)" : "#fff",
-                    color: activeCity===city ? "#1c1304" : "rgba(28,19,4,0.55)",
+                    border: activeCity===city ? "1.5px solid #cd872a" : "1px solid rgba(183,163,146,0.55)",
+                    background: activeCity===city ? "linear-gradient(105deg,#A67B2F,#E4C079,#cd872a)" : "#fff",
+                    color: activeCity===city ? "#442a1b" : "rgba(28,19,4,0.55)",
                     fontSize:"11px", letterSpacing:"0.12em", textTransform:"uppercase",
                     fontVariationSettings:`'wdth' 75,'wght' ${activeCity===city?"700":"500"}`,
                     fontFamily:"var(--font-primary), system-ui, sans-serif",
@@ -937,6 +953,11 @@ export default function FindUsClient() {
               ))}
             </div>
           </div>
+          {MAPS_ON && (
+            <div style={{ height: "clamp(360px,52vh,520px)", borderRadius: "6px", overflow: "hidden", marginBottom: "24px", border: "1px solid rgba(183,163,146,0.35)" }}>
+              <GoogleWTFMap variant="findus" centers={filtered} focus={searchFocus} />
+            </div>
+          )}
 
           <motion.div
             key={activeCity}
@@ -961,7 +982,7 @@ export default function FindUsClient() {
           <div style={{ textAlign:"center", marginBottom:"48px" }}>
             <p style={{
               fontSize:"10px", letterSpacing:"0.3em", textTransform:"uppercase",
-              color:"#C8963E", fontVariationSettings:"'wdth' 75,'wght' 500", marginBottom:"12px",
+              color:"#cd872a", fontVariationSettings:"'wdth' 75,'wght' 500", marginBottom:"12px",
             }}>
               Why Visit In Person
             </p>
@@ -985,7 +1006,7 @@ export default function FindUsClient() {
                 whileInView={{ opacity:1, y:0 }}
                 viewport={{ once:true }}
                 transition={{ delay:i*0.08, duration:0.45 }}
-                whileHover={{ y:-4, boxShadow:"0 12px 32px rgba(200,150,62,0.12)" }}
+                whileHover={{ y:-4, boxShadow:"0 12px 32px rgba(205,135,42,0.12)" }}
                 style={{
                   background:"#f7f0e2", border:"1px solid rgba(183,163,146,0.30)",
                   borderRadius:"4px", padding:"28px", transition:"border-color 0.2s ease",
@@ -1010,7 +1031,7 @@ export default function FindUsClient() {
           <div style={{ flex:"1 1 300px" }}>
             <p style={{
               fontSize:"10px", letterSpacing:"0.25em", textTransform:"uppercase",
-              color:"#C8963E", fontVariationSettings:"'wdth' 75,'wght' 500", marginBottom:"12px",
+              color:"#cd872a", fontVariationSettings:"'wdth' 75,'wght' 500", marginBottom:"12px",
             }}>
               Our Ecosystem Partner
             </p>
@@ -1022,27 +1043,27 @@ export default function FindUsClient() {
               Why WTF Gyms?
             </h2>
             <p style={{ fontVariationSettings:"'wdth' 100,'wght' 300", fontSize:"14px", lineHeight:1.75, color:"rgba(28,19,4,0.65)", marginBottom:"14px" }}>
-              WTF Gym is where our users train. We didn't want to be on a pharmacy shelf next to mass-market supplements. We wanted to be in the gyms where serious athletes actually train — where the staff understands performance, and where the context of why you're taking Shilajit is already understood.
+              WTF Gym is where our users train. We didn&apos;t want to be on a pharmacy shelf next to mass-market supplements. We wanted to be in the gyms where serious athletes actually train — where the staff understands performance, and where the context of why you&apos;re taking Shilajit is already understood.
             </p>
             <p style={{ fontVariationSettings:"'wdth' 100,'wght' 300", fontSize:"14px", lineHeight:1.75, color:"rgba(28,19,4,0.65)" }}>
-              That's the WTF × 3TATTAVA partnership. Performance meets Ayurveda. In person.
+              That&apos;s the WTF × 3TATTAVA partnership. Performance meets Ayurveda. In person.
             </p>
           </div>
 
           <div style={{
             flex:"0 0 auto", minWidth:"200px",
-            background:"linear-gradient(135deg, #1c1304 0%, #2a1d08 100%)",
+            background:"linear-gradient(135deg, #442a1b 0%, #2a1d08 100%)",
             padding:"36px 32px", borderRadius:"4px", textAlign:"center",
-            border:"1px solid rgba(200,150,62,0.20)",
+            border:"1px solid rgba(205,135,42,0.20)",
           }}>
             <p style={{
               fontVariationSettings:"'wdth' 85,'wght' 800",
-              fontSize:"56px", color:"#C8963E", lineHeight:1, marginBottom:"6px",
+              fontSize:"56px", color:"#cd872a", lineHeight:1, marginBottom:"6px",
             }}>28</p>
             <p style={{ fontSize:"10px", letterSpacing:"0.2em", textTransform:"uppercase", color:"rgba(247,240,226,0.55)" }}>
               Experience Centers
             </p>
-            <div style={{ margin:"20px 0", height:"1px", background:"rgba(200,150,62,0.20)" }}/>
+            <div style={{ margin:"20px 0", height:"1px", background:"rgba(205,135,42,0.20)" }}/>
             <p style={{ fontVariationSettings:"'wdth' 85,'wght' 700", fontSize:"22px", color:"#E4C079", marginBottom:"4px" }}>136+</p>
             <p style={{ fontSize:"10px", letterSpacing:"0.15em", textTransform:"uppercase", color:"rgba(247,240,226,0.40)" }}>
               Certified Trainers
@@ -1053,15 +1074,15 @@ export default function FindUsClient() {
 
       {/* ── CTA ───────────────────────────────────────────────────────────────── */}
       <section style={{
-        background:"linear-gradient(105deg,#A67B2F 0%,#E4C079 45%,#C8963E 70%,#A67B2F 100%)",
+        background:"linear-gradient(105deg,#A67B2F 0%,#E4C079 45%,#cd872a 70%,#A67B2F 100%)",
         padding:"64px 24px", textAlign:"center",
       }}>
         <h2 style={{
           fontVariationSettings:"'wdth' 85,'wght' 700",
-          fontSize:"clamp(20px,2.5vw,30px)", color:"#1c1304",
+          fontSize:"clamp(20px,2.5vw,30px)", color:"#442a1b",
           letterSpacing:"-0.01em", marginBottom:"12px",
         }}>
-          Can't Find Your Area?
+          Can&apos;t Find Your Area?
         </h2>
         <p style={{
           fontVariationSettings:"'wdth' 100,'wght' 300",
@@ -1074,7 +1095,7 @@ export default function FindUsClient() {
             href="/products"
             style={{
               display:"inline-block",
-              background:"#1c1304", color:"#f7f0e2",
+              background:"#442a1b", color:"#f7f0e2",
               fontVariationSettings:"'wdth' 85,'wght' 700",
               fontSize:"11px", letterSpacing:"0.15em", textTransform:"uppercase",
               padding:"14px 32px", textDecoration:"none",
@@ -1086,7 +1107,7 @@ export default function FindUsClient() {
             href="/community"
             style={{
               display:"inline-block",
-              background:"transparent", color:"#1c1304",
+              background:"transparent", color:"#442a1b",
               border:"1.5px solid rgba(28,19,4,0.40)",
               fontVariationSettings:"'wdth' 85,'wght' 600",
               fontSize:"11px", letterSpacing:"0.15em", textTransform:"uppercase",

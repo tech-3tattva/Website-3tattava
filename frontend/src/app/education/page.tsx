@@ -11,6 +11,7 @@ import {
 import { DOSHA_GUIDE, EDUCATION_ARTICLES } from "@/lib/education-content";
 import { EDUCATION_HUB, PAGE_METADATA } from "@/lib/brand-content";
 import type { Metadata } from "next";
+import { BLOG_ARTICLES } from "@/data/education/blog-articles.generated";
 
 export const metadata: Metadata = {
   title: PAGE_METADATA.education.title,
@@ -30,6 +31,14 @@ function DoshaIcon({ type }: { type: "vata" | "pitta" | "kapha" }) {
   if (type === "pitta") return <PittaGlyph className={cls} />;
   return <KaphaGlyph className={cls} />;
 }
+
+const LIBRARY_GROUPS: { pillar: string; items: { slug: string; title: string }[] }[] = (() => {
+  const groups: Record<string, { slug: string; title: string }[]> = {};
+  for (const a of BLOG_ARTICLES) {
+    (groups[a.pillar] ??= []).push({ slug: a.slug, title: a.title });
+  }
+  return Object.entries(groups).map(([pillar, items]) => ({ pillar, items }));
+})();
 
 export default function EducationPage() {
   return (
@@ -245,6 +254,45 @@ export default function EducationPage() {
                   </div>
                 </article>
               </MotionSection>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-[#f3eedd] border-t border-[#d9cdb8] px-6 py-14 md:px-10 md:py-20">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-10">
+            <p className="text-xs uppercase tracking-[0.24em] text-gold mb-2">Full Library</p>
+            <h2
+              className="text-3xl md:text-4xl text-text-dark"
+              style={{ fontFamily: "var(--font-primary), system-ui, sans-serif" }}
+            >
+              The Complete Shilajit &amp; Ayurveda Library
+            </h2>
+            <p className="mt-3 text-sm text-text-medium max-w-2xl mx-auto">
+              {BLOG_ARTICLES.length}+ doctor-reviewed guides across Shilajit, Triphala, doshas and
+              daily Ayurvedic living.
+            </p>
+          </div>
+          <div className="space-y-10">
+            {LIBRARY_GROUPS.map((group) => (
+              <div key={group.pillar}>
+                <h3 className="text-xs uppercase tracking-[0.2em] text-gold mb-4 border-b border-[#d9cdb8] pb-2">
+                  {group.pillar}
+                </h3>
+                <ul className="grid gap-x-6 gap-y-2 sm:grid-cols-2 lg:grid-cols-3">
+                  {group.items.map((a) => (
+                    <li key={a.slug}>
+                      <Link
+                        href={`/education/${a.slug}`}
+                        className="text-sm text-text-medium hover:text-primary-green leading-snug"
+                      >
+                        {a.title}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             ))}
           </div>
         </div>

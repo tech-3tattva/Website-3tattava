@@ -25,30 +25,22 @@ export const SOCIAL_LINKS = [
   {
     id: "instagram" as const,
     label: "Instagram",
-    href:
-      process.env.NEXT_PUBLIC_INSTAGRAM_URL ??
-      "https://www.instagram.com/3tattava",
-  },
-  {
-    id: "email" as const,
-    label: "Email",
-    href:
-      process.env.NEXT_PUBLIC_CONTACT_EMAIL_MAILTO ??
-      "mailto:care@3tattava.com?subject=Hello%203TATTAVA",
+    href: process.env.NEXT_PUBLIC_INSTAGRAM_URL ?? "https://www.instagram.com/3tattava",
   },
   {
     id: "facebook" as const,
     label: "Facebook",
-    href:
-      process.env.NEXT_PUBLIC_FACEBOOK_URL ??
-      "https://www.facebook.com/3tattava",
+    href: process.env.NEXT_PUBLIC_FACEBOOK_URL ?? "https://www.facebook.com/3tattava",
+  },
+  {
+    id: "linkedin" as const,
+    label: "LinkedIn",
+    href: process.env.NEXT_PUBLIC_LINKEDIN_URL ?? "https://www.linkedin.com/company/3tattava",
   },
   {
     id: "whatsapp" as const,
     label: "WhatsApp",
-    href:
-      process.env.NEXT_PUBLIC_WHATSAPP_URL ??
-      "https://wa.me/919560149956?text=Hi%203TATTAVA%2C%20",
+    href: process.env.NEXT_PUBLIC_WHATSAPP_URL ?? "https://chat.whatsapp.com/FI9HnCNNPF3Fp20mU9avG1",
   },
 ];
 
@@ -56,8 +48,7 @@ export const FOOTER_LINKS = {
   shop: [
     { label: "Shilajit Resin", href: "/products/shodhit-shilajit-resin" },
     { label: "Shilajit Honey Sticks", href: "/products/shahjeet-sticks" },
-    { label: "The Starter Kit", href: "/products/starter-kit" },
-    { label: "Subscribe & Save", href: "/products/honey-sticks-subscription" },
+    { label: "All Products", href: "/products" },
   ],
   company: [
     { label: "Our Story", href: "/about" },
@@ -67,10 +58,10 @@ export const FOOTER_LINKS = {
     { label: "Find Us", href: "/find-us" },
   ],
   help: [
-    { label: "What Is Shilajit?", href: "/knowledge-center/what-is-shilajit" },
-    { label: "Shilajit for Women", href: "/knowledge-center/shilajit-for-women" },
-    { label: "Performance Ayurveda Guide", href: "/knowledge-center/what-is-performance-ayurveda" },
-    { label: "FAQs", href: "/faqs" },
+    { label: "What Is Shilajit?", href: "/education/what-is-fulvic-acid" },
+    { label: "Shilajit for Women", href: "/education/shilajit-for-women" },
+    { label: "Performance Ayurveda Guide", href: "/education/what-is-performance-ayurveda" },
+    { label: "FAQs", href: "/knowledge-center#faqs" },
     { label: "Track Order", href: "/track-order" },
   ],
 };

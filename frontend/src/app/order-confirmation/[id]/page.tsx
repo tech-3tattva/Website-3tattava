@@ -1,20 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { useParams, useSearchParams } from "next/navigation";
+import { useParams } from "next/navigation";
 import { motion } from "framer-motion";
 import Button from "@/components/ui/Button";
 
 export default function OrderConfirmationPage() {
   const params = useParams();
   const orderId = params.id as string;
-  const searchParams = useSearchParams();
-
-  const emailSentParam = searchParams.get("emailSent");
-  const emailError = searchParams.get("emailError");
-
-  const emailSent =
-    emailSentParam === "true" ? true : emailSentParam === "false" ? false : null;
 
   return (
     <div className="min-h-screen bg-cream flex items-center justify-center px-4 py-16">
@@ -38,10 +31,8 @@ export default function OrderConfirmationPage() {
           Order ID: <strong>{orderId}</strong>
         </p>
         <p className="text-text-light text-sm mb-8">
-          {emailSent === true && "A confirmation email has been sent to your email address."}
-          {emailSent === false && `Email was not sent: ${emailError || "unknown reason"}.`}
-          {emailSent === null &&
-            "This checkout currently uses a demo order flow, so confirmation emails may not be sent until backend order placement is connected."}
+          We&apos;ve received your order and it&apos;s being processed. Your confirmation and
+          tracking details will be shared with you shortly.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Link href={`/track-order?orderId=${encodeURIComponent(orderId)}`}>

@@ -43,6 +43,38 @@ interface ApiFetchOptions extends RequestInit {
   isFormData?: boolean; // true = skip Content-Type (browser sets it)
 }
 
+// ── Token refresh (single-flight) ────────────────────────
+let _refreshPromise: Promise<string | null> | null = null;
+
+async function refreshAccessToken(): Promise<string | null> {
+  if (_refreshPromise) return _refreshPromise;
+  _refreshPromise = (async () => {
+    try {
+      const res = await fetch(`${BASE_URL}/auth/refresh`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: "{}",
+        credentials: "include",
+      });
+      if (!res.ok) {
+        setAccessToken(null);
+        return null;
+      }
+      const data = (await res.json().catch(() => null)) as { accessToken?: string } | null;
+      const token = data?.accessToken ?? null;
+      setAccessToken(token);
+      return token;
+    } catch {
+      return null;
+    }
+  })();
+  try {
+    return await _refreshPromise;
+  } finally {
+    _refreshPromise = null;
+  }
+}
+
 // ── Core fetch wrapper ───────────────────────────────────
 export async function apiFetch<T>(
   path: string,
@@ -50,21 +82,25 @@ export async function apiFetch<T>(
 ): Promise<T> {
   const { auth = false, isFormData = false, ...rest } = options;
 
-  const headers: Record<string, string> = {
-    ...(isFormData ? {} : { "Content-Type": "application/json" }),
-    ...(rest.headers as Record<string, string>),
+  const doFetch = (): Promise<Response> => {
+    const headers: Record<string, string> = {
+      ...(isFormData ? {} : { "Content-Type": "application/json" }),
+      ...(rest.headers as Record<string, string>),
+    };
+    if (auth) {
+      const token = getAccessToken();
+      if (token) headers["Authorization"] = `Bearer ${token}`;
+    }
+    return fetch(`${BASE_URL}${path}`, { ...rest, headers, credentials: "include" });
   };
 
-  if (auth) {
-    const token = getAccessToken();
-    if (token) headers["Authorization"] = `Bearer ${token}`;
-  }
+  let response = await doFetch();
 
-  const response = await fetch(`${BASE_URL}${path}`, {
-    ...rest,
-    headers,
-    credentials: "include", // sends HttpOnly refresh cookie
-  });
+  // Access token likely expired — refresh once via the HttpOnly cookie, then retry.
+  if (response.status === 401 && auth && path !== "/auth/refresh") {
+    const refreshed = await refreshAccessToken();
+    if (refreshed) response = await doFetch();
+  }
 
   if (!response.ok) {
     const errorData = await response
@@ -73,8 +109,7 @@ export async function apiFetch<T>(
     let message =
       typeof errorData.message === "string" ? errorData.message : "Request failed";
     if (response.status === 401 && auth) {
-      message =
-        "Your session is missing or expired. Sign out, sign in again, and ensure mock mode is off when using the live API (NEXT_PUBLIC_USE_MOCK=false).";
+      message = "Your session has expired. Please sign in again to continue.";
     }
     throw new Error(message);
   }

@@ -3,6 +3,7 @@
 import { useRef, useState, ReactNode } from "react";
 import { motion, useInView } from "framer-motion";
 import Link from "next/link";
+import TiltCard from "@/components/motion/TiltCard";
 
 // ─── CONSTANTS ────────────────────────────────────────────────────────────────
 
@@ -85,7 +86,7 @@ function Eyebrow({ text, light = false }: { text: string; light?: boolean }) {
         letterSpacing: ".28em",
         textTransform: "uppercase",
         fontVariationSettings: "'wdth' 75,'wght' 500",
-        color: light ? "rgba(247,240,226,.55)" : "#C8963E",
+        color: light ? "rgba(247,240,226,.55)" : "#cd872a",
         marginBottom: "14px",
       }}
     >
@@ -169,7 +170,7 @@ function HeroSection() {
             fontVariationSettings: "'wdth' 100,'wght' 300",
             fontStyle: "italic",
             fontSize: "clamp(17px,2.2vw,22px)",
-            color: "#C8963E",
+            color: "#cd872a",
             marginBottom: "36px",
             lineHeight: 1.5,
           }}
@@ -239,6 +240,7 @@ function HeroSection() {
 function FounderStorySection() {
   return (
     <section
+      id="founder"
       style={{
         display: "grid",
         gridTemplateColumns: "1fr 1fr",
@@ -262,7 +264,7 @@ function FounderStorySection() {
             position: "absolute",
             inset: 0,
             backgroundImage:
-              "linear-gradient(rgba(200,150,62,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(200,150,62,.05) 1px,transparent 1px)",
+              "linear-gradient(rgba(205,135,42,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(205,135,42,.05) 1px,transparent 1px)",
             backgroundSize: "32px 32px",
           }}
         />
@@ -273,8 +275,8 @@ function FounderStorySection() {
             width: "68px",
             height: "68px",
             borderRadius: "50%",
-            background: "rgba(200,150,62,.22)",
-            border: "1.5px solid rgba(200,150,62,.55)",
+            background: "rgba(205,135,42,.22)",
+            border: "1.5px solid rgba(205,135,42,.55)",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -377,7 +379,7 @@ function JourneySection() {
               fontSize: "clamp(30px,4.5vw,52px)",
               letterSpacing: "-.02em",
               lineHeight: 1.1,
-              color: "#1c1304",
+              color: "#442a1b",
               marginBottom: "48px",
             }}
           >
@@ -398,7 +400,7 @@ function JourneySection() {
                 fontVariationSettings: "'wdth' 100,'wght' 400",
                 fontSize: "17px",
                 lineHeight: 1.82,
-                color: "#1c1304",
+                color: "#442a1b",
                 marginBottom: "26px",
               }}
             >
@@ -413,7 +415,7 @@ function JourneySection() {
             style={{
               margin: "52px 0",
               paddingLeft: "28px",
-              borderLeft: "4px solid #C8963E",
+              borderLeft: "4px solid #cd872a",
             }}
           >
             <p
@@ -423,7 +425,7 @@ function JourneySection() {
                 fontStyle: "italic",
                 fontSize: "clamp(20px,2.8vw,30px)",
                 lineHeight: 1.5,
-                color: "#1c1304",
+                color: "#442a1b",
                 marginBottom: "14px",
               }}
             >
@@ -436,7 +438,7 @@ function JourneySection() {
                 fontSize: "13px",
                 letterSpacing: ".08em",
                 textTransform: "uppercase",
-                color: "#C8963E",
+                color: "#cd872a",
                 fontStyle: "normal",
               }}
             >
@@ -457,7 +459,7 @@ function JourneySection() {
                 fontVariationSettings: "'wdth' 100,'wght' 400",
                 fontSize: "17px",
                 lineHeight: 1.82,
-                color: "#1c1304",
+                color: "#442a1b",
                 marginBottom: "26px",
                 fontStyle: i === 2 ? "italic" : "normal",
                 fontWeight: i === 2 ? "300" : undefined,
@@ -478,7 +480,7 @@ function MarketProblemSection() {
   return (
     <section
       style={{
-        background: "#1c1304",
+        background: "#442a1b",
         padding: "clamp(72px,10vw,120px) 24px",
       }}
     >
@@ -531,7 +533,7 @@ function MarketProblemSection() {
                 fontStyle: "italic",
                 fontSize: "clamp(22px,3vw,34px)",
                 lineHeight: 1.52,
-                color: "#C8963E",
+                color: "#cd872a",
                 maxWidth: "620px",
                 margin: "0 auto",
               }}
@@ -580,7 +582,7 @@ function PhilosophySection() {
               fontSize: "clamp(28px,4vw,48px)",
               letterSpacing: "-.02em",
               lineHeight: 1.12,
-              color: "#1c1304",
+              color: "#442a1b",
               marginBottom: "40px",
             }}
           >
@@ -599,7 +601,7 @@ function PhilosophySection() {
                 fontVariationSettings: "'wdth' 100,'wght' 400",
                 fontSize: "17px",
                 lineHeight: 1.82,
-                color: "#1c1304",
+                color: "#442a1b",
                 marginBottom: "26px",
               }}
             >
@@ -614,8 +616,8 @@ function PhilosophySection() {
             style={{
               margin: "48px 0",
               textAlign: "center",
-              background: "rgba(200,150,62,.07)",
-              border: "1px solid rgba(200,150,62,.22)",
+              background: "rgba(205,135,42,.07)",
+              border: "1px solid rgba(205,135,42,.22)",
               borderRadius: "12px",
               padding: "36px 28px",
             }}
@@ -624,7 +626,7 @@ function PhilosophySection() {
             <p
               style={{
                 fontSize: "22px",
-                color: "#C8963E",
+                color: "#cd872a",
                 lineHeight: 1.65,
                 marginBottom: "10px",
                 fontFamily: "'Noto Serif Devanagari', 'Noto Sans Devanagari', serif",
@@ -653,7 +655,7 @@ function PhilosophySection() {
                 fontVariationSettings: "'wdth' 100,'wght' 400",
                 fontStyle: "italic",
                 fontSize: "18px",
-                color: "#1c1304",
+                color: "#442a1b",
                 lineHeight: 1.6,
               }}
             >
@@ -675,7 +677,7 @@ function PhilosophySection() {
                 fontVariationSettings: "'wdth' 100,'wght' 400",
                 fontSize: "17px",
                 lineHeight: 1.82,
-                color: "#1c1304",
+                color: "#442a1b",
                 marginBottom: "26px",
               }}
             >
@@ -756,11 +758,11 @@ function TimelineCard({
       animate={inV ? { opacity: 1, x: 0, y: 0 } : {}}
       transition={{ duration: 0.52, delay: idx * 0.05, ease: EASE }}
       style={{
-        background: m.final ? "rgba(200,150,62,.06)" : "#fff",
+        background: m.final ? "rgba(205,135,42,.06)" : "#fff",
         border: m.final
-          ? "1px solid rgba(200,150,62,.35)"
+          ? "1px solid rgba(205,135,42,.35)"
           : "1px solid rgba(28,19,4,.07)",
-        borderLeft: m.final ? "4px solid #C8963E" : undefined,
+        borderLeft: m.final ? "4px solid #cd872a" : undefined,
         borderRadius: "10px",
         padding: "28px 28px 24px",
         boxShadow: "0 4px 22px rgba(28,19,4,.055)",
@@ -775,7 +777,7 @@ function TimelineCard({
           fontSize: "10px",
           letterSpacing: ".16em",
           textTransform: "uppercase",
-          color: "#C8963E",
+          color: "#cd872a",
           marginBottom: "8px",
         }}
       >
@@ -786,7 +788,7 @@ function TimelineCard({
           fontFamily: F,
           fontVariationSettings: "'wdth' 85,'wght' 700",
           fontSize: m.final ? "22px" : "18px",
-          color: "#1c1304",
+          color: "#442a1b",
           marginBottom: "10px",
           lineHeight: 1.25,
         }}
@@ -826,7 +828,7 @@ function TimelineCard({
             fontVariationSettings: "'wdth' 75,'wght' 600",
             fontSize: "11px",
             letterSpacing: ".09em",
-            color: "#C8963E",
+            color: "#cd872a",
             marginTop: "12px",
           }}
         >
@@ -850,7 +852,7 @@ function TimelineSection() {
                 fontVariationSettings: "'wdth' 85,'wght' 700",
                 fontSize: "clamp(26px,3.5vw,40px)",
                 letterSpacing: "-.02em",
-                color: "#1c1304",
+                color: "#442a1b",
               }}
             >
               The Path That Built 3TATTAVA
@@ -869,7 +871,7 @@ function TimelineSection() {
               left: "50%",
               width: "2px",
               background:
-                "linear-gradient(to bottom,transparent,#C8963E 8%,#C8963E 92%,transparent)",
+                "linear-gradient(to bottom,transparent,#cd872a 8%,#cd872a 92%,transparent)",
               transform: "translateX(-50%)",
             }}
             className="hidden md:block"
@@ -884,7 +886,7 @@ function TimelineSection() {
               left: "20px",
               width: "2px",
               background:
-                "linear-gradient(to bottom,transparent,#C8963E 4%,#C8963E 96%,transparent)",
+                "linear-gradient(to bottom,transparent,#cd872a 4%,#cd872a 96%,transparent)",
             }}
             className="block md:hidden"
           />
@@ -921,9 +923,9 @@ function TimelineSection() {
                       background: m.final
                         ? "linear-gradient(135deg,#A67B2F,#E4C079)"
                         : "#f7f0e2",
-                      border: "2px solid #C8963E",
+                      border: "2px solid #cd872a",
                       boxShadow: m.final
-                        ? "0 0 12px rgba(200,150,62,.50)"
+                        ? "0 0 12px rgba(205,135,42,.50)"
                         : "none",
                       zIndex: 2,
                     }}
@@ -940,7 +942,7 @@ function TimelineSection() {
                       background: m.final
                         ? "linear-gradient(135deg,#A67B2F,#E4C079)"
                         : "#f7f0e2",
-                      border: "2px solid #C8963E",
+                      border: "2px solid #cd872a",
                       zIndex: 2,
                     }}
                     className="block md:hidden"
@@ -974,7 +976,7 @@ function AthleteSection() {
   return (
     <section
       style={{
-        background: "#1c1304",
+        background: "#442a1b",
         padding: "clamp(72px,10vw,104px) 24px",
       }}
     >
@@ -998,8 +1000,8 @@ function AthleteSection() {
               paddingBottom: "115%",
               borderRadius: "16px",
               overflow: "hidden",
-              background: "linear-gradient(145deg,#2a1f14,#1c1304)",
-              border: "1px solid rgba(200,150,62,.22)",
+              background: "linear-gradient(145deg,#2a1f14,#442a1b)",
+              border: "1px solid rgba(205,135,42,.22)",
             }}
           >
             {/* Animated diagonal grid (inspired by reference) */}
@@ -1010,7 +1012,7 @@ function AthleteSection() {
             >
               <defs>
                 <pattern id="atlGrid" x="0" y="0" width="10" height="10" patternUnits="userSpaceOnUse">
-                  <path d="M0 10 L10 0" stroke="#C8963E" strokeWidth="0.5" />
+                  <path d="M0 10 L10 0" stroke="#cd872a" strokeWidth="0.5" />
                 </pattern>
               </defs>
               <rect width="100%" height="100%" fill="url(#atlGrid)" />
@@ -1040,7 +1042,7 @@ function AthleteSection() {
                   alignItems: "center",
                   justifyContent: "center",
                   marginBottom: "20px",
-                  boxShadow: "0 8px 32px rgba(200,150,62,.32)",
+                  boxShadow: "0 8px 32px rgba(205,135,42,.32)",
                 }}
               >
                 <span
@@ -1048,7 +1050,7 @@ function AthleteSection() {
                     fontFamily: F,
                     fontVariationSettings: "'wdth' 85,'wght' 800",
                     fontSize: "38px",
-                    color: "#1c1304",
+                    color: "#442a1b",
                     lineHeight: 1,
                   }}
                 >
@@ -1073,7 +1075,7 @@ function AthleteSection() {
                   fontSize: "11px",
                   letterSpacing: ".14em",
                   textTransform: "uppercase",
-                  color: "#C8963E",
+                  color: "#cd872a",
                   marginBottom: "16px",
                 }}
               >
@@ -1117,7 +1119,7 @@ function AthleteSection() {
                 fontVariationSettings: "'wdth' 75,'wght' 600",
                 fontSize: "14px",
                 letterSpacing: ".06em",
-                color: "#C8963E",
+                color: "#cd872a",
                 marginBottom: "24px",
               }}
             >
@@ -1174,7 +1176,7 @@ function AthleteSection() {
                       fontSize: "11px",
                       letterSpacing: ".12em",
                       textTransform: "uppercase",
-                      color: "#C8963E",
+                      color: "#cd872a",
                       marginBottom: "4px",
                     }}
                   >
@@ -1204,7 +1206,7 @@ function AthleteSection() {
                 fontVariationSettings: "'wdth' 100,'wght' 300",
                 fontStyle: "italic",
                 fontSize: "clamp(16px,2vw,20px)",
-                color: "#C8963E",
+                color: "#cd872a",
                 lineHeight: 1.55,
               }}
             >
@@ -1276,7 +1278,7 @@ const SOURCING_STEPS = [
   {
     num: "02",
     title: "Purification (Triphala Shodhan)",
-    body: "Every batch undergoes classical Triphala Shodhan purification — as prescribed in Ashtanga Hridayam. Conducted by URMI Lifesciences LLP (Mfg. Lic. No. RJ-926AYU E, Rajasthan), an AYUSH-GMP certified facility. This removes heavy metals and rock impurities while preserving fulvic acid integrity.",
+    body: "Every batch undergoes classical Triphala Shodhan purification — as prescribed in Ashtanga Hridayam. Conducted in an AYUSH-GMP certified facility in Rajasthan. This removes heavy metals and rock impurities while preserving fulvic acid integrity.",
   },
   {
     num: "03",
@@ -1303,7 +1305,7 @@ function SourcingSection() {
                 fontVariationSettings: "'wdth' 85,'wght' 700",
                 fontSize: "clamp(26px,3.5vw,40px)",
                 letterSpacing: "-.02em",
-                color: "#1c1304",
+                color: "#442a1b",
                 marginBottom: "12px",
               }}
             >
@@ -1333,8 +1335,9 @@ function SourcingSection() {
         >
           {SOURCING_STEPS.map((s, i) => (
             <Reveal key={s.num} delay={i * 0.07}>
+              <TiltCard radius={12} max={8}>
               <motion.div
-                whileHover={{ y: -5, boxShadow: "0 16px 40px rgba(200,150,62,.12)" }}
+                whileHover={{ y: -5, boxShadow: "0 16px 40px rgba(205,135,42,.12)" }}
                 transition={{ type: "spring", stiffness: 340, damping: 24 }}
                 style={{
                   background: "#fff",
@@ -1353,7 +1356,7 @@ function SourcingSection() {
                     left: 0,
                     right: 0,
                     height: "2px",
-                    background: "linear-gradient(90deg,#A67B2F,#E4C079,#C8963E)",
+                    background: "linear-gradient(90deg,#A67B2F,#E4C079,#cd872a)",
                   }}
                 />
                 <p
@@ -1373,7 +1376,7 @@ function SourcingSection() {
                     fontFamily: F,
                     fontVariationSettings: "'wdth' 85,'wght' 700",
                     fontSize: "18px",
-                    color: "#1c1304",
+                    color: "#442a1b",
                     marginBottom: "10px",
                   }}
                 >
@@ -1391,6 +1394,7 @@ function SourcingSection() {
                   {s.body}
                 </p>
               </motion.div>
+              </TiltCard>
             </Reveal>
           ))}
         </div>
@@ -1407,9 +1411,9 @@ function SourcingSection() {
                   fontSize: "10px",
                   letterSpacing: ".14em",
                   textTransform: "uppercase",
-                  color: "#C8963E",
-                  border: "1px solid rgba(200,150,62,.35)",
-                  background: "rgba(200,150,62,.06)",
+                  color: "#cd872a",
+                  border: "1px solid rgba(205,135,42,.35)",
+                  background: "rgba(205,135,42,.06)",
                   padding: "5px 14px",
                   borderRadius: "20px",
                 }}
@@ -1423,13 +1427,13 @@ function SourcingSection() {
         <Reveal delay={0.14}>
           <div style={{ textAlign: "center" }}>
             <Link
-              href="/lab-reports"
+              href="/research-testing"
               style={{
                 display: "inline-flex",
                 alignItems: "center",
                 gap: "6px",
-                background: "linear-gradient(105deg,#A67B2F,#E4C079,#C8963E)",
-                color: "#1c1304",
+                background: "linear-gradient(105deg,#A67B2F,#E4C079,#cd872a)",
+                color: "#442a1b",
                 fontFamily: F,
                 fontVariationSettings: "'wdth' 85,'wght' 700",
                 fontSize: "11px",
@@ -1474,7 +1478,7 @@ function FounderMeetSection() {
                 borderRadius: "16px",
                 overflow: "hidden",
                 background: "#ede4d0",
-                border: "1px solid rgba(200,150,62,.22)",
+                border: "1px solid rgba(205,135,42,.22)",
                 aspectRatio: "4/5",
               }}
             >
@@ -1508,7 +1512,7 @@ function FounderMeetSection() {
                   fontSize: "11px",
                   letterSpacing: ".12em",
                   textTransform: "uppercase",
-                  color: "#C8963E",
+                  color: "#cd872a",
                 }}
               >
                 Dr. Kashish Gupta, BAMS
@@ -1527,7 +1531,7 @@ function FounderMeetSection() {
                 fontVariationSettings: "'wdth' 85,'wght' 700",
                 fontSize: "clamp(24px,3vw,36px)",
                 letterSpacing: "-.02em",
-                color: "#1c1304",
+                color: "#442a1b",
                 marginBottom: "24px",
               }}
             >
@@ -1539,7 +1543,7 @@ function FounderMeetSection() {
           <Reveal delay={0.07}>
             <blockquote
               style={{
-                borderLeft: "3px solid #C8963E",
+                borderLeft: "3px solid #cd872a",
                 paddingLeft: "20px",
                 margin: "0 0 28px",
               }}
@@ -1564,7 +1568,7 @@ function FounderMeetSection() {
                   fontSize: "11px",
                   letterSpacing: ".10em",
                   textTransform: "uppercase",
-                  color: "#C8963E",
+                  color: "#cd872a",
                   fontStyle: "normal",
                 }}
               >
@@ -1600,7 +1604,7 @@ function FounderMeetSection() {
                   fontFamily: F,
                   fontVariationSettings: "'wdth' 85,'wght' 700",
                   fontSize: "16px",
-                  color: "#1c1304",
+                  color: "#442a1b",
                   marginBottom: "10px",
                 }}
               >
@@ -1665,7 +1669,7 @@ function BBBSection() {
   return (
     <section
       style={{
-        background: "#1c1304",
+        background: "#442a1b",
         padding: "clamp(72px,10vw,104px) 24px",
       }}
     >
@@ -1711,6 +1715,7 @@ function BBBSection() {
         >
           {BBB_CARDS.map((c, i) => (
             <Reveal key={c.word} delay={i * 0.09}>
+              <TiltCard radius={12} max={8}>
               <motion.div
                 whileHover={{ y: -6 }}
                 transition={{ type: "spring", stiffness: 320, damping: 24 }}
@@ -1730,7 +1735,7 @@ function BBBSection() {
                     fontSize: "11px",
                     letterSpacing: ".28em",
                     textTransform: "uppercase",
-                    background: "linear-gradient(105deg,#A67B2F,#E4C079,#C8963E)",
+                    background: "linear-gradient(105deg,#A67B2F,#E4C079,#cd872a)",
                     WebkitBackgroundClip: "text",
                     WebkitTextFillColor: "transparent",
                     marginBottom: "8px",
@@ -1743,7 +1748,7 @@ function BBBSection() {
                   style={{
                     fontFamily: "'Noto Serif Devanagari','Noto Sans Devanagari',serif",
                     fontSize: "28px",
-                    color: "#C8963E",
+                    color: "#cd872a",
                     lineHeight: 1.3,
                     marginBottom: "2px",
                   }}
@@ -1766,7 +1771,7 @@ function BBBSection() {
                 <div
                   style={{
                     height: "1px",
-                    background: "linear-gradient(90deg,#C8963E,transparent)",
+                    background: "linear-gradient(90deg,#cd872a,transparent)",
                     marginBottom: "16px",
                     opacity: 0.35,
                   }}
@@ -1794,6 +1799,7 @@ function BBBSection() {
                   {c.body}
                 </p>
               </motion.div>
+              </TiltCard>
             </Reveal>
           ))}
         </div>
@@ -1844,7 +1850,7 @@ function FinalCTASection() {
               fontSize: "clamp(28px,4vw,46px)",
               letterSpacing: "-.02em",
               lineHeight: 1.12,
-              color: "#1c1304",
+              color: "#442a1b",
               marginBottom: "16px",
             }}
           >
@@ -1872,8 +1878,8 @@ function FinalCTASection() {
                 display: "inline-flex",
                 alignItems: "center",
                 gap: "6px",
-                background: "linear-gradient(105deg,#A67B2F,#E4C079,#C8963E)",
-                color: "#1c1304",
+                background: "linear-gradient(105deg,#A67B2F,#E4C079,#cd872a)",
+                color: "#442a1b",
                 fontFamily: F,
                 fontVariationSettings: "'wdth' 85,'wght' 700",
                 fontSize: "11px",
@@ -1892,7 +1898,7 @@ function FinalCTASection() {
                 alignItems: "center",
                 gap: "6px",
                 background: "transparent",
-                color: "#1c1304",
+                color: "#442a1b",
                 fontFamily: F,
                 fontVariationSettings: "'wdth' 85,'wght' 600",
                 fontSize: "11px",
@@ -1912,7 +1918,7 @@ function FinalCTASection() {
                 alignItems: "center",
                 gap: "6px",
                 background: "transparent",
-                color: "#1c1304",
+                color: "#442a1b",
                 fontFamily: F,
                 fontVariationSettings: "'wdth' 85,'wght' 600",
                 fontSize: "11px",
@@ -1955,7 +1961,7 @@ function FinalCTASection() {
 
 export default function AboutClient() {
   return (
-    <div style={{ fontFamily: F, color: "#1c1304" }}>
+    <div style={{ fontFamily: F, color: "#442a1b" }}>
       {/* 1 — Hero */}
       <HeroSection />
 

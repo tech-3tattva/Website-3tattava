@@ -76,11 +76,7 @@ export default function CheckoutPaymentPage() {
       localStorage.removeItem("checkoutShippingAddress");
       await clearCart();
 
-      const search = new URLSearchParams();
-      if (typeof response.emailSent === "boolean") search.set("emailSent", String(response.emailSent));
-      if (response.emailError) search.set("emailError", String(response.emailError));
-
-      router.push(`/order-confirmation/${response.orderNumber}?${search.toString()}`);
+      router.push(`/order-confirmation/${response.orderNumber}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to place order");
     } finally {

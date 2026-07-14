@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence, useInView } from "framer-motion";
 import Link from "next/link";
+import TiltCard from "@/components/motion/TiltCard";
 
 const WHATSAPP_LINK = "https://chat.whatsapp.com/FI9HnCNNPF3Fp20mU9avG1";
 const FONT = "var(--font-primary), system-ui, sans-serif";
@@ -122,13 +123,13 @@ function CommBg() {
       }}>
         <svg viewBox="0 0 520 520">
           {[44,88,132,176,218,248].map((r,i)=>(
-            <circle key={r} cx={260} cy={260} r={r} fill="none" stroke="#C8963E" strokeWidth={i%2===0?1.2:.5}/>
+            <circle key={r} cx={260} cy={260} r={r} fill="none" stroke="#cd872a" strokeWidth={i%2===0?1.2:.5}/>
           ))}
           {Array.from({length:12}).map((_,i)=>(
-            <line key={i} x1={260} y1={10} x2={260} y2={510} stroke="#C8963E" strokeWidth={.4} transform={`rotate(${i*30} 260 260)`}/>
+            <line key={i} x1={260} y1={10} x2={260} y2={510} stroke="#cd872a" strokeWidth={.4} transform={`rotate(${i*30} 260 260)`}/>
           ))}
           {Array.from({length:8}).map((_,i)=>(
-            <ellipse key={i} cx={260} cy={130} rx={20} ry={68} fill="none" stroke="#C8963E" strokeWidth={.5} transform={`rotate(${i*45} 260 260)`}/>
+            <ellipse key={i} cx={260} cy={130} rx={20} ry={68} fill="none" stroke="#cd872a" strokeWidth={.5} transform={`rotate(${i*45} 260 260)`}/>
           ))}
         </svg>
       </div>
@@ -161,7 +162,7 @@ function CommBg() {
         <div key={i} style={{
           position:"absolute", top:p.top, left:p.left, right:p.right,
           width:p.s, height:p.s, borderRadius:"50%",
-          background:"radial-gradient(circle,#E4C079,#C8963E)",
+          background:"radial-gradient(circle,#E4C079,#cd872a)",
           animation:p.d, pointerEvents:"none", zIndex:0,
         }}/>
       ))}
@@ -198,6 +199,7 @@ function PillarCard({ pillar, idx }: { pillar:typeof PILLARS[0]; idx:number }) {
   const inView=useInView(ref,{once:true,margin:"-40px"});
 
   return (
+    <TiltCard radius={4} max={8}>
     <motion.div
       ref={ref}
       initial={{opacity:0,y:28}}
@@ -208,13 +210,13 @@ function PillarCard({ pillar, idx }: { pillar:typeof PILLARS[0]; idx:number }) {
       style={{
         fontFamily:FONT,
         background:"#fff",
-        border:open?"1.5px solid rgba(200,150,62,.55)":"1px solid rgba(183,163,146,.28)",
+        border:open?"1.5px solid rgba(205,135,42,.55)":"1px solid rgba(183,163,146,.28)",
         borderRadius:"4px",
         padding:"28px 24px",
         cursor:"default",
         transform:open?"translateY(-5px)":"translateY(0)",
         boxShadow:open
-          ?"0 18px 44px rgba(200,150,62,.14),0 4px 14px rgba(28,19,4,.07)"
+          ?"0 18px 44px rgba(205,135,42,.14),0 4px 14px rgba(28,19,4,.07)"
           :"0 1px 4px rgba(28,19,4,.04)",
         transition:"all .28s cubic-bezier(.16,1,.3,1)",
         position:"relative", overflow:"hidden",
@@ -223,14 +225,14 @@ function PillarCard({ pillar, idx }: { pillar:typeof PILLARS[0]; idx:number }) {
       {/* Gold top bar */}
       <div style={{
         position:"absolute",top:0,left:0,right:0,height:"2px",
-        background:"linear-gradient(90deg,#A67B2F,#E4C079,#C8963E)",
+        background:"linear-gradient(90deg,#A67B2F,#E4C079,#cd872a)",
         opacity:open?1:0,transition:"opacity .25s",
       }}/>
 
       <div style={{fontSize:"26px",marginBottom:"10px"}}>{pillar.icon}</div>
       <h3 style={{
         fontVariationSettings:"'wdth' 85,'wght' 700",
-        fontSize:"17px",color:"#1c1304",marginBottom:"6px",
+        fontSize:"17px",color:"#442a1b",marginBottom:"6px",
       }}>
         {pillar.label}
       </h3>
@@ -263,11 +265,11 @@ function PillarCard({ pillar, idx }: { pillar:typeof PILLARS[0]; idx:number }) {
                 {pillar.examples.map(ex=>(
                   <li key={ex} style={{
                     display:"flex",alignItems:"center",gap:"6px",
-                    fontSize:"11px",color:"#C8963E",
+                    fontSize:"11px",color:"#cd872a",
                     fontVariationSettings:"'wdth' 75,'wght' 600",
                     letterSpacing:".06em",listStyle:"none",
                   }}>
-                    <span style={{width:4,height:4,borderRadius:"50%",background:"#C8963E",flexShrink:0}}/>
+                    <span style={{width:4,height:4,borderRadius:"50%",background:"#cd872a",flexShrink:0}}/>
                     {ex}
                   </li>
                 ))}
@@ -277,6 +279,7 @@ function PillarCard({ pillar, idx }: { pillar:typeof PILLARS[0]; idx:number }) {
         )}
       </AnimatePresence>
     </motion.div>
+    </TiltCard>
   );
 }
 
@@ -288,6 +291,7 @@ function StoryCard({ s, idx }: { s:typeof STORIES[0]; idx:number }) {
   const inView=useInView(ref,{once:true,margin:"-50px"});
 
   return (
+    <TiltCard radius={4} max={7}>
     <motion.div
       ref={ref}
       initial={{opacity:0,y:40}}
@@ -297,7 +301,7 @@ function StoryCard({ s, idx }: { s:typeof STORIES[0]; idx:number }) {
       onMouseLeave={()=>setHov(false)}
       style={{
         fontFamily:FONT,
-        background:hov?"#1c1304":"#fff",
+        background:hov?"#442a1b":"#fff",
         border:"1px solid rgba(183,163,146,.28)",
         borderRadius:"4px",
         padding:"28px",
@@ -310,7 +314,7 @@ function StoryCard({ s, idx }: { s:typeof STORIES[0]; idx:number }) {
     >
       <div style={{
         position:"absolute",top:0,left:0,right:0,height:"2px",
-        background:"linear-gradient(90deg,#A67B2F,#E4C079,#C8963E)",
+        background:"linear-gradient(90deg,#A67B2F,#E4C079,#cd872a)",
         opacity:hov?1:0,transition:"opacity .25s",
       }}/>
 
@@ -347,7 +351,7 @@ function StoryCard({ s, idx }: { s:typeof STORIES[0]; idx:number }) {
         <div>
           <p style={{
             fontVariationSettings:"'wdth' 85,'wght' 700",
-            fontSize:"13px",color:hov?"#f7f0e2":"#1c1304",
+            fontSize:"13px",color:hov?"#f7f0e2":"#442a1b",
             transition:"color .3s",marginBottom:"3px",
           }}>
             {s.name}
@@ -363,12 +367,13 @@ function StoryCard({ s, idx }: { s:typeof STORIES[0]; idx:number }) {
         </div>
         <span style={{
           fontSize:"9px",letterSpacing:".15em",textTransform:"uppercase",
-          color:"#C8963E",fontVariationSettings:"'wdth' 75,'wght' 600",
+          color:"#cd872a",fontVariationSettings:"'wdth' 75,'wght' 600",
         }}>
           {s.duration}
         </span>
       </div>
     </motion.div>
+    </TiltCard>
   );
 }
 
@@ -407,7 +412,7 @@ function EventCard({ ev, idx, inView }: { ev: EventData; idx: number; inView: bo
         position: "relative",
         overflow: "hidden",
         boxShadow: hov
-          ? "20px 20px 42px rgba(183,163,146,.55),-20px -20px 42px rgba(255,255,255,1),0 0 0 1.5px rgba(200,150,62,.40)"
+          ? "20px 20px 42px rgba(183,163,146,.55),-20px -20px 42px rgba(255,255,255,1),0 0 0 1.5px rgba(205,135,42,.40)"
           : "12px 12px 28px rgba(183,163,146,.42),-12px -12px 28px rgba(255,255,255,.92)",
         transform: hov ? "translateY(-7px)" : "translateY(0)",
         transition: "all .38s cubic-bezier(.16,1,.3,1)",
@@ -429,7 +434,7 @@ function EventCard({ ev, idx, inView }: { ev: EventData; idx: number; inView: bo
       <div style={{
         position:"absolute", inset:0,
         borderRadius:"20px",
-        border:"1.5px solid rgba(200,150,62,.55)",
+        border:"1.5px solid rgba(205,135,42,.55)",
         opacity: hov ? 1 : 0,
         transition:"opacity .38s",
         pointerEvents:"none",
@@ -455,7 +460,7 @@ function EventCard({ ev, idx, inView }: { ev: EventData; idx: number; inView: bo
           fontVariationSettings:"'wdth' 85,'wght' 800",
           fontFamily:FONT,
           fontSize:"17px", lineHeight:1,
-          color: hov ? "#1c1304" : "#C8963E",
+          color: hov ? "#442a1b" : "#cd872a",
           transition:"color .3s",
           marginBottom:"2px",
         }}>
@@ -478,14 +483,14 @@ function EventCard({ ev, idx, inView }: { ev: EventData; idx: number; inView: bo
           position:"absolute", top:3, right:3,
           width:11, height:11,
           borderRadius:"50%",
-          background: isLimited ? "#C8963E" : "#86efac",
+          background: isLimited ? "#cd872a" : "#86efac",
           border:"2px solid #f7f0e2",
           display:"flex", alignItems:"center", justifyContent:"center",
         }}>
           {isLimited && (
             <div style={{
               position:"absolute", inset:0, borderRadius:"50%",
-              background:"#C8963E",
+              background:"#cd872a",
               animation:"cs-dot-ping 1.8s ease-out infinite",
             }}/>
           )}
@@ -520,7 +525,7 @@ function EventCard({ ev, idx, inView }: { ev: EventData; idx: number; inView: bo
             fontSize:"9px", letterSpacing:".12em", textTransform:"uppercase",
             fontVariationSettings:"'wdth' 75,'wght' 500",
             fontFamily:FONT,
-            color: isLimited ? "#C8963E" : "rgba(28,19,4,.40)",
+            color: isLimited ? "#cd872a" : "rgba(28,19,4,.40)",
             display:"flex", alignItems:"center", gap:"5px",
           }}>
             {isLimited && (
@@ -528,7 +533,7 @@ function EventCard({ ev, idx, inView }: { ev: EventData; idx: number; inView: bo
                 display:"inline-block",
                 width:5, height:5,
                 borderRadius:"50%",
-                background:"#C8963E",
+                background:"#cd872a",
                 flexShrink:0,
               }}/>
             )}
@@ -539,7 +544,7 @@ function EventCard({ ev, idx, inView }: { ev: EventData; idx: number; inView: bo
         <h3 style={{
           fontVariationSettings:"'wdth' 85,'wght' 700",
           fontFamily:FONT,
-          fontSize:"19px", color:"#1c1304",
+          fontSize:"19px", color:"#442a1b",
           marginBottom:"8px", lineHeight:1.2,
         }}>
           {ev.title}
@@ -558,7 +563,7 @@ function EventCard({ ev, idx, inView }: { ev: EventData; idx: number; inView: bo
         {/* Gold gradient divider */}
         <div style={{
           height:"1px",
-          background:"linear-gradient(90deg,transparent,#C8963E,transparent)",
+          background:"linear-gradient(90deg,transparent,#cd872a,transparent)",
           opacity: hov ? 0.55 : 0.20,
           marginBottom:"12px",
           transition:"opacity .32s",
@@ -589,7 +594,7 @@ function EventCard({ ev, idx, inView }: { ev: EventData; idx: number; inView: bo
             style={{
               display:"inline-flex", alignItems:"center", gap:"6px",
               background:"#f7f0e2",
-              color:"#1c1304",
+              color:"#442a1b",
               fontVariationSettings:"'wdth' 85,'wght' 700",
               fontFamily:FONT,
               fontSize:"10px", letterSpacing:".14em", textTransform:"uppercase",
@@ -613,8 +618,8 @@ function EventCard({ ev, idx, inView }: { ev: EventData; idx: number; inView: bo
             transition={{ type:"spring", stiffness:380, damping:22 }}
             style={{
               display:"inline-flex", alignItems:"center", gap:"6px",
-              background:"linear-gradient(145deg,#C8963E,#A67B2F)",
-              color:"#1c1304",
+              background:"linear-gradient(145deg,#cd872a,#A67B2F)",
+              color:"#442a1b",
               fontVariationSettings:"'wdth' 85,'wght' 700",
               fontFamily:FONT,
               fontSize:"10px", letterSpacing:".14em", textTransform:"uppercase",
@@ -645,6 +650,7 @@ function WaIcon() {
 
 // ─── MAIN ────────────────────────────────────────────────────────────────────
 
+
 export default function CommunityClient() {
   const pillarsRef   = useRef<HTMLElement>(null);
   const athleteRef   = useRef<HTMLElement>(null);
@@ -662,7 +668,7 @@ export default function CommunityClient() {
     <p style={{
       fontSize:"10px",letterSpacing:".32em",textTransform:"uppercase",
       fontVariationSettings:"'wdth' 75,'wght' 500",
-      color:"#C8963E",marginBottom:"12px",fontFamily:FONT,
+      color:"#cd872a",marginBottom:"12px",fontFamily:FONT,
     }}>
       {text}
     </p>
@@ -675,7 +681,7 @@ export default function CommunityClient() {
         fontFamily:FONT,
         fontSize:"clamp(26px,3.5vw,40px)",
         letterSpacing:"-.02em",lineHeight:1.1,
-        color:"#1c1304",marginBottom:sub?"14px":"0",
+        color:"#442a1b",marginBottom:sub?"14px":"0",
       }}>
         {text}
       </h2>
@@ -693,7 +699,7 @@ export default function CommunityClient() {
   );
 
   return (
-    <div style={{fontFamily:FONT,color:"#1c1304",background:"#f7f0e2"}}>
+    <div style={{fontFamily:FONT,color:"#442a1b",background:"#f7f0e2"}}>
 
       {/* ── HERO ───────────────────────────────────────────────────────────── */}
       <section style={{
@@ -712,7 +718,7 @@ export default function CommunityClient() {
             style={{
               fontSize:"10px",letterSpacing:".32em",textTransform:"uppercase",
               fontVariationSettings:"'wdth' 75,'wght' 500",
-              color:"#C8963E",marginBottom:"20px",fontFamily:FONT,
+              color:"#cd872a",marginBottom:"20px",fontFamily:FONT,
             }}
           >
             Balance · Build · Become
@@ -726,13 +732,13 @@ export default function CommunityClient() {
               fontFamily:FONT,
               fontSize:"clamp(32px,6vw,64px)",
               lineHeight:1.06,letterSpacing:"-.025em",
-              color:"#1c1304",marginBottom:"22px",
+              color:"#442a1b",marginBottom:"22px",
             }}
           >
             Products Can Be Purchased<br/>
             In Minutes.{" "}
             <span style={{
-              background:"linear-gradient(105deg,#A67B2F,#E4C079,#C8963E,#A67B2F)",
+              background:"linear-gradient(105deg,#A67B2F,#E4C079,#cd872a,#A67B2F)",
               WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",
             }}>
               Transformation Is Built Daily.
@@ -762,9 +768,9 @@ export default function CommunityClient() {
               href={WHATSAPP_LINK} target="_blank" rel="noopener noreferrer"
               style={{
                 display:"inline-flex",alignItems:"center",gap:"8px",
-                background:"linear-gradient(105deg,#A67B2F,#E4C079,#C8963E,#A67B2F)",
+                background:"linear-gradient(105deg,#A67B2F,#E4C079,#cd872a,#A67B2F)",
                 backgroundSize:"200% auto",
-                color:"#1c1304",
+                color:"#442a1b",
                 fontVariationSettings:"'wdth' 85,'wght' 700",
                 fontFamily:FONT,
                 fontSize:"11px",letterSpacing:".15em",textTransform:"uppercase",
@@ -777,7 +783,7 @@ export default function CommunityClient() {
               href="/find-us"
               style={{
                 display:"inline-flex",alignItems:"center",gap:"6px",
-                background:"transparent",color:"#1c1304",
+                background:"transparent",color:"#442a1b",
                 fontVariationSettings:"'wdth' 85,'wght' 600",
                 fontFamily:FONT,
                 fontSize:"11px",letterSpacing:".15em",textTransform:"uppercase",
@@ -802,14 +808,14 @@ export default function CommunityClient() {
             ].map(s=>(
               <div key={s.label} style={{
                 background:"#fff",
-                border:"1px solid rgba(200,150,62,.28)",
+                border:"1px solid rgba(205,135,42,.28)",
                 padding:"14px 22px",textAlign:"center",minWidth:"130px",
               }}>
                 <div style={{
                   fontVariationSettings:"'wdth' 85,'wght' 800",
                   fontFamily:FONT,
                   fontSize:"28px",lineHeight:1,
-                  background:"linear-gradient(105deg,#A67B2F,#E4C079,#C8963E)",
+                  background:"linear-gradient(105deg,#A67B2F,#E4C079,#cd872a)",
                   WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",
                   marginBottom:"4px",
                 }}>
@@ -831,7 +837,7 @@ export default function CommunityClient() {
 
       {/* ── GOLD COUNTER STRIP ─────────────────────────────────────────────── */}
       <section style={{
-        background:"linear-gradient(105deg,#A67B2F 0%,#E4C079 45%,#C8963E 70%,#A67B2F 100%)",
+        background:"linear-gradient(105deg,#A67B2F 0%,#E4C079 45%,#cd872a 70%,#A67B2F 100%)",
         padding:"32px 24px",
       }}>
         <div style={{
@@ -849,7 +855,7 @@ export default function CommunityClient() {
               <div style={{
                 fontVariationSettings:"'wdth' 85,'wght' 800",
                 fontFamily:FONT,
-                fontSize:"38px",lineHeight:1,color:"#1c1304",marginBottom:"4px",
+                fontSize:"38px",lineHeight:1,color:"#442a1b",marginBottom:"4px",
               }}>
                 <AnimCount target={s.n} suffix={s.suf}/>
               </div>
@@ -908,7 +914,7 @@ export default function CommunityClient() {
             transition={{duration:.65,ease:EASE}}
             style={{
               background:"#f7f0e2",
-              border:"1px solid rgba(200,150,62,.25)",
+              border:"1px solid rgba(205,135,42,.25)",
               padding:"48px 36px",
               display:"flex",flexDirection:"column",alignItems:"center",
               gap:"18px",textAlign:"center",position:"relative",
@@ -916,38 +922,38 @@ export default function CommunityClient() {
           >
             <div style={{
               position:"absolute",top:0,left:0,right:0,height:"3px",
-              background:"linear-gradient(90deg,#A67B2F,#E4C079,#C8963E)",
+              background:"linear-gradient(90deg,#A67B2F,#E4C079,#cd872a)",
             }}/>
             <div style={{
               width:"120px",height:"120px",borderRadius:"50%",
               background:"linear-gradient(145deg,#A67B2F,#E4C079)",
               display:"flex",alignItems:"center",justifyContent:"center",
-              boxShadow:"0 8px 32px rgba(200,150,62,.28)",
+              boxShadow:"0 8px 32px rgba(205,135,42,.28)",
             }}>
               <span style={{
                 fontVariationSettings:"'wdth' 85,'wght' 800",
                 fontFamily:FONT,
-                fontSize:"52px",color:"#1c1304",lineHeight:1,
+                fontSize:"52px",color:"#442a1b",lineHeight:1,
               }}>M</span>
             </div>
             <div>
               <h3 style={{
                 fontVariationSettings:"'wdth' 85,'wght' 700",
                 fontFamily:FONT,
-                fontSize:"22px",color:"#1c1304",marginBottom:"8px",
+                fontSize:"22px",color:"#442a1b",marginBottom:"8px",
               }}>
                 Mona Agarwal
               </h3>
               <div style={{
                 display:"inline-flex",alignItems:"center",
-                background:"linear-gradient(105deg,#A67B2F,#E4C079,#C8963E)",
+                background:"linear-gradient(105deg,#A67B2F,#E4C079,#cd872a)",
                 padding:"4px 14px",
               }}>
                 <span style={{
                   fontSize:"9px",letterSpacing:".2em",textTransform:"uppercase",
                   fontVariationSettings:"'wdth' 75,'wght' 700",
                   fontFamily:FONT,
-                  color:"#1c1304",
+                  color:"#442a1b",
                 }}>
                   Founding Athlete
                 </span>
@@ -973,7 +979,7 @@ export default function CommunityClient() {
                   <div style={{
                     fontVariationSettings:"'wdth' 85,'wght' 700",
                     fontFamily:FONT,
-                    fontSize:"14px",color:"#1c1304",
+                    fontSize:"14px",color:"#442a1b",
                   }}>
                     {s.value}
                   </div>
@@ -1002,7 +1008,7 @@ export default function CommunityClient() {
               fontFamily:FONT,
               fontSize:"clamp(24px,3vw,36px)",
               letterSpacing:"-.02em",lineHeight:1.15,
-              color:"#1c1304",marginBottom:"20px",
+              color:"#442a1b",marginBottom:"20px",
             }}>
               She Didn&apos;t Wait for Perfect Conditions.
             </h2>
@@ -1015,7 +1021,7 @@ export default function CommunityClient() {
               Mona Agarwal is 3TATTAVA&apos;s Founding Athlete — the first community member to publicly document her Shilajit protocol at WTF Gym. She didn&apos;t sign up for a sponsorship. She signed up for results. Her 12-week documented protocol became the template for what we now call a Community Case Study.
             </p>
             <blockquote style={{
-              borderLeft:"2px solid #C8963E",
+              borderLeft:"2px solid #cd872a",
               paddingLeft:"20px",margin:"0 0 28px",
             }}>
               <p style={{
@@ -1027,7 +1033,7 @@ export default function CommunityClient() {
                 &ldquo;I didn&apos;t feel different on week one. I felt different on week four. That&apos;s when I knew this was real.&rdquo;
               </p>
               <cite style={{
-                fontSize:"11px",color:"#C8963E",
+                fontSize:"11px",color:"#cd872a",
                 fontVariationSettings:"'wdth' 75,'wght' 600",
                 fontFamily:FONT,
                 letterSpacing:".08em",fontStyle:"normal",
@@ -1119,7 +1125,7 @@ export default function CommunityClient() {
                   <p style={{
                     fontSize:"10px",fontVariationSettings:"'wdth' 75,'wght' 600",
                     fontFamily:FONT,
-                    color:"#C8963E",letterSpacing:".08em",marginBottom:"2px",
+                    color:"#cd872a",letterSpacing:".08em",marginBottom:"2px",
                   }}>
                     {post.handle}
                   </p>
@@ -1143,7 +1149,7 @@ export default function CommunityClient() {
                 display:"inline-flex",alignItems:"center",gap:"8px",
                 border:"1px solid rgba(28,19,4,.22)",
                 padding:"12px 28px",textDecoration:"none",
-                color:"#1c1304",
+                color:"#442a1b",
                 fontVariationSettings:"'wdth' 85,'wght' 600",
                 fontFamily:FONT,
                 fontSize:"11px",letterSpacing:".15em",textTransform:"uppercase",
@@ -1227,7 +1233,7 @@ export default function CommunityClient() {
                 <h3 style={{
                   fontVariationSettings:"'wdth' 85,'wght' 700",
                   fontFamily:FONT,
-                  fontSize:"15px",color:"#1c1304",marginBottom:"8px",
+                  fontSize:"15px",color:"#442a1b",marginBottom:"8px",
                 }}>
                   {f.title}
                 </h3>
@@ -1243,7 +1249,7 @@ export default function CommunityClient() {
                   fontSize:"9px",letterSpacing:".14em",textTransform:"uppercase",
                   fontVariationSettings:"'wdth' 75,'wght' 600",
                   fontFamily:FONT,
-                  color:"rgba(200,150,62,.55)",
+                  color:"rgba(205,135,42,.55)",
                 }}>
                   Coming Soon
                 </div>
@@ -1255,7 +1261,7 @@ export default function CommunityClient() {
 
       {/* ── FINAL CTA ──────────────────────────────────────────────────────── */}
       <section style={{
-        background:"linear-gradient(105deg,#A67B2F 0%,#E4C079 45%,#C8963E 70%,#A67B2F 100%)",
+        background:"linear-gradient(105deg,#A67B2F 0%,#E4C079 45%,#cd872a 70%,#A67B2F 100%)",
         padding:"88px 24px",textAlign:"center",
       }}>
         <motion.div
@@ -1277,7 +1283,7 @@ export default function CommunityClient() {
             fontFamily:FONT,
             fontSize:"clamp(30px,5vw,52px)",
             letterSpacing:"-.025em",lineHeight:1.1,
-            color:"#1c1304",marginBottom:"16px",
+            color:"#442a1b",marginBottom:"16px",
           }}>
             Join the Community.<br/>Do the Work.
           </h2>
@@ -1295,7 +1301,7 @@ export default function CommunityClient() {
               href={WHATSAPP_LINK} target="_blank" rel="noopener noreferrer"
               style={{
                 display:"inline-flex",alignItems:"center",gap:"8px",
-                background:"#1c1304",color:"#f7f0e2",
+                background:"#442a1b",color:"#f7f0e2",
                 fontVariationSettings:"'wdth' 85,'wght' 700",
                 fontFamily:FONT,
                 fontSize:"11px",letterSpacing:".15em",textTransform:"uppercase",
@@ -1308,7 +1314,7 @@ export default function CommunityClient() {
               href="/find-us"
               style={{
                 display:"inline-flex",alignItems:"center",gap:"6px",
-                background:"transparent",color:"#1c1304",
+                background:"transparent",color:"#442a1b",
                 fontVariationSettings:"'wdth' 85,'wght' 600",
                 fontFamily:FONT,
                 fontSize:"11px",letterSpacing:".15em",textTransform:"uppercase",

@@ -1,4 +1,5 @@
 "use client";
+import { media } from "@/lib/media";
 
 import { motion } from "framer-motion";
 import Link from "next/link";
@@ -9,17 +10,15 @@ interface MegaMenuProps {
   title: string;
 }
 
+// 3TATTAVA sells two Shilajit formats only — no skin/hair/gifting catalogue.
 const SHOP_ALL_LINKS: { label: string; href: string }[] = [
   { label: "All Products", href: "/products" },
-  { label: "Skin Care", href: "/products?category=skin-care" },
-  { label: "Hair Care", href: "/products?category=hair-care" },
-  { label: "Body & Wellness", href: "/products?category=body-wellness" },
-  { label: "Gift Sets", href: "/gifting" },
+  { label: "Shahjeet Sticks — Honey Shilajit", href: "/products/shahjeet-sticks" },
+  { label: "RockResin — Shilajit Resin", href: "/products/shodhit-shilajit-resin" },
+  { label: "Bundles & Kits", href: "/products" },
 ];
 
 export default function MegaMenu({ isOpen, onClose, title }: MegaMenuProps) {
-  const links = SHOP_ALL_LINKS;
-
   if (!isOpen) return null;
 
   return (
@@ -32,16 +31,17 @@ export default function MegaMenu({ isOpen, onClose, title }: MegaMenuProps) {
       onMouseLeave={onClose}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 md:py-8 grid grid-cols-1 gap-6 lg:grid-cols-4 lg:gap-8">
+        {/* Column 1 — catalogue links */}
         <div>
           <p className="text-text-dark font-sans text-sm uppercase tracking-wider mb-4">
             {title}
           </p>
           <ul className="space-y-2">
-            {links.map((link) => (
+            {SHOP_ALL_LINKS.map((link) => (
               <li key={link.href}>
                 <Link
                   href={link.href}
-                  className="text-text-medium hover:text-primary-green transition-colors text-sm"
+                  className="text-text-medium hover:text-[#cd872a] transition-colors text-sm"
                   onClick={onClose}
                 >
                   {link.label}
@@ -50,30 +50,58 @@ export default function MegaMenu({ isOpen, onClose, title }: MegaMenuProps) {
             ))}
           </ul>
         </div>
+
+        {/* Columns 2–3 — featured product + guidance */}
         <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className="bg-cream rounded-lg p-4 min-h-[120px] flex flex-col justify-end">
-            <p className="text-text-dark font-medium text-sm mb-1">Featured</p>
-            <Link
-              href="/products/kumkumadi-serum"
-              className="text-primary-green text-sm hover:underline"
-              onClick={onClose}
-            >
-              Kumkumadi Serum →
-            </Link>
-          </div>
-          <div className="bg-cream rounded-lg p-4 min-h-[120px] flex flex-col justify-end">
+          <Link
+            href="/products/shahjeet-sticks"
+            onClick={onClose}
+            className="group relative rounded-lg overflow-hidden min-h-[140px] flex flex-col justify-end p-4 bg-[#442a1b]"
+          >
+            <span
+              aria-hidden
+              className="absolute inset-0 bg-cover bg-center opacity-70 transition-transform duration-500 group-hover:scale-105"
+              style={{ backgroundImage: `url('${media("/hero/shahjeet-hero.png")}')` }}
+            />
+            <span className="absolute inset-0 bg-gradient-to-t from-[#442a1b] via-[#442a1b]/40 to-transparent" />
+            <span className="relative">
+              <span className="block text-[#cd872a] text-[10px] uppercase tracking-[0.2em] mb-1">
+                Featured
+              </span>
+              <span className="block text-white font-medium text-sm">
+                Shahjeet Sticks — Tear. Squeeze. Perform. →
+              </span>
+            </span>
+          </Link>
+
+          <div className="bg-cream rounded-lg p-4 min-h-[140px] flex flex-col justify-end">
+            <p className="text-text-medium text-xs mb-1">Not sure where to start?</p>
             <Link
               href="/dosha-quiz"
-              className="text-primary-green font-medium text-sm hover:underline"
+              className="text-[#cd872a] font-medium text-sm hover:underline"
               onClick={onClose}
             >
-              Take Dosha Quiz →
+              Take the Dosha Quiz →
             </Link>
           </div>
         </div>
-        <div className="bg-beige-dark rounded-lg min-h-[100px] lg:min-h-[120px] overflow-hidden">
-          <div className="w-full h-full bg-gradient-to-br from-primary-green/10 to-gold/10" />
-        </div>
+
+        {/* Column 4 — brand image */}
+        <Link
+          href="/products"
+          onClick={onClose}
+          className="group relative rounded-lg overflow-hidden min-h-[100px] lg:min-h-[140px]"
+        >
+          <span
+            aria-hidden
+            className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105"
+              style={{ backgroundImage: `url('${media("/hero/rockresin-teaser.png")}')` }}
+          />
+          <span className="absolute inset-0 bg-gradient-to-t from-[#442a1b]/70 to-transparent" />
+          <span className="absolute bottom-3 left-3 text-white text-xs uppercase tracking-[0.18em]">
+            Explore the Ritual →
+          </span>
+        </Link>
       </div>
     </motion.div>
   );

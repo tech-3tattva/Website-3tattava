@@ -126,7 +126,7 @@ const shahjeetData = {
     { label: 'NABL Lab Tested', type: 'green' as const },
     { label: 'AYUSH-GMP', type: 'gold' as const },
   ],
-  ctaLabel: 'START THE RITUAL — ₹999',
+  ctaLabel: 'START THE RITUAL — ₹1,399',
   ctaHref: '/products/shahjeet-sticks',
   detailPanel: '600mg per Stick | Honey Anupana | 8g per Stick',
 };

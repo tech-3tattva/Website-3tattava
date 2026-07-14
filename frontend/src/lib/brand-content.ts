@@ -31,8 +31,8 @@ export const HERO = {
   headlineAccent: "Engineered for the Way You Actually Live.",
   subheadline:
     "Pure Himalayan Shilajit \u2014 80+ trace minerals, 60%+ fulvic acid \u2014 in two formats your body will actually absorb. Resin for the purist. Honey Sticks for the daily ritual.",
-  primaryCta: { label: "SHOP SHILAJIT RESIN", href: "/products/shilajit-resin" },
-  secondaryCta: { label: "TRY HONEY STICKS", href: "/products/shilajit-honey-sticks" },
+  primaryCta: { label: "SHOP SHILAJIT RESIN", href: "/products/shodhit-shilajit-resin" },
+  secondaryCta: { label: "TRY HONEY STICKS", href: "/products/shahjeet-sticks" },
 } as const;
 
 export const TRUST_BADGES = [
@@ -220,10 +220,9 @@ export const FOOTER = {
     shop: {
       heading: "Shop",
       links: [
-        { label: "Shilajit Resin", href: "/products/shilajit-resin" },
-        { label: "Shilajit Honey Sticks", href: "/products/shilajit-honey-sticks" },
-        { label: "The Starter Kit", href: "/products/starter-kit" },
-        { label: "Subscribe & Save", href: "/products/honey-sticks-subscription" },
+        { label: "Shilajit Resin", href: "/products/shodhit-shilajit-resin" },
+        { label: "Shahjeet Honey Sticks", href: "/products/shahjeet-sticks" },
+        { label: "All Products", href: "/products" },
       ],
     },
     about: {
@@ -239,7 +238,7 @@ export const FOOTER = {
     learn: {
       heading: "Learn",
       links: [
-        { label: "What Is Shilajit?", href: "/education/what-is-shilajit" },
+        { label: "What Is Shilajit?", href: "/education/what-is-fulvic-acid" },
         { label: "Shilajit for Women", href: "/education/shilajit-for-women" },
         { label: "Performance Ayurveda Guide", href: "/education/what-is-performance-ayurveda" },
         { label: "FAQs", href: "/faq" },
@@ -260,7 +259,7 @@ export const FOOTER = {
       "AYUSH-GMP Certified Facility \u00B7 US-FDA Registered Facility \u00B7 NABL 3rd-Party Lab Tested (Eurofins)",
     certifications: ["NABL 3rd-Party Lab Tested", "AYUSH-GMP Certified", "US-FDA Registered Facility"],
     companyLine:
-      "Marketed by SankalpaSiddhi Ayupharma Pvt. Ltd., 690A/1, Kabool Nagar, Shahdara, Delhi \u2013 110032 \u00B7 Manufactured by URMI Lifesciences LLP, A2/101 Site 5 UPSIDC Kasna, Greater Noida",
+      "Marketed by SankalpaSiddhi Ayupharma Pvt. Ltd., 690A/1, Kabool Nagar, Shahdara, Delhi \u2013 110032",
   },
 } as const;
 
@@ -268,8 +267,8 @@ export const NOT_FOUND = {
   headline: "This page took a wrong turn somewhere in the Himalayas.",
   subheadline: "The page you're looking for doesn't exist. But these do:",
   ctas: [
-    { label: "SHOP SHILAJIT RESIN", href: "/products/shilajit-resin" },
-    { label: "SHOP HONEY STICKS", href: "/products/shilajit-honey-sticks" },
+    { label: "SHOP HONEY STICKS", href: "/products/shahjeet-sticks" },
+    { label: "SHOP SHILAJIT RESIN", href: "/products/shodhit-shilajit-resin" },
     { label: "READ THE EDUCATION HUB", href: "/education" },
   ],
   homeLink: { label: "Or go back to the homepage", href: "/" },
@@ -281,8 +280,8 @@ export const SHOP_PAGE = {
     "Two formats. Same pure Himalayan Shilajit. Choose the ritual that fits your life.",
   filters: ["All Products", "Shilajit Resin", "Honey Sticks", "Bundles", "Subscribe & Save"],
   featuredBanners: [
-    { label: "NEW: Shilajit Honey Sticks \u2014 India's First", href: "/products/shilajit-honey-sticks" },
-    { label: "Save \u20B9499 with The Starter Kit", href: "/products/starter-kit" },
+    { label: "NEW: Shahjeet Honey Sticks — India's First", href: "/products/shahjeet-sticks" },
+    { label: "SHODHIT Shilajit Resin — The Deep Ritual", href: "/products/shodhit-shilajit-resin" },
   ],
 } as const;
 
@@ -308,7 +307,7 @@ export const OUR_STORY = {
       {
         number: "02",
         title: "Purification (Triphala Shodhan)",
-        body: "Every batch undergoes classical Triphala Shodhan purification \u2014 as prescribed in Ashtanga Hridayam. Conducted by URMI Lifesciences LLP (Mfg. Lic. No. RJ-926AYU E, Rajasthan), an AYUSH-GMP certified facility. This removes heavy metals and rock impurities while preserving fulvic acid integrity.",
+        body: "Every batch undergoes classical Triphala Shodhan purification \u2014 as prescribed in Ashtanga Hridayam. Conducted in an AYUSH-GMP certified facility in Rajasthan. This removes heavy metals and rock impurities while preserving fulvic acid integrity.",
       },
       {
         number: "03",
@@ -407,6 +406,6 @@ export const PAGE_METADATA = {
   honeySticks: {
     title: "Shilajit Honey Sticks 30-Pack | Daily Energy Ritual | 3TATTAVA",
     description:
-      "India's first Shilajit Honey Sticks. Tear, squeeze, perform. 80+ minerals in a 10-second daily ritual. No mess, no bad taste. \u20B9999 for 30 sticks.",
+      "India's first Shilajit Honey Sticks. Tear, squeeze, perform. 80+ minerals in a 10-second daily ritual. No mess, no bad taste. \u20B91,399 for 30 sticks.",
   },
 } as const;

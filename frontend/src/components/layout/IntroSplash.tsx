@@ -1,4 +1,5 @@
 "use client";
+import { media } from "@/lib/media";
 
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
@@ -76,7 +77,7 @@ export default function IntroSplash() {
               }}
             >
               <Image
-                src="/logos/3tattava-wordmark.png"
+                src={media("/logos/3tattava-wordmark.png")}
                 alt="3tattava"
                 fill
                 priority

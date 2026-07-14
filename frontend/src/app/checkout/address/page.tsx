@@ -1,8 +1,9 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useId, useMemo, useState } from "react";
 import type { Address } from "@shared/types";
-import Link from "next/link";
+import { motion, useReducedMotion } from "framer-motion";
+import { ChevronDown } from "lucide-react";
 import { useRouter } from "next/navigation";
 import CheckoutHeader from "@/components/checkout/CheckoutHeader";
 import { useAuth } from "@/context/AuthContext";
@@ -12,11 +13,117 @@ import { CHECKOUT_ADDRESS_PATH } from "@/lib/auth-redirect";
 import { addMockAddress, loadMockAddresses } from "@/lib/mock-address-storage";
 import { formatPrice } from "@/lib/utils";
 
+type CheckoutFieldProps = {
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+  type?: string;
+  required?: boolean;
+  options?: string[];
+  className?: string;
+  autoComplete?: string;
+  inputMode?: "text" | "tel" | "email" | "numeric";
+};
+
+/**
+ * Floating-label checkout field with a gold focus ring + required-field accent.
+ * Renders an <input> by default, or a <select> when `options` is provided.
+ * Motion (label lift + focus ring) is disabled under prefers-reduced-motion.
+ */
+function CheckoutField({
+  label,
+  value,
+  onChange,
+  type = "text",
+  required = false,
+  options,
+  className = "",
+  autoComplete,
+  inputMode,
+}: CheckoutFieldProps) {
+  const reduceMotion = useReducedMotion();
+  const id = useId();
+  const [focused, setFocused] = useState(false);
+  const isSelect = Array.isArray(options);
+  const floated = focused || isSelect || value.trim().length > 0;
+
+  const field =
+    "w-full h-14 rounded-xl bg-white border px-4 pt-5 pb-1 text-[15px] text-text-dark outline-none transition-colors";
+  const borderTone = focused
+    ? "border-gold"
+    : required
+      ? "border-border border-l-[3px] border-l-gold"
+      : "border-border";
+
+  return (
+    <motion.div
+      className={`relative rounded-xl ${className}`}
+      initial={false}
+      animate={{
+        boxShadow: focused
+          ? "0 0 0 3px rgba(205,135,42,0.25)"
+          : "0 0 0 0 rgba(205,135,42,0)",
+      }}
+      transition={{ duration: reduceMotion ? 0 : 0.18 }}
+    >
+      <motion.label
+        htmlFor={id}
+        initial={false}
+        animate={{ y: floated ? 0 : 13, scale: floated ? 1 : 1.34 }}
+        transition={
+          reduceMotion
+            ? { duration: 0 }
+            : { type: "spring", stiffness: 460, damping: 32 }
+        }
+        className={`pointer-events-none absolute left-4 top-2 origin-top-left text-[11px] font-semibold uppercase tracking-[0.08em] transition-colors ${
+          focused ? "text-gold" : "text-text-light"
+        }`}
+      >
+        {label}
+        {required && <span className="text-gold">&nbsp;*</span>}
+      </motion.label>
+
+      {isSelect ? (
+        <>
+          <select
+            id={id}
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+            onFocus={() => setFocused(true)}
+            onBlur={() => setFocused(false)}
+            className={`${field} ${borderTone} appearance-none cursor-pointer pr-10`}
+          >
+            {options!.map((option) => (
+              <option key={option}>{option}</option>
+            ))}
+          </select>
+          <ChevronDown
+            className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-light"
+            aria-hidden
+          />
+        </>
+      ) : (
+        <input
+          id={id}
+          type={type}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          onFocus={() => setFocused(true)}
+          onBlur={() => setFocused(false)}
+          required={required}
+          autoComplete={autoComplete}
+          inputMode={inputMode}
+          className={`${field} ${borderTone}`}
+        />
+      )}
+    </motion.div>
+  );
+}
+
 export default function CheckoutAddressPage() {
   const router = useRouter();
   const { isLoggedIn, user, isLoading: authLoading } = useAuth();
   const { subtotal, total, itemCount } = useCart();
-  const [interested, setInterested] = useState(true);
   const [savedAddresses, setSavedAddresses] = useState<Address[]>([]);
   const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
   const [saveSuccess, setSaveSuccess] = useState(false);
@@ -136,6 +243,37 @@ export default function CheckoutAddressPage() {
     setForm((current) => ({ ...current, [key]: value }));
   }
 
+  const [pinStatus, setPinStatus] = useState<"idle" | "loading" | "ok" | "error">("idle");
+  const [pinMsg, setPinMsg] = useState("");
+
+  const lookupPincode = useCallback(async (pin: string) => {
+    setPinStatus("loading");
+    setPinMsg("Detecting your city & state…");
+    try {
+      const res = await fetch(`https://api.postalpincode.in/pincode/${pin}`);
+      const data = await res.json();
+      const rec = Array.isArray(data) ? data[0] : null;
+      const po = rec?.PostOffice?.[0];
+      if (rec?.Status === "Success" && po) {
+        const detectedCity = po.District || po.Block || po.Name || "";
+        const detectedState = po.State || "";
+        setForm((cur) => ({
+          ...cur,
+          city: detectedCity || cur.city,
+          state: detectedState || cur.state,
+        }));
+        setPinStatus("ok");
+        setPinMsg(`Auto-filled from PIN: ${[detectedCity, detectedState].filter(Boolean).join(", ")}`);
+      } else {
+        setPinStatus("error");
+        setPinMsg("We couldn't find that PIN code — please enter city & state manually.");
+      }
+    } catch {
+      setPinStatus("error");
+      setPinMsg("Couldn't detect location — please enter city & state manually.");
+    }
+  }, []);
+
   async function handleSaveAddress() {
     if (!canSaveAddress || !user?.id) return;
     setError(null);
@@ -178,22 +316,56 @@ export default function CheckoutAddressPage() {
   }
 
   const handleProceed = () => {
-    // Persist shipping address so the payment page can create a demo order
-    // (Razorpay integration comes later, but we still need an order + tracking).
+    // Validate required fields client-side so we never send an incomplete
+    // address to the order API (which rejects empty strings via Zod).
+    const requiredFields: [keyof typeof form, string][] = [
+      ["firstName", "First name"],
+      ["lastName", "Last name"],
+      ["email", "Email address"],
+      ["phone", "Phone number"],
+      ["line1", "Address line 1"],
+      ["city", "City"],
+      ["state", "State"],
+      ["pincode", "PIN code"],
+    ];
+    const missing = requiredFields
+      .filter(([key]) => !String(form[key] ?? "").trim())
+      .map(([, label]) => label);
+    if (missing.length > 0) {
+      setError(`Please fill the required field${missing.length > 1 ? "s" : ""}: ${missing.join(", ")}.`);
+      if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
+
+    const phoneDigits = form.phone.replace(/\D/g, "");
+    if (phoneDigits.length < 10) {
+      setError("Please enter a valid 10-digit phone number.");
+      return;
+    }
+    if (!/^\S+@\S+\.\S+$/.test(form.email.trim())) {
+      setError("Please enter a valid email address.");
+      return;
+    }
+    if (form.pincode.replace(/\D/g, "").length < 6) {
+      setError("Please enter a valid 6-digit PIN code.");
+      return;
+    }
+
     const shippingAddress = {
       title: form.title,
-      firstName: form.firstName,
-      lastName: form.lastName,
-      email: form.email,
-      phone: form.phone,
-      line1: form.line1,
-      line2: form.line2 || "",
-      city: form.city,
+      firstName: form.firstName.trim(),
+      lastName: form.lastName.trim(),
+      email: form.email.trim(),
+      phone: phoneDigits,
+      line1: form.line1.trim(),
+      line2: form.line2?.trim() || "",
+      city: form.city.trim(),
       state: form.state,
-      pincode: form.pincode,
+      pincode: form.pincode.replace(/\D/g, ""),
       country: form.country || "India",
     };
 
+    setError(null);
     localStorage.setItem("checkoutShippingAddress", JSON.stringify(shippingAddress));
     router.push("/checkout/payment");
   };
@@ -220,30 +392,6 @@ export default function CheckoutAddressPage() {
       <div className="max-w-6xl mx-auto px-4 py-8">
         <div className="grid md:grid-cols-[65%_35%] gap-8">
           <div className="space-y-6">
-            <div className="premium-card p-6">
-              {isLoggedIn ? (
-                <>
-                  <p className="text-text-medium mb-2">
-                    Signed in as <span className="font-medium text-text-dark">{user?.email}</span>
-                  </p>
-                  <p className="text-sm text-text-light">
-                    Your saved addresses can be reused below and in your account dashboard.
-                  </p>
-                </>
-              ) : (
-                <>
-                  <p className="text-text-medium mb-4">
-                    To redeem 3Tattva Wellness Points, please LOGIN/REGISTER
-                  </p>
-                  <Link
-                    href="/login"
-                    className="inline-block px-6 py-3 bg-text-dark text-white font-medium rounded hover:bg-primary-green"
-                  >
-                    LOGIN / REGISTER
-                  </Link>
-                </>
-              )}
-            </div>
             {saveSuccess && (
               <div
                 role="status"
@@ -313,166 +461,147 @@ export default function CheckoutAddressPage() {
                 </>
               )}
             </div>
-            <div className="premium-card p-6">
-              <h3 className="font-sans font-bold text-lg mb-2">3Tattva Wellness Club</h3>
-              <p className="text-text-medium text-sm mb-4">
-                Earn points and benefits when you join our wellness program.
-              </p>
-              <Link href="/wellness-club" className="text-primary-green text-sm hover:underline mb-4 inline-block">
-                VIEW BENEFITS
-              </Link>
-              <div className="flex gap-4">
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="radio"
-                    name="club"
-                    checked={interested}
-                    onChange={() => setInterested(true)}
-                    className="rounded-full"
-                  />
-                  <span className="text-sm">I&apos;M INTERESTED</span>
-                </label>
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="radio"
-                    name="club"
-                    checked={!interested}
-                    onChange={() => setInterested(false)}
-                    className="rounded-full"
-                  />
-                  <span className="text-sm">NO THANKS</span>
-                </label>
-              </div>
-            </div>
             <div className="premium-card p-6" id="shipping-address-form">
-              <h3 className="font-sans font-bold text-lg mb-4">Shipping address</h3>
-              <p className="text-text-light text-xs mb-4">
-                Edit fields as needed for this order. Saving stores the address on your signed-in account.
-              </p>
-              {error && <p className="text-sm text-red-600 mb-4">{error}</p>}
-              <div className="grid md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-text-dark mb-1">EMAIL ADDRESS *</label>
-                  <input
+              <div className="mb-5">
+                <h3 className="font-sans font-bold text-lg">Shipping address</h3>
+                <p className="text-text-light text-xs mt-1">
+                  Edit fields as needed for this order. Saving stores the address on your signed-in account.
+                </p>
+                <p className="text-[11px] text-text-light mt-1">
+                  Fields marked <span className="text-gold font-semibold">*</span> are required.
+                </p>
+              </div>
+              {error && (
+                <p className="text-sm text-red-600 mb-4" role="alert">
+                  {error}
+                </p>
+              )}
+
+              <div className="mb-6">
+                <p className="mb-3 flex items-center gap-2 text-[12px] font-bold uppercase tracking-[0.14em] text-text-medium">
+                  <span className="inline-block h-3 w-1 rounded-full bg-gold" />
+                  Contact details
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-[120px_1fr_1fr] gap-4">
+                  <CheckoutField
+                    label="Title"
+                    value={form.title}
+                    onChange={(v) => updateField("title", v)}
+                    options={["Mr.", "Mrs.", "Ms.", "Dr."]}
+                  />
+                  <CheckoutField
+                    label="First name"
+                    value={form.firstName}
+                    onChange={(v) => updateField("firstName", v)}
+                    required
+                    autoComplete="given-name"
+                  />
+                  <CheckoutField
+                    label="Last name"
+                    value={form.lastName}
+                    onChange={(v) => updateField("lastName", v)}
+                    required
+                    autoComplete="family-name"
+                  />
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                  <CheckoutField
+                    label="Email address"
                     type="email"
                     value={form.email}
-                    onChange={(e) => updateField("email", e.target.value)}
-                    className="w-full px-3 py-2 border border-border rounded"
+                    onChange={(v) => updateField("email", v)}
                     required
+                    autoComplete="email"
+                    inputMode="email"
                   />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-text-dark mb-1">TITLE</label>
-                  <select
-                    value={form.title}
-                    onChange={(e) => updateField("title", e.target.value)}
-                    className="w-full px-3 py-2 border border-border rounded"
-                  >
-                    <option>Mr.</option>
-                    <option>Mrs.</option>
-                    <option>Ms.</option>
-                    <option>Dr.</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-text-dark mb-1">FIRST NAME *</label>
-                  <input
-                    type="text"
-                    value={form.firstName}
-                    onChange={(e) => updateField("firstName", e.target.value)}
-                    className="w-full px-3 py-2 border border-border rounded"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-text-dark mb-1">LAST NAME *</label>
-                  <input
-                    type="text"
-                    value={form.lastName}
-                    onChange={(e) => updateField("lastName", e.target.value)}
-                    className="w-full px-3 py-2 border border-border rounded"
-                    required
-                  />
-                </div>
-                <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-text-dark mb-1">ADDRESS LINE 1 *</label>
-                  <input
-                    type="text"
-                    value={form.line1}
-                    onChange={(e) => updateField("line1", e.target.value)}
-                    className="w-full px-3 py-2 border border-border rounded"
-                    required
-                  />
-                </div>
-                <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-text-dark mb-1">ADDRESS LINE 2</label>
-                  <input
-                    type="text"
-                    value={form.line2}
-                    onChange={(e) => updateField("line2", e.target.value)}
-                    className="w-full px-3 py-2 border border-border rounded"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-text-dark mb-1">ZIP / POSTAL CODE *</label>
-                  <input
-                    type="text"
-                    value={form.pincode}
-                    onChange={(e) => updateField("pincode", e.target.value)}
-                    className="w-full px-3 py-2 border border-border rounded"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-text-dark mb-1">CITY *</label>
-                  <input
-                    type="text"
-                    value={form.city}
-                    onChange={(e) => updateField("city", e.target.value)}
-                    className="w-full px-3 py-2 border border-border rounded"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-text-dark mb-1">COUNTRY *</label>
-                  <select
-                    value={form.country}
-                    onChange={(e) => updateField("country", e.target.value)}
-                    className="w-full px-3 py-2 border border-border rounded"
-                  >
-                    <option>India</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-text-dark mb-1">STATE / PROVINCE *</label>
-                  <select
-                    value={form.state}
-                    onChange={(e) => updateField("state", e.target.value)}
-                    className="w-full px-3 py-2 border border-border rounded"
-                  >
-                    <option>Delhi</option>
-                    <option>Maharashtra</option>
-                    <option>Karnataka</option>
-                  </select>
-                </div>
-                <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-text-dark mb-1">PHONE NUMBER *</label>
-                  <input
+                  <CheckoutField
+                    label="Phone number"
                     type="tel"
                     value={form.phone}
-                    onChange={(e) => updateField("phone", e.target.value)}
-                    className="w-full px-3 py-2 border border-border rounded"
+                    onChange={(v) => updateField("phone", v)}
+                    required
+                    autoComplete="tel"
+                    inputMode="tel"
+                  />
+                </div>
+              </div>
+
+              <div className="mb-6">
+                <p className="mb-3 flex items-center gap-2 text-[12px] font-bold uppercase tracking-[0.14em] text-text-medium">
+                  <span className="inline-block h-3 w-1 rounded-full bg-gold" />
+                  Delivery address
+                </p>
+                <div className="grid grid-cols-1 gap-4">
+                  <CheckoutField
+                    label="Address line 1"
+                    value={form.line1}
+                    onChange={(v) => updateField("line1", v)}
+                    required
+                    autoComplete="address-line1"
+                  />
+                  <CheckoutField
+                    label="Address line 2 (optional)"
+                    value={form.line2}
+                    onChange={(v) => updateField("line2", v)}
+                    autoComplete="address-line2"
+                  />
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+                  <CheckoutField
+                    label="City"
+                    value={form.city}
+                    onChange={(v) => updateField("city", v)}
+                    required
+                    autoComplete="address-level2"
+                  />
+                  <CheckoutField
+                    label="State"
+                    value={form.state}
+                    onChange={(v) => updateField("state", v)}
+                    required
+                    autoComplete="address-level1"
+                  />
+                  <CheckoutField
+                    label="PIN code"
+                    value={form.pincode}
+                    onChange={(v) => {
+                      updateField("pincode", v);
+                      const digits = v.replace(/\D/g, "");
+                      if (digits.length === 6) void lookupPincode(digits);
+                      else if (pinStatus !== "idle") {
+                        setPinStatus("idle");
+                        setPinMsg("");
+                      }
+                    }}
+                    required
+                    autoComplete="postal-code"
+                    inputMode="numeric"
+                  />
+                </div>
+                {pinMsg && (
+                  <p className={`mt-2 text-xs ${pinStatus === "error" ? "text-red-600" : pinStatus === "ok" ? "text-primary-green" : "text-text-medium"}`}>
+                    {pinMsg}
+                  </p>
+                )}
+                <div className="mt-4">
+                  <CheckoutField
+                    label="Country"
+                    value={form.country}
+                    onChange={(v) => updateField("country", v)}
+                    options={["India"]}
                     required
                   />
                 </div>
               </div>
+
               {canSaveAddress && (
-                <div className="mt-4 flex items-center justify-between gap-4">
-                  <label className="flex items-center gap-2 text-sm text-text-medium">
+                <div className="mt-2 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-t border-border pt-5">
+                  <label className="flex items-center gap-2 text-sm text-text-medium cursor-pointer">
                     <input
                       type="checkbox"
                       checked={form.isDefault}
                       onChange={(e) => updateField("isDefault", e.target.checked)}
+                      className="h-4 w-4 accent-gold"
                     />
                     Save as default address
                   </label>
@@ -480,27 +609,12 @@ export default function CheckoutAddressPage() {
                     type="button"
                     onClick={() => void handleSaveAddress()}
                     disabled={isSaving}
-                    className="px-5 py-2 bg-white border border-text-dark text-text-dark rounded hover:bg-beige transition-colors disabled:opacity-60"
+                    className="px-5 py-2.5 rounded-xl bg-white border border-text-dark text-text-dark font-medium hover:bg-beige transition-colors disabled:opacity-60"
                   >
-                    {isSaving ? "Saving..." : "Save Address"}
+                    {isSaving ? "Saving..." : "Save address"}
                   </button>
                 </div>
               )}
-            </div>
-            <div className="premium-card p-6">
-              <h3 className="font-sans font-bold text-lg mb-4">Shipping Methods</h3>
-              <label className="flex items-center gap-3 p-3 border border-border rounded cursor-pointer mb-2">
-                <input type="radio" name="shipping" defaultChecked />
-                <span>Standard — ₹150</span>
-              </label>
-              <label className="flex items-center gap-3 p-3 border border-border rounded cursor-pointer mb-2">
-                <input type="radio" name="shipping" />
-                <span>Express — ₹250</span>
-              </label>
-              <label className="flex items-center gap-3 p-3 border border-border rounded cursor-pointer">
-                <input type="radio" name="shipping" />
-                <span>Free (orders above ₹999)</span>
-              </label>
             </div>
             <button
               type="button"
