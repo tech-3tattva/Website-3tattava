@@ -4,8 +4,9 @@ import type { NextRequest } from "next/server";
 /**
  * Phased go-live gate.
  *
- * Only the storefront (Home, Shop, both Product pages, Lab Reports) is public.
- * Every other route is rewritten to /coming-soon until it is launched.
+ * Public: storefront (Home, Shop, Products, Lab Reports) + commerce flow (cart,
+ * checkout, account, order confirmation, login/register) + the admin panel.
+ * Everything else is rewritten to /coming-soon until it is launched.
  * Static files, /_next, and /api are excluded via the matcher below, so assets
  * and backend calls keep working.
  */
@@ -18,6 +19,17 @@ const PUBLIC_ROUTES = new Set<string>([
   "/lab-reports",
   "/coming-soon",
 ]);
+
+// Path prefixes that are fully public: the commerce flow, customer account, and admin panel.
+const PUBLIC_PREFIXES = [
+  "/checkout",
+  "/account",
+  "/order-confirmation",
+  "/admin",
+  "/login",
+  "/register",
+  "/track-order",
+];
 
 // URL variants (typed / printed / QR) that permanently redirect to the canonical route.
 const REDIRECTS: Record<string, string> = {
@@ -36,6 +48,9 @@ export function middleware(req: NextRequest) {
     return NextResponse.redirect(dest, 308);
   }
   if (PUBLIC_ROUTES.has(pathname)) return NextResponse.next();
+  if (PUBLIC_PREFIXES.some((p) => pathname === p || pathname.startsWith(p + "/"))) {
+    return NextResponse.next();
+  }
 
   const url = req.nextUrl.clone();
   url.pathname = "/coming-soon";
