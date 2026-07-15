@@ -757,4 +757,35 @@ router.get("/inventory/logs", async (req, res, next) => {
   }
 });
 
+// ==========================================================================
+// CUSTOMERS / USERS PANEL
+// ==========================================================================
+
+// GET /api/admin/users — all registered users, including Google sign-ins
+router.get("/users", async (req, res, next) => {
+  try {
+    const page = Math.max(1, Number(req.query.page) || 1);
+    const limit = Math.min(500, Number(req.query.limit) || 200);
+    const [rows, total] = await Promise.all([
+      User.find().sort({ createdAt: -1 }).skip((page - 1) * limit).limit(limit).lean().exec(),
+      User.countDocuments(),
+    ]);
+    const users = rows.map((u) => ({
+      id: u._id.toString(),
+      name: u.name,
+      email: u.email,
+      phone: u.phone || "",
+      role: u.role,
+      authMethod: u.googleId ? "google" : u.passwordHash ? "email" : "otp",
+      isVerified: !!u.isVerified,
+      wellnessPoints: u.wellnessPoints || 0,
+      lastLogin: u.lastLogin || null,
+      createdAt: u.createdAt,
+    }));
+    return res.json({ users, total, page, limit });
+  } catch (err) {
+    return next(err);
+  }
+});
+
 module.exports = router;

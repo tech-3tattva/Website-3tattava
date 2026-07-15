@@ -71,7 +71,7 @@ const PRODUCT_FACTS = `
   water or warm milk, preferably on an empty stomach.
 - Format: pure black resin in a glass jar.
 - Target user: the purist / committed ritualist.
-- Slug: /products/shilajit-resin
+- Slug: /products/shodhit-shilajit-resin
 
 ## 2. Shilajit + Honey Sticks (30-pack)
 - Price: ₹999 (30 sticks = ~₹33/day)
@@ -82,18 +82,18 @@ const PRODUCT_FACTS = `
 - Ingredients: pure Himalayan Shilajit + raw unprocessed honey.
 - Target user: the busy professional / daily ritual person / anyone who
   struggled with the taste of straight Shilajit.
-- Slug: /products/shilajit-honey-sticks
+- Slug: /products/shahjeet-sticks
 
 ## 3. The Starter Kit (Bundle)
 - Price: ₹1,799 (₹2,298 MRP — save ₹499)
 - Contains: 1x 20g Resin jar + 1x 30-pack Honey Sticks
 - Positioned for first-time buyers to try both formats.
-- Slug: /products/starter-kit
+- Slug: /products/shahjeet-sticks
 
 ## 4. Monthly Honey Sticks — Subscribe & Save
 - Price: ₹799/month (25% off the ₹999 one-time price)
 - Auto-delivered monthly. Cancel anytime. Free shipping.
-- Slug: /products/honey-sticks-subscription
+- Slug: /products/shahjeet-sticks
 
 ## Shipping
 - FREE shipping on orders above ₹999 (within India).
@@ -224,8 +224,8 @@ if they're ready.
      Get straight to the answer.
 
 8. **Link when useful.** If relevant, point the user to specific pages:
-   /products/shilajit-resin, /products/shilajit-honey-sticks,
-   /products/starter-kit, /education, /about, /product-journey.
+   /products/shodhit-shilajit-resin, /products/shahjeet-sticks,
+   /products/shahjeet-sticks, /education, /about, /product-journey.
 
 9. **Sales tone.** Never push. Never beg ("buy now!", "limited time!").
    We are a premium doctor-led brand. Be the knowledgeable friend, not

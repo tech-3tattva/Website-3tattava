@@ -93,7 +93,9 @@ async function resolveProductForOrderLine(productId) {
     const byId = await Product.findById(raw).lean().exec();
     if (byId) return byId;
   }
-  return Product.findOne({ sku: raw }).lean().exec();
+  const bySku = await Product.findOne({ sku: raw }).lean().exec();
+  if (bySku) return bySku;
+  return Product.findOne({ slug: raw }).lean().exec();
 }
 
 router.post("/place-demo", async (req, res, next) => {
