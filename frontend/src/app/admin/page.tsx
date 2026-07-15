@@ -7,7 +7,7 @@ import AdminProducts from "@/components/admin/AdminProducts";
 import AdminInventory from "@/components/admin/AdminInventory";
 import AdminOrders from "@/components/admin/AdminOrders";
 
-type Tab = "overview" | "products" | "inventory" | "orders" | "shipments" | "leads" | "influencers";
+type Tab = "overview" | "products" | "inventory" | "orders" | "shipments" | "leads" | "influencers" | "users";
 
 type Stats = {
   revenue: { today: number; month: number; year: number };
@@ -203,6 +203,89 @@ function AdminLeads() {
                       }}>Mark Converted</button>
                     )}
                   </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────
+// CUSTOMERS / USERS PANEL
+// ─────────────────────────────────────────────
+type AdminUser = {
+  id: string; name: string; email: string; phone: string;
+  role: string; authMethod: "google" | "email" | "otp";
+  isVerified: boolean; wellnessPoints: number; lastLogin: string | null; createdAt: string;
+};
+
+function AdminUsers() {
+  const [users, setUsers] = useState<AdminUser[]>([]);
+  const [total, setTotal] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [filter, setFilter] = useState<"all" | "google" | "email">("all");
+
+  async function load() {
+    setLoading(true);
+    try {
+      const d = await adminApi.get<{ users: AdminUser[]; total: number }>("/admin/users");
+      setUsers(d.users); setTotal(d.total);
+    } catch { setUsers([]); }
+    setLoading(false);
+  }
+  useEffect(() => { void load(); }, []);
+
+  const shown = users.filter((u) => (filter === "all" ? true : u.authMethod === filter));
+  const googleCount = users.filter((u) => u.authMethod === "google").length;
+
+  return (
+    <div>
+      <p style={{ fontSize: 12, color: "rgba(245,240,235,0.35)", marginBottom: 14 }}>
+        {total} registered customers · {googleCount} via Google sign-in
+      </p>
+      <div style={{ display: "flex", gap: 8, marginBottom: 18 }}>
+        {(["all", "google", "email"] as const).map((f) => (
+          <button key={f} onClick={() => setFilter(f)} style={{
+            fontSize: 11, padding: "5px 12px", cursor: "pointer", borderRadius: 3, textTransform: "capitalize",
+            background: filter === f ? "rgba(200,150,62,0.16)" : "transparent",
+            color: filter === f ? "#C8963E" : "rgba(245,240,235,0.5)",
+            border: "1px solid rgba(200,150,62,0.25)",
+          }}>{f === "email" ? "Email/Password" : f}</button>
+        ))}
+      </div>
+      {loading ? (
+        <p style={{ color: "rgba(245,240,235,0.3)", fontSize: 13 }}>Loading…</p>
+      ) : shown.length === 0 ? (
+        <p style={{ color: "rgba(245,240,235,0.3)", fontSize: 13 }}>No customers yet.</p>
+      ) : (
+        <div style={{ overflowX: "auto" }}>
+          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
+            <thead>
+              <tr style={{ borderBottom: "1px solid rgba(200,150,62,0.15)" }}>
+                {["Name", "Email", "Phone", "Sign-in", "Role", "Verified", "Joined"].map((h) => (
+                  <th key={h} style={{ padding: "8px 12px", textAlign: "left", fontSize: 10, letterSpacing: "0.15em", color: "rgba(245,240,235,0.35)", textTransform: "uppercase", whiteSpace: "nowrap" }}>{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {shown.map((u) => (
+                <tr key={u.id} style={{ borderBottom: "1px solid rgba(200,150,62,0.06)" }}>
+                  <td style={{ padding: "10px 12px", color: "#F5F0EB" }}>{u.name}</td>
+                  <td style={{ padding: "10px 12px", color: "rgba(245,240,235,0.6)" }}>{u.email}</td>
+                  <td style={{ padding: "10px 12px", color: "rgba(245,240,235,0.6)" }}>{u.phone || "—"}</td>
+                  <td style={{ padding: "10px 12px" }}>
+                    <span style={{
+                      fontSize: 10, padding: "3px 8px", borderRadius: 3, textTransform: "uppercase", letterSpacing: "0.08em",
+                      background: u.authMethod === "google" ? "rgba(66,133,244,0.15)" : "rgba(200,150,62,0.12)",
+                      color: u.authMethod === "google" ? "#8ab4f8" : "#C8963E",
+                    }}>{u.authMethod}</span>
+                  </td>
+                  <td style={{ padding: "10px 12px", color: "rgba(245,240,235,0.5)", fontSize: 12 }}>{u.role}</td>
+                  <td style={{ padding: "10px 12px", fontSize: 12, color: u.isVerified ? "#4ade80" : "rgba(245,240,235,0.3)" }}>{u.isVerified ? "Yes" : "No"}</td>
+                  <td style={{ padding: "10px 12px", color: "rgba(245,240,235,0.35)", fontSize: 12, whiteSpace: "nowrap" }}>{new Date(u.createdAt).toLocaleDateString("en-IN")}</td>
                 </tr>
               ))}
             </tbody>
@@ -549,12 +632,14 @@ export default function AdminDashboardPage() {
     { id: "shipments",    label: "Shipments",    icon: "◫" },
     { id: "leads",        label: "Leads",        icon: "◑" },
     { id: "influencers",  label: "Influencers",  icon: "◐" },
+    { id: "users",        label: "Customers",    icon: "◔" },
   ];
 
   const PAGE_TITLE: Record<Tab, string> = {
     overview: "Dashboard", products: "Products", inventory: "Inventory",
     orders: "Orders", shipments: "Shipments", leads: "Leads & Signups",
     influencers: "Influencers & Promo Codes",
+    users: "Customers & Sign-ins",
   };
   const PAGE_SUB: Record<Tab, string> = {
     overview: "Live business snapshot",
@@ -564,6 +649,7 @@ export default function AdminDashboardPage() {
     shipments: "NimbusPost shipment tracking & NDR management",
     leads: "Homepage modal captures, newsletter & bookings",
     influencers: "Two-tier referral system, promo codes & reward payouts",
+    users: "All registered customers, including Google sign-ins",
   };
 
   return (
@@ -689,6 +775,7 @@ export default function AdminDashboardPage() {
           {tab === "shipments"   && <AdminShipments />}
           {tab === "leads"       && <AdminLeads />}
           {tab === "influencers" && <AdminInfluencers />}
+          {tab === "users"       && <AdminUsers />}
         </main>
       </div>
     </>
