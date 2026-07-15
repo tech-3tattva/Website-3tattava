@@ -10,6 +10,8 @@ const { verifyToken } = require("../middleware/auth");
 const { ApiError } = require("../middleware/errorHandler");
 const { z } = require("zod");
 const { SESClient, SendEmailCommand } = require("@aws-sdk/client-ses");
+const Razorpay = require("razorpay");
+const crypto = require("crypto");
 
 const router = express.Router();
 
@@ -292,6 +294,178 @@ router.post("/place-demo", async (req, res, next) => {
     if (err instanceof z.ZodError) {
       return next(new ApiError(400, err.issues[0]?.message || "Invalid order payload"));
     }
+    return next(err);
+  }
+});
+
+// ── Razorpay helpers + schema ─────────────────────────────────────────────────
+function getRazorpay() {
+  const key_id = process.env.RAZORPAY_KEY_ID;
+  const key_secret = process.env.RAZORPAY_KEY_SECRET;
+  if (!key_id || !key_secret || /placeholder/i.test(key_id) || /placeholder/i.test(key_secret)) return null;
+  return new Razorpay({ key_id, key_secret });
+}
+
+const rzpItemSchema = z.object({
+  productId: z.string().min(1), name: z.string().min(1), image: z.string().min(1),
+  price: z.number().nonnegative(), mrp: z.number().nonnegative().optional(),
+  quantity: z.number().int().positive(), slug: z.string().min(1), variant: z.string().optional(),
+});
+const rzpOrderSchema = z.object({
+  items: z.array(rzpItemSchema).min(1),
+  shippingAddress: z.object({
+    title: z.enum(["Mr.", "Mrs.", "Ms.", "Dr."]).optional(),
+    firstName: z.string().min(1), lastName: z.string().min(1), email: z.string().email(),
+    phone: z.string().min(10), line1: z.string().min(1), line2: z.string().optional(),
+    city: z.string().min(1), state: z.string().min(1), pincode: z.string().min(6), country: z.string().min(1).optional(),
+  }),
+  subtotal: z.number().nonnegative(), shippingFee: z.number().nonnegative(),
+  discountAmount: z.number().nonnegative(), total: z.number().positive(),
+  coupon: z.object({ code: z.string().min(1), discount: z.number().nonnegative() }).optional(),
+  shippingMethod: z.enum(["standard", "express", "free"]).optional(),
+});
+
+// POST /api/orders/create-razorpay — create a Razorpay order + pending DB order
+router.post("/create-razorpay", async (req, res, next) => {
+  try {
+    const parsed = rzpOrderSchema.parse(req.body);
+    const rzp = getRazorpay();
+    if (!rzp) return next(new ApiError(503, "Online payments are not configured yet."));
+    const customerId = getOptionalCustomerId(req);
+
+    const resolvedLines = [];
+    for (const item of parsed.items) {
+      const product = await resolveProductForOrderLine(item.productId);
+      if (!product) return next(new ApiError(400, `Product not found: ${item.name}.`));
+      if (!product.isActive) return next(new ApiError(400, `${item.name} is no longer available.`));
+      resolvedLines.push({ item, product });
+    }
+    const needByProductId = new Map();
+    for (const { item, product } of resolvedLines) {
+      const id = String(product._id);
+      needByProductId.set(id, (needByProductId.get(id) || 0) + item.quantity);
+    }
+    for (const [id, need] of needByProductId) {
+      const row = resolvedLines.find((l) => String(l.product._id) === id);
+      const stock = Number(row?.product.stockQuantity ?? 0);
+      if (stock < need) return next(new ApiError(400, `Not enough stock for ${row?.product.name ?? "a product"}. Available: ${stock}.`));
+    }
+
+    const orderNumber = `3T-${Date.now()}`;
+    const rzOrder = await rzp.orders.create({
+      amount: Math.round(parsed.total * 100),
+      currency: "INR",
+      receipt: orderNumber,
+      notes: { orderNumber, email: parsed.shippingAddress.email },
+    });
+
+    const normalizedItems = resolvedLines.map(({ item, product }) => ({
+      productId: String(product._id), name: item.name, image: item.image, slug: item.slug,
+      price: item.price, mrp: item.mrp, quantity: item.quantity, variant: item.variant,
+      subtotal: item.price * item.quantity,
+    }));
+
+    await Order.create({
+      orderNumber,
+      user: customerId || null,
+      guestEmail: parsed.shippingAddress.email.toLowerCase().trim(),
+      items: normalizedItems,
+      shippingAddress: {
+        ...parsed.shippingAddress,
+        line2: parsed.shippingAddress.line2 || undefined,
+        country: parsed.shippingAddress.country || "India",
+      },
+      subtotal: parsed.subtotal, shippingFee: parsed.shippingFee,
+      discountAmount: parsed.discountAmount, total: parsed.total,
+      coupon: parsed.coupon ? { code: parsed.coupon.code, discount: parsed.coupon.discount } : undefined,
+      shippingMethod: parsed.shippingMethod,
+      status: "pending",
+      statusHistory: [{ status: "pending", updatedBy: "system" }],
+      payment: { method: "razorpay", status: "pending", razorpayOrderId: rzOrder.id },
+      tracking: {},
+    });
+
+    return res.status(201).json({
+      orderNumber,
+      razorpayOrderId: rzOrder.id,
+      amount: rzOrder.amount,
+      currency: rzOrder.currency,
+      keyId: process.env.RAZORPAY_KEY_ID,
+      prefill: {
+        name: `${parsed.shippingAddress.firstName} ${parsed.shippingAddress.lastName}`.trim(),
+        email: parsed.shippingAddress.email,
+        contact: parsed.shippingAddress.phone,
+      },
+    });
+  } catch (err) {
+    if (err instanceof z.ZodError) return next(new ApiError(400, err.issues[0]?.message || "Invalid order payload"));
+    return next(err);
+  }
+});
+
+// POST /api/orders/verify — verify Razorpay signature, capture payment, decrement stock
+router.post("/verify", async (req, res, next) => {
+  try {
+    const v = z.object({
+      razorpay_order_id: z.string().min(1),
+      razorpay_payment_id: z.string().min(1),
+      razorpay_signature: z.string().min(1),
+      orderNumber: z.string().min(1),
+    }).parse(req.body);
+
+    const secret = process.env.RAZORPAY_KEY_SECRET;
+    if (!secret) return next(new ApiError(503, "Payments not configured."));
+
+    const expected = crypto.createHmac("sha256", secret).update(`${v.razorpay_order_id}|${v.razorpay_payment_id}`).digest("hex");
+    if (expected !== v.razorpay_signature) return next(new ApiError(400, "Payment verification failed."));
+
+    const order = await Order.findOne({ orderNumber: v.orderNumber, "payment.razorpayOrderId": v.razorpay_order_id }).exec();
+    if (!order) return next(new ApiError(404, "Order not found."));
+    if (order.payment.status === "captured") return res.json(order.toJSON());
+
+    const need = new Map();
+    for (const it of order.items) {
+      const id = String(it.productId);
+      need.set(id, (need.get(id) || 0) + it.quantity);
+    }
+
+    const session = await mongoose.startSession();
+    try {
+      await session.withTransaction(async () => {
+        for (const [productIdStr, qty] of need) {
+          const updated = await Product.findOneAndUpdate(
+            { _id: productIdStr, stockQuantity: { $gte: qty } },
+            { $inc: { stockQuantity: -qty } },
+            { session, new: true }
+          ).exec();
+          if (!updated) throw new ApiError(400, "Stock changed during payment. Our team will reach out.");
+          await InventoryLog.create([{
+            product: productIdStr, changeType: "sale",
+            quantityBefore: updated.stockQuantity + qty, quantityChange: -qty, quantityAfter: updated.stockQuantity,
+            reason: `Order ${order.orderNumber}`, orderId: order._id,
+          }], { session });
+        }
+        order.payment.razorpayPaymentId = v.razorpay_payment_id;
+        order.payment.razorpaySignature = v.razorpay_signature;
+        order.payment.status = "captured";
+        order.payment.capturedAt = new Date();
+        order.status = "confirmed";
+        order.statusHistory.push({ status: "confirmed", updatedBy: "razorpay", note: `Payment ${v.razorpay_payment_id}` });
+        await order.save({ session });
+      });
+    } finally {
+      await session.endSession();
+    }
+
+    const emailResult = await trySendOrderConfirmationEmail({
+      toEmail: order.shippingAddress.email, orderNumber: order.orderNumber, total: order.total,
+    });
+    const orderJson = order.toJSON();
+    orderJson.emailSent = emailResult.sent;
+    if (!emailResult.sent) orderJson.emailError = emailResult.reason;
+    return res.json(orderJson);
+  } catch (err) {
+    if (err instanceof z.ZodError) return next(new ApiError(400, err.issues[0]?.message || "Invalid verification payload"));
     return next(err);
   }
 });
