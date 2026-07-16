@@ -436,7 +436,6 @@ export default function Header() {
               {/* Search */}
               <div style={{ padding: "8px 20px 12px" }}>
                 <SearchAutocomplete
-                  autoFocus
                   onClose={() => setMobileSheetOpen(false)}
                 />
               </div>

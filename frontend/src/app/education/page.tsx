@@ -12,6 +12,7 @@ import { DOSHA_GUIDE, EDUCATION_ARTICLES } from "@/lib/education-content";
 import { EDUCATION_HUB, PAGE_METADATA } from "@/lib/brand-content";
 import type { Metadata } from "next";
 import { BLOG_ARTICLES } from "@/data/education/blog-articles.generated";
+import { getPublishedBlogs } from "@/lib/blogs";
 
 export const metadata: Metadata = {
   title: PAGE_METADATA.education.title,
@@ -24,6 +25,8 @@ export const metadata: Metadata = {
     type: "website",
   },
 };
+
+export const dynamic = "force-dynamic";
 
 function DoshaIcon({ type }: { type: "vata" | "pitta" | "kapha" }) {
   const cls = "h-14 w-14 shrink-0 text-primary-green";
@@ -40,7 +43,8 @@ const LIBRARY_GROUPS: { pillar: string; items: { slug: string; title: string }[]
   return Object.entries(groups).map(([pillar, items]) => ({ pillar, items }));
 })();
 
-export default function EducationPage() {
+export default async function EducationPage() {
+  const dbBlogs = await getPublishedBlogs();
   return (
     <div className="bg-[#f3eedd]">
       <section className="min-h-screen flex flex-col lg:flex-row">
@@ -258,6 +262,62 @@ export default function EducationPage() {
           </div>
         </div>
       </section>
+
+      {dbBlogs.length > 0 && (
+        <section className="bg-[#efe7d2] border-t border-[#d9cdb8] px-6 py-14 md:px-10 md:py-20">
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-10">
+              <p className="text-xs uppercase tracking-[0.24em] text-gold mb-2">From the 3TATTAVA Desk</p>
+              <h2
+                className="text-3xl md:text-4xl text-text-dark"
+                style={{ fontFamily: "var(--font-primary), system-ui, sans-serif" }}
+              >
+                Latest Articles
+              </h2>
+              <p className="mt-3 text-sm text-text-medium max-w-2xl mx-auto">
+                Fresh guidance from our founder and Ayurvedic experts.
+              </p>
+            </div>
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {dbBlogs.map((b) => (
+                <Link
+                  key={b.id}
+                  href={`/education/${b.slug}`}
+                  className="group flex flex-col overflow-hidden rounded-2xl border border-[#d9cdb8] bg-white/70 shadow-sm transition-shadow hover:shadow-md"
+                >
+                  <div className="relative aspect-[16/10] w-full overflow-hidden bg-[#e6dcc4]">
+                    {b.coverImage ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={b.coverImage}
+                        alt={b.title}
+                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        loading="lazy"
+                      />
+                    ) : (
+                      <div className="flex h-full w-full items-center justify-center text-gold/40 text-sm">3TATTAVA</div>
+                    )}
+                  </div>
+                  <div className="flex flex-1 flex-col p-5">
+                    {b.pillar && <p className="text-[11px] uppercase tracking-[0.2em] text-gold mb-2">{b.pillar}</p>}
+                    <h3
+                      className="text-lg leading-snug text-text-dark group-hover:text-primary-green"
+                      style={{ fontFamily: "var(--font-primary), system-ui, sans-serif" }}
+                    >
+                      {b.title}
+                    </h3>
+                    {b.summary && <p className="mt-2 text-sm leading-relaxed text-text-medium line-clamp-3">{b.summary}</p>}
+                    <div className="mt-4 flex items-center gap-3 text-xs text-text-light">
+                      {b.readTime && <span>{b.readTime}</span>}
+                      <span className="ml-auto text-primary-green font-medium">Read →</span>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       <section className="bg-[#f3eedd] border-t border-[#d9cdb8] px-6 py-14 md:px-10 md:py-20">
         <div className="max-w-5xl mx-auto">

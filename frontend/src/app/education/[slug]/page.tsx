@@ -10,15 +10,16 @@ import {
   type BlogArticle,
 } from "@/data/education/blog-articles.generated";
 import type { Metadata } from "next";
+import { getDbBlog, type DbBlog } from "@/lib/blogs";
 
 const SITE = "https://www.3tattava.com";
 const REVIEWED = "2026-07-06";
 
-export function generateMetadata({
+export async function generateMetadata({
   params,
 }: {
   params: { slug: string };
-}): Metadata {
+}): Promise<Metadata> {
   const article = getEducationArticle(params.slug);
   if (article) {
     return {
@@ -37,6 +38,20 @@ export function generateMetadata({
         title: blog.metaTitle,
         description: blog.metaDesc,
         url: `${SITE}/education/${blog.slug}`,
+        type: "article",
+      },
+    };
+  }
+  const db = await getDbBlog(params.slug);
+  if (db) {
+    return {
+      title: `${db.title} | 3TATTAVA Education`,
+      description: db.summary,
+      alternates: { canonical: `${SITE}/education/${db.slug}` },
+      openGraph: {
+        title: db.title,
+        description: db.summary,
+        url: `${SITE}/education/${db.slug}`,
         type: "article",
       },
     };
@@ -281,7 +296,77 @@ function BlogArticleView({ blog }: { blog: BlogArticle }) {
   );
 }
 
-export default function EducationArticlePage({
+function DbBlogView({ blog }: { blog: DbBlog }) {
+  const blocks = blog.content
+    .split(/\n{2,}/)
+    .map((b) => b.trim())
+    .filter(Boolean);
+  return (
+    <main className="bg-[#f3eedd] min-h-screen">
+      {blog.coverImage && (
+        <div className="relative w-full h-[min(38vh,320px)] border-b border-[#d9cdb8] bg-[#e6dcc4]">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={blog.coverImage} alt={blog.title} className="h-full w-full object-cover object-center" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#f3eedd] via-[#f3eedd]/70 to-transparent" />
+        </div>
+      )}
+      <MotionSection className="max-w-3xl mx-auto px-4 py-12 md:py-16">
+        <article>
+          <Link href="/education" className="text-sm text-text-medium hover:text-primary-green">
+            ← Back to Education Hub
+          </Link>
+          {blog.pillar && <p className="mt-8 text-xs uppercase tracking-[0.25em] text-gold">{blog.pillar}</p>}
+          <h1
+            className="mt-3 text-4xl md:text-5xl text-text-dark"
+            style={{ fontFamily: "var(--font-primary), system-ui, sans-serif" }}
+          >
+            {blog.title}
+          </h1>
+          <div className="mt-4 text-sm text-text-medium">
+            <span className="font-semibold text-text-dark">{blog.author || "3TATTAVA"}</span>
+            {blog.readTime && <> · {blog.readTime}</>}
+          </div>
+          {blog.summary && <p className="mt-6 text-lg text-text-medium leading-relaxed">{blog.summary}</p>}
+
+          <div className="mt-10 space-y-5 rounded-2xl border border-border bg-white p-6 md:p-8 shadow-sm">
+            {blocks.map((block, i) => {
+              if (block.startsWith("### ")) {
+                return (
+                  <h3 key={i} className="text-xl md:text-2xl text-text-dark pt-2" style={{ fontFamily: "var(--font-primary), system-ui, sans-serif" }}>
+                    {renderInline(block.slice(4), `h3-${i}`)}
+                  </h3>
+                );
+              }
+              if (block.startsWith("## ")) {
+                return (
+                  <h2 key={i} className="text-2xl md:text-3xl text-text-dark pt-2" style={{ fontFamily: "var(--font-primary), system-ui, sans-serif" }}>
+                    {renderInline(block.slice(3), `h2-${i}`)}
+                  </h2>
+                );
+              }
+              return (
+                <p key={i} className="text-base leading-relaxed text-text-medium">
+                  {renderInline(block, `p-${i}`)}
+                </p>
+              );
+            })}
+          </div>
+
+          {blog.images && blog.images.length > 0 && (
+            <div className="mt-8 grid gap-4 sm:grid-cols-2">
+              {blog.images.map((src, i) => (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img key={i} src={src} alt="" className="w-full rounded-xl border border-[#d9cdb8] object-cover" loading="lazy" />
+              ))}
+            </div>
+          )}
+        </article>
+      </MotionSection>
+    </main>
+  );
+}
+
+export default async function EducationArticlePage({
   params,
 }: {
   params: { slug: string };
@@ -371,9 +456,14 @@ export default function EducationArticlePage({
   }
 
   const blog = getBlogArticle(params.slug);
-  if (!blog) {
-    notFound();
+  if (blog) {
+    return <BlogArticleView blog={blog} />;
   }
 
-  return <BlogArticleView blog={blog} />;
+  const db = await getDbBlog(params.slug);
+  if (db) {
+    return <DbBlogView blog={db} />;
+  }
+
+  notFound();
 }

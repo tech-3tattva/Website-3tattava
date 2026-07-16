@@ -36,6 +36,7 @@ const PUBLIC_PREFIXES = [
   "/login",
   "/register",
   "/track-order",
+  "/education",
 ];
 
 // URL variants (typed / printed / QR) that permanently redirect to the canonical route.

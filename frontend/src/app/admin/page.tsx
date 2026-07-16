@@ -6,8 +6,9 @@ import { adminApi } from "@/lib/api";
 import AdminProducts from "@/components/admin/AdminProducts";
 import AdminInventory from "@/components/admin/AdminInventory";
 import AdminOrders from "@/components/admin/AdminOrders";
+import AdminBlog from "@/components/admin/AdminBlog";
 
-type Tab = "overview" | "products" | "inventory" | "orders" | "shipments" | "leads" | "influencers" | "users";
+type Tab = "overview" | "products" | "inventory" | "orders" | "shipments" | "leads" | "influencers" | "users" | "blog";
 
 type Stats = {
   revenue: { today: number; month: number; year: number };
@@ -633,6 +634,7 @@ export default function AdminDashboardPage() {
     { id: "leads",        label: "Leads",        icon: "◑" },
     { id: "influencers",  label: "Influencers",  icon: "◐" },
     { id: "users",        label: "Customers",    icon: "◔" },
+    { id: "blog",         label: "Education",    icon: "✎" },
   ];
 
   const PAGE_TITLE: Record<Tab, string> = {
@@ -640,6 +642,7 @@ export default function AdminDashboardPage() {
     orders: "Orders", shipments: "Shipments", leads: "Leads & Signups",
     influencers: "Influencers & Promo Codes",
     users: "Customers & Sign-ins",
+    blog: "Education Centre",
   };
   const PAGE_SUB: Record<Tab, string> = {
     overview: "Live business snapshot",
@@ -650,6 +653,7 @@ export default function AdminDashboardPage() {
     leads: "Homepage modal captures, newsletter & bookings",
     influencers: "Two-tier referral system, promo codes & reward payouts",
     users: "All registered customers, including Google sign-ins",
+    blog: "Write & publish articles to the Education Centre page",
   };
 
   return (
@@ -776,6 +780,7 @@ export default function AdminDashboardPage() {
           {tab === "leads"       && <AdminLeads />}
           {tab === "influencers" && <AdminInfluencers />}
           {tab === "users"       && <AdminUsers />}
+          {tab === "blog"        && <AdminBlog />}
         </main>
       </div>
     </>

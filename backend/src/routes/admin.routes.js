@@ -5,6 +5,7 @@ const { z } = require("zod");
 const { verifyAdmin } = require("../middleware/auth");
 const { ApiError } = require("../middleware/errorHandler");
 const { upload } = require("../middleware/productUpload");
+const { blogUpload } = require("../middleware/blogUpload");
 const Order = require("../models/Order");
 const Product = require("../models/Product");
 const User = require("../models/User");
@@ -14,6 +15,7 @@ const Influencer = require("../models/Influencer");
 const Redemption = require("../models/Redemption");
 const NewsletterSub = require("../models/NewsletterSub");
 const Booking = require("../models/Booking");
+const Blog = require("../models/Blog");
 // Lead model is registered by leads.routes.js at startup — access lazily
 function getLead() { return mongoose.models.Lead || null; }
 
@@ -783,6 +785,122 @@ router.get("/users", async (req, res, next) => {
       createdAt: u.createdAt,
     }));
     return res.json({ users, total, page, limit });
+  } catch (err) {
+    return next(err);
+  }
+});
+
+// ─────────────────────────────────────────────
+// EDUCATION BLOG (founder-authored articles)
+// ─────────────────────────────────────────────
+function blogUploadMw(req, res, next) {
+  blogUpload(req, res, (err) => {
+    if (err instanceof multer.MulterError) return next(new ApiError(400, err.message));
+    if (err) return next(err);
+    return next();
+  });
+}
+
+function blogImageUrl(filename) {
+  return `${publicUploadBase()}/uploads/blog/${filename}`;
+}
+
+const blogBody = z.object({
+  title: z.string().min(1),
+  slug: z.string().optional(),
+  pillar: z.string().optional(),
+  summary: z.string().optional(),
+  content: z.string().optional(),
+  author: z.string().optional(),
+  readTime: z.string().optional(),
+  isPublished: z.union([z.boolean(), z.string()]).optional(),
+});
+
+function toBool(v, dflt) {
+  if (v === undefined) return dflt;
+  return v === true || v === "true";
+}
+
+// GET /api/admin/blogs -> all blogs (incl. unpublished), newest first
+router.get("/blogs", async (_req, res, next) => {
+  try {
+    const blogs = await Blog.find().sort({ publishedAt: -1, createdAt: -1 });
+    return res.json({ blogs });
+  } catch (err) {
+    return next(err);
+  }
+});
+
+// POST /api/admin/blogs -> create (multipart: coverImage + images[])
+router.post("/blogs", blogUploadMw, async (req, res, next) => {
+  try {
+    const parsed = blogBody.parse(req.body);
+    const slug = (parsed.slug && parsed.slug.trim()) || slugify(parsed.title);
+    if (!slug) throw new ApiError(400, "A title or slug is required");
+
+    const exists = await Blog.findOne({ slug });
+    if (exists) throw new ApiError(409, `A blog with slug "${slug}" already exists`);
+
+    const files = req.files || {};
+    const cover = files.coverImage && files.coverImage[0];
+    const gallery = files.images || [];
+
+    const doc = await Blog.create({
+      slug,
+      title: parsed.title.trim(),
+      pillar: (parsed.pillar || "Ayurveda").trim(),
+      summary: parsed.summary || "",
+      content: parsed.content || "",
+      author: (parsed.author || "3TATTAVA").trim(),
+      readTime: parsed.readTime || "",
+      coverImage: cover ? blogImageUrl(cover.filename) : "",
+      images: gallery.map((f) => blogImageUrl(f.filename)),
+      isPublished: toBool(parsed.isPublished, true),
+      publishedAt: new Date(),
+    });
+    return res.status(201).json(doc);
+  } catch (err) {
+    if (err instanceof z.ZodError) return next(new ApiError(400, err.issues[0]?.message || "Invalid blog payload"));
+    return next(err);
+  }
+});
+
+// PUT /api/admin/blogs/:id -> update (optional new cover/images appended)
+router.put("/blogs/:id", blogUploadMw, async (req, res, next) => {
+  try {
+    const parsed = blogBody.partial().parse(req.body);
+    const blog = await Blog.findById(req.params.id);
+    if (!blog) throw new ApiError(404, "Blog not found");
+
+    if (parsed.title !== undefined) blog.title = parsed.title.trim();
+    if (parsed.slug && parsed.slug.trim()) blog.slug = parsed.slug.trim();
+    if (parsed.pillar !== undefined) blog.pillar = parsed.pillar.trim();
+    if (parsed.summary !== undefined) blog.summary = parsed.summary;
+    if (parsed.content !== undefined) blog.content = parsed.content;
+    if (parsed.author !== undefined) blog.author = parsed.author.trim();
+    if (parsed.readTime !== undefined) blog.readTime = parsed.readTime;
+    if (parsed.isPublished !== undefined) blog.isPublished = toBool(parsed.isPublished, blog.isPublished);
+
+    const files = req.files || {};
+    if (files.coverImage && files.coverImage[0]) blog.coverImage = blogImageUrl(files.coverImage[0].filename);
+    if (files.images && files.images.length) {
+      blog.images = [...blog.images, ...files.images.map((f) => blogImageUrl(f.filename))];
+    }
+
+    await blog.save();
+    return res.json(blog);
+  } catch (err) {
+    if (err instanceof z.ZodError) return next(new ApiError(400, err.issues[0]?.message || "Invalid blog payload"));
+    return next(err);
+  }
+});
+
+// DELETE /api/admin/blogs/:id
+router.delete("/blogs/:id", async (req, res, next) => {
+  try {
+    const deleted = await Blog.findByIdAndDelete(req.params.id);
+    if (!deleted) throw new ApiError(404, "Blog not found");
+    return res.json({ ok: true });
   } catch (err) {
     return next(err);
   }
