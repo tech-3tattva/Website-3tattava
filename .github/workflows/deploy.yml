@@ -31,6 +31,10 @@ jobs:
             cd backend
             npm install --production
             pm2 restart 3tattava-api --update-env
-            sleep 3
-            curl -fsS http://localhost:5001/api/health || curl -fsS http://localhost:5000/api/health || exit 1
-            echo "Deployment successful!"
+            for i in $(seq 1 20); do
+              if curl -fsS http://localhost:5000/api/health >/dev/null 2>&1 || curl -fsS http://localhost:5001/api/health >/dev/null 2>&1; then
+                echo "Deployment successful!"; exit 0
+              fi
+              echo "waiting for backend to come up ($i/20)..."; sleep 3
+            done
+            echo "Backend health check failed after retries"; exit 1
