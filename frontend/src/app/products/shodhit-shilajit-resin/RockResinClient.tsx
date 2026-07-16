@@ -62,12 +62,19 @@ const RR_CSS = `
 .rr-vscroll{display:flex;flex-direction:column;gap:14px;will-change:transform;animation:rrV 24s linear infinite;}
 @keyframes rrV{from{transform:translateY(0)}to{transform:translateY(-50%)}}
 .rr-cmp{display:grid;grid-template-columns:1.55fr 1fr 1fr;}
+.rr-cmp-wrap{}
+.rr-cmp-hint{display:none;}
 .rr-mobilebar{display:none;}
 @media(max-width:860px){
   .rr-2col,.rr-2col-rev{grid-template-columns:1fr;gap:32px;}
   .rr-2col-rev>.rr-media{order:-1;}
   .rr-3col{grid-template-columns:1fr;gap:28px;}
   .rr-cmp{grid-template-columns:1.4fr .8fr .8fr;}
+}
+@media(max-width:600px){
+  .rr-cmp-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:8px;}
+  .rr-cmp{min-width:500px;}
+  .rr-cmp-hint{display:block;}
 }
 @media(max-width:768px){.rr-mobilebar{display:flex;}}
 .rr-journey{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(16px,2vw,28px);align-items:start;}
@@ -239,6 +246,8 @@ function ComparisonSection() {
           </div>
         </Reveal>
         <Reveal delay={0.08}>
+          <p className="rr-cmp-hint" style={{ fontFamily: F, fontSize: 11, letterSpacing: ".08em", textTransform: "uppercase", color: GOLD, marginBottom: 10, textAlign: "center" }}>Swipe to compare →</p>
+          <div className="rr-cmp-wrap">
           <div className="rr-cmp" style={{ border: "1px solid rgba(247,240,226,.16)", borderRadius: 16, overflow: "hidden" }}>
             <div style={headCell} />
             <div style={{ ...headCell, ...mid, borderTopLeftRadius: 12, borderTopRightRadius: 12 }}>
@@ -267,6 +276,7 @@ function ComparisonSection() {
                 </div>
               );
             })}
+          </div>
           </div>
           <p style={{ fontFamily: F, fontSize: 11, color: "rgba(247,240,226,.5)", lineHeight: 1.5, marginTop: 18, maxWidth: 760 }}>
             Comparison is based on publicly available information and product disclosures at the time of publication. Features of other brands may vary.
