@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 
 // Replace with your actual 3Tattava Announcement Channel invite link
 // Get it from: WhatsApp → 3Tattava community → Announcement → Invite via link
-const COMMUNITY_LINK = 'https://chat.whatsapp.com/FI9HnCNNPF3Fp20mU9avG1';
+const COMMUNITY_LINK = 'https://whatsapp.com/channel/0029VbCvQM9AzNc0iZDadt1c';
 const TOOLTIP_DELAY_MS = 5000;
 const TOOLTIP_HIDE_MS  = 12000;
 

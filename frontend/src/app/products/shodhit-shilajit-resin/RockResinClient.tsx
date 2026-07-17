@@ -39,15 +39,15 @@ const PRODUCT = {
   id: "shodhit-shilajit-resin",
   name: "SHODHIT SHILAJIT RESIN",
   image: media("/home/rockresin-marquee.png"),
-  price: 1299,
-  mrp: 1499,
+  price: 1199,
+  mrp: 1399,
   slug: "shodhit-shilajit-resin",
 };
 
 const BUNDLES = [
-  { days: 40, jars: 1, label: "40-Day Ritual", price: 1299, mrp: 1499 },
-  { days: 80, jars: 2, label: "80-Day Ritual", price: 2200, mrp: 2998 },
-  { days: 120, jars: 3, label: "120-Day Ritual", price: 3000, mrp: 4497 },
+  { days: 40, jars: 1, label: "40-Day Ritual", price: 1199, mrp: 1399 },
+  { days: 80, jars: 2, label: "80-Day Ritual", price: 2199, mrp: 2798 },
+  { days: 120, jars: 3, label: "120-Day Ritual", price: 2999, mrp: 4197 },
 ];
 
 const RR_CSS = `
@@ -166,7 +166,7 @@ function HeroSection() {
 
           <motion.div className="rr-media" initial={{ opacity: 0, scale: 0.94 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.8, ease: EASE }} style={{ position: "relative", zIndex: 1, display: "flex", justifyContent: "center", marginTop: "clamp(12px,2vw,28px)" }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/home/rockresin-hero-product.png?v=2" alt="RockResin — Shodhit Himalayan Shilajit resin jar, tub and spoon" style={{ width: "100%", maxWidth: 460, height: "auto", display: "block", filter: "drop-shadow(0 26px 50px rgba(68,42,27,.20))" }} />
+            <img src="https://media.3tattava.com/products/rockresin/3-Tattava+A%2B-03R.png" alt="RockResin — Shodhit Himalayan Shilajit resin jar, tub and spoon" style={{ width: "100%", maxWidth: 460, height: "auto", display: "block", filter: "drop-shadow(0 26px 50px rgba(68,42,27,.20))" }} />
           </motion.div>
         </div>
       </div>
@@ -315,7 +315,7 @@ function CinematicSection() {
       <div className="rr-2col" style={{ maxWidth: 1120, margin: "0 auto", gap: "clamp(28px,4vw,60px)" }}>
         <Reveal style={{ display: "flex", justifyContent: "center" }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={media("/hero/rockresin-cinematic.jpg")} alt="RockResin jar on Himalayan rock — ≥70% fulvic acid, Eurofins & NABL tested, ≥80 trace minerals" style={{ width: "100%", maxWidth: 520, height: "auto", display: "block", borderRadius: 20, boxShadow: "0 22px 48px rgba(68,42,27,.22)" }} />
+          <img src="https://media.3tattava.com/products/rockresin/3-Tattava+A%2B-05R.png" alt="RockResin jar on Himalayan rock — ≥70% fulvic acid, Eurofins & NABL tested, ≥80 trace minerals" style={{ width: "100%", maxWidth: 520, height: "auto", display: "block", borderRadius: 20, boxShadow: "0 22px 48px rgba(68,42,27,.22)" }} />
         </Reveal>
         <Reveal delay={0.08}>
           <p style={{ ...eyebrow, marginBottom: 18 }}>Why RockResin</p>
