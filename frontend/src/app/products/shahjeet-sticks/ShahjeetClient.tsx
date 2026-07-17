@@ -381,7 +381,7 @@ function BuiltForBusySection() {
         <div className="shj-2col" style={{ alignItems: "center", gridTemplateColumns: "1.12fr 0.88fr" }}>
           <Reveal style={{ display: "flex", justifyContent: "center" }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={media("/shahjeet/ritual-steps.png")} alt="The Shahjeet ritual — Tear, Squeeze, Perform" style={{ height: "clamp(400px,48vw,600px)", width: "auto", maxWidth: "100%", objectFit: "contain", display: "block" }} />
+            <img src={media("/shahjeet/ritual-steps.png")} alt="The Shahjeet ritual" style={{ height: "clamp(400px,48vw,600px)", width: "auto", maxWidth: "100%", objectFit: "contain", display: "block", filter: "blur(12px)", userSelect: "none", pointerEvents: "none" }} />
           </Reveal>
           <Reveal delay={0.1} style={{ display: "flex", justifyContent: "center" }}>
             {/* eslint-disable-next-line jsx-a11y/media-has-caption */}

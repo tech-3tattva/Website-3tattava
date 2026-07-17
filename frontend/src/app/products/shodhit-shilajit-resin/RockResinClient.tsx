@@ -368,7 +368,7 @@ function SwirlRitualSection() {
         <div className="rr-2col" style={{ alignItems: "center", gridTemplateColumns: "1.08fr 0.92fr" }}>
           <Reveal style={{ display: "flex", justifyContent: "center" }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={media("/rockresin/swirl-poster.png")} alt="The RockResin ritual — Dip, Hook, Swirl" style={{ width: "100%", maxWidth: 640, height: "auto", display: "block" }} />
+            <img src={media("/rockresin/swirl-poster.png")} alt="The RockResin ritual" style={{ width: "100%", maxWidth: 640, height: "auto", display: "block", filter: "blur(12px)", userSelect: "none", pointerEvents: "none" }} />
           </Reveal>
           <Reveal delay={0.1} style={{ display: "flex", justifyContent: "center" }}>
             {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
