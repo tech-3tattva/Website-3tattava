@@ -55,6 +55,9 @@ export function middleware(req: NextRequest) {
     dest.pathname = redirectTo;
     return NextResponse.redirect(dest, 308);
   }
+
+  // Local development shows every page — the phased go-live gate applies to production only.
+  if (process.env.NODE_ENV !== "production") return NextResponse.next();
   if (PUBLIC_ROUTES.has(pathname)) return NextResponse.next();
   if (PUBLIC_PREFIXES.some((p) => pathname === p || pathname.startsWith(p + "/"))) {
     return NextResponse.next();
