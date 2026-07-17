@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence, useInView } from "framer-motion";
 import PurchaseGate, { LockedTeaser } from "@/components/purchase/PurchaseGate";
+import ConsultationModal from "@/components/vaidyaconnect/ConsultationModal";
 
 // ─── TYPES & CONSTANTS ───────────────────────────────────────────────────────
 
@@ -316,7 +317,7 @@ function Tag({ label }: { label:string }) {
 function PopBtn({
   href="#", onClick, children, variant="gold", style: extraStyle={},
 }: {
-  href?:string; onClick?:()=>void; children:React.ReactNode;
+  href?:string; onClick?:(e: React.MouseEvent)=>void; children:React.ReactNode;
   variant?:"gold"|"ghost"|"ink"; style?:React.CSSProperties;
 }) {
   const base: React.CSSProperties = {
@@ -369,11 +370,11 @@ function PopBtn({
 interface FeaturedDoc {
   initial:string; photo?:string; name:string; role:string; credentials:string;
   badge:string; quote:string; specialties:string[];
-  ctas:Array<{label:string;variant:"gold"|"ghost"|"ink";href?:string}>;
+  ctas:Array<{label:string;variant:"gold"|"ghost"|"ink";href?:string;action?:"consult"}>;
   consultNote?:string;
 }
 
-function FeaturedCard({ doc, idx }: { doc:FeaturedDoc; idx:number }) {
+function FeaturedCard({ doc, idx, onConsult }: { doc:FeaturedDoc; idx:number; onConsult?:()=>void }) {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once:true, margin:"-50px" });
   const [hov, setHov] = useState(false);
@@ -492,7 +493,7 @@ function FeaturedCard({ doc, idx }: { doc:FeaturedDoc; idx:number }) {
       {/* CTAs */}
       <div style={{display:"flex",gap:"10px",flexWrap:"wrap",position:"relative",zIndex:1}}>
         {doc.ctas.map(c=>(
-          <PopBtn key={c.label} href={c.href||"#"} variant={c.variant}>
+          <PopBtn key={c.label} href={c.href||"#"} variant={c.variant} onClick={c.action==="consult"?(e)=>{e.preventDefault();onConsult?.();}:undefined}>
             {c.label}
           </PopBtn>
         ))}
@@ -719,8 +720,7 @@ const FEATURED_DOCTORS: FeaturedDoc[] = [
     quote:"Ayurveda should help people perform better — not just recover after problems arise. 3TATTAVA was built on that belief.",
     specialties:["Performance Ayurveda","Clinical Shilajit","Sports Recovery","Mineral Medicine"],
     ctas:[
-      { label:"Book Consultation", variant:"gold" },
-      { label:"Explore Performance Ayurveda →", variant:"ghost", href:"/research-testing" },
+      { label:"Explore Performance Ayurveda →", variant:"gold", href:"/research-testing" },
     ],
   },
   {
@@ -729,19 +729,19 @@ const FEATURED_DOCTORS: FeaturedDoc[] = [
     role:"Performance Nutrition Expert",
     credentials:"BAMS · Ayurveda Dietician",
     badge:"Performance Nutrition Expert",
-    quote:"Every individual is different based on their Prakriti. Get access to a complimentary starter diet guide — personalised to your body type.",
+    quote:"Every individual is different based on their Prakriti. Your first consultation is free — and includes a personalised diet chart built around your body type.",
     specialties:["Prakriti Assessment","Sports Nutrition","Women's Wellness","Gut Health"],
     ctas:[
-      { label:"Get Free Starter Guide", variant:"gold" },
-      { label:"Book Consultation (Paid)", variant:"ghost" },
+      { label:"Book Free Consultation", variant:"gold", action:"consult" },
     ],
-    consultNote:"Paid personal consultations are ₹800/session. The starter diet guide is complimentary.",
+    consultNote:"First 30-minute online consultation is free and includes a personalised Prakriti-based diet chart.",
   },
 ];
 
 
 export default function VaidyaConnectClient() {
   const [query, setQuery]           = useState("");
+  const [consultOpen, setConsultOpen] = useState(false);
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [searched, setSearched]     = useState(false);
   const [doctors, setDoctors]       = useState<Doctor[]>([]);
@@ -925,7 +925,7 @@ export default function VaidyaConnectClient() {
             gap:"24px",alignItems:"stretch",
           }}>
             {FEATURED_DOCTORS.map((doc,i)=>(
-              <FeaturedCard key={doc.name} doc={doc} idx={i}/>
+              <FeaturedCard key={doc.name} doc={doc} idx={i} onConsult={()=>setConsultOpen(true)}/>
             ))}
           </div>
         </div>
@@ -1357,6 +1357,8 @@ export default function VaidyaConnectClient() {
           VaidyaConnect practitioners are independent Ayurveda physicians. Consultations are not a substitute for emergency medical care. All consultants are BAMS-qualified and vetted by Dr. Kashish Gupta, Founder, 3TATTAVA.
         </p>
       </section>
+
+      <ConsultationModal open={consultOpen} onClose={()=>setConsultOpen(false)} />
 
     </div>
   );

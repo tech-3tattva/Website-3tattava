@@ -37,6 +37,24 @@ const bookingSchema = new mongoose.Schema(
       fee: { type: Number, required: true },
       healthConcern: { type: String, default: "" },
       isFirstAyurvedaVisit: { type: Boolean, default: false },
+      meetLink: { type: String, default: "" },
+      isFreeConsultation: { type: Boolean, default: false },
+    },
+
+    // Prakriti (body-type) intake — collected for online consultations.
+    prakriti: {
+      healthGoal: { type: String, default: "" },
+      primaryConcern: { type: String, default: "" },
+      bodyFrame: { type: String, default: "" },
+      appetite: { type: String, default: "" },
+      digestion: { type: String, default: "" },
+      sleep: { type: String, default: "" },
+      energyPattern: { type: String, default: "" },
+      bowelMovement: { type: String, default: "" },
+      dietPreference: { type: String, default: "" },
+      activityLevel: { type: String, default: "" },
+      currentMedications: { type: String, default: "" },
+      notes: { type: String, default: "" },
     },
 
     notifications: {
