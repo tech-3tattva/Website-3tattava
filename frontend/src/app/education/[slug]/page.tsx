@@ -11,6 +11,7 @@ import {
 } from "@/data/education/blog-articles.generated";
 import type { Metadata } from "next";
 import { getDbBlog, type DbBlog } from "@/lib/blogs";
+import { PILLAR_ARTICLES, getPillarArticle } from "@/data/education/pillar-articles";
 
 const SITE = "https://www.3tattava.com";
 const REVIEWED = "2026-07-06";
@@ -20,6 +21,15 @@ export async function generateMetadata({
 }: {
   params: { slug: string };
 }): Promise<Metadata> {
+  const pillar = getPillarArticle(params.slug);
+  if (pillar) {
+    return {
+      title: pillar.metaTitle,
+      description: pillar.metaDesc,
+      alternates: { canonical: `${SITE}/education/${pillar.slug}` },
+      openGraph: { title: pillar.metaTitle, description: pillar.metaDesc, url: `${SITE}/education/${pillar.slug}`, type: "article" },
+    };
+  }
   const article = getEducationArticle(params.slug);
   if (article) {
     return {
@@ -60,16 +70,25 @@ export async function generateMetadata({
 }
 
 export function generateStaticParams() {
-  return [
-    ...EDUCATION_ARTICLES.map((article) => ({ slug: article.slug })),
-    ...BLOG_ARTICLES.map((article) => ({ slug: article.slug })),
-  ];
+  const seen = new Set<string>();
+  const out: { slug: string }[] = [];
+  for (const slug of [
+    ...PILLAR_ARTICLES.map((a) => a.slug),
+    ...EDUCATION_ARTICLES.map((a) => a.slug),
+    ...BLOG_ARTICLES.map((a) => a.slug),
+  ]) {
+    if (!seen.has(slug)) {
+      seen.add(slug);
+      out.push({ slug });
+    }
+  }
+  return out;
 }
 
 /* Safe inline emphasis renderer for generated copy (**bold**, *italic*). */
 function renderInline(text: string, keyPrefix: string): ReactNode[] {
   const nodes: ReactNode[] = [];
-  const regex = /(\*\*[^*]+\*\*|\*[^*]+\*)/g;
+  const regex = /(\*\*[^*]+\*\*|\*[^*]+\*|\[[^\]]+\]\([^)]+\))/g;
   let last = 0;
   let i = 0;
   let m: RegExpExecArray | null;
@@ -78,6 +97,19 @@ function renderInline(text: string, keyPrefix: string): ReactNode[] {
     const token = m[0];
     if (token.startsWith("**")) {
       nodes.push(<strong key={`${keyPrefix}-${i}`}>{token.slice(2, -2)}</strong>);
+    } else if (token.startsWith("[")) {
+      const mm = /^\[([^\]]+)\]\(([^)]+)\)$/.exec(token);
+      if (mm) {
+        const label = mm[1];
+        const url = mm[2];
+        if (url.startsWith("/")) {
+          nodes.push(<Link key={`${keyPrefix}-${i}`} href={url} className="text-primary-green underline hover:no-underline">{label}</Link>);
+        } else {
+          nodes.push(<a key={`${keyPrefix}-${i}`} href={url} target="_blank" rel="noreferrer" className="text-primary-green underline hover:no-underline">{label}</a>);
+        }
+      } else {
+        nodes.push(token);
+      }
     } else {
       nodes.push(<em key={`${keyPrefix}-${i}`}>{token.slice(1, -1)}</em>);
     }
@@ -371,6 +403,10 @@ export default async function EducationArticlePage({
 }: {
   params: { slug: string };
 }) {
+  const pillar = getPillarArticle(params.slug);
+  if (pillar) {
+    return <BlogArticleView blog={pillar} />;
+  }
   const article = getEducationArticle(params.slug);
 
   if (article) {
@@ -459,7 +495,6 @@ export default async function EducationArticlePage({
   if (blog) {
     return <BlogArticleView blog={blog} />;
   }
-
   const db = await getDbBlog(params.slug);
   if (db) {
     return <DbBlogView blog={db} />;
