@@ -2,6 +2,8 @@ const express = require("express");
 const Doctor = require("../models/Doctor");
 const Booking = require("../models/Booking");
 const { generateBookingId, getEndTime } = require("../utils/slots");
+const crypto = require("crypto");
+const { SESClient, SendEmailCommand } = require("@aws-sdk/client-ses");
 
 const router = express.Router();
 
@@ -223,6 +225,189 @@ router.get("/doctor/:doctorId/reviews", async (req, res, next) => {
     res.json({ reviews, total, page: Number(page), totalPages: Math.ceil(total / Number(limit)) });
   } catch (err) {
     next(err);
+  }
+});
+
+/**
+ * POST /api/bookings/consultation
+ * Online consultation booking (VaidyaConnect). First consultation per email is free.
+ * Creates the booking, generates a video-meet link, and emails the doctor + patient.
+ */
+function meetLinkFor(bookingId) {
+  // Instant, no-auth video room. Unguessable suffix. Swap to Google Meet later if desired.
+  const token = crypto.randomBytes(4).toString("hex");
+  return `https://meet.jit.si/3TATTAVA-Consult-${bookingId}-${token}`;
+}
+
+const PRAKRITI_LABELS = {
+  healthGoal: "Health goal",
+  primaryConcern: "Primary concern",
+  bodyFrame: "Body frame",
+  appetite: "Appetite",
+  digestion: "Digestion",
+  sleep: "Sleep",
+  energyPattern: "Energy pattern",
+  bowelMovement: "Bowel movement",
+  dietPreference: "Diet preference",
+  activityLevel: "Activity level",
+  currentMedications: "Current medications/supplements",
+  notes: "Additional notes",
+};
+
+async function sendConsultEmails({ doctorEmail, patient, doctorName, appointment, meetLink, prakriti, isFree }) {
+  const hasSes =
+    process.env.AWS_ACCESS_KEY_ID &&
+    process.env.AWS_SECRET_ACCESS_KEY &&
+    process.env.AWS_REGION &&
+    process.env.AWS_SES_FROM_EMAIL;
+  if (!hasSes) return { doctorSent: false, patientSent: false, reason: "SES not configured" };
+
+  const from = process.env.AWS_SES_FROM_EMAIL;
+  const client = new SESClient({
+    region: process.env.AWS_REGION,
+    credentials: {
+      accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+    },
+  });
+
+  const when = `${appointment.date} at ${appointment.timeSlot} IST`;
+  const prakritiLines = Object.entries(prakriti || {})
+    .filter(([, v]) => v && String(v).trim())
+    .map(([k, v]) => `  • ${PRAKRITI_LABELS[k] || k}: ${v}`)
+    .join("\n");
+
+  const doctorText =
+    `New online consultation booking${isFree ? " (FREE — first consultation)" : ""}\n\n` +
+    `Patient: ${patient.name}\nPhone: ${patient.phone}\nEmail: ${patient.email}\n` +
+    `Age: ${patient.age}   Gender: ${patient.gender}\n\n` +
+    `When: ${when}\nType: Online video\nMeeting link: ${meetLink}\n\n` +
+    `Prakriti intake:\n${prakritiLines || "  (none provided)"}\n\n` +
+    `Booking ID: ${appointment.bookingId}\n`;
+
+  let doctorSent = false;
+  let patientSent = false;
+  try {
+    await client.send(
+      new SendEmailCommand({
+        Source: from,
+        Destination: { ToAddresses: [doctorEmail] },
+        ReplyToAddresses: patient.email ? [patient.email] : undefined,
+        Message: { Subject: { Data: `New consultation — ${patient.name} — ${when}` }, Body: { Text: { Data: doctorText } } },
+      })
+    );
+    doctorSent = true;
+  } catch {
+    /* graceful — link still returned to the user on-screen */
+  }
+
+  if (patient.email) {
+    const patientText =
+      `Hi ${patient.name},\n\nYour consultation with ${doctorName} is confirmed.\n\n` +
+      `When: ${when}\nJoin the video call here: ${meetLink}\n\n` +
+      `Booking ID: ${appointment.bookingId}\n\n— 3TATTAVA · VaidyaConnect`;
+    try {
+      await client.send(
+        new SendEmailCommand({
+          Source: from,
+          Destination: { ToAddresses: [patient.email] },
+          Message: { Subject: { Data: "Your 3TATTAVA consultation is confirmed" }, Body: { Text: { Data: patientText } } },
+        })
+      );
+      patientSent = true;
+    } catch {
+      /* graceful */
+    }
+  }
+
+  return { doctorSent, patientSent };
+}
+
+router.post("/consultation", async (req, res, next) => {
+  try {
+    const { doctorSlug, date, timeSlot, name, phone, email, age, gender, prakriti } = req.body;
+    if (!doctorSlug || !date || !timeSlot || !name || !phone || !email || !age) {
+      return res.status(400).json({ message: "Please fill in all required fields." });
+    }
+
+    const doctor = await Doctor.findOne({ slug: doctorSlug, status: "active" }).lean();
+    if (!doctor) return res.status(404).json({ message: "Doctor not found" });
+
+    const emailLc = String(email).toLowerCase().trim();
+    // First consultation per email is free.
+    const priorCount = await Booking.countDocuments({
+      "patient.email": emailLc,
+      status: { $in: ["confirmed", "completed"] },
+    });
+    const isFree = priorCount === 0;
+    const onlineFee = doctor.practice?.consultationFee?.online;
+    const fee = isFree ? 0 : onlineFee || doctor.practice?.consultationFee?.inClinic || 0;
+
+    const duration = doctor.slotConfig?.durationMinutes || 30;
+    const bookingId = generateBookingId(date);
+    const meetLink = meetLinkFor(bookingId);
+
+    const booking = new Booking({
+      bookingId,
+      status: "confirmed",
+      doctor: { doctorId: doctor._id, name: doctor.personal.fullName, clinic: doctor.clinic.name },
+      patient: {
+        name: String(name).trim(),
+        phone: String(phone).trim(),
+        email: emailLc,
+        age: Number(age),
+        gender: gender || "prefer-not-to-say",
+      },
+      appointment: {
+        date,
+        timeSlot,
+        endTime: getEndTime(timeSlot, duration),
+        type: "online",
+        fee,
+        healthConcern: prakriti?.primaryConcern || "",
+        isFirstAyurvedaVisit: isFree,
+        meetLink,
+        isFreeConsultation: isFree,
+      },
+      prakriti: prakriti || {},
+      source: "website",
+    });
+
+    await booking.save();
+
+    Doctor.updateOne(
+      { _id: doctor._id },
+      { $inc: { "analytics.totalBookings": 1, "analytics.bookingsThisMonth": 1 } }
+    ).catch(() => {});
+
+    const doctorEmail = doctor.personal?.email || process.env.AWS_SES_FROM_EMAIL;
+    const emailResult = await sendConsultEmails({
+      doctorEmail,
+      patient: booking.patient,
+      doctorName: booking.doctor.name,
+      appointment: { date, timeSlot, bookingId },
+      meetLink,
+      prakriti: prakriti || {},
+      isFree,
+    });
+
+    return res.status(201).json({
+      message: "Consultation confirmed!",
+      booking: {
+        bookingId,
+        meetLink,
+        isFreeConsultation: isFree,
+        fee,
+        doctor: booking.doctor,
+        appointment: booking.appointment,
+      },
+      emailResult,
+    });
+  } catch (err) {
+    if (err.code === 11000) {
+      return res.status(409).json({ message: "This time slot was just booked by someone else. Please pick another slot." });
+    }
+    return next(err);
   }
 });
 
