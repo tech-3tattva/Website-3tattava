@@ -5,7 +5,7 @@ import { motion, AnimatePresence, useInView } from "framer-motion";
 import Link from "next/link";
 import TiltCard from "@/components/motion/TiltCard";
 
-const WHATSAPP_LINK = "https://chat.whatsapp.com/FI9HnCNNPF3Fp20mU9avG1";
+const WHATSAPP_LINK = "https://whatsapp.com/channel/0029VbCvQM9AzNc0iZDadt1c";
 const FONT = "var(--font-primary), system-ui, sans-serif";
 const EASE = [0.16, 1, 0.3, 1] as const;
 

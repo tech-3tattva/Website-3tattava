@@ -40,7 +40,7 @@ export const SOCIAL_LINKS = [
   {
     id: "whatsapp" as const,
     label: "WhatsApp",
-    href: process.env.NEXT_PUBLIC_WHATSAPP_URL ?? "https://chat.whatsapp.com/FI9HnCNNPF3Fp20mU9avG1",
+    href: process.env.NEXT_PUBLIC_WHATSAPP_URL ?? "https://whatsapp.com/channel/0029VbCvQM9AzNc0iZDadt1c",
   },
 ];
 

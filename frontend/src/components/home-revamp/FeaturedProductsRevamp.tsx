@@ -30,7 +30,7 @@ const products: ProductCard[] = [
   {
     title: 'Shahjeet Sticks',
     subtitle: 'Daily Strength & Vitality Formula',
-    image: media("/hero/shahjeet-hero.png"),
+    image: "https://media.3tattava.com/products/3-Tattava+A%2B-02S.png",
     tags: '30 Sticks · 600mg · Honey-Infused',
     price: '₹1,399',
     oldPrice: '₹1,599',

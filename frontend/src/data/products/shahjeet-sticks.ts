@@ -21,9 +21,9 @@ export const shahjeetSticks: ProductData = {
   bundlePrice: 1799,
   bundleDesc: 'Honey Sticks + Resin Jar',
   bundleSaving: 'SAVE 21%',
-  mainImage: 'https://media.3tattava.com/products/shahjeet-box.png',
+  mainImage: 'https://media.3tattava.com/products/3-Tattava+A%2B-01S.png',
   thumbImages: [
-    { label: 'MAIN', url: 'https://media.3tattava.com/products/shahjeet-box.png', caption: 'SHAHJEET STICKS. 30 single-serve honey-Shilajit sticks for daily performance.' },
+    { label: 'MAIN', url: 'https://media.3tattava.com/products/3-Tattava+A%2B-01S.png', caption: 'SHAHJEET STICKS. 30 single-serve honey-Shilajit sticks for daily performance.' },
     { label: 'SACHET', url: 'https://media.3tattava.com/features/shahjeet-sachet.png', caption: 'THE DAILY RITUAL. Tear, squeeze, perform.' },
     { label: 'SOURCE', url: 'https://media.3tattava.com/features/resin-mountain.png', caption: 'HIMALAYAN ORIGIN. 600mg of pure resin per stick.' },
     { label: 'QUALITY', url: '', caption: 'NABL LAB TESTED. Verified for purity and safety.' },

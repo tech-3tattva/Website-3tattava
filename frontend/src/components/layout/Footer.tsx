@@ -9,6 +9,7 @@ import NewsletterSignup from "@/components/ui/NewsletterSignup";
 import Logo from "./Logo";
 import { FOOTER_LINKS, SOCIAL_LINKS, TRUST_STRIP_ITEMS } from "@/lib/constants";
 import { FOOTER, NEWSLETTER } from "@/lib/brand-content";
+import { LEGAL } from "@/lib/legal";
 
 // ─── ANIMATED SOCIAL ICONS ───────────────────────────────────────────────────
 
@@ -375,7 +376,11 @@ export default function Footer() {
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={media("/logos/sankalpa-siddhi.png")} alt="SankalpaSiddhi Ayupharma" width={54} height={54} style={{ borderRadius: "50%", flexShrink: 0 }} />
             <p className="text-xs text-text-medium text-center sm:text-left leading-relaxed">
-              <strong className="text-text-dark">Marketed by</strong> SankalpaSiddhi Ayupharma Pvt. Ltd. — CIN U21001DL2026PTC464092 · C-17 G/F, Central Market, New Seemapuri, East Delhi 110095.
+              <strong className="text-text-dark">Marketed by</strong> {LEGAL.companyShort} · CIN {LEGAL.cin}
+              <br />
+              <strong className="text-text-dark">Registered Office:</strong> {LEGAL.footerRegisteredOffice}
+              <br />
+              <strong className="text-text-dark">Marketing Office:</strong> {LEGAL.footerMarketingOffice}
             </p>
           </div>
           <p className="text-xs text-text-medium text-center md:text-left leading-relaxed">
@@ -401,13 +406,34 @@ export default function Footer() {
             <Link href="/terms" className="hover:text-white transition-colors whitespace-nowrap">
               Terms of Use
             </Link>
+            <Link href="/returns" className="hover:text-white transition-colors whitespace-nowrap">
+              Returns &amp; Refunds
+            </Link>
+            <Link href="/shipping" className="hover:text-white transition-colors whitespace-nowrap">
+              Shipping
+            </Link>
+            <Link href="/payment" className="hover:text-white transition-colors whitespace-nowrap">
+              Payment
+            </Link>
+            <Link href="/cookies" className="hover:text-white transition-colors whitespace-nowrap">
+              Cookie Policy
+            </Link>
+            <Link href="/medical-disclaimer" className="hover:text-white transition-colors whitespace-nowrap">
+              Medical Disclaimer
+            </Link>
+            <Link href="/intellectual-property" className="hover:text-white transition-colors whitespace-nowrap">
+              Intellectual Property
+            </Link>
+            <Link href="/grievance" className="hover:text-white transition-colors whitespace-nowrap">
+              Grievance
+            </Link>
             <Link href="/sitemap.xml" className="hover:text-white transition-colors whitespace-nowrap">
               Sitemap
             </Link>
           </div>
         </div>
         <p className="text-white/50 text-xs text-center mt-3" style={{ fontFamily: "var(--font-primary), system-ui, sans-serif" }}>
-          © 2025 SankalpaSiddhi Ayupharma Pvt. Ltd. · 690A/1 Kabool Nagar, Shahdara, Delhi-110032
+          © {LEGAL.copyrightYear} {LEGAL.companyShort} · {LEGAL.footerRegisteredOffice}
         </p>
       </section>
     </footer>
