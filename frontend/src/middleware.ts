@@ -17,6 +17,8 @@ const PUBLIC_ROUTES = new Set<string>([
   "/products/shahjeet-sticks",
   "/products/shodhit-shilajit-resin",
   "/lab-reports",
+  "/knowledge-center",
+  "/research-testing",
   // Legal / policy pages — required live for Razorpay KYC review.
   "/privacy",
   "/terms",
