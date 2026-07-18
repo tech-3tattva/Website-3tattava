@@ -2,8 +2,10 @@
 
 import { useMemo, useState, type CSSProperties } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Link from "next/link";
 import {
   Search,
+  ArrowRight,
   ChevronDown,
   Mountain,
   Leaf,
@@ -52,6 +54,20 @@ const STATS = [
   { n: PILLARS.length, label: "Knowledge pillars" },
   { n: BLOGS.length, label: "In-depth guides" },
   { n: FAQS.length, label: "Answered questions" },
+];
+
+// The flagship pillar guides — the deep, doctor-written cornerstone articles.
+// Every slug resolves to a full pillar article (verified), so these give the hub
+// a clear "start here" entry and surface the cornerstone content directly.
+const FEATURED_PILLARS: { slug: string; title: string; blurb: string; icon: LucideIcon; color: string }[] = [
+  { slug: "what-is-shilajit", title: "What Is Shilajit?", blurb: "The complete doctor-led guide — what it is, how it forms, and what science shows.", icon: Mountain, color: GOLD },
+  { slug: "shilajit-science-fulvic-acid", title: "The Science of Shilajit", blurb: "Fulvic acid, dibenzo-\u03b1-pyrones and the mechanisms behind the mineral pitch.", icon: Sparkles, color: GOLD },
+  { slug: "shilajit-for-men", title: "Shilajit for Men", blurb: "Testosterone, fertility and recovery — what the evidence actually shows.", icon: Activity, color: ESPRESSO },
+  { slug: "shilajit-for-women", title: "Shilajit for Women", blurb: "Benefits, safety and the honest evidence for women's health.", icon: Leaf, color: "#6b8e4e" },
+  { slug: "how-to-take-shilajit", title: "How to Take Shilajit", blurb: "Dosage, timing, anupana and how to use resin the right way.", icon: BookOpen, color: ESPRESSO },
+  { slug: "shilajit-safety", title: "Shilajit Safety", blurb: "Side effects, heavy metals and who should be cautious.", icon: ShieldCheck, color: GOLD },
+  { slug: "how-to-check-real-shilajit", title: "Is Your Shilajit Real?", blurb: "Tests, lab reports and the red flags that expose fakes.", icon: Search, color: GOLD },
+  { slug: "what-is-triphala", title: "What Is Triphala?", blurb: "The three-fruit formula — benefits, evidence and how it purifies Shilajit.", icon: Leaf, color: "#6b8e4e" },
 ];
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
@@ -183,6 +199,61 @@ export default function KnowledgeCenterClient() {
         </div>
       </section>
 
+      {/* ── Featured pillar guides ───────────────────────────── */}
+      <section style={{ padding: "clamp(48px,6vw,80px) 24px 0" }}>
+        <style dangerouslySetInnerHTML={{ __html: `
+.kc-feat{transition:transform .35s cubic-bezier(.16,1,.3,1),box-shadow .35s ease,border-color .35s ease;}
+.kc-feat:hover{transform:translateY(-6px);box-shadow:0 24px 54px rgba(68,42,27,.16);border-color:var(--kc-accent);}
+.kc-feat:hover .kc-feat-ic{transform:scale(1.1) rotate(-6deg);}
+.kc-feat:hover .kc-feat-go{gap:12px;color:var(--kc-accent);}
+.kc-feat-ic{transition:transform .35s cubic-bezier(.16,1,.3,1);}
+.kc-feat-go{transition:gap .25s ease,color .25s ease;}
+` }} />
+        <div style={{ maxWidth: 1180, margin: "0 auto" }}>
+          <SectionHead
+            icon={Sparkles}
+            eyebrow="Start here"
+            title="The cornerstone guides"
+            sub="Our deepest, doctor-written pillar articles — the best place to begin. Tap any card to read the full guide."
+          />
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(260px,1fr))", gap: "clamp(14px,1.8vw,20px)" }}>
+            {FEATURED_PILLARS.map((f, i) => {
+              const Icon = f.icon;
+              return (
+                <motion.div key={f.slug} initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-40px" }} transition={{ duration: 0.5, delay: (i % 4) * 0.06 }}>
+                  <Link
+                    href={`/education/${f.slug}`}
+                    className="kc-feat"
+                    style={{
+                      ["--kc-accent"]: f.color,
+                      display: "flex",
+                      flexDirection: "column",
+                      height: "100%",
+                      textDecoration: "none",
+                      background: "linear-gradient(180deg,#ffffff 0%,#fdfaf2 100%)",
+                      border: "1px solid rgba(68,42,27,.1)",
+                      borderRadius: 20,
+                      padding: "clamp(20px,2.2vw,26px)",
+                      boxShadow: "0 8px 22px rgba(68,42,27,.06)",
+                      color: INK,
+                    } as CSSProperties}
+                  >
+                    <span className="kc-feat-ic" style={{ width: 46, height: 46, borderRadius: 13, background: `linear-gradient(135deg, ${f.color}26, ${f.color}0d)`, border: `1px solid ${f.color}33`, display: "grid", placeItems: "center", marginBottom: 16 }}>
+                      <Icon size={22} color={f.color} strokeWidth={1.9} />
+                    </span>
+                    <span style={{ fontVariationSettings: "'wght' 800", fontSize: 18, letterSpacing: "-0.01em", lineHeight: 1.25 }}>{f.title}</span>
+                    <span style={{ fontSize: 13.5, color: TAUPE, lineHeight: 1.55, marginTop: 8, flex: 1 }}>{f.blurb}</span>
+                    <span className="kc-feat-go" style={{ display: "inline-flex", alignItems: "center", gap: 6, marginTop: 16, fontSize: 12.5, fontVariationSettings: "'wght' 700", letterSpacing: ".04em", color: GOLD_DARK }}>
+                      Read the guide <ArrowRight size={15} strokeWidth={2.2} />
+                    </span>
+                  </Link>
+                </motion.div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
       {/* ── Pillars ──────────────────────────────────────────── */}
       <section style={{ padding: "clamp(48px,6vw,88px) 24px" }}>
         <style dangerouslySetInnerHTML={{ __html: `
@@ -191,6 +262,14 @@ export default function KnowledgeCenterClient() {
 .kc-pillar:hover{transform:translateY(-6px);box-shadow:0 24px 54px rgba(68,42,27,.15);border-color:var(--kc-accent);}
 .kc-pillar:hover .kc-ic{transform:scale(1.08) rotate(-5deg);}
 .kc-ic{transition:transform .35s cubic-bezier(.16,1,.3,1);}
+.kc-guide{display:flex;gap:10px;align-items:center;text-decoration:none;color:inherit;border-radius:12px;padding:12px 14px;margin:0 -12px;transition:background .2s ease;position:relative;}
+.kc-guide::before{content:"";position:absolute;left:2px;top:14px;bottom:14px;width:2px;border-radius:2px;background:var(--kc-accent);opacity:0;transition:opacity .2s ease;}
+.kc-guide:hover{background:rgba(205,135,42,.06);}
+.kc-guide:hover::before{opacity:.85;}
+.kc-guide:hover .kc-gtitle{color:var(--kc-accent);}
+.kc-guide:hover .kc-garrow{opacity:1;transform:translateX(0);}
+.kc-gtitle{transition:color .2s ease;}
+.kc-garrow{opacity:0;transform:translateX(-4px);transition:opacity .2s ease,transform .2s ease;flex-shrink:0;align-self:center;}
 ` }} />
         <div style={{ maxWidth: 1180, margin: "0 auto" }}>
           <SectionHead
@@ -280,14 +359,19 @@ export default function KnowledgeCenterClient() {
                           style={{ listStyle: "none", margin: "18px 0 0", padding: "18px 0 0", borderTop: "1px solid rgba(68,42,27,.08)", overflow: "hidden" }}
                         >
                           {guides.map((g) => (
-                            <li key={g.id} style={{ padding: "10px 0", borderBottom: "1px solid rgba(68,42,27,.05)" }}>
-                              <div style={{ display: "flex", gap: 8, alignItems: "baseline" }}>
-                                <span style={{ fontVariationSettings: "'wght' 600", fontSize: 14.5, lineHeight: 1.4, color: INK }}>{g.title}</span>
-                                {g.priority === "P1" && (
-                                  <span style={{ flexShrink: 0, fontSize: 9.5, letterSpacing: ".1em", textTransform: "uppercase", color: GOLD_DARK, border: `1px solid ${GOLD}55`, borderRadius: 5, padding: "1px 6px", fontVariationSettings: "'wght' 700" }}>Start here</span>
-                                )}
-                              </div>
-                              <p style={{ fontSize: 12.5, color: TAUPE, lineHeight: 1.5, margin: "4px 0 0" }}>{g.metaDesc}</p>
+                            <li key={g.id} style={{ borderBottom: "1px solid rgba(68,42,27,.05)" }}>
+                              <Link href={`/education/${g.slug}`} className="kc-guide" style={{ ["--kc-accent"]: meta.color } as CSSProperties}>
+                                <span style={{ flex: 1, minWidth: 0 }}>
+                                  <span style={{ display: "flex", gap: 8, alignItems: "baseline", flexWrap: "wrap" }}>
+                                    <span className="kc-gtitle" style={{ fontVariationSettings: "'wght' 600", fontSize: 14.5, lineHeight: 1.4, color: INK }}>{g.title}</span>
+                                    {g.priority === "P1" && (
+                                      <span style={{ flexShrink: 0, fontSize: 9.5, letterSpacing: ".1em", textTransform: "uppercase", color: GOLD_DARK, border: `1px solid ${GOLD}55`, borderRadius: 5, padding: "1px 6px", fontVariationSettings: "'wght' 700" }}>Start here</span>
+                                    )}
+                                  </span>
+                                  <span style={{ display: "block", fontSize: 12.5, color: TAUPE, lineHeight: 1.5, margin: "4px 0 0" }}>{g.metaDesc}</span>
+                                </span>
+                                <ArrowRight className="kc-garrow" size={16} color={meta.color} strokeWidth={2.2} />
+                              </Link>
                             </li>
                           ))}
                         </motion.ul>
