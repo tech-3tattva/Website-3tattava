@@ -19,6 +19,7 @@ const PUBLIC_ROUTES = new Set<string>([
   "/lab-reports",
   "/knowledge-center",
   "/research-testing",
+  "/vaidyaconnect",
   // Legal / policy pages — required live for Razorpay KYC review.
   "/privacy",
   "/terms",
