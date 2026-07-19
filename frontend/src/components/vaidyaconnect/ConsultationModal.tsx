@@ -167,7 +167,7 @@ export default function ConsultationModal({ open, onClose, doctorSlug = "dr-falg
         <motion.div
           initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
           onClick={onClose}
-          style={{ position: "fixed", inset: 0, zIndex: 200, background: "rgba(20,12,4,.55)", backdropFilter: "blur(4px)", display: "flex", alignItems: "flex-start", justifyContent: "center", padding: "5vh 16px", overflowY: "auto" }}
+          style={{ position: "fixed", inset: 0, zIndex: 10001, background: "rgba(20,12,4,.55)", backdropFilter: "blur(4px)", display: "flex", alignItems: "flex-start", justifyContent: "center", padding: "5vh 16px", overflowY: "auto" }}
         >
           <motion.div
             initial={{ y: 30, opacity: 0, scale: .98 }} animate={{ y: 0, opacity: 1, scale: 1 }} exit={{ y: 20, opacity: 0 }}
