@@ -98,6 +98,7 @@ const orderSchema = new mongoose.Schema(
     shipment: {
       awbNumber: { type: String },
       shipmentId: { type: String },
+      nimbusOrderId: { type: String },
       courierName: { type: String },
       labelUrl: { type: String },
       paymentType: { type: String, enum: ["prepaid", "cod"], default: "prepaid" },

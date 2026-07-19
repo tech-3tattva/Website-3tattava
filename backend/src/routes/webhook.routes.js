@@ -243,55 +243,28 @@ async function handlePaymentCaptured(event, eventId) {
       });
     }
 
-    // Auto-create NimbusPost shipment if env is configured
-    if (process.env.NP_API_KEY || (process.env.NP_EMAIL && process.env.NP_PASSWORD)) {
+    // Auto-create the order in NimbusPost (ops assigns courier + AWB in the
+    // dashboard). Idempotent: skip if we've already pushed it.
+    if (nimbus.isConfigured() && !order.shipment?.nimbusOrderId) {
       try {
-        if (!order.shipment?.awbNumber) {
-          const payload = {
-            order_number: order.orderNumber,
-            payment_type: "prepaid",
-            package_weight: 500,
-            package_length: 15,
-            package_breadth: 10,
-            package_height: 10,
-            order_amount: netAmountRupees,
-            consignee: {
-              name: `${order.shippingAddress.firstName} ${order.shippingAddress.lastName}`,
-              address: order.shippingAddress.line1 + (order.shippingAddress.line2 ? `, ${order.shippingAddress.line2}` : ""),
-              city: order.shippingAddress.city,
-              state: order.shippingAddress.state,
-              pincode: order.shippingAddress.pincode,
-              phone: order.shippingAddress.phone,
-              email: order.shippingAddress.email,
-              country: order.shippingAddress.country || "India",
-            },
-            pickup_address: { warehouse_name: process.env.NP_WAREHOUSE_NAME || "warehouse 1" },
-            product_description: order.items[0]?.name || "3TATTAVA Product",
-            courier_id: 0,
-          };
-          const npResp = await nimbus.createShipment(payload);
-          const s = npResp.data || npResp;
-          order.shipment = {
-            awbNumber: s.awb_number,
-            shipmentId: String(s.shipment_id || ""),
-            courierName: s.courier_name || "",
-            labelUrl: s.label || "",
-            paymentType: "prepaid",
-            nimbusStatus: "booked",
-            checkpoints: [],
-            createdAt: new Date(),
-            lastTrackedAt: new Date(),
-          };
-          order.tracking = {
-            courierName: s.courier_name || "",
-            trackingNumber: s.awb_number,
-            trackingUrl: `https://www.nimbuspost.com/tracking/?awb=${s.awb_number}`,
-          };
-          await order.save();
-          console.log(`[webhook] NimbusPost shipment booked: AWB ${s.awb_number} for order ${order.orderNumber}`);
-        }
+        const result = await nimbus.createShipmentForOrder(order);
+        order.shipment = {
+          ...(order.shipment || {}),
+          nimbusOrderId: result.nimbusOrderId,
+          shipmentId: result.nimbusOrderId,
+          awbNumber: result.awbNumber || "",
+          courierName: result.courierName || "",
+          labelUrl: result.labelUrl || "",
+          paymentType: "prepaid",
+          nimbusStatus: result.status || "created",
+          checkpoints: order.shipment?.checkpoints || [],
+          createdAt: new Date(),
+          lastTrackedAt: new Date(),
+        };
+        await order.save();
+        console.log(`[webhook] NimbusPost order created: ${result.nimbusOrderNumber || result.nimbusOrderId} for ${order.orderNumber}`);
       } catch (npErr) {
-        console.error("[webhook] NimbusPost auto-shipment failed:", npErr.message);
+        console.error("[webhook] NimbusPost auto-create failed:", npErr.message);
       }
     }
   }
