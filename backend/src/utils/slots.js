@@ -28,8 +28,10 @@ function minutesToTime(mins) {
  * @returns {{ available: string[], closed: boolean, reason?: string }}
  */
 function generateSlots(doctor, dateStr, bookedSlots = [], blockedSlots = []) {
-  const date = new Date(dateStr + "T00:00:00+05:30");
-  const dayName = DAYS[date.getDay()];
+  // Day-of-week for the IST calendar date, independent of the server's timezone
+  // (EC2 runs UTC, where new Date("...T00:00+05:30").getDay() shifts back a day).
+  const [yy, mm, dd] = dateStr.split("-").map(Number);
+  const dayName = DAYS[new Date(Date.UTC(yy, mm - 1, dd)).getUTCDay()];
   const dayConfig = doctor.workingHours?.[dayName];
 
   if (!dayConfig || dayConfig.closed) {
