@@ -371,7 +371,7 @@ interface FeaturedDoc {
   initial:string; photo?:string; name:string; role:string; credentials:string;
   badge:string; quote:string; specialties:string[];
   ctas:Array<{label:string;variant:"gold"|"ghost"|"ink";href?:string;action?:"consult"}>;
-  consultNote?:string;
+  consultNote?:string; about?:string;
 }
 
 function FeaturedCard({ doc, idx, onConsult }: { doc:FeaturedDoc; idx:number; onConsult?:()=>void }) {
@@ -477,6 +477,17 @@ function FeaturedCard({ doc, idx, onConsult }: { doc:FeaturedDoc; idx:number; on
           &ldquo;{doc.quote}&rdquo;
         </p>
       </blockquote>
+
+      {/* About — short bio */}
+      {doc.about && (
+        <p style={{
+          fontSize:"13px",lineHeight:1.7,color:"rgba(28,19,4,.62)",
+          fontVariationSettings:"'wdth' 100,'wght' 300",
+          margin:0,position:"relative",zIndex:1,
+        }}>
+          {doc.about}
+        </p>
+      )}
 
       {/* Specialty tags — neumorphic pills */}
       <div style={{display:"flex",flexWrap:"wrap",gap:"8px",position:"relative",zIndex:1}}>
@@ -726,15 +737,16 @@ const FEATURED_DOCTORS: FeaturedDoc[] = [
   {
     initial:"F", photo:"/team/dr-falguni-chauhan.jpg",
     name:"Dr. Falguni Chauhan",
-    role:"Performance Nutrition Expert",
-    credentials:"BAMS · Ayurveda Dietician",
-    badge:"Performance Nutrition Expert",
-    quote:"Every individual is different based on their Prakriti. Your first consultation is free — and includes a personalised diet chart built around your body type.",
-    specialties:["Prakriti Assessment","Sports Nutrition","Women's Wellness","Gut Health"],
+    role:"Ayurveda & Integrative Wellness",
+    credentials:"B.A.M.S. · M.A. in Psychology",
+    badge:"Consultant",
+    quote:"Every individual is different based on their Prakriti. Your first consultation is complimentary — and includes a personalised diet chart built around your body type.",
+    about:"Dr. Falguni is an Ayurveda & Integrative Wellness consultant (B.A.M.S., M.A. in Psychology) who blends classical Ayurveda with mind-body science. Her work spans Panchakarma, Medical Yoga, chronic-disease management and Ayurveda nutrition — building Prakriti-based diet and lifestyle protocols that are practical to sustain.",
+    specialties:["Panchakarma","Medical Yoga","Chronic Disease Management","Mind-Body Healing","Ayurveda Nutrition"],
     ctas:[
-      { label:"Book Free Consultation", variant:"gold", action:"consult" },
+      { label:"Consult This Expert", variant:"gold", action:"consult" },
     ],
-    consultNote:"First 30-minute online consultation is free and includes a personalised Prakriti-based diet chart.",
+    consultNote:"First 15-minute online consultation is free and includes a personalised Prakriti-based diet chart.",
   },
 ];
 

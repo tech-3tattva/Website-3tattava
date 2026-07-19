@@ -45,7 +45,7 @@ const PRODUCTS = [
     price: 999,
     mrp: 1199,
     discount: "17% OFF",
-    image: "https://media.3tattava.com/products/3-Tattava+A%2B-01S.png",
+    image: "https://media.3tattava.com/products/full+shahjeet+box.png",
     pills: ["600mg Per Stick", "NABL Tested", "AYUSH GMP"],
     cta: "Start Your Ritual",
     rating: 4.8,

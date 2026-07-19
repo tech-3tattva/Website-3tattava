@@ -174,7 +174,7 @@ function WhyCreatedSection() {
           </Reveal>
           <Reveal className="shj-media" delay={0.1} style={{ display: "flex", justifyContent: "center" }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={media("/shahjeet/sticks-3.png")} alt="Three Shahjeet honey sticks" style={{ width: "100%", maxWidth: 420, height: "auto", display: "block", filter: "drop-shadow(0 20px 40px rgba(68,42,27,.2))" }} />
+            <img src="https://media.3tattava.com/products/Sticks+refined.png" alt="Three Shahjeet honey sticks" style={{ width: "100%", maxWidth: 420, height: "auto", display: "block", filter: "drop-shadow(0 20px 40px rgba(68,42,27,.2))" }} />
           </Reveal>
         </div>
 
@@ -273,7 +273,7 @@ function CinematicSection() {
       <div className="shj-2col" style={{ maxWidth: 1120, margin: "0 auto", gap: "clamp(28px,4vw,60px)" }}>
         <Reveal style={{ display: "flex", justifyContent: "center" }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="https://media.3tattava.com/products/3-Tattava+A%2B-03S.png" alt="Shahjeet honey stick on a Himalayan rock at sunset" style={{ width: "100%", maxWidth: 520, height: "auto", display: "block", borderRadius: 20, boxShadow: "0 22px 48px rgba(68,42,27,.22)" }} />
+          <img src="https://media.3tattava.com/products/rockresin/3-Tattava+A%2B-05S.png" alt="Shahjeet Sticks" style={{ width: "100%", maxWidth: 520, height: "auto", display: "block", borderRadius: 20, boxShadow: "0 22px 48px rgba(68,42,27,.22)" }} />
         </Reveal>
         <Reveal delay={0.08}>
           <p style={{ ...eyebrow, marginBottom: 18 }}>Why Shahjeet</p>
@@ -435,7 +435,9 @@ function MarqueeSection() {
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={media("/shahjeet/bee-real.png")} alt="Honeybee" style={{ position: "absolute", top: "clamp(-42px,-4vw,-18px)", left: "clamp(-64px,-5vw,-32px)", width: "clamp(96px,12vw,168px)", height: "auto", zIndex: 3, pointerEvents: "none", filter: "drop-shadow(0 12px 26px rgba(68,42,27,.26))" }} />
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="https://media.3tattava.com/products/rockresin/3-Tattava+A%2B-05S.png" alt="Shahjeet Sticks" style={{ width: "clamp(220px,30vw,420px)", height: "auto", display: "block" }} />
+          <img src={media("/shahjeet/canister.png")} alt="Shahjeet Sticks canister" style={{ width: "clamp(150px,20vw,280px)", height: "auto", display: "block" }} />
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={media("/shahjeet/canister-2.png")} alt="Shahjeet Sticks canister" style={{ width: "clamp(150px,20vw,280px)", height: "auto", display: "block", marginLeft: "clamp(-40px,-4vw,-16px)" }} />
         </div>
       </div>
       <Row dim />

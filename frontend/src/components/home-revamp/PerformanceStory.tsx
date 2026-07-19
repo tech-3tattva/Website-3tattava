@@ -33,7 +33,7 @@ interface Panel {
   ctaLabel: string;
   ctaHref: string;
   imageSide: 'left' | 'right';
-  media: { type: 'image'; src: string; alt: string; fallback?: 'mona' };
+  media: { type: 'image'; src: string; alt: string; fallback?: 'mona'; fit?: 'cover' | 'contain' };
 }
 
 const PANELS: Panel[] = [
@@ -47,7 +47,7 @@ const PANELS: Panel[] = [
     ctaLabel: 'Shop Shahjeet Sticks',
     ctaHref: '/products/shahjeet-sticks',
     imageSide: 'left',
-    media: { type: 'image', src: "https://media.3tattava.com/products/3-Tattava+A%2B-02S.png", alt: '3Tattava Shahjeet Sticks honey sachets' },
+    media: { type: 'image', src: "https://media.3tattava.com/products/3-Tattava+A%2B-02S.png", alt: '3Tattava Shahjeet Sticks honey sachets', fit: 'contain' },
   },
   {
     n: '02',
@@ -109,7 +109,7 @@ function PanelMedia({ media }: { media: Panel['media'] }) {
   const showFallback = broken && media.fallback === 'mona';
 
   return (
-    <div className="pstory-media" ref={ref}>
+    <div className="pstory-media" ref={ref} style={{ background: media.fit === 'contain' ? '#ffffff' : undefined }}>
       {showFallback ? (
         <div
           aria-label="Mona Agarwal"
@@ -157,22 +157,25 @@ function PanelMedia({ media }: { media: Panel['media'] }) {
             inset: 0,
             width: '100%',
             height: '100%',
-            objectFit: 'cover',
+            objectFit: media.fit ?? 'cover',
+            padding: media.fit === 'contain' ? 'clamp(32px, 5vw, 80px)' : 0,
             display: 'block',
-            scale: reduce ? 1 : scale,
+            scale: reduce || media.fit === 'contain' ? 1 : scale,
           }}
         />
       )}
-      {/* subtle inner vignette for text-edge legibility */}
-      <div
-        aria-hidden
-        style={{
-          position: 'absolute',
-          inset: 0,
-          background: 'linear-gradient(90deg, rgba(28,19,4,0.15), transparent 30%, transparent 70%, rgba(28,19,4,0.15))',
-          pointerEvents: 'none',
-        }}
-      />
+      {/* subtle inner vignette for text-edge legibility (cover photos only) */}
+      {media.fit !== 'contain' && (
+        <div
+          aria-hidden
+          style={{
+            position: 'absolute',
+            inset: 0,
+            background: 'linear-gradient(90deg, rgba(28,19,4,0.15), transparent 30%, transparent 70%, rgba(28,19,4,0.15))',
+            pointerEvents: 'none',
+          }}
+        />
+      )}
     </div>
   );
 }

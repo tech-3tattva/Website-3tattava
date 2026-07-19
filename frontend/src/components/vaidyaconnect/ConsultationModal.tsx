@@ -182,7 +182,7 @@ export default function ConsultationModal({ open, onClose, doctorSlug = "dr-falg
               <p style={{ fontSize: 11, letterSpacing: ".2em", textTransform: "uppercase", color: GOLD, marginBottom: 6 }}>Free First Consultation · with Diet Chart</p>
               <h2 style={{ fontSize: 24, fontWeight: 700, color: INK, lineHeight: 1.2 }}>Book with {doctorName}</h2>
               <p style={{ fontSize: 13, color: "rgba(28,19,4,.55)", marginTop: 4 }}>
-                Your first 30-minute online consultation is complimentary — including a personalised Prakriti-based diet chart.
+                Your first 15-minute online consultation is complimentary — including a personalised Prakriti-based diet chart.
               </p>
             </div>
 

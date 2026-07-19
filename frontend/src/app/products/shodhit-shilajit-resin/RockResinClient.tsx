@@ -1,7 +1,7 @@
 "use client";
 import { media } from "@/lib/media";
 
-import { useState, useRef, useEffect, type ReactNode, type CSSProperties } from "react";
+import { useState, useRef, type ReactNode, type CSSProperties } from "react";
 import { motion, useInView } from "framer-motion";
 import { useCart } from "@/context/CartContext";
 import { ScrollProgressBar } from "../shahjeet-sticks/_enhancements";
@@ -166,7 +166,7 @@ function HeroSection() {
 
           <motion.div className="rr-media" initial={{ opacity: 0, scale: 0.94 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.8, ease: EASE }} style={{ position: "relative", zIndex: 1, display: "flex", justifyContent: "center", marginTop: "clamp(12px,2vw,28px)" }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="https://media.3tattava.com/products/rockresin/3-Tattava+A%2B-03R.png" alt="RockResin — Shodhit Himalayan Shilajit resin jar, tub and spoon" style={{ width: "100%", maxWidth: 460, height: "auto", display: "block", filter: "drop-shadow(0 26px 50px rgba(68,42,27,.20))" }} />
+            <img src="/home/rockresin-hero-product.png?v=2" alt="RockResin — Shodhit Himalayan Shilajit resin jar, tub and spoon" style={{ width: "100%", maxWidth: 460, height: "auto", display: "block", filter: "drop-shadow(0 26px 50px rgba(68,42,27,.20))" }} />
           </motion.div>
         </div>
       </div>
@@ -448,59 +448,22 @@ function ExpectSection() {
 // ─── 8 · MARQUEE ──────────────────────────────────────────────────────────────
 function MarqueeSection() {
   const phrase = "ONE RESIN · COMPLETE VITALITY · DIP · HOOK · SWIRL · ";
-  const VB_W = 1600;
-  const VB_H = 640;
-  const cx = VB_W / 2;
-  const cy = VB_H / 2;
-  const rx = 720;
-  const ry = 258;
-  const d = `M ${cx - rx},${cy} a ${rx},${ry} 0 1,1 ${2 * rx},0 a ${rx},${ry} 0 1,1 ${-2 * rx},0`;
-  const tpRef = useRef<SVGTextPathElement>(null);
-  const measRef = useRef<SVGTextElement>(null);
-  useEffect(() => {
-    const tp = tpRef.current;
-    const meas = measRef.current;
-    if (!tp || !meas) return;
-    let raf = 0;
-    let offset = 0;
-    let last = 0;
-    let period = 1;
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const start = () => {
-      period = meas.getComputedTextLength() || 1; // exact advance of ONE phrase → seamless wrap
-      if (reduce) return;
-      const speed = 46; // viewBox units / second
-      const tick = (now: number) => {
-        if (!last) last = now;
-        const dt = (now - last) / 1000;
-        last = now;
-        offset = (offset + speed * dt) % period;
-        tp.setAttribute("startOffset", String(-offset));
-        raf = requestAnimationFrame(tick);
-      };
-      raf = requestAnimationFrame(tick);
-    };
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(start);
-    else start();
-    return () => cancelAnimationFrame(raf);
-  }, [phrase]);
-  return (
-    <section style={{ background: CREAM, padding: "clamp(16px,2.5vw,44px) 0", position: "relative", overflow: "hidden" }}>
-      <div style={{ position: "relative", maxWidth: 1180, margin: "0 auto" }}>
-        <svg viewBox={`0 0 ${VB_W} ${VB_H}`} width="100%" role="img" aria-label={phrase.trim()} style={{ display: "block", overflow: "visible" }}>
-          <defs>
-            <path id="rr-ellipse" d={d} fill="none" />
-          </defs>
-          <text ref={measRef} visibility="hidden" style={{ fontFamily: F, fontVariationSettings: "'wght' 800", fontSize: 46, letterSpacing: "0.04em" }}>{phrase}</text>
-          <text fill={ESPRESSO} style={{ fontFamily: F, fontVariationSettings: "'wght' 800", fontSize: 46, letterSpacing: "0.04em" }}>
-            <textPath ref={tpRef} href="#rr-ellipse" startOffset="0">{phrase.repeat(8)}</textPath>
-          </text>
-        </svg>
-        <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", pointerEvents: "none" }}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={media("/rockresin/product.png")} alt="RockResin — Shodhit Himalayan Shilajit resin jar and spoon" style={{ width: "min(24%,205px)", height: "auto", display: "block", filter: "drop-shadow(0 18px 36px rgba(68,42,27,.2))" }} />
-        </div>
+  const line = phrase.repeat(6);
+  const Row = ({ dim }: { dim?: boolean }) => (
+    <div className="rr-arch-mask" aria-hidden>
+      <div className="rr-arch" style={{ fontFamily: F, fontVariationSettings: "'wght' 800", fontSize: "clamp(30px,5.5vw,64px)", letterSpacing: "-0.01em", color: dim ? "rgba(68,42,27,.26)" : ESPRESSO }}>
+        <span>{line}</span><span>{line}</span>
       </div>
+    </div>
+  );
+  return (
+    <section style={{ background: CREAM, padding: "clamp(36px,5vw,64px) 0", position: "relative", overflow: "hidden" }}>
+      <Row />
+      <div style={{ display: "flex", justifyContent: "center", position: "relative", zIndex: 1 }}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={media("/rockresin/product.png")} alt="RockResin — Shodhit Himalayan Shilajit resin jar and spoon" style={{ width: "clamp(180px,24vw,320px)", height: "auto", display: "block" }} />
+      </div>
+      <Row dim />
     </section>
   );
 }
