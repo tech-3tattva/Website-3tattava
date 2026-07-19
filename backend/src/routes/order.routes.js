@@ -414,7 +414,10 @@ router.post("/verify-cashfree", async (req, res, next) => {
     const order = await Order.findOne({ orderNumber: v.orderNumber }).exec();
     if (!order) return next(new ApiError(404, "Order not found."));
     if (order.payment.status === "captured") return res.json(order.toJSON());
-    if (cfOrder.order_status !== "PAID") return next(new ApiError(400, "Payment not completed."));
+    if (cfOrder.order_status !== "PAID") {
+      // Not paid yet (ACTIVE) or failed/expired — tell the client which, don't 400.
+      return res.json({ captured: false, payment: { status: "pending" }, cashfreeStatus: cfOrder.order_status });
+    }
 
     const need = new Map();
     for (const it of order.items) {
@@ -463,8 +466,16 @@ router.post("/verify-cashfree", async (req, res, next) => {
 
 router.get("/:orderNumber", async (req, res, next) => {
   try {
+    // Public guest tracking — require the order email to match so order numbers
+    // cannot be enumerated to leak customer PII. Logged-in users use /account/orders.
+    const email = String(req.query.email || "").toLowerCase().trim();
+    if (!email) throw new ApiError(400, "Enter the email used on the order to track it.");
     const order = await Order.findOne({ orderNumber: req.params.orderNumber }).exec();
     if (!order) throw new ApiError(404, "Order not found");
+    const emails = [order.shippingAddress?.email, order.guestEmail]
+      .filter(Boolean)
+      .map((e) => String(e).toLowerCase().trim());
+    if (!emails.includes(email)) throw new ApiError(404, "Order not found");
     return res.json(order);
   } catch (err) {
     return next(err);

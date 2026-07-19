@@ -61,9 +61,15 @@ export default function CheckoutPaymentPage() {
     setIsPlacing(true);
     setError(null);
     try {
+      if (items.length === 0) throw new Error("Your cart is empty — add items before paying.");
       const rawShipping = localStorage.getItem("checkoutShippingAddress");
       if (!rawShipping) throw new Error("Shipping address not found. Please go back to the Address step.");
       const shippingAddress = JSON.parse(rawShipping);
+
+      // Load the payment gateway FIRST — avoids leaving an orphaned pending order
+      // if the SDK fails to load.
+      const loaded = await loadCashfree();
+      if (!loaded || !window.Cashfree) throw new Error("Could not load the payment gateway. Check your connection and retry.");
 
       const shippingFee = subtotal >= 999 ? 0 : 150;
       // CartContext total = subtotal - discount + shippingFee
@@ -84,12 +90,7 @@ export default function CheckoutPaymentPage() {
         isLoggedIn,
       );
 
-      const loaded = await loadCashfree();
-      if (!loaded) throw new Error("Could not load the payment gateway. Check your connection and retry.");
-      if (!window.Cashfree) throw new Error("Payment gateway unavailable. Please retry.");
-
-      // The order (with shippingAddress) is persisted server-side; capture is confirmed
-      // on the return_url page (/order-confirmation/[id]) via /orders/verify-cashfree.
+      // Order + session created and SDK is ready — redirect to Cashfree.
       const cf = new window.Cashfree(order.paymentSessionId);
       cf.redirect();
     } catch (err) {
@@ -140,6 +141,11 @@ export default function CheckoutPaymentPage() {
             {isPlacing ? "Processing…" : `Pay ${formatPrice(total)}`}
           </button>
           {error && <p className="text-sm text-red-600 mt-4">{error}</p>}
+          {items.length === 0 && !error && (
+            <p className="text-sm text-text-medium mt-4">
+              Your cart is empty. <a href="/products" className="text-primary-green underline">Add items</a> to continue.
+            </p>
+          )}
         </div>
       </div>
     </div>

@@ -138,6 +138,14 @@ async function start() {
     // eslint-disable-next-line no-console
     console.log(`[backend] listening on http://localhost:${port}`);
   });
+
+  // Periodic NimbusPost tracking refresh (no-op if NimbusPost isn't configured).
+  try {
+    require("./src/jobs/trackShipments").startTrackingCron();
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.error("[backend] tracking cron failed to start:", e.message);
+  }
 }
 
 start().catch((err) => {

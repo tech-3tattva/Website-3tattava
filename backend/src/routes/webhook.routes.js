@@ -265,6 +265,11 @@ async function handlePaymentCaptured(event, eventId) {
         console.log(`[webhook] NimbusPost order created: ${result.nimbusOrderNumber || result.nimbusOrderId} for ${order.orderNumber}`);
       } catch (npErr) {
         console.error("[webhook] NimbusPost auto-create failed:", npErr.message);
+        // Flag it so ops can create the shipment manually from the admin panel.
+        try {
+          order.shipment = { ...(order.shipment || {}), nimbusStatus: "create_failed", lastTrackedAt: new Date() };
+          await order.save();
+        } catch { /* non-fatal */ }
       }
     }
   }

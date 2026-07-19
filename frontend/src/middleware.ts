@@ -20,6 +20,15 @@ const PUBLIC_ROUTES = new Set<string>([
   "/knowledge-center",
   "/research-testing",
   "/vaidyaconnect",
+  "/assessment",
+  "/community",
+  "/find-us",
+  "/product-journey",
+  "/social-links",
+  "/subscribe-waitlist",
+  "/wellness-club",
+  "/wishlist",
+  "/search",
   // Legal / policy pages — required live for Razorpay KYC review.
   "/privacy",
   "/terms",
@@ -45,6 +54,7 @@ const PUBLIC_PREFIXES = [
   "/register",
   "/track-order",
   "/education",
+  "/doctors",
 ];
 
 // URL variants (typed / printed / QR) that permanently redirect to the canonical route.

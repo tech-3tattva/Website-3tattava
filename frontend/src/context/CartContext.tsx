@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useReducer, useCallback, useEffect } from "react";
+import React, { createContext, useContext, useReducer, useCallback, useEffect, useRef } from "react";
 import type { CouponValidateResponse, ServerCart } from "@shared/types";
 import { api, USE_MOCK } from "@/lib/api";
 import { useAuth } from "@/context/AuthContext";
@@ -140,10 +140,25 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     }
   }, [isLoggedIn]);
 
+  const mergedOnLogin = useRef(false);
   useEffect(() => {
     if (authLoading) return;
-    void hydrateCart();
-  }, [authLoading, hydrateCart]);
+    (async () => {
+      // On login, merge any guest cart into the user's cart before hydrating,
+      // so items added while logged out are not lost.
+      if (isLoggedIn && !mergedOnLogin.current) {
+        mergedOnLogin.current = true;
+        try {
+          await api.post("/cart/merge", {}, true);
+        } catch (error) {
+          console.error("Cart merge failed", error);
+        }
+      } else if (!isLoggedIn) {
+        mergedOnLogin.current = false;
+      }
+      await hydrateCart();
+    })();
+  }, [authLoading, isLoggedIn, hydrateCart]);
 
   const addItem = useCallback(async (item: CartItem) => {
     if (USE_MOCK) {

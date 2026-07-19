@@ -14,11 +14,12 @@ function TrackOrderContent() {
   const prefillFromUrl = searchParams.get("orderId") ?? "";
 
   const [orderId, setOrderId] = useState("");
+  const [email, setEmail] = useState("");
   const [order, setOrder] = useState<Order | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const canTrack = useMemo(() => orderId.trim().length > 0, [orderId]);
+  const canTrack = useMemo(() => orderId.trim().length > 0 && /.+@.+\..+/.test(email.trim()), [orderId, email]);
 
   useEffect(() => {
     if (prefillFromUrl) {
@@ -26,32 +27,6 @@ function TrackOrderContent() {
     }
   }, [prefillFromUrl]);
 
-  useEffect(() => {
-    const id = prefillFromUrl.trim();
-    if (!id) return;
-
-    let cancelled = false;
-    setIsLoading(true);
-    setError(null);
-    setOrder(null);
-
-    (async () => {
-      try {
-        const result = await api.get<Order>(`/orders/${encodeURIComponent(id)}`);
-        if (!cancelled) setOrder(result);
-      } catch (err) {
-        if (!cancelled) {
-          setError(err instanceof Error ? err.message : "Failed to track order");
-        }
-      } finally {
-        if (!cancelled) setIsLoading(false);
-      }
-    })();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [prefillFromUrl]);
 
   async function handleTrack() {
     if (!canTrack) return;
@@ -60,7 +35,7 @@ function TrackOrderContent() {
     setOrder(null);
 
     try {
-      const result = await api.get<Order>(`/orders/${encodeURIComponent(orderId.trim())}`);
+      const result = await api.get<Order>(`/orders/${encodeURIComponent(orderId.trim())}?email=${encodeURIComponent(email.trim())}`);
       setOrder(result);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to track order");
@@ -78,8 +53,8 @@ function TrackOrderContent() {
               Track Your Order
             </h1>
             <p className="text-text-medium text-sm max-w-md leading-relaxed">
-              Enter your order ID (for example from your confirmation page) to see live status,
-              what’s in your shipment, and tracking when available.
+              Enter your order ID and the email used on the order to see live status,
+              what&rsquo;s in your shipment, and tracking when available.
             </p>
           </div>
           <Link href="/products" className="shrink-0 self-start sm:self-auto">
@@ -99,6 +74,19 @@ function TrackOrderContent() {
               value={orderId}
               onChange={(e) => setOrderId(e.target.value)}
               placeholder="e.g. 3T-1712345678901"
+              className="w-full px-4 py-3 border border-border rounded-lg text-text-dark placeholder:text-text-light focus:outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold"
+            />
+          </div>
+          <div className="flex-1 space-y-2">
+            <label htmlFor="track-email" className="block text-sm font-medium text-text-dark">
+              Email
+            </label>
+            <input
+              id="track-email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Email used on the order"
               className="w-full px-4 py-3 border border-border rounded-lg text-text-dark placeholder:text-text-light focus:outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold"
             />
           </div>
