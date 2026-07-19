@@ -50,7 +50,7 @@ app.use(
     crossOriginResourcePolicy: { policy: "cross-origin" },
   })
 );
-// Razorpay webhook needs raw body for HMAC — mount BEFORE express.json()
+// Cashfree webhook needs raw body for HMAC — mount BEFORE express.json()
 app.use("/api/webhooks", express.raw({ type: "application/json" }), webhookRoutes);
 
 app.use(express.json({ limit: "2mb" }));

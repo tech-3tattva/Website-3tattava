@@ -34,7 +34,7 @@ function buildNimbusPayload(order) {
 
   return {
     order_number: order.orderNumber,
-    payment_type: "prepaid", // all Razorpay orders are prepaid
+    payment_type: "prepaid", // all online orders are prepaid
     package_weight: 500, // grams — default; override via env or product meta
     package_length: 15,
     package_breadth: 10,

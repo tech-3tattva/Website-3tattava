@@ -10,8 +10,7 @@ const { verifyToken } = require("../middleware/auth");
 const { ApiError } = require("../middleware/errorHandler");
 const { z } = require("zod");
 const { SESClient, SendEmailCommand } = require("@aws-sdk/client-ses");
-const Razorpay = require("razorpay");
-const crypto = require("crypto");
+const cashfree = require("../lib/cashfree");
 
 const router = express.Router();
 
@@ -298,21 +297,14 @@ router.post("/place-demo", async (req, res, next) => {
   }
 });
 
-// ── Razorpay helpers + schema ─────────────────────────────────────────────────
-function getRazorpay() {
-  const key_id = process.env.RAZORPAY_KEY_ID;
-  const key_secret = process.env.RAZORPAY_KEY_SECRET;
-  if (!key_id || !key_secret || /placeholder/i.test(key_id) || /placeholder/i.test(key_secret)) return null;
-  return new Razorpay({ key_id, key_secret });
-}
-
-const rzpItemSchema = z.object({
+// ── Cashfree helpers + schema ─────────────────────────────────────────────────
+const cfItemSchema = z.object({
   productId: z.string().min(1), name: z.string().min(1), image: z.string().min(1),
   price: z.number().nonnegative(), mrp: z.number().nonnegative().optional(),
   quantity: z.number().int().positive(), slug: z.string().min(1), variant: z.string().optional(),
 });
-const rzpOrderSchema = z.object({
-  items: z.array(rzpItemSchema).min(1),
+const cfOrderSchema = z.object({
+  items: z.array(cfItemSchema).min(1),
   shippingAddress: z.object({
     title: z.enum(["Mr.", "Mrs.", "Ms.", "Dr."]).optional(),
     firstName: z.string().min(1), lastName: z.string().min(1), email: z.string().email(),
@@ -325,12 +317,11 @@ const rzpOrderSchema = z.object({
   shippingMethod: z.enum(["standard", "express", "free"]).optional(),
 });
 
-// POST /api/orders/create-razorpay — create a Razorpay order + pending DB order
-router.post("/create-razorpay", async (req, res, next) => {
+// POST /api/orders/create-cashfree — create a Cashfree order + pending DB order
+router.post("/create-cashfree", async (req, res, next) => {
   try {
-    const parsed = rzpOrderSchema.parse(req.body);
-    const rzp = getRazorpay();
-    if (!rzp) return next(new ApiError(503, "Online payments are not configured yet."));
+    const parsed = cfOrderSchema.parse(req.body);
+    if (!cashfree.getCashfree()) return next(new ApiError(503, "Online payments are not configured yet."));
     const customerId = getOptionalCustomerId(req);
 
     const resolvedLines = [];
@@ -352,11 +343,18 @@ router.post("/create-razorpay", async (req, res, next) => {
     }
 
     const orderNumber = `3T-${Date.now()}`;
-    const rzOrder = await rzp.orders.create({
-      amount: Math.round(parsed.total * 100),
-      currency: "INR",
-      receipt: orderNumber,
-      notes: { orderNumber, email: parsed.shippingAddress.email },
+    const frontendUrl = process.env.FRONTEND_URL || "http://localhost:3000";
+    const cfOrder = await cashfree.createOrder({
+      order_id: orderNumber,
+      order_amount: Number(parsed.total.toFixed(2)),
+      order_currency: "INR",
+      customer_details: {
+        customer_id: customerId ? String(customerId) : `guest-${orderNumber}`,
+        customer_name: `${parsed.shippingAddress.firstName} ${parsed.shippingAddress.lastName}`.trim(),
+        customer_email: parsed.shippingAddress.email,
+        customer_phone: parsed.shippingAddress.phone,
+      },
+      order_meta: { return_url: `${frontendUrl}/order-confirmation/${orderNumber}` },
     });
 
     const normalizedItems = resolvedLines.map(({ item, product }) => ({
@@ -381,21 +379,22 @@ router.post("/create-razorpay", async (req, res, next) => {
       shippingMethod: parsed.shippingMethod,
       status: "pending",
       statusHistory: [{ status: "pending", updatedBy: "system" }],
-      payment: { method: "razorpay", status: "pending", razorpayOrderId: rzOrder.id },
+      payment: {
+        provider: "cashfree",
+        status: "pending",
+        cashfree: {
+          orderId: String(cfOrder.cf_order_id),
+          paymentSessionId: cfOrder.payment_session_id,
+        },
+      },
       tracking: {},
     });
 
     return res.status(201).json({
       orderNumber,
-      razorpayOrderId: rzOrder.id,
-      amount: rzOrder.amount,
-      currency: rzOrder.currency,
-      keyId: process.env.RAZORPAY_KEY_ID,
-      prefill: {
-        name: `${parsed.shippingAddress.firstName} ${parsed.shippingAddress.lastName}`.trim(),
-        email: parsed.shippingAddress.email,
-        contact: parsed.shippingAddress.phone,
-      },
+      paymentSessionId: cfOrder.payment_session_id,
+      cfOrderId: String(cfOrder.cf_order_id),
+      mode: "cashfree",
     });
   } catch (err) {
     if (err instanceof z.ZodError) return next(new ApiError(400, err.issues[0]?.message || "Invalid order payload"));
@@ -403,25 +402,19 @@ router.post("/create-razorpay", async (req, res, next) => {
   }
 });
 
-// POST /api/orders/verify — verify Razorpay signature, capture payment, decrement stock
-router.post("/verify", async (req, res, next) => {
+// POST /api/orders/verify-cashfree — fetch Cashfree order, capture payment, decrement stock
+router.post("/verify-cashfree", async (req, res, next) => {
   try {
-    const v = z.object({
-      razorpay_order_id: z.string().min(1),
-      razorpay_payment_id: z.string().min(1),
-      razorpay_signature: z.string().min(1),
-      orderNumber: z.string().min(1),
-    }).parse(req.body);
+    const v = z.object({ orderNumber: z.string().min(1) }).parse(req.body);
+    if (!cashfree.getCashfree()) return next(new ApiError(503, "Online payments are not configured yet."));
 
-    const secret = process.env.RAZORPAY_KEY_SECRET;
-    if (!secret) return next(new ApiError(503, "Payments not configured."));
+    const cfOrder = await cashfree.fetchOrder(v.orderNumber);
+    if (!cfOrder) return next(new ApiError(404, "Order not found."));
 
-    const expected = crypto.createHmac("sha256", secret).update(`${v.razorpay_order_id}|${v.razorpay_payment_id}`).digest("hex");
-    if (expected !== v.razorpay_signature) return next(new ApiError(400, "Payment verification failed."));
-
-    const order = await Order.findOne({ orderNumber: v.orderNumber, "payment.razorpayOrderId": v.razorpay_order_id }).exec();
+    const order = await Order.findOne({ orderNumber: v.orderNumber }).exec();
     if (!order) return next(new ApiError(404, "Order not found."));
     if (order.payment.status === "captured") return res.json(order.toJSON());
+    if (cfOrder.order_status !== "PAID") return next(new ApiError(400, "Payment not completed."));
 
     const need = new Map();
     for (const it of order.items) {
@@ -445,12 +438,10 @@ router.post("/verify", async (req, res, next) => {
             reason: `Order ${order.orderNumber}`, orderId: order._id,
           }], { session });
         }
-        order.payment.razorpayPaymentId = v.razorpay_payment_id;
-        order.payment.razorpaySignature = v.razorpay_signature;
         order.payment.status = "captured";
         order.payment.capturedAt = new Date();
         order.status = "confirmed";
-        order.statusHistory.push({ status: "confirmed", updatedBy: "razorpay", note: `Payment ${v.razorpay_payment_id}` });
+        order.statusHistory.push({ status: "confirmed", updatedBy: "cashfree", note: `Order ${v.orderNumber} paid` });
         await order.save({ session });
       });
     } finally {

@@ -2,20 +2,20 @@
 const mongoose = require("mongoose");
 
 /**
- * Redemption — one document per successful payment.captured event.
+ * Redemption — one document per successful payment capture event.
  *
- * Idempotency: razorpayEventId has a unique index.
+ * Idempotency: eventId has a unique index.
  * The webhook handler inserts with this field; duplicate events get
  * an E11000 → caught and silently ignored.
  */
 const redemptionSchema = new mongoose.Schema(
   {
-    // Razorpay x-razorpay-event-id header — dedup key
-    razorpayEventId: { type: String, required: true },
+    // Cashfree webhook event id (cf_payment_id) — dedup key
+    eventId: { type: String, required: true },
 
-    // Razorpay order + payment IDs from the webhook payload
-    razorpayOrderId: { type: String, required: true },
-    razorpayPaymentId: { type: String, required: true },
+    // Cashfree order + payment IDs from the webhook payload
+    providerOrderId: { type: String, required: true },
+    providerPaymentId: { type: String, required: true },
 
     // Internal order reference
     orderId: { type: mongoose.Schema.Types.ObjectId, ref: "Order", default: null },
@@ -42,7 +42,7 @@ const redemptionSchema = new mongoose.Schema(
     // Financial amounts in rupees
     grossAmount: { type: Number, required: true }, // before discount
     discountAmount: { type: Number, default: 0 },
-    netAmount: { type: Number, required: true }, // what Razorpay actually captured / 100
+    netAmount: { type: Number, required: true }, // what Cashfree actually captured
 
     status: {
       type: String,
@@ -56,11 +56,11 @@ const redemptionSchema = new mongoose.Schema(
 );
 
 // Idempotency — duplicate event → E11000, caught in webhook handler
-redemptionSchema.index({ razorpayEventId: 1 }, { unique: true });
+redemptionSchema.index({ eventId: 1 }, { unique: true });
 redemptionSchema.index({ code: 1, createdAt: -1 });
 redemptionSchema.index({ influencerId: 1, createdAt: -1 });
 redemptionSchema.index({ parentInfluencerId: 1, createdAt: -1 });
-redemptionSchema.index({ razorpayOrderId: 1 });
+redemptionSchema.index({ providerOrderId: 1 });
 
 redemptionSchema.set("toJSON", {
   virtuals: true,

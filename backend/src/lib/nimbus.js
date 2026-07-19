@@ -8,9 +8,11 @@
  *  - 10 req/s rate limiter (token-bucket, non-blocking queue)
  *  - Thin wrappers around every endpoint used by the platform
  *
- * Required env vars:
- *   NP_EMAIL      — NimbusPost seller account email
- *   NP_PASSWORD   — NimbusPost seller account password
+ * Auth (either method):
+ *   NP_API_KEY   — NimbusPost API key (Settings -> API -> Generate API Key).
+ *                  Used directly as the Bearer token; works with Google-SSO
+ *                  accounts that have no password. Preferred.
+ *   NP_EMAIL + NP_PASSWORD — legacy email/password login fallback.
  */
 
 const BASE = "https://api.nimbuspost.com/v1";
@@ -81,6 +83,10 @@ async function _login() {
 }
 
 async function _getToken() {
+  // Prefer a long-lived API key (Settings -> API). Used directly as the Bearer
+  // token, so no email/password login is needed (works with Google-SSO accounts).
+  const apiKey = process.env.NP_API_KEY;
+  if (apiKey && apiKey.trim() && !/x{4,}/i.test(apiKey)) return apiKey.trim();
   if (_bearerToken && Date.now() < _tokenExpiry) return _bearerToken;
   return _login();
 }

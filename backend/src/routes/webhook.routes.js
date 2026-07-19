@@ -1,14 +1,18 @@
 "use strict";
 
 /**
- * /api/webhooks — Razorpay + NimbusPost inbound webhook handlers
+ * /api/webhooks — Cashfree inbound webhook handler
  *
- * CRITICAL: Razorpay must send raw body for HMAC verification.
- * The /api/webhooks/razorpay route is mounted BEFORE express.json() in app.js
+ * CRITICAL: Cashfree must send the raw body for HMAC verification.
+ * The /api/webhooks/cashfree route is mounted BEFORE express.json() in app.js
  * and uses express.raw() instead.
  *
+ * Signature check:
+ *   base64(HMAC_SHA256(x-webhook-timestamp + rawBody, secret)) === x-webhook-signature
+ *
  * Required env vars:
- *   RAZORPAY_WEBHOOK_SECRET   — from Razorpay Dashboard → Webhooks → secret
+ *   CASHFREE_WEBHOOK_SECRET   — Cashfree Dashboard → Developers → Webhooks
+ *                               (falls back to CASHFREE_CLIENT_SECRET)
  *   N8N_INFLUENCER_WEBHOOK    — (optional) n8n URL for WhatsApp notifications
  */
 
@@ -29,17 +33,21 @@ const router = express.Router();
 // --------------------------------------------------------------------------
 // HMAC verification helper
 // --------------------------------------------------------------------------
-function verifyRazorpaySignature(rawBody, receivedSig) {
-  const secret = process.env.RAZORPAY_WEBHOOK_SECRET;
+function verifyCashfreeSignature(rawBody, timestamp, receivedSig) {
+  const secret = process.env.CASHFREE_WEBHOOK_SECRET || process.env.CASHFREE_CLIENT_SECRET;
   if (!secret) {
-    console.warn("[webhook] RAZORPAY_WEBHOOK_SECRET not set — skipping HMAC verification (INSECURE)");
+    console.warn("[webhook] CASHFREE_WEBHOOK_SECRET/CASHFREE_CLIENT_SECRET not set — skipping HMAC verification (INSECURE)");
     return true;
   }
   const expected = crypto
     .createHmac("sha256", secret)
-    .update(rawBody)
-    .digest("hex");
-  return crypto.timingSafeEqual(Buffer.from(expected, "hex"), Buffer.from(receivedSig || "", "hex"));
+    .update(String(timestamp) + rawBody.toString("utf8"))
+    .digest("base64");
+  try {
+    return crypto.timingSafeEqual(Buffer.from(expected), Buffer.from(receivedSig || ""));
+  } catch {
+    return false;
+  }
 }
 
 // --------------------------------------------------------------------------
@@ -140,14 +148,15 @@ async function maybeTriggerGoal(influencerId, rollupCount) {
 }
 
 // --------------------------------------------------------------------------
-// POST /api/webhooks/razorpay
+// POST /api/webhooks/cashfree
 // Mounted with express.raw({ type: "application/json" }) in app.js
 // --------------------------------------------------------------------------
-router.post("/razorpay", async (req, res) => {
-  // 1. Verify signature
-  const sig = req.headers["x-razorpay-signature"] || "";
-  if (!verifyRazorpaySignature(req.body, sig)) {
-    console.warn("[webhook] Invalid Razorpay signature — rejected");
+router.post("/cashfree", async (req, res) => {
+  // 1. Verify signature: base64(HMAC_SHA256(timestamp + rawBody, secret))
+  const sig = req.headers["x-webhook-signature"] || "";
+  const timestamp = req.headers["x-webhook-timestamp"] || "";
+  if (!verifyCashfreeSignature(req.body, timestamp, sig)) {
+    console.warn("[webhook] Invalid Cashfree signature — rejected");
     return res.status(400).json({ error: "Invalid signature" });
   }
 
@@ -159,17 +168,18 @@ router.post("/razorpay", async (req, res) => {
     return res.status(400).json({ error: "Invalid JSON" });
   }
 
-  const eventId = req.headers["x-razorpay-event-id"] || `rz-${Date.now()}`;
-
-  // 3. Acknowledge immediately — Razorpay retries on non-2xx within 5s
+  // 3. Acknowledge immediately — Cashfree retries on non-2xx
   res.status(200).json({ ok: true });
 
   // 4. Handle specific events async (errors don't affect the 200 response)
   try {
-    if (event.event === "payment.captured") {
+    if (event.type === "PAYMENT_SUCCESS_WEBHOOK") {
+      const eventId = event.data?.payment?.cf_payment_id
+        ? String(event.data.payment.cf_payment_id)
+        : `cf-${Date.now()}`;
       await handlePaymentCaptured(event, eventId);
-    } else if (event.event === "refund.processed") {
-      await handleRefundProcessed(event, eventId);
+    } else if (event.type === "REFUND_STATUS_WEBHOOK") {
+      await handleRefundProcessed(event);
     }
   } catch (err) {
     console.error("[webhook] Handler error:", err.message, err.stack);
@@ -177,29 +187,31 @@ router.post("/razorpay", async (req, res) => {
 });
 
 // --------------------------------------------------------------------------
-// payment.captured handler
+// PAYMENT_SUCCESS_WEBHOOK handler
 // --------------------------------------------------------------------------
 async function handlePaymentCaptured(event, eventId) {
-  const payment = event.payload?.payment?.entity;
-  if (!payment) return;
+  const cfOrder = event.data?.order;
+  const cfPayment = event.data?.payment;
+  if (!cfOrder || !cfPayment) return;
 
-  const rzOrderId = payment.order_id;
-  const rzPaymentId = payment.id;
-  const notes = payment.notes || {};
+  const orderNumber = cfOrder.order_id;
+  const cfPaymentId = String(cfPayment.cf_payment_id);
+  const cfOrderId = cfOrder.order_id;
+  const tags = cfOrder.order_tags || {};
 
-  const promoCode = notes.promoCode || "";
-  const influencerId = notes.influencerId || null;
-  const parentInfluencerId = notes.parentInfluencerId || null;
-  const discountPercent = Number(notes.discountPercent || 0);
-  const grossAmountRupees = Number(notes.grossAmountRupees || payment.amount / 100);
-  const netAmountRupees = payment.amount / 100;
+  const promoCode = tags.promoCode || "";
+  const influencerId = tags.influencerId || null;
+  const parentInfluencerId = tags.parentInfluencerId || null;
+  const discountPercent = Number(tags.discountPercent || 0);
+  const grossAmountRupees = Number(tags.grossAmountRupees || cfPayment.payment_amount || cfOrder.order_amount || 0);
+  const netAmountRupees = Number(cfPayment.payment_amount ?? cfOrder.order_amount ?? 0);
   const discountAmount = grossAmountRupees - netAmountRupees;
 
-  // Find the order in our DB
-  const order = await Order.findOne({ "payment.razorpayOrderId": rzOrderId }).exec();
+  // Find the order in our DB (Cashfree order_id === our orderNumber)
+  const order = await Order.findOne({ orderNumber }).exec();
   if (order) {
     // Update payment status
-    order.payment.razorpayPaymentId = rzPaymentId;
+    order.set("payment.cashfree.cfPaymentId", cfPaymentId);
     order.payment.status = "captured";
     order.payment.capturedAt = new Date();
 
@@ -216,7 +228,7 @@ async function handlePaymentCaptured(event, eventId) {
       order.status = "confirmed";
       order.statusHistory = [
         ...(order.statusHistory || []),
-        { status: "confirmed", note: `Payment captured: ${rzPaymentId}`, updatedBy: "razorpay-webhook" },
+        { status: "confirmed", note: `Payment captured: ${cfPaymentId}`, updatedBy: "cashfree-webhook" },
       ];
     }
 
@@ -232,7 +244,7 @@ async function handlePaymentCaptured(event, eventId) {
     }
 
     // Auto-create NimbusPost shipment if env is configured
-    if (process.env.NP_EMAIL && process.env.NP_PASSWORD) {
+    if (process.env.NP_API_KEY || (process.env.NP_EMAIL && process.env.NP_PASSWORD)) {
       try {
         if (!order.shipment?.awbNumber) {
           const payload = {
@@ -287,12 +299,12 @@ async function handlePaymentCaptured(event, eventId) {
   // ---- Promo code redemption recording ----
   if (!promoCode) return;
 
-  // Insert redemption — unique index on razorpayEventId prevents duplicates
+  // Insert redemption — unique index on eventId prevents duplicates
   try {
     await Redemption.create({
-      razorpayEventId: eventId,
-      razorpayOrderId: rzOrderId,
-      razorpayPaymentId: rzPaymentId,
+      eventId,
+      providerOrderId: cfOrderId,
+      providerPaymentId: cfPaymentId,
       orderId: order?._id || null,
       orderNumber: order?.orderNumber || null,
       code: promoCode,
@@ -369,17 +381,18 @@ async function handlePaymentCaptured(event, eventId) {
 }
 
 // --------------------------------------------------------------------------
-// refund.processed handler — clawback
+// REFUND_STATUS_WEBHOOK handler — clawback
 // --------------------------------------------------------------------------
-async function handleRefundProcessed(event, eventId) {
-  const refund = event.payload?.refund?.entity;
+async function handleRefundProcessed(event) {
+  const refund = event.data?.refund;
   if (!refund) return;
+  if (refund.refund_status && refund.refund_status !== "SUCCESS") return;
 
-  const rzPaymentId = refund.payment_id;
-  const refundAmount = refund.amount / 100;
+  const cfPaymentId = String(refund.cf_payment_id);
+  const refundAmount = Number(refund.refund_amount || 0);
 
   const redemption = await Redemption.findOneAndUpdate(
-    { razorpayPaymentId: rzPaymentId, status: "completed" },
+    { providerPaymentId: cfPaymentId, status: "completed" },
     { $set: { status: "refunded", refundedAt: new Date() } },
     { new: true }
   ).exec();
@@ -425,7 +438,84 @@ async function handleRefundProcessed(event, eventId) {
     await PromoCode.updateOne({ code: redemption.code }, { $inc: { usedCount: -1 } });
   }
 
-  console.log(`[webhook] Refund clawback processed for payment ${rzPaymentId}`);
+  console.log(`[webhook] Refund clawback processed for payment ${cfPaymentId}`);
 }
+
+// --------------------------------------------------------------------------
+// POST /api/webhooks/nimbus — NimbusPost pushes shipment/tracking updates here.
+// Mounted under /api/webhooks with express.raw() so parse the Buffer manually.
+// Optional: set NP_WEBHOOK_SECRET to require a matching x-nimbus-signature header.
+// --------------------------------------------------------------------------
+function mapNimbusStatus(raw) {
+  const s = String(raw || "").toLowerCase();
+  if (/deliver/.test(s)) return "delivered";
+  if (/cancel/.test(s)) return "cancelled";
+  if (/out.?for.?delivery|dispatch|in.?transit|shipped|picked|manifest|booked/.test(s)) return "shipped";
+  return null; // unknown → record checkpoint only, don't change order.status
+}
+
+router.post("/nimbus", async (req, res) => {
+  let body;
+  try {
+    body = Buffer.isBuffer(req.body) ? JSON.parse(req.body.toString("utf8")) : req.body;
+  } catch {
+    return res.status(400).json({ error: "Invalid JSON" });
+  }
+
+  // Optional shared-secret check (skipped until NP_WEBHOOK_SECRET is set)
+  const secret = process.env.NP_WEBHOOK_SECRET;
+  if (secret) {
+    const provided = req.headers["x-nimbus-signature"] || req.headers["x-webhook-secret"] || body.secret;
+    if (provided !== secret) {
+      console.warn("[webhook] Invalid NimbusPost secret — rejected");
+      return res.status(401).json({ error: "Invalid secret" });
+    }
+  }
+
+  // Acknowledge immediately — NimbusPost retries on non-2xx
+  res.status(200).json({ ok: true });
+
+  try {
+    const d = body.data || body;
+    const awb = String(d.awb_number || d.awb || body.awb_number || body.awb || "").trim();
+    if (!awb) return;
+
+    const order = await Order.findOne({ "shipment.awbNumber": awb }).exec();
+    if (!order) {
+      console.warn(`[webhook] NimbusPost: no order for AWB ${awb}`);
+      return;
+    }
+
+    const statusText = d.status || d.current_status || d.status_code || body.status || "";
+    const location = d.location || d.current_location || d.city || "";
+    const remarks = d.message || d.remark || d.activity || d.status_description || "";
+    const tsRaw = d.status_date_time || d.event_time || d.timestamp || d.date || Date.now();
+    const ts = new Date(tsRaw);
+
+    order.shipment = order.shipment || {};
+    order.shipment.checkpoints = order.shipment.checkpoints || [];
+    order.shipment.checkpoints.push({
+      status: String(statusText),
+      location: String(location),
+      timestamp: isNaN(ts.getTime()) ? new Date() : ts,
+      remarks: String(remarks),
+    });
+    order.shipment.nimbusStatus = String(statusText).toLowerCase();
+    order.shipment.lastTrackedAt = new Date();
+
+    const mapped = mapNimbusStatus(statusText);
+    if (mapped && order.status !== "cancelled") {
+      order.status = mapped;
+      order.statusHistory = [
+        ...(order.statusHistory || []),
+        { status: mapped, note: `NimbusPost: ${statusText}`, updatedBy: "nimbus-webhook" },
+      ];
+    }
+    await order.save();
+    console.log(`[webhook] NimbusPost update ${order.orderNumber} (AWB ${awb}): ${statusText}`);
+  } catch (err) {
+    console.error("[webhook] NimbusPost handler error:", err.message);
+  }
+});
 
 module.exports = router;

@@ -7,42 +7,45 @@ import { useRouter } from "next/navigation";
 import CheckoutHeader from "@/components/checkout/CheckoutHeader";
 import { CHECKOUT_PAYMENT_PATH } from "@/lib/auth-redirect";
 import { formatPrice } from "@/lib/utils";
-import { media } from "@/lib/media";
-import { api } from "@/lib/api";
+import { api, ApiError } from "@/lib/api";
 
 declare global {
   interface Window {
-    Razorpay?: new (options: Record<string, unknown>) => { open: () => void };
+    Cashfree?: new (sessionId: string) => { redirect: () => void };
   }
 }
 
-function loadRazorpay(): Promise<boolean> {
+function loadCashfree(): Promise<boolean> {
   const { promise, resolve } = Promise.withResolvers<boolean>();
-  if (typeof window !== "undefined" && window.Razorpay) {
+  if (typeof window !== "undefined" && window.Cashfree) {
     resolve(true);
     return promise;
   }
+  const isProd =
+    process.env.NEXT_PUBLIC_CASHFREE_MODE === "production" ||
+    process.env.NEXT_PUBLIC_CASHFREE_MODE === "prod" ||
+    // Fallback: always use the live SDK on the production domain even if the
+    // Vercel build-time env var isn't set.
+    (typeof window !== "undefined" && /(^|\.)3tattava\.com$/.test(window.location.hostname));
   const script = document.createElement("script");
-  script.src = "https://checkout.razorpay.com/v1/checkout.js";
+  script.src = `https://sdk.cashfree.com/js/ui/2.0.0/cashfree.${isProd ? "prod" : "sandbox"}.js`;
   script.onload = () => resolve(true);
   script.onerror = () => resolve(false);
   document.body.appendChild(script);
   return promise;
 }
 
-type CreateOrderResponse = {
+type CreateCashfreeResponse = {
   orderNumber: string;
-  razorpayOrderId: string;
-  amount: number;
-  currency: string;
-  keyId: string;
-  prefill: { name: string; email: string; contact: string };
+  paymentSessionId: string;
+  cfOrderId: string;
+  mode: string;
 };
 
 export default function CheckoutPaymentPage() {
   const router = useRouter();
   const { isLoggedIn, isLoading: authLoading } = useAuth();
-  const { subtotal, total, items, coupon, clearCart } = useCart();
+  const { subtotal, total, items, coupon } = useCart();
 
   const [isPlacing, setIsPlacing] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -66,11 +69,8 @@ export default function CheckoutPaymentPage() {
       // CartContext total = subtotal - discount + shippingFee
       const discountAmount = subtotal - (total - shippingFee);
 
-      const loaded = await loadRazorpay();
-      if (!loaded) throw new Error("Could not load the payment gateway. Check your connection and retry.");
-
-      const order = await api.post<CreateOrderResponse>(
-        "/orders/create-razorpay",
+      const order = await api.post<CreateCashfreeResponse>(
+        "/orders/create-cashfree",
         {
           items,
           shippingAddress,
@@ -84,51 +84,20 @@ export default function CheckoutPaymentPage() {
         isLoggedIn,
       );
 
-      if (!window.Razorpay) throw new Error("Payment gateway unavailable. Please retry.");
+      const loaded = await loadCashfree();
+      if (!loaded) throw new Error("Could not load the payment gateway. Check your connection and retry.");
+      if (!window.Cashfree) throw new Error("Payment gateway unavailable. Please retry.");
 
-      const rzp = new window.Razorpay({
-        key: order.keyId,
-        amount: order.amount,
-        currency: order.currency,
-        order_id: order.razorpayOrderId,
-        name: "3TATTAVA",
-        description: `Order ${order.orderNumber}`,
-        image: media("/brand/3t-icon.png"),
-        prefill: order.prefill,
-        theme: { color: "#cd872a" },
-        handler: async (resp: {
-          razorpay_payment_id: string;
-          razorpay_order_id: string;
-          razorpay_signature: string;
-        }) => {
-          try {
-            await api.post(
-              "/orders/verify",
-              {
-                razorpay_order_id: resp.razorpay_order_id,
-                razorpay_payment_id: resp.razorpay_payment_id,
-                razorpay_signature: resp.razorpay_signature,
-                orderNumber: order.orderNumber,
-              },
-              isLoggedIn,
-            );
-            localStorage.removeItem("checkoutShippingAddress");
-            await clearCart();
-            router.push(`/order-confirmation/${order.orderNumber}`);
-          } catch (e) {
-            setError(
-              e instanceof Error
-                ? e.message
-                : "Payment succeeded but confirmation failed — please contact support with your payment ID.",
-            );
-            setIsPlacing(false);
-          }
-        },
-        modal: { ondismiss: () => setIsPlacing(false) },
-      });
-      rzp.open();
+      // The order (with shippingAddress) is persisted server-side; capture is confirmed
+      // on the return_url page (/order-confirmation/[id]) via /orders/verify-cashfree.
+      const cf = new window.Cashfree(order.paymentSessionId);
+      cf.redirect();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to start payment");
+      if (err instanceof ApiError && err.status === 503) {
+        setError("Online payments are not available yet — please try again later.");
+      } else {
+        setError(err instanceof Error ? err.message : "Failed to start payment");
+      }
       setIsPlacing(false);
     }
   };
@@ -156,7 +125,7 @@ export default function CheckoutPaymentPage() {
         <div className="premium-card p-8 text-center">
           <h2 className="font-display text-2xl text-text-dark mb-4">Secure Payment</h2>
           <p className="text-text-medium mb-6">
-            Pay securely via Razorpay — UPI, cards, net-banking &amp; wallets.
+            Pay securely — UPI, cards, net-banking &amp; wallets.
           </p>
           <div className="mb-6 p-4 bg-cream rounded">
             <p className="font-bold text-xl">{formatPrice(total)}</p>

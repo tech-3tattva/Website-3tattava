@@ -39,7 +39,7 @@ async function connectDb() {
   await Promise.all([
     Influencer.syncIndexes(),
     PromoCode.syncIndexes(),
-    Redemption.syncIndexes(), // razorpayEventId unique index — idempotency
+    Redemption.syncIndexes(), // eventId unique index — idempotency
   ]);
 
   // eslint-disable-next-line no-console

@@ -76,12 +76,15 @@ const orderSchema = new mongoose.Schema(
     statusHistory: { type: [statusHistorySchema], default: [] },
 
     payment: {
-      razorpayOrderId: { type: String },
-      razorpayPaymentId: { type: String },
-      razorpaySignature: { type: String },
+      provider: { type: String, default: "cashfree" },
       method: { type: String },
       status: { type: String, enum: ["pending", "captured", "failed"], default: "pending" },
       capturedAt: { type: Date },
+      cashfree: {
+        orderId: { type: String },
+        paymentSessionId: { type: String },
+        cfPaymentId: { type: String },
+      },
     },
 
     tracking: {

@@ -10,6 +10,16 @@ const BASE_URL =
 export const USE_MOCK =
   process.env.NEXT_PUBLIC_USE_MOCK === "true";
 
+// Error carrying the HTTP status so callers can branch on it (e.g. 503 payments-off).
+export class ApiError extends Error {
+  readonly status: number;
+  constructor(message: string, status: number) {
+    super(message);
+    this.name = "ApiError";
+    this.status = status;
+  }
+}
+
 const ACCESS_TOKEN_KEY = "3tattva_access_token";
 
 // In-memory token; mirrored to sessionStorage so full page reloads keep the session in this tab.
@@ -111,7 +121,7 @@ export async function apiFetch<T>(
     if (response.status === 401 && auth) {
       message = "Your session has expired. Please sign in again to continue.";
     }
-    throw new Error(message);
+    throw new ApiError(message, response.status);
   }
 
   // Handle 204 No Content responses

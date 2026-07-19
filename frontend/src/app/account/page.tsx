@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import type { Address, Order } from "@shared/types";
+import type { Address, Order, Product } from "@shared/types";
 import { api } from "@/lib/api";
 import { formatPrice } from "@/lib/utils";
 import { useAuth } from "@/context/AuthContext";
@@ -15,6 +15,7 @@ import {
   ClipboardList,
   Copy,
   Gift,
+  Heart,
   History,
   LogOut,
   Mail,
@@ -30,6 +31,9 @@ import {
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import Logo from "@/components/layout/Logo";
+import SafeImage from "@/components/ui/SafeImage";
+import { useWishlist } from "@/context/WishlistContext";
+import { getProducts } from "@/lib/products";
 
 const ESPRESSO = "#442a1b";
 const GOLD = "#cd872a";
@@ -102,6 +106,8 @@ export default function AccountPage() {
   const [savingAddress, setSavingAddress] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [toast, setToast] = useState<ToastState | null>(null);
+  const { items: wishlistIds } = useWishlist();
+  const [wishlistProducts, setWishlistProducts] = useState<Product[]>([]);
 
   const quickOrder = orders[0];
 
@@ -144,6 +150,29 @@ export default function AccountPage() {
 
     void loadAccountData();
   }, [isLoggedIn]);
+
+  useEffect(() => {
+    if (wishlistIds.length === 0) {
+      setWishlistProducts([]);
+      return;
+    }
+
+    let cancelled = false;
+    void (async () => {
+      try {
+        const { products } = await getProducts({ limit: 200 });
+        if (cancelled) return;
+        const wanted = new Set(wishlistIds);
+        setWishlistProducts(products.filter((p) => wanted.has(p.id)));
+      } catch {
+        if (!cancelled) setWishlistProducts([]);
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [wishlistIds]);
 
   useEffect(() => {
     if (!toast) return;
@@ -408,6 +437,30 @@ export default function AccountPage() {
                 <span className="font-bold text-text-dark">{formatPrice(quickOrder.total)}</span>
               </div>
 
+              {quickOrder.items?.length > 0 && (
+                <div className="mt-3 flex items-center gap-2">
+                  {quickOrder.items.slice(0, 4).map((item, idx) => (
+                    <div
+                      key={`${item.productId}-${item.variant ?? ""}-${idx}`}
+                      className="relative h-10 w-10 shrink-0 overflow-hidden rounded-lg bg-cream border border-border"
+                    >
+                      <SafeImage
+                        src={item.image || "/placeholder.svg"}
+                        alt=""
+                        fill
+                        className="object-cover"
+                        sizes="40px"
+                      />
+                    </div>
+                  ))}
+                  {quickOrder.items.length > 4 && (
+                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-border bg-[#f7f0e2] text-[11px] font-semibold text-text-medium">
+                      +{quickOrder.items.length - 4}
+                    </span>
+                  )}
+                </div>
+              )}
+
               {quickOrder.status === "cancelled" ? (
                 <p className="mt-4 text-sm text-red-700">This order was cancelled.</p>
               ) : (
@@ -464,6 +517,78 @@ export default function AccountPage() {
               >
                 <ShoppingBag size={15} /> Start shopping
               </Link>
+            </div>
+          )}
+        </section>
+
+        <section className={`${CARD_CLASS} md:col-span-2`}>
+          <div className="flex flex-wrap items-center justify-between gap-3 mb-5">
+            <div className="flex items-center gap-3">
+              <CardIcon icon={Heart} />
+              <div>
+                <h2 className="font-display font-bold text-2xl sm:text-[28px] text-text-dark tracking-tight">
+                  Your Items
+                </h2>
+                <p className="text-text-light text-xs mt-0.5">Products you saved to your wishlist.</p>
+              </div>
+            </div>
+            {wishlistProducts.length > 0 && (
+              <Link
+                href="/wishlist"
+                className="inline-flex shrink-0 items-center gap-1.5 rounded-xl px-4 py-2 text-sm font-semibold transition-all hover:-translate-y-0.5"
+                style={{ border: "2px solid #cd872a", background: "#fff", color: ESPRESSO }}
+              >
+                <Heart size={15} /> View wishlist
+              </Link>
+            )}
+          </div>
+
+          {wishlistProducts.length === 0 ? (
+            <div
+              className="flex flex-col items-center justify-center rounded-xl px-4 py-8 text-center"
+              style={{ background: "rgba(247,240,226,0.55)", border: "1px dashed rgba(138,115,85,0.35)" }}
+            >
+              <span
+                className="flex h-12 w-12 items-center justify-center rounded-full"
+                style={{ background: "rgba(138,115,85,0.12)" }}
+              >
+                <Heart size={22} color={TAUPE} />
+              </span>
+              <p className="mt-3 font-semibold text-text-dark">No saved items yet</p>
+              <p className="text-sm text-text-medium mt-1">Tap the heart on any product to save it here.</p>
+              <Link
+                href="/products"
+                className="mt-4 inline-flex items-center gap-1.5 rounded-xl px-5 py-2 text-sm font-semibold text-white transition-all hover:-translate-y-0.5"
+                style={{ background: ESPRESSO, boxShadow: "0 8px 20px rgba(68,42,27,0.2)" }}
+              >
+                <ShoppingBag size={15} /> Explore products
+              </Link>
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+              {wishlistProducts.slice(0, 8).map((product) => (
+                <Link
+                  key={product.id}
+                  href={`/products/${product.slug}`}
+                  className="group rounded-xl border border-border bg-white p-2.5 transition-all hover:-translate-y-0.5 hover:shadow-[0_10px_24px_rgba(68,42,27,0.09)]"
+                >
+                  <div className="relative aspect-square w-full overflow-hidden rounded-lg bg-cream border border-border">
+                    <SafeImage
+                      src={product.images?.[0] || "/placeholder.svg"}
+                      alt={product.name}
+                      fill
+                      className="object-cover transition-transform group-hover:scale-105"
+                      sizes="(max-width: 640px) 45vw, 200px"
+                    />
+                  </div>
+                  <p className="mt-2 text-sm font-medium text-text-dark line-clamp-2 leading-snug">
+                    {product.name}
+                  </p>
+                  <p className="mt-1 text-sm font-bold" style={{ color: ESPRESSO }}>
+                    {formatPrice(product.price)}
+                  </p>
+                </Link>
+              ))}
             </div>
           )}
         </section>

@@ -1,71 +1,164 @@
 "use client";
 
 import Link from "next/link";
-import { CheckCircle2, Package, Sparkles, Truck, Home, XCircle } from "lucide-react";
+import {
+  CheckCircle2,
+  Package,
+  MapPin,
+  Truck,
+  Home,
+  XCircle,
+  Clock,
+} from "lucide-react";
 import type { Order } from "@shared/types";
 import SafeImage from "@/components/ui/SafeImage";
 import { formatPrice } from "@/lib/utils";
 import { cn } from "@/lib/utils";
 
-const FLOW: {
-  status: Exclude<Order["status"], "cancelled">;
-  label: string;
-  short: string;
-  Icon: typeof Package;
-}[] = [
-  { status: "pending", label: "Order placed", short: "Placed", Icon: Package },
-  { status: "confirmed", label: "Confirmed", short: "Confirmed", Icon: CheckCircle2 },
-  { status: "processing", label: "Preparing", short: "Prep", Icon: Sparkles },
-  { status: "shipped", label: "Shipped", short: "Shipped", Icon: Truck },
-  { status: "delivered", label: "Delivered", short: "Done", Icon: Home },
-];
+// ─── Shipment / checkpoint shape ─────────────────────────────
+// The backend Order model serialises a `shipment` sub-document (see
+// backend/src/models/Order.js) that is not yet declared on the shared
+// `Order` type. We read it defensively here so the timeline can surface
+// courier scan history without touching the shared contract.
+export type OrderCheckpoint = {
+  status?: string;
+  location?: string;
+  timestamp?: string;
+  remarks?: string;
+};
 
-const STAGE_COPY: Record<
-  Order["status"],
-  { headline: string; detail: string }
-> = {
-  pending: {
+export type OrderShipment = {
+  awbNumber?: string;
+  shipmentId?: string;
+  courierName?: string;
+  labelUrl?: string;
+  nimbusStatus?: string;
+  checkpoints?: OrderCheckpoint[];
+  createdAt?: string;
+  lastTrackedAt?: string;
+};
+
+export function getOrderShipment(order: Order): OrderShipment | undefined {
+  return (order as Order & { shipment?: OrderShipment }).shipment;
+}
+
+// ─── Delivery milestones ─────────────────────────────────────
+const MILESTONES: {
+  key: string;
+  label: string;
+  Icon: typeof Package;
+  headline: string;
+  detail: string;
+}[] = [
+  {
+    key: "ordered",
+    label: "Ordered",
+    Icon: Package,
     headline: "We’ve received your order",
     detail:
-      "Your order is logged. If payment is still processing, we’ll confirm shortly and move you to the next step automatically.",
+      "Your order is logged. We’ll confirm payment and move you to the next step automatically.",
   },
-  confirmed: {
-    headline: "Payment confirmed — thank you",
+  {
+    key: "confirmed",
+    label: "Confirmed",
+    Icon: CheckCircle2,
+    headline: "Order confirmed — thank you",
     detail:
-      "Your ritual essentials are secured. Our team will begin preparing your parcel with care.",
+      "Payment is in and your ritual essentials are being picked, quality-checked, and packed with care.",
   },
-  processing: {
-    headline: "We’re preparing your parcel",
-    detail:
-      "Items are being picked, quality-checked, and packed. You’ll get tracking details as soon as it ships.",
-  },
-  shipped: {
+  {
+    key: "shipped",
+    label: "Shipped",
+    Icon: Truck,
     headline: "On the way to you",
     detail:
-      "Your order has left our facility. Use the tracking link below for live courier updates when available.",
+      "Your order has left our facility. Use the courier link below for live tracking when available.",
   },
-  delivered: {
+  {
+    key: "ofd",
+    label: "Out for delivery",
+    Icon: MapPin,
+    headline: "Out for delivery",
+    detail:
+      "Your parcel is with the courier and arriving soon. Keep your phone handy for the delivery.",
+  },
+  {
+    key: "delivered",
+    label: "Delivered",
+    Icon: Home,
     headline: "Delivered — enjoy your wellness ritual",
     detail:
       "We hope you love your 3Tattva picks. Share your experience or explore complementary care in our shop.",
   },
-  cancelled: {
-    headline: "This order was cancelled",
-    detail:
-      "No further shipment will occur for this order ID. If this looks wrong, reach out to support with your order number.",
-  },
-};
+];
 
-function flowIndex(status: Order["status"]): number {
-  if (status === "cancelled") return -1;
-  const i = FLOW.findIndex((s) => s.status === status);
-  return i >= 0 ? i : 0;
+const OFD_RE = /out[\s_-]?for[\s_-]?delivery|ofd/i;
+const DELIVERED_RE = /delivered/i;
+
+/** Highest delivery milestone reached, derived from status + courier scans. */
+function milestoneIndex(order: Order): number {
+  if (order.status === "cancelled") return -1;
+
+  const shipment = getOrderShipment(order);
+  const nimbus = shipment?.nimbusStatus ?? "";
+  const scans = (shipment?.checkpoints ?? []).map(
+    (c) => `${c.status ?? ""} ${c.remarks ?? ""}`
+  );
+  const s = order.status;
+
+  let idx = 0; // Ordered
+  if (
+    ["confirmed", "processing", "shipped", "delivered"].includes(s) ||
+    order.payment?.status === "captured"
+  ) {
+    idx = 1;
+  }
+  if (["shipped", "delivered"].includes(s) || shipment?.awbNumber) {
+    idx = Math.max(idx, 2);
+  }
+  if (OFD_RE.test(nimbus) || scans.some((t) => OFD_RE.test(t))) {
+    idx = Math.max(idx, 3);
+  }
+  if (
+    s === "delivered" ||
+    DELIVERED_RE.test(nimbus) ||
+    scans.some((t) => DELIVERED_RE.test(t))
+  ) {
+    idx = 4;
+  }
+  return idx;
+}
+
+function formatCheckpointTime(iso?: string): string | null {
+  if (!iso) return null;
+  try {
+    return new Intl.DateTimeFormat("en-IN", {
+      dateStyle: "medium",
+      timeStyle: "short",
+    }).format(new Date(iso));
+  } catch {
+    return iso;
+  }
 }
 
 export default function OrderStatusFlow({ order }: { order: Order }) {
-  const currentIdx = flowIndex(order.status);
-  const copy = STAGE_COPY[order.status];
-  const isDelivered = order.status === "delivered";
+  const currentIdx = milestoneIndex(order);
+  const isDelivered = currentIdx === 4;
+  const stage = MILESTONES[Math.max(0, currentIdx)];
+
+  const shipment = getOrderShipment(order);
+  const courierName = order.tracking?.courierName || shipment?.courierName;
+  const awb = order.tracking?.trackingNumber || shipment?.awbNumber;
+  const trackingUrl = order.tracking?.trackingUrl;
+  const estimatedDelivery = order.tracking?.estimatedDelivery;
+
+  const checkpoints = (shipment?.checkpoints ?? [])
+    .slice()
+    .sort((a, b) => {
+      const ta = a.timestamp ? new Date(a.timestamp).getTime() : 0;
+      const tb = b.timestamp ? new Date(b.timestamp).getTime() : 0;
+      return tb - ta;
+    });
 
   if (order.status === "cancelled") {
     return (
@@ -73,8 +166,11 @@ export default function OrderStatusFlow({ order }: { order: Order }) {
         <div className="flex items-start gap-3">
           <XCircle className="h-8 w-8 shrink-0 text-red-600" aria-hidden />
           <div>
-            <h3 className="font-display text-xl text-text-dark">{copy.headline}</h3>
-            <p className="mt-2 text-sm text-text-medium leading-relaxed">{copy.detail}</p>
+            <h3 className="font-display text-xl text-text-dark">This order was cancelled</h3>
+            <p className="mt-2 text-sm text-text-medium leading-relaxed">
+              No further shipment will occur for this order ID. If this looks wrong, reach out to
+              support with your order number.
+            </p>
           </div>
         </div>
       </div>
@@ -86,13 +182,13 @@ export default function OrderStatusFlow({ order }: { order: Order }) {
       {/* Desktop / tablet: horizontal stepper */}
       <div className="hidden sm:block">
         <ol className="flex items-start justify-between gap-2">
-          {FLOW.map((step, index) => {
+          {MILESTONES.map((step, index) => {
             const done = isDelivered || index < currentIdx;
             const active = !isDelivered && index === currentIdx;
             const Icon = step.Icon;
             return (
-              <li key={step.status} className="relative flex flex-1 flex-col items-center min-w-0">
-                {index < FLOW.length - 1 && (
+              <li key={step.key} className="relative flex flex-1 flex-col items-center min-w-0">
+                {index < MILESTONES.length - 1 && (
                   <div
                     className={cn(
                       "absolute left-[calc(50%+1.25rem)] top-5 h-0.5 w-[calc(100%-2.5rem)] -translate-y-1/2",
@@ -131,12 +227,12 @@ export default function OrderStatusFlow({ order }: { order: Order }) {
 
       {/* Mobile: vertical timeline */}
       <ol className="sm:hidden space-y-0 border-l-2 border-border ml-3 pl-6">
-        {FLOW.map((step, index) => {
+        {MILESTONES.map((step, index) => {
           const done = isDelivered || index < currentIdx;
           const active = !isDelivered && index === currentIdx;
           const Icon = step.Icon;
           return (
-            <li key={step.status} className="relative pb-8 last:pb-0">
+            <li key={step.key} className="relative pb-8 last:pb-0">
               <span
                 className={cn(
                   "absolute -left-[calc(0.75rem+9px)] top-0 flex h-9 w-9 items-center justify-center rounded-full border-2",
@@ -160,7 +256,7 @@ export default function OrderStatusFlow({ order }: { order: Order }) {
         })}
       </ol>
 
-      {/* Current stage spotlight + order snapshot */}
+      {/* Current stage spotlight + courier snapshot */}
       <div className="rounded-xl border border-[#c5905a]/25 bg-gradient-to-br from-[#faf7f2] to-[#f0ebe3] p-5 sm:p-6 shadow-sm">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
           <div className="flex gap-4 lg:max-w-md">
@@ -169,8 +265,7 @@ export default function OrderStatusFlow({ order }: { order: Order }) {
               aria-hidden
             >
               {(() => {
-                const StepIcon =
-                  (isDelivered ? Home : FLOW[currentIdx]?.Icon) ?? Package;
+                const StepIcon = stage?.Icon ?? Package;
                 return <StepIcon className="h-7 w-7" />;
               })()}
             </div>
@@ -178,37 +273,104 @@ export default function OrderStatusFlow({ order }: { order: Order }) {
               <p className="text-xs uppercase tracking-[0.2em] text-[#9a7b52] mb-1">
                 Where your order is now
               </p>
-              <h3 className="font-display text-2xl text-text-dark leading-tight">{copy.headline}</h3>
+              <h3 className="font-display text-2xl text-text-dark leading-tight">
+                {stage?.headline}
+              </h3>
               <p className="mt-2 text-sm text-text-medium leading-relaxed sm:block hidden">
-                {copy.detail}
+                {stage?.detail}
               </p>
             </div>
           </div>
 
           <div className="flex flex-col items-stretch gap-2 sm:items-end shrink-0">
-            {order.tracking?.courierName && (
-              <p className="text-xs text-text-medium text-right max-w-[220px]">
-                <span className="font-semibold text-text-dark">{order.tracking.courierName}</span>
-                {order.tracking.trackingNumber && (
-                  <> · {order.tracking.trackingNumber}</>
-                )}
+            {courierName && (
+              <p className="text-xs text-text-medium sm:text-right max-w-[240px]">
+                <span className="font-semibold text-text-dark">{courierName}</span>
+                {awb && <> · AWB {awb}</>}
               </p>
             )}
-            {order.tracking?.trackingUrl && (
+            {!isDelivered && estimatedDelivery && (
+              <p className="text-xs text-text-medium sm:text-right">
+                Est. delivery: <span className="font-semibold text-text-dark">{estimatedDelivery}</span>
+              </p>
+            )}
+            {trackingUrl && (
               <a
-                href={order.tracking.trackingUrl}
+                href={trackingUrl}
                 target="_blank"
                 rel="noreferrer"
                 className="inline-flex items-center justify-center rounded-full bg-primary-green px-5 py-2.5 text-xs font-semibold uppercase tracking-wider text-white hover:bg-secondary-green transition-colors"
               >
-                Open courier tracking
+                Track on courier site
               </a>
             )}
           </div>
         </div>
 
-        <p className="mt-3 text-sm text-text-medium leading-relaxed sm:hidden">{copy.detail}</p>
+        <p className="mt-3 text-sm text-text-medium leading-relaxed sm:hidden">{stage?.detail}</p>
 
+        {/* Courier scan history */}
+        {checkpoints.length > 0 && (
+          <div className="mt-6 border-t border-[#c5905a]/20 pt-5">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-text-medium mb-4">
+              Delivery updates
+            </p>
+            <ol className="space-y-0 border-l-2 border-border ml-2 pl-5">
+              {checkpoints.map((cp, index) => {
+                const time = formatCheckpointTime(cp.timestamp);
+                const isLatest = index === 0;
+                return (
+                  <li key={`${cp.timestamp ?? "cp"}-${index}`} className="relative pb-5 last:pb-0">
+                    <span
+                      className={cn(
+                        "absolute -left-[calc(0.625rem+8px)] top-0.5 flex h-4 w-4 items-center justify-center rounded-full border-2 bg-white",
+                        isLatest ? "border-primary-green" : "border-border"
+                      )}
+                    >
+                      <span
+                        className={cn(
+                          "h-1.5 w-1.5 rounded-full",
+                          isLatest ? "bg-primary-green" : "bg-border"
+                        )}
+                      />
+                    </span>
+                    <div className="flex flex-col gap-0.5">
+                      {cp.status && (
+                        <p
+                          className={cn(
+                            "text-sm font-semibold capitalize",
+                            isLatest ? "text-text-dark" : "text-text-medium"
+                          )}
+                        >
+                          {cp.status}
+                        </p>
+                      )}
+                      {cp.remarks && (
+                        <p className="text-xs text-text-medium leading-snug">{cp.remarks}</p>
+                      )}
+                      <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5 text-xs text-text-light">
+                        {cp.location && (
+                          <span className="inline-flex items-center gap-1">
+                            <MapPin className="h-3 w-3" aria-hidden />
+                            {cp.location}
+                          </span>
+                        )}
+                        {time && (
+                          <span className="inline-flex items-center gap-1">
+                            <Clock className="h-3 w-3" aria-hidden />
+                            {time}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </li>
+                );
+              })}
+            </ol>
+          </div>
+        )}
+
+        {/* Shipment contents + total */}
         <div className="mt-6 border-t border-[#c5905a]/20 pt-5">
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-text-medium mb-3">
             In this shipment ({order.items.length}{" "}

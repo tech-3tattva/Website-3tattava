@@ -5,7 +5,7 @@
  *
  * Public:
  *   POST /api/promo/validate          — validate a code and return discount %
- *   POST /api/promo/razorpay-order    — create Razorpay order with server-side discount
+ *   POST /api/promo/cashfree-order    — create Cashfree order with server-side discount
  *
  * Admin (verifyAdmin):
  *   POST   /api/promo/influencers           — create influencer + auto-create their code
@@ -20,7 +20,7 @@
 
 const express = require("express");
 const { z } = require("zod");
-const Razorpay = require("razorpay");
+const cashfree = require("../lib/cashfree");
 
 const Influencer = require("../models/Influencer");
 const PromoCode = require("../models/PromoCode");
@@ -29,21 +29,6 @@ const { verifyAdmin } = require("../middleware/auth");
 const { ApiError } = require("../middleware/errorHandler");
 
 const router = express.Router();
-
-// Lazily-init Razorpay instance (only created when env vars are present)
-let _razorpay = null;
-function getRazorpay() {
-  if (!_razorpay) {
-    if (!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET) {
-      throw new ApiError(503, "Razorpay is not configured on this server");
-    }
-    _razorpay = new Razorpay({
-      key_id: process.env.RAZORPAY_KEY_ID,
-      key_secret: process.env.RAZORPAY_KEY_SECRET,
-    });
-  }
-  return _razorpay;
-}
 
 // --------------------------------------------------------------------------
 // Helper: resolve a promo code and return its details
@@ -99,12 +84,12 @@ router.post("/validate", async (req, res, next) => {
 });
 
 // --------------------------------------------------------------------------
-// POST /api/promo/razorpay-order
-// Creates a Razorpay order with server-side discount applied.
-// Body: { grossAmountRupees, code?, currency?, receipt?, notes? }
-// Returns: Razorpay order object + discountApplied
+// POST /api/promo/cashfree-order
+// Creates a Cashfree order with server-side discount applied.
+// Body: { grossAmountRupees, code?, currency?, receipt?, notes?, customer? }
+// Returns: Cashfree order object + paymentSessionId + discountApplied
 // --------------------------------------------------------------------------
-router.post("/razorpay-order", async (req, res, next) => {
+router.post("/cashfree-order", async (req, res, next) => {
   try {
     const body = z.object({
       grossAmountRupees: z.number().positive(),
@@ -112,7 +97,15 @@ router.post("/razorpay-order", async (req, res, next) => {
       currency: z.string().default("INR"),
       receipt: z.string().optional(),
       notes: z.record(z.string()).optional(),
+      customer: z.object({
+        id: z.string().optional(),
+        name: z.string().optional(),
+        email: z.string().email().optional(),
+        phone: z.string().optional(),
+      }).optional(),
     }).parse(req.body);
+
+    if (!cashfree.getCashfree()) throw new ApiError(503, "Online payments are not configured yet.");
 
     let discountPercent = 0;
     let codeDoc = null;
@@ -124,13 +117,19 @@ router.post("/razorpay-order", async (req, res, next) => {
 
     const discountAmount = Math.round(body.grossAmountRupees * (discountPercent / 100));
     const netAmountRupees = body.grossAmountRupees - discountAmount;
-    const netAmountPaise = Math.round(netAmountRupees * 100);
 
-    const rzOrder = await getRazorpay().orders.create({
-      amount: netAmountPaise,
-      currency: body.currency,
-      receipt: body.receipt || `3T-${Date.now()}`,
-      notes: {
+    const orderId = body.receipt || `3T-${Date.now()}`;
+    const cfOrder = await cashfree.createOrder({
+      order_id: orderId,
+      order_amount: Number(netAmountRupees.toFixed(2)),
+      order_currency: body.currency,
+      customer_details: {
+        customer_id: body.customer?.id || orderId,
+        customer_name: body.customer?.name,
+        customer_email: body.customer?.email,
+        customer_phone: body.customer?.phone,
+      },
+      order_tags: {
         ...(body.notes || {}),
         promoCode: codeDoc?.code || "",
         influencerId: codeDoc?.influencerId ? String(codeDoc.influencerId._id || codeDoc.influencerId) : "",
@@ -141,7 +140,8 @@ router.post("/razorpay-order", async (req, res, next) => {
     });
 
     return res.json({
-      ...rzOrder,
+      ...cfOrder,
+      paymentSessionId: cfOrder.payment_session_id,
       discountPercent,
       discountAmount,
       netAmountRupees,

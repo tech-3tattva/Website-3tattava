@@ -42,11 +42,11 @@ const data = {
     location: { type: "Point", coordinates: [77.209, 28.6139] },
   },
   practice: {
-    specializations: ["Prakriti Assessment", "Sports Nutrition", "Women's Wellness", "Gut Health"],
+    specializations: ["Panchakarma", "Medical Yoga", "Chronic Disease Management", "Mind-Body Healing", "Ayurveda Nutrition"],
     languages: ["English", "Hindi"],
     consultationFee: { inClinic: 800, online: 800 },
     offersOnline: true,
-    bio: "Ayurveda Dietician & Performance Nutrition Expert. First consultation is complimentary and includes a personalised Prakriti-based diet chart.",
+    bio: "Dr. Falguni is an Ayurveda & Integrative Wellness consultant (B.A.M.S., M.A. in Psychology) who blends classical Ayurveda with mind-body science. Her work spans Panchakarma, Medical Yoga, chronic-disease management and Ayurveda nutrition — building Prakriti-based diet and lifestyle protocols that are practical to sustain.",
   },
   workingHours: {
     monday: openDay,
@@ -57,7 +57,7 @@ const data = {
     saturday: openDay,
     sunday: { closed: true },
   },
-  slotConfig: { durationMinutes: 30, bufferMinutes: 0, maxAdvanceBookingDays: 30, autoConfirm: true },
+  slotConfig: { durationMinutes: 15, bufferMinutes: 0, maxAdvanceBookingDays: 30, autoConfirm: true },
 };
 
 async function run() {
