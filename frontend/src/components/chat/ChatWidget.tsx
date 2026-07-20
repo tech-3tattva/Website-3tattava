@@ -192,6 +192,10 @@ export default function ChatWidget() {
           gap: 12px;
         }
         .tw-wrap.hidden { display: none; }
+        @media (max-width: 480px) {
+          .tw-wrap { bottom: 16px; right: 14px; }
+          .tw-orb-wrap { width: 52px; height: 52px; }
+        }
 
         /* Panel */
         .tw-panel {

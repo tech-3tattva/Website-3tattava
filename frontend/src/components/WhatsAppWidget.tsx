@@ -165,8 +165,10 @@ export default function WhatsAppWidget() {
         }
 
         @media (max-width: 480px) {
-          .wa-wrap { bottom: 88px; right: 20px; }
+          .wa-wrap { bottom: 74px; right: 14px; }
           .wa-tooltip { width: 190px; }
+          .wa-btn { width: 48px; height: 48px; }
+          .wa-btn::before, .wa-btn::after { width: 48px; height: 48px; }
         }
       `}</style>
 

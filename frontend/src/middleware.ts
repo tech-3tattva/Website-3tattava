@@ -35,7 +35,6 @@ const PUBLIC_ROUTES = new Set<string>([
   "/returns",
   "/shipping",
   "/contact",
-  "/about",
   "/cookies",
   "/medical-disclaimer",
   "/payment",

@@ -49,7 +49,7 @@ export default function CartDrawer() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/40 z-50"
+            className="fixed inset-0 bg-black/40 z-[10040]"
             onClick={toggleDrawer}
             aria-hidden
           />
@@ -58,7 +58,7 @@ export default function CartDrawer() {
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ type: "tween", duration: 0.35, ease: "easeInOut" }}
-            className="fixed right-0 top-0 bottom-0 w-full max-w-md max-h-[100dvh] bg-white z-50 flex flex-col shadow-xl pt-[env(safe-area-inset-top)]"
+            className="fixed right-0 top-0 bottom-0 w-full max-w-md max-h-[100dvh] bg-white z-[10050] flex flex-col shadow-xl pt-[env(safe-area-inset-top)]"
             role="dialog"
             aria-label="Shopping cart"
           >
