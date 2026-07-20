@@ -10,8 +10,6 @@ export const shahjeetSticks: ProductData = {
   mrp: 1599,
   weight: '30 Sticks',
   stock: 150,
-  rating: 4.8,
-  reviewCount: 218,
   chips: [
     { value: '600mg', label: 'Shilajit Per Stick' },
     { value: '100%', label: 'Pure Resin Form' },

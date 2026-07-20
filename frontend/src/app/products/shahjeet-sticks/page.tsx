@@ -97,11 +97,6 @@ const productSchema = {
     availability: 'https://schema.org/InStock',
     seller: { '@type': 'Organization', name: 'SankalpaSiddhi Ayupharma Pvt. Ltd.' },
   },
-  aggregateRating: {
-    '@type': 'AggregateRating',
-    ratingValue: 4.8,
-    reviewCount: 218,
-  },
 }
 
 export default function ShahjeetSticksPage() {

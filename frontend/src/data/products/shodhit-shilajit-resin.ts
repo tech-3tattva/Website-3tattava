@@ -10,8 +10,6 @@ export const shodhitShilajitResin: ProductData = {
   mrp: 1399,
   weight: '20g',
   stock: 100,
-  rating: 4.9,
-  reviewCount: 312,
   chips: [
     { value: '≥70%', label: 'Fulvic Acid' },
     { value: '80+', label: 'Ionic Minerals' },

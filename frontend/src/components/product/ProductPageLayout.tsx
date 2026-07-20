@@ -14,8 +14,6 @@ export interface ProductData {
   mrp: number
   weight: string
   stock: number
-  rating: number
-  reviewCount: number
   chips: { label: string; value: string }[]
   bundlePrice: number
   bundleDesc: string
@@ -912,8 +910,6 @@ export default function ProductPageLayout({ product }: { product: ProductData })
             {/* Buy Box */}
             <div className="buy-box">
               <div className="buy-rating">
-                <span className="buy-stars">★★★★★</span>
-                <span>{product.rating} · <a href="#reviews">{product.reviewCount} Verified Reviews</a></span>
                 <span className="in-stock">● In Stock</span>
               </div>
 
