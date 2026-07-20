@@ -30,8 +30,6 @@ const PRODUCTS = [
     image: media("/home/homepage-rockresins.png"),
     pills: ["≥70% Fulvic Acid", "NABL Tested", "Triphala Purified"],
     cta: "Begin Your Ritual",
-    rating: 4.9,
-    reviewCount: 312,
     hideInfo: false,
   },
   {
@@ -48,8 +46,6 @@ const PRODUCTS = [
     image: "https://media.3tattava.com/products/full+shahjeet+box.png",
     pills: ["600mg Per Stick", "NABL Tested", "AYUSH GMP"],
     cta: "Start Your Ritual",
-    rating: 4.8,
-    reviewCount: 218,
     hideInfo: false,
   },
 ] as const;
@@ -67,27 +63,6 @@ const itemListSchema = {
 
 const F = "var(--font-primary), system-ui, sans-serif";
 
-// ─── Star helper ─────────────────────────────────────────────────────────────
-function Stars({ value }: { value: number }) {
-  const full = Math.floor(value);
-  return (
-    <span style={{ display: "inline-flex", gap: "1px" }}>
-      {Array.from({ length: 5 }).map((_, i) => (
-        <svg
-          key={i}
-          width="11"
-          height="11"
-          viewBox="0 0 24 24"
-          fill={i < full ? "#C8963E" : "none"}
-          stroke="#C8963E"
-          strokeWidth="1.5"
-        >
-          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-        </svg>
-      ))}
-    </span>
-  );
-}
 
 // ─── Product Card ─────────────────────────────────────────────────────────────
 function ProductCard({ p }: { p: (typeof PRODUCTS)[number] }) {
@@ -213,20 +188,6 @@ function ProductCard({ p }: { p: (typeof PRODUCTS)[number] }) {
           </div>
         ) : (
           <>
-        {/* Rating */}
-        <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "14px" }}>
-          <Stars value={p.rating} />
-          <span
-            style={{
-              fontFamily: F,
-              fontVariationSettings: "'wdth' 75,'wght' 600",
-              fontSize: "11px",
-              color: "rgba(28,19,4,.55)",
-            }}
-          >
-            {p.rating} ({p.reviewCount})
-          </span>
-        </div>
 
         {/* Tagline */}
         <p
@@ -409,99 +370,6 @@ export default function ProductsPage() {
           ))}
         </div>
 
-        {/* Bundle banner */}
-        <div
-          style={{
-            maxWidth: "900px",
-            margin: "28px auto 0",
-            background: "#1c1304",
-            padding: "28px 32px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            gap: "20px",
-            flexWrap: "wrap",
-          }}
-        >
-          <div>
-            <p
-              style={{
-                fontFamily: F,
-                fontVariationSettings: "'wdth' 75,'wght' 600",
-                fontSize: "9px",
-                letterSpacing: ".24em",
-                textTransform: "uppercase",
-                color: "#C8963E",
-                marginBottom: "6px",
-              }}
-            >
-              Best Value
-            </p>
-            <p
-              style={{
-                fontFamily: F,
-                fontVariationSettings: "'wdth' 85,'wght' 700",
-                fontSize: "clamp(16px,2vw,20px)",
-                color: "#f7f0e2",
-                marginBottom: "4px",
-              }}
-            >
-              The Complete Ritual Bundle
-            </p>
-            <p
-              style={{
-                fontFamily: F,
-                fontVariationSettings: "'wdth' 100,'wght' 300",
-                fontSize: "13px",
-                color: "rgba(247,240,226,.55)",
-              }}
-            >
-              RockResin Jar + 30 Shahjeet Sticks · Save ₹499
-            </p>
-          </div>
-          <div style={{ display: "flex", alignItems: "center", gap: "16px", flexWrap: "wrap" }}>
-            <div>
-              <span
-                style={{
-                  fontFamily: F,
-                  fontVariationSettings: "'wdth' 85,'wght' 800",
-                  fontSize: "24px",
-                  color: "#f7f0e2",
-                }}
-              >
-                ₹1,799
-              </span>
-              <span
-                style={{
-                  fontFamily: F,
-                  fontSize: "14px",
-                  color: "rgba(247,240,226,.35)",
-                  textDecoration: "line-through",
-                  marginLeft: "8px",
-                }}
-              >
-                ₹2,298
-              </span>
-            </div>
-            <Link
-              href="/products/shodhit-shilajit-resin"
-              style={{
-                background: "linear-gradient(105deg,#A67B2F,#E4C079,#C8963E)",
-                color: "#1c1304",
-                fontFamily: F,
-                fontVariationSettings: "'wdth' 85,'wght' 700",
-                fontSize: "10px",
-                letterSpacing: ".18em",
-                textTransform: "uppercase",
-                padding: "12px 22px",
-                textDecoration: "none",
-                whiteSpace: "nowrap",
-              }}
-            >
-              SAVE 21% →
-            </Link>
-          </div>
-        </div>
       </section>
 
       {/* Philosophy strip */}

@@ -8,7 +8,6 @@ import { ScrollProgressBar } from "../shahjeet-sticks/_enhancements";
 import { Mountain, Droplet, Leaf, FlaskConical, ShieldCheck, QrCode, Stethoscope, Package, BadgeCheck, Factory, FileText, Sparkles, Hand, Award, Check, AlertTriangle } from "lucide-react";
 import ScrollFAQAccordion from "@/components/ui/scroll-faqaccordion";
 import { ROCKRESIN_FAQS } from "@/data/faqs/rockresin";
-import ReviewsSection from "@/components/product/ReviewsSection";
 import BrandDivider from "@/components/product/BrandDivider";
 import ProductSwipeLink from "@/components/product/ProductSwipeLink";
 
@@ -544,7 +543,6 @@ export default function RockResinClient() {
       <BrandDivider />
       <MarqueeSection />
       <FaqSection />
-      <ReviewsSection eyebrow="Real Reviews" title="One resin. Real results." />
       <CertBand />
     </div>
   );

@@ -10,7 +10,6 @@ import {
   Sun, Dumbbell, Activity,
 } from "lucide-react";
 import ScrollFAQAccordion, { type FAQItem } from "@/components/ui/scroll-faqaccordion";
-import ReviewsSection from "@/components/product/ReviewsSection";
 import BrandDivider from "@/components/product/BrandDivider";
 import ProductSwipeLink from "@/components/product/ProductSwipeLink";
 
@@ -512,7 +511,6 @@ export default function ShahjeetClient() {
       <TomorrowSection />
       <ShahjeetFaqSection />
       <MarqueeSection />
-      <ReviewsSection eyebrow="Real Reviews" title="Tear. Squeeze. Perform." />
       <FinalBand />
     </div>
   );
