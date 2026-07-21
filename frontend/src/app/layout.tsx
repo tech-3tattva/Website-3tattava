@@ -1,4 +1,3 @@
-import { media } from "@/lib/media";
 import type { Metadata, Viewport } from "next";
 import { Noto_Serif_Devanagari } from "next/font/google";
 import localFont from "next/font/local";
@@ -78,10 +77,6 @@ export const metadata: Metadata = {
     googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1 },
   },
   alternates: { canonical: "https://www.3tattava.com" },
-  icons: {
-    icon: media("/favicon-3t.png"),
-    apple: "/favicon-3t.png",
-  },
 };
 
 export const viewport: Viewport = {
