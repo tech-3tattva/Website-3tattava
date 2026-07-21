@@ -10,7 +10,7 @@ const features = [
     title: 'Cellular Energy',
     body: "Your mitochondria cannot produce ATP without the 80+ ionic minerals that most modern diets have stripped away. Shilajit is the only natural substance that delivers all of them simultaneously — with fulvic acid to carry them directly into your cells. The result is energy that builds week over week, not a spike that collapses.",
     quote: '"Most of my patients were not tired. They were mineral-depleted. There is a difference." — Dr. Kashish Gupta, BAMS',
-    disclaimer: 'These statements have not been evaluated by any regulatory authority. This product is not intended to diagnose, treat, cure, or prevent any disease.',
+    disclaimer: '3TATTAVA products are Ayurvedic proprietary medicines manufactured under a valid Ayurveda manufacturing licence (Mfg. Lic. RJ-926AYU). Use only as directed on the label. This information is for general awareness and is not a substitute for professional medical advice — consult a qualified healthcare practitioner where required.',
     image: 'https://media.3tattava.com/features/resin-pulled.png',
     imageLeft: true,
   },

@@ -28,14 +28,14 @@ export const PILLARS: Pillar[] = [
     "page": "/education/shilajit-for-men",
     "count": 12,
     "cluster": "Shilajit",
-    "blurb": "Energy, testosterone support, stamina and recovery — Shilajit for men."
+    "blurb": "Energy, stamina, recovery and everyday vitality — Shilajit for men."
   },
   {
     "pillar": "Women",
     "page": "/education/shilajit-for-women",
     "count": 17,
     "cluster": "Shilajit",
-    "blurb": "Iron, hormones and cellular energy — the underreported case for Shilajit in women."
+    "blurb": "Iron, energy and everyday wellbeing — the underreported case for Shilajit in women."
   },
   {
     "pillar": "Dosage & Usage",

@@ -39,7 +39,7 @@ export default function GrievancePage() {
         </li>
         <li>
           <strong>Customer support / correspondence address:</strong>{" "}
-          {LEGAL.correspondenceAddress}
+          {LEGAL.operationsAddress}
         </li>
       </ul>
 

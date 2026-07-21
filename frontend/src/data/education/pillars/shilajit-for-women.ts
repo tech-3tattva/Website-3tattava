@@ -23,11 +23,11 @@ export const article: BlogArticle = {
   sections: [
     {
       heading: "Is Shilajit only for men?",
-      body: `No. Shilajit is marketed heavily to men because its best-known modern studies happen to be in men (testosterone, fertility), but nothing about it is inherently male. As a mineral-rich *Rasayana* it is used by women for energy, recovery and vitality, and classical Ayurveda applies *Rasayana* rejuvenation to everyone. The honest gap is this: the human trials were done in men, so we can't simply transfer their numbers to women — and we won't pretend otherwise. This page gives women the depth the topic deserves *and* the candour about what is and isn't proven.`,
+      body: `No. Shilajit is marketed heavily to men because its best-known modern studies happen to have been done in men, but nothing about it is inherently male. As a mineral-rich *Rasayana* it is used by women for energy, recovery and vitality, and classical Ayurveda applies *Rasayana* rejuvenation to everyone. The honest gap is this: the human trials were done in men, so we can't simply transfer their numbers to women — and we won't pretend otherwise. This page gives women the depth the topic deserves *and* the candour about what is and isn't proven.`,
     },
     {
       heading: "Is Shilajit safe for women?",
-      body: `For most healthy women, purified and third-party-tested Shilajit is generally well tolerated (Stohs 2014). The two things that change that are product quality and life stage. Unpurified Shilajit can contain heavy metals (Saper 2008), which is unacceptable for anyone and especially around reproductive health — so testing is non-negotiable. And it should be **avoided in pregnancy and breastfeeding** because there is no adequate safety data for those stages (see below). Women with iron overload, thyroid disease, or any chronic condition, or who take regular medication, should check with a clinician first.`,
+      body: `For most healthy women, purified and third-party-tested Shilajit is generally well tolerated (Stohs 2014). The two things that change that are product quality and life stage. Unpurified Shilajit can contain heavy metals (Saper 2008), which is unacceptable for anyone and especially at sensitive life stages — so testing is non-negotiable. And it should be **avoided in pregnancy and breastfeeding** because there is no adequate safety data for those stages (see below). Women with iron overload, thyroid disease, or any chronic condition, or who take regular medication, should check with a clinician first.`,
     },
     {
       heading: "Shilajit for women's energy and fatigue",
@@ -42,8 +42,8 @@ export const article: BlogArticle = {
       body: `PCOS content attracts a lot of search interest, and a lot of unfounded claims. Here is the truth: there is **no clinical trial of Shilajit for PCOS**. The interest is theoretical — PCOS involves insulin resistance and oxidative stress, and Shilajit has antioxidant activity (Stohs 2014) — but a plausible mechanism is not evidence of benefit. PCOS is a medical condition best managed with a doctor (lifestyle, and medication where indicated). Shilajit may be a reasonable general-vitality adjunct in a tested form, but it should never be presented as a PCOS treatment.`,
     },
     {
-      heading: "Shilajit, hormones, menopause and perimenopause",
-      body: `Traditionally, Shilajit is a *Rasayana* used to support vitality through life's transitions, and that framing extends to the perimenopause and menopause years. Modern evidence specific to women's hormones, hot flushes or menopausal symptoms, however, **does not exist for Shilajit** — the testosterone data is in men, and there is no estrogen or menopause trial. So the accurate message is: a traditional supportive role and a general energy/adaptogen rationale, with no proven hormonal effect in women. Women navigating menopause should treat Shilajit as optional support, not therapy, and discuss significant symptoms with a clinician.`,
+      heading: "Shilajit through midlife and life's transitions",
+      body: `Traditionally, Shilajit is a *Rasayana* used to support energy and general wellbeing through life's transitions, and that framing extends to the perimenopause and menopause years. Modern evidence specific to women in these years, however, is lacking for Shilajit, so the accurate message is a traditional supportive role and a general energy/adaptogen rationale — not a proven effect. Women navigating this stage should treat Shilajit as optional general support, not therapy, and discuss any significant symptoms with a clinician.`,
     },
     {
       heading: "Skin, hair and bone health",
@@ -69,14 +69,14 @@ export const article: BlogArticle = {
   takeaways: [
     "Women can take Shilajit — it is not a men-only supplement — but no Shilajit clinical trial has been conducted specifically in women, so every women's benefit rests on tradition or general mechanisms.",
     "Energy and recovery have the most relevant (non-sex-specific) rationale: antioxidant, adaptogenic and anti-fatigue activity — but from reviews and mechanism studies, not a women's trial.",
-    "Iron, PCOS, hormones/menopause and skin/hair/bone claims are traditional or theoretical, not proven — Shilajit is not a treatment for anaemia or PCOS.",
+    "Iron, PCOS, midlife and skin/hair/bone claims are traditional or theoretical, not proven — Shilajit is not a treatment for anaemia or PCOS.",
     "Avoid Shilajit in pregnancy and breastfeeding; there is no adequate safety data for those stages.",
     "Use a purified, third-party-tested product, start at the lower end (~250 mg/day) and reassess after 8–12 weeks.",
   ],
   faqs: [
     {
       q: "Why is Shilajit marketed mostly to men?",
-      a: "Because its best-known modern studies (testosterone, fertility) were done in men. Nothing about Shilajit is inherently male — women use it for energy and vitality — but the trial evidence is male, so women's claims rely more on tradition and general mechanisms.",
+      a: "Because its best-known modern studies were done in men. Nothing about Shilajit is inherently male — women use it for energy and vitality — but the trial evidence is male, so women's claims rely more on tradition and general mechanisms.",
     },
     {
       q: "Is Shilajit good for women's energy?",

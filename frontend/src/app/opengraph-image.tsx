@@ -72,7 +72,7 @@ export default async function Image() {
               lineHeight: 1.35,
             }}
           >
-            Pure Himalayan Shilajit · 80+ Trace Minerals · 60%+ Fulvic Acid · NABL Lab-Certified
+            Pure Himalayan Shilajit · 80+ Trace Minerals · 60%+ Fulvic Acid · NABL-Accredited Third-Party Tested
           </span>
         </div>
 

@@ -32,7 +32,6 @@ const CITIES = ["Delhi","Mumbai","Bengaluru","Hyderabad","Chennai","Kolkata","Pu
 
 const TICKER = [
   "Dr. Pooja Arora from Delhi recommended 3TATTAVA Shilajit to 23 patients this month",
-  "Dr. Rahul Mehta from Bengaluru — 89% patient trust score",
   "3TATTAVA is now available at 12 Ayurveda clinics across Delhi NCR",
   "Dr. Kavya Nair from Mumbai — 34 women referred to Shahjeet Sticks in April",
   "VaidyaConnect now has practitioners across 8 Indian cities",
@@ -130,13 +129,6 @@ function Ticker() {
       overflow:"hidden",position:"relative",
     }}>
       <div style={{maxWidth:"1100px",margin:"0 auto",display:"flex",alignItems:"center",gap:"12px"}}>
-        <span style={{
-          fontSize:"9px",letterSpacing:".2em",textTransform:"uppercase",
-          fontVariationSettings:"'wdth' 75,'wght' 700",
-          fontFamily:FONT,color:"rgba(28,19,4,.6)",flexShrink:0,
-        }}>
-          LIVE ·
-        </span>
         <AnimatePresence mode="wait">
           <motion.p
             key={idx}
@@ -921,14 +913,6 @@ export default function VaidyaConnectClient() {
             }}>
               Meet the Practitioners
             </h2>
-            <p style={{
-              fontVariationSettings:"'wdth' 100,'wght' 300",
-              fontFamily:FONT,
-              fontSize:"15px",color:"rgba(28,19,4,.52)",
-              maxWidth:"440px",margin:"0 auto",lineHeight:1.65,
-            }}>
-              Placeholder avatars shown. Upload your portrait to replace with your actual photo.
-            </p>
           </motion.div>
 
           <div style={{
@@ -1181,7 +1165,7 @@ export default function VaidyaConnectClient() {
               <ul style={{listStyle:"none",padding:0,margin:"0 0 28px",display:"flex",flexDirection:"column",gap:"12px"}}>
                 {[
                   "1-on-1 consultation with Dr. Kashish or Dr. Falguni",
-                  "Custom supplement protocol (product + dosage)",
+                  "Custom Ayurvedic protocol (product + dosage)",
                   "90-day check-in and outcome tracking",
                 ].map(item=>(
                   <li key={item} style={{

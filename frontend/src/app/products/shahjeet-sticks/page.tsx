@@ -74,11 +74,6 @@ const faqSchema = {
       name: 'What colour is real, purified Shilajit?',
       acceptedAnswer: { '@type': 'Answer', text: 'Purified resin is dark brown to blackish; it softens and becomes pliable in warm hands and dissolves in warm water to a reddish-brown or golden solution.' },
     },
-    {
-      '@type': 'Question',
-      name: 'Does Shilajit support testosterone?',
-      acceptedAnswer: { '@type': 'Answer', text: 'A 2016 trial of purified Shilajit (250mg twice daily for 90 days) reported increased testosterone in healthy men aged 45–55; the proposed mechanism involves antioxidant and mineral support.' },
-    },
   ],
 }
 

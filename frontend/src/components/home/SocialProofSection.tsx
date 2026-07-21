@@ -26,7 +26,7 @@ const communityStories = [
     occupation: 'Entrepreneur',
     goal: 'Consistency in daily routine',
     quote:
-      "I wasn't looking for another supplement. I was looking for consistency. Building a simple daily ritual helped me stay committed to my broader health goals.",
+      "I wasn't looking for another quick fix. I was looking for consistency. Building a simple daily ritual helped me stay committed to my broader health goals.",
   },
   {
     name: 'Priya',
@@ -492,7 +492,7 @@ export default function SocialProofSection() {
             ))}
           </div>
           <p style={{ fontSize: 11, color: '#b7a392', fontStyle: 'italic', marginBottom: 56, fontFamily: 'var(--font-primary)' }}>
-            [NA — Performer short clips 30–60s: Mona / high performers on Discipline · Recovery · Consistency · Focus]
+            [NA — Performer short clips 30–60s: high performers on Discipline · Recovery · Consistency · Focus]
           </p>
 
           {/* Block 3: Community Snapshot */}
@@ -506,8 +506,6 @@ export default function SocialProofSection() {
             <p className="sp-snapshot-label">Growing Performance Ayurveda Community</p>
             <div className="sp-snapshot-grid">
               <SnapshotCounter target={29} label="Experience Centers" />
-              <SnapshotCounter target={0} display="1000+" label="Community Members (Growing)" />
-              <SnapshotCounter target={0} display="Growing" label="Assessments Completed" />
             </div>
           </motion.div>
 

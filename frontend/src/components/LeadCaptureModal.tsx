@@ -19,6 +19,7 @@ export default function LeadCaptureModal() {
   const canShow = useCallback(() => {
     if (typeof window === 'undefined') return false;
     if (pathname?.startsWith('/products/')) return false;
+    if (pathname?.startsWith('/checkout') || pathname?.startsWith('/order-confirmation')) return false;
     const ts = localStorage.getItem(COOLDOWN_KEY);
     if (ts && Date.now() - parseInt(ts, 10) < COOLDOWN_MS) return false;
     return true;
@@ -75,6 +76,7 @@ export default function LeadCaptureModal() {
     setState('hidden');
   };
 
+  if (pathname?.startsWith('/checkout') || pathname?.startsWith('/order-confirmation')) return null;
   if (state === 'hidden') return null;
 
   return (

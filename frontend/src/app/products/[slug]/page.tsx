@@ -49,8 +49,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 
   const description = product.shortDescription
-    ? `${product.shortDescription} Lab-certified by 3TATTAVA Performance Ayurveda.`
-    : `Shop ${product.name} by 3TATTAVA — Performance Ayurveda. Lab-certified, doctor-formulated.`;
+    ? `${product.shortDescription} Lab-tested by 3TATTAVA Performance Ayurveda.`
+    : `Shop ${product.name} by 3TATTAVA — Performance Ayurveda. Lab-tested, doctor-formulated.`;
 
   return {
     title: `${product.name} | 3TATTAVA`,

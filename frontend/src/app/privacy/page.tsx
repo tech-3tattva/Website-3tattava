@@ -464,7 +464,7 @@ export default function PrivacyPage() {
       <p>
         <strong>Privacy and Grievance Officer:</strong> {LEGAL.grievanceOfficer}
         <br />
-        <strong>Designation:</strong> Grievance Officer
+        <strong>Designation:</strong> {LEGAL.grievanceOfficerRole}
         <br />
         <strong>Email:</strong>{" "}
         <a href={`mailto:${LEGAL.emailGeneral}`}>{LEGAL.emailGeneral}</a>

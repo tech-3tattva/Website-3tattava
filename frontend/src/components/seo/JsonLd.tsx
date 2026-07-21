@@ -33,7 +33,7 @@ export function OrganizationSchema() {
     logo: `${BRAND.url}/logo.png`,
     email: BRAND.email,
     description:
-      "India's first Performance Ayurveda brand. Pure Himalayan Shilajit Resin & Honey Sticks. Lab-certified, doctor-formulated by Dr. Kashish Gupta, BAMS.",
+      "India's first Performance Ayurveda brand. Pure Himalayan Shilajit Resin & Honey Sticks. Lab-tested, doctor-formulated by Dr. Kashish Gupta, BAMS.",
     foundingDate: "2026",
     founder: {
       "@type": "Person",

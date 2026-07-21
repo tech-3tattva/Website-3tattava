@@ -22,7 +22,7 @@ export const article: BlogArticle = {
   sections: [
     {
       heading: "How much Shilajit should you take?",
-      body: `The sensible approach is to anchor the dose to what the trials actually used, rather than to marketing. Across the human studies, the range is roughly **250–500 mg/day of purified Shilajit**:\n\n• The testosterone trial used 250 mg **twice** daily (500 mg/day) for 90 days in older men (Pandit 2016).\n\n• The strength-retention trial saw benefit at **500 mg/day**, not at 250 mg/day (Keller 2019).\n\n• The fertility trial used 100 mg twice daily (Biswas 2010), and a muscle-gene study used 250 mg twice daily (Das 2016).\n\nA practical starting point is **250 mg/day**, moving toward 500 mg/day if your goal aligns with the strength/testosterone studies and you tolerate it well. Aggregators describe a broader range, but ~500 mg/day is the commonly used amount (Examine, secondary). Whatever you choose, use a purified, lab-tested product — dose means nothing if the material isn't clean.`,
+      body: `A sensible approach is to anchor the dose to a modest, consistent daily amount rather than to marketing. A commonly used range is roughly **250–500 mg/day of purified Shilajit**:\n\n• A practical starting point is **250 mg/day**, taken consistently.\n\n• Some people move toward **500 mg/day** if it suits their goal and they tolerate it well.\n\n• More is not better — sensible use never calls for large doses, so stay within the product's label.\n\nAggregators describe a broader range, but ~250–500 mg/day is the commonly used amount (Examine, secondary). Whatever you choose, use a purified, lab-tested product — dose means nothing if the material isn't clean.`,
     },
     {
       heading: "How to take Shilajit resin (step by step)",
@@ -46,7 +46,7 @@ export const article: BlogArticle = {
     },
     {
       heading: "How long until it works?",
-      body: `Plan for **8–12 weeks**. The trials measured their outcomes at 8 weeks (strength) to 90 days (testosterone, fertility) of daily use (Pandit 2016; Keller 2019; Biswas 2010). Shilajit behaves like a cumulative *Rasayana*, not a same-day stimulant, so give it a full course and track something concrete — energy, training numbers, recovery — before deciding whether it's working for you.`,
+      body: `Plan for **8–12 weeks**. Shilajit behaves like a cumulative *Rasayana*, not a same-day stimulant, so give it a full course of daily use and track something concrete — energy, recovery, how you feel day to day — before deciding whether it's working for you.`,
     },
     {
       heading: "Do you need to cycle Shilajit?",
@@ -75,7 +75,7 @@ export const article: BlogArticle = {
   faqs: [
     {
       q: "What's a normal daily dose of Shilajit?",
-      a: "About 250–500 mg/day of purified Shilajit. The testosterone trial used 500 mg/day (as 250 mg twice daily); the strength benefit appeared at 500 mg/day. Start at 250 mg/day and increase only if it suits your goal and you tolerate it.",
+      a: "About 250–500 mg/day of purified Shilajit, taken once daily. Start at 250 mg/day and increase only if it suits your goal and you tolerate it well; more is not better.",
     },
     {
       q: "Can I take Shilajit in hot drinks?",

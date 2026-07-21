@@ -909,7 +909,7 @@ export default function FindUsClient() {
           fontVariationSettings:"'wdth' 75,'wght' 400",
           letterSpacing:"0.06em",
         }}>
-          1 Founding Athlete · 1 Doctor-Led Brand · Thousands Of Future Transformations
+          1 Doctor-Led Brand · Thousands Of Future Transformations
         </p>
       </section>
 
@@ -998,7 +998,7 @@ export default function FindUsClient() {
               { icon:"🧪", title:"Try Before You Buy",   desc:"WTF staff demonstrate the Dip · Hook · Swirl ritual and let you experience the texture and quality of RockResin in person." },
               { icon:"📋", title:"Lab Reports On Display", desc:"Full NABL COA available at every Experience Center. Scan the QR code on the jar — same NABL batch report, independently verified." },
               { icon:"👤", title:"Expert Guidance",        desc:"WTF coaches trained in Performance Ayurveda™ protocol guide you on dosage, timing, and Anupana (carrier) selection." },
-              { icon:"📦", title:"Same-Day Availability",  desc:"All 28 centers carry RockResin and Shahjeet Sticks in stock. No delivery wait for your first ritual." },
+              { icon:"📦", title:"In-Person Guidance",   desc:"Visit an Experience Center to explore the ritual in person and ask the staff about current product availability." },
             ].map((item, i) => (
               <motion.div
                 key={item.title}
@@ -1043,7 +1043,7 @@ export default function FindUsClient() {
               Why WTF Gyms?
             </h2>
             <p style={{ fontVariationSettings:"'wdth' 100,'wght' 300", fontSize:"14px", lineHeight:1.75, color:"rgba(28,19,4,0.65)", marginBottom:"14px" }}>
-              WTF Gym is where our users train. We didn&apos;t want to be on a pharmacy shelf next to mass-market supplements. We wanted to be in the gyms where serious athletes actually train — where the staff understands performance, and where the context of why you&apos;re taking Shilajit is already understood.
+              WTF Gym is where our users train. We didn&apos;t want to be on a pharmacy shelf next to mass-market products. We wanted to be in the gyms where serious athletes actually train — where the staff understands performance, and where the context of why you&apos;re taking Shilajit is already understood.
             </p>
             <p style={{ fontVariationSettings:"'wdth' 100,'wght' 300", fontSize:"14px", lineHeight:1.75, color:"rgba(28,19,4,0.65)" }}>
               That&apos;s the WTF × 3TATTAVA partnership. Performance meets Ayurveda. In person.
@@ -1088,7 +1088,7 @@ export default function FindUsClient() {
           fontVariationSettings:"'wdth' 100,'wght' 300",
           fontSize:"15px", color:"rgba(28,19,4,0.70)", marginBottom:"32px", lineHeight:1.6,
         }}>
-          We ship pan-India in 3–5 days. Same NABL-certified batch. Delivered to your door.
+          We ship pan-India in 3–5 days. Same third-party lab-tested batch. Delivered to your door.
         </p>
         <div style={{ display:"flex", gap:"12px", justifyContent:"center", flexWrap:"wrap" }}>
           <Link

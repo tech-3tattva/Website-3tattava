@@ -8,7 +8,6 @@ const testimonials: Array<{
   body: string;
   img: string;
   stars: number;
-  clinicalVerified?: boolean;
 }> = [
   {
     name: 'Arjun Mehta',
@@ -27,7 +26,7 @@ const testimonials: Array<{
   {
     name: 'Rohan Kapoor',
     handle: 'Bangalore · PROFESSIONAL',
-    body: 'My iron was at 8.2. Tried everything — supplements upset my stomach. The honey sticks were the first thing I could take daily. Iron at 11.4 after 90 days.',
+    body: 'I\'d tried everything, and most things upset my stomach. The honey sticks were the first thing I could take every single day — three months in, it\'s a habit I won\'t break.',
     img: 'https://randomuser.me/api/portraits/men/51.jpg',
     stars: 5,
   },
@@ -41,7 +40,7 @@ const testimonials: Array<{
   {
     name: 'Siddharth Rao',
     handle: 'Hyderabad · BIOHACKER',
-    body: 'I track everything — HRV, sleep cycles, testosterone. After 60 days on 3TATTAVA resin, my HRV improved 18%. This is the most measurable supplement I\'ve ever taken.',
+    body: 'I track my routines closely. After a couple of months on 3TATTAVA resin, my mornings feel steadier and my focus holds through the day. It\'s earned a permanent spot in my routine.',
     img: 'https://randomuser.me/api/portraits/men/33.jpg',
     stars: 5,
   },
@@ -62,10 +61,9 @@ const testimonials: Array<{
   {
     name: 'Dr. Meera Pillai',
     handle: 'Kochi · PHYSICIAN',
-    body: 'I recommended SHODHIT SHILAJIT RESIN to three patients with mineral deficiency. Lab results at 90 days showed consistent improvement. I now take it myself.',
+    body: 'I was curious about SHODHIT SHILAJIT RESIN and started taking it myself. A few months in, my mornings feel more consistent — it\'s now part of my daily ritual.',
     img: 'https://randomuser.me/api/portraits/women/45.jpg',
     stars: 5,
-    clinicalVerified: true,
   },
   {
     name: 'Rahul Gupta',
@@ -77,10 +75,9 @@ const testimonials: Array<{
   {
     name: 'Rohan Kapoor',
     handle: 'Bangalore · PROFESSIONAL',
-    body: 'My iron was at 8.2. Tried everything. The SHODHIT SHILAJIT RESIN honey sticks were the first thing I could take daily without stomach issues. Iron at 11.4 after 90 days.',
+    body: 'My stomach never tolerated the usual options. The SHODHIT SHILAJIT RESIN honey sticks were the first I could take daily without any issues — it\'s part of my morning now.',
     img: 'https://randomuser.me/api/portraits/men/51.jpg',
     stars: 5,
-    clinicalVerified: true,
   },
 ]
 
@@ -96,22 +93,8 @@ function StarRow({ count }: { count: number }) {
   )
 }
 
-function DrKashishVerifiedBadge() {
-  return (
-    <div className="flex items-center gap-1 mt-2 mb-1" style={{ fontSize: '9px', letterSpacing: '0.08em', color: '#C8963E', fontFamily: 'var(--font-primary), system-ui, sans-serif' }}>
-      <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-        <circle cx="6" cy="6" r="5.5" fill="#C8963E" />
-        <path d="M4 6.5a2 2 0 1 0 4 0" stroke="#f7f0e2" strokeWidth="1" fill="none" strokeLinecap="round" />
-        <circle cx="4.5" cy="4.5" r="0.7" fill="#f7f0e2" />
-        <circle cx="7.5" cy="4.5" r="0.7" fill="#f7f0e2" />
-      </svg>
-      <span>Clinical Claim Verified · Dr. Kashish, BAMS</span>
-    </div>
-  )
-}
-
 function TestimonialCard({
-  img, name, handle, body, stars, clinicalVerified,
+  img, name, handle, body, stars,
 }: (typeof testimonials)[number]) {
   return (
     <div className="w-[260px] rounded-xl p-5 flex flex-col gap-0"
@@ -121,7 +104,6 @@ function TestimonialCard({
         style={{ color: 'var(--ink-soft)' }}>
         &ldquo;{body}&rdquo;
       </p>
-      {clinicalVerified && <DrKashishVerifiedBadge />}
       <div className="flex items-center gap-2.5 mt-auto pt-2">
         <Avatar className="size-8 shrink-0">
           <AvatarImage src={img} alt={name} />
@@ -158,10 +140,6 @@ export default function TestimonialsMarquee() {
         <h2 className="text-[clamp(36px,4.5vw,56px)] font-bold leading-tight"
           style={{ fontFamily: 'var(--font-primary), system-ui, sans-serif', color: 'var(--ink)' }}>
           Real Results. Real People.
-        </h2>
-        <h2 className="text-[clamp(28px,3.5vw,44px)] font-light italic"
-          style={{ fontFamily: 'var(--font-primary), system-ui, sans-serif', color: 'var(--gold)' }}>
-          Real Blood Work.
         </h2>
       </div>
 

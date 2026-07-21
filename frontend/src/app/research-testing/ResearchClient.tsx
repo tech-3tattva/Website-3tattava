@@ -86,8 +86,8 @@ const PILLARS = [
   {
     num: "04",
     icon: "🏛️",
-    title: "US-FDA Registered",
-    badge: "US-FDA Registered",
+    title: "US-FDA Facility Registration",
+    badge: "US-FDA facility registration (not product approval)",
     partner: "International Compliance",
     desc: "Our manufacturing facility is registered with the US Food and Drug Administration. This is a facility-level registration that subjects the plant to US FDA audit standards.",
     detail: "US-FDA registration is not required for India-only distribution — we pursue it because it represents the highest internationally recognised facility standard and signals our commitment to global-grade manufacturing.",
@@ -115,7 +115,7 @@ const PILLARS = [
 const COMPLIANCE_BADGES = [
   { label: "NABL Accredited", sub: "Eurofins Scientific" },
   { label: "AYUSH-GMP Certified", sub: "Ministry of AYUSH" },
-  { label: "US-FDA Registered", sub: "Facility Level" },
+  { label: "US-FDA Facility Registration", sub: "Not product approval" },
   { label: "Heavy Metal Tested", sub: "As · Pb · Hg · Cd" },
   { label: "Microbial Screened", sub: "E. coli · Salmonella" },
   { label: "Classical Shodhit", sub: "Triphala Decoction" },
@@ -134,10 +134,8 @@ const STRENGTH_COLOR: Record<Strength, string> = {
   Mechanistic: "#b7a392",
 };
 const SHILAJIT_STUDIES: Study[] = [
-  { topic: "Testosterone (men 45–55)", finding: "A randomised, placebo-controlled trial found purified Shilajit (250 mg ×2/day, 90 days) raised total and free testosterone in men aged 45–55. One trial, older men.", strength: "Moderate", sources: [{ label: "Pandit 2016 · Andrologia · PMID 26395129", url: "https://pubmed.ncbi.nlm.nih.gov/26395129/" }] },
   { topic: "Strength & connective tissue", finding: "An 8-week RCT found 500 mg/day helped retain strength after fatigue and lowered a collagen-breakdown marker.", strength: "Moderate", sources: [{ label: "Keller 2019 · J Int Soc Sports Nutr · PMID 30728074", url: "https://pubmed.ncbi.nlm.nih.gov/30728074/" }] },
   { topic: "Muscle recovery (mechanism)", finding: "Shilajit upregulated collagen and extracellular-matrix genes in human muscle — a plausible recovery mechanism.", strength: "Limited", sources: [{ label: "Das 2016 · J Med Food · PMID 27414521", url: "https://pubmed.ncbi.nlm.nih.gov/27414521/" }] },
-  { topic: "Male fertility", finding: "An uncontrolled trial in men with low sperm counts reported improved sperm parameters — promising, but no placebo group.", strength: "Limited", sources: [{ label: "Biswas 2010 · Andrologia · PMID 20078516", url: "https://pubmed.ncbi.nlm.nih.gov/20078516/" }] },
   { topic: "Safety, antioxidant, anti-fatigue", finding: "A review documents antioxidant, adaptogenic and anti-fatigue signals, with fulvic acid and DBPs as key actives; it stresses purification.", strength: "Review", sources: [{ label: "Stohs 2014 · Phytother Res · PMID 23733436", url: "https://pubmed.ncbi.nlm.nih.gov/23733436/" }] },
   { topic: "Composition & standardisation", finding: "Characterises fulvic acid, dibenzo-\u03b1-pyrones and minerals — the basis for identity and standardisation.", strength: "Review", sources: [{ label: "Agarwal 2007 · Phytother Res · PMID 17295385", url: "https://pubmed.ncbi.nlm.nih.gov/17295385/" }] },
   { topic: "Cognition", finding: "Mechanism only — a review proposes fulvic acid may be pro-cognitive, and lab work shows it interferes with tau aggregation. No human trial exists.", strength: "Mechanistic", sources: [{ label: "Carrasco-Gallardo 2012 · PMID 22482077", url: "https://pubmed.ncbi.nlm.nih.gov/22482077/" }, { label: "Cornejo 2011 · PMID 21785188", url: "https://pubmed.ncbi.nlm.nih.gov/21785188/" }] },
@@ -885,7 +883,7 @@ export default function ResearchClient() {
                 fontFamily:FONT,
                 fontSize:"13px",lineHeight:1.7,color:"rgba(28,19,4,.62)",
               }}>
-                The Shilajit supplement category has minimal regulatory enforcement. This creates a market where brand claims often go unverified. Our protocol exists precisely because we cannot assume other brands meet our standard.
+                The broader Shilajit market has minimal regulatory enforcement. This creates a market where brand claims often go unverified. Our protocol exists precisely because we cannot assume other brands meet our standard.
               </p>
             </div>
           </motion.div>
@@ -1040,7 +1038,7 @@ export default function ResearchClient() {
           fontSize:"11px",lineHeight:1.7,color:"rgba(28,19,4,.38)",
           maxWidth:"640px",margin:"0 auto",
         }}>
-          AYUSH-GMP Certified Facility · US-FDA Registered Facility · NABL 3rd-Party Lab Tested (Eurofins) · Heavy Metal &amp; Microbial Tested. These statements have not been evaluated by any regulatory authority for therapeutic claims. 3TATTAVA products are dietary supplements, not medicines.
+          AYUSH-GMP Certified Facility · US-FDA facility registration (not product approval) · NABL-accredited third-party tested (Eurofins) · Heavy Metal &amp; Microbial Tested. 3TATTAVA products are Ayurvedic proprietary medicines manufactured under a valid Ayurveda manufacturing licence (Mfg. Lic. RJ-926AYU). Use only as directed on the label. This information is for general awareness and is not a substitute for professional medical advice — consult a qualified healthcare practitioner where required.
         </p>
       </section>
 

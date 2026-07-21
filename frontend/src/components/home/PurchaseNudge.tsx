@@ -204,6 +204,8 @@ export default function PurchaseNudge() {
     return () => clearTimeout(t);
   }, [step, visible, containerRef, reduce]);
 
+  // suppress the promo nudge during the purchase flow
+  if (pathname?.startsWith("/checkout") || pathname?.startsWith("/order-confirmation")) return null;
   if (step < 0 || step >= STEPS.length) return null;
   const s = STEPS[step];
 

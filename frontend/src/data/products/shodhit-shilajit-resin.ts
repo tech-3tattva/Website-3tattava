@@ -13,7 +13,7 @@ export const shodhitShilajitResin: ProductData = {
   chips: [
     { value: '≥70%', label: 'Fulvic Acid' },
     { value: '80+', label: 'Ionic Minerals' },
-    { value: 'NABL', label: 'Certified' },
+    { value: 'NABL', label: '3rd-Party Tested' },
     { value: 'AYUSH', label: 'GMP Facility' },
   ],
   bundlePrice: 1799,
@@ -24,8 +24,8 @@ export const shodhitShilajitResin: ProductData = {
     { label: 'MAIN', url: 'https://media.3tattava.com/products/Rockresin-hero.jpeg', caption: 'SHODHIT SHILAJIT RESIN. Premium Himalayan origin, purified via traditional Shodhan methods.' },
     { label: 'TEXTURE', url: 'https://media.3tattava.com/features/resin-pulled.png', caption: 'PURE RESIN TEXTURE. Glossy, dark — signs of high fulvic content.' },
     { label: 'SOURCE', url: 'https://media.3tattava.com/features/resin-mountain.png', caption: 'HIMALAYAN SOURCE. Seeping from ancient rock above 16,000ft.' },
-    { label: 'QUALITY', url: '', caption: 'NABL LAB TESTED. Batch-verified for purity.' },
-    { label: 'DR. KASHISH', url: '', caption: 'Dr. Kashish Verified · BAMS Formulated for modern performance.' },
+    { label: 'QUALITY', url: '', caption: 'NABL-accredited third-party tested. Batch-verified for purity.' },
+    { label: 'DR. KASHISH', url: '', caption: 'BAMS-formulated for modern performance.' },
   ],
   differentiators: [
     { num: '01', title: 'Primal Sourcing', desc: 'Harvested from Himalayan peaks above 16,000 ft where mineral content is most concentrated and untouched.' },
@@ -48,11 +48,11 @@ export const shodhitShilajitResin: ProductData = {
     '<b>Pure Origin:</b> 100% Himalayan Asphaltum Punjabianum.',
   ],
   faqs: [
-    { q: 'Is Shodhit Shilajit Resin safe for daily use?', a: 'Yes, SHODHIT SHILAJIT RESIN is designed as a daily ritual. One 300-500mg dose provides consistent support for energy and mineral balance. If you have chronic medical conditions, please consult your physician first. This product is not intended to diagnose, treat, cure, or prevent any disease.' },
+    { q: 'Is Shodhit Shilajit Resin safe for daily use?', a: 'Yes, SHODHIT SHILAJIT RESIN is designed as a daily ritual. One 300-500mg dose provides consistent support for energy and mineral balance. It is an Ayurvedic proprietary medicine made under Ayurveda licence RJ-926AYU — use only as directed on the label. If you have chronic medical conditions or take medication, consult a qualified physician before use.' },
     { q: 'What is the Triphala Shodhan purification method?', a: 'Shodhan is the classical Ayurvedic purification process prescribed in texts like Ashtanga Hridayam. We use Triphala-infused water to purify the raw resin, removing all sand, heavy metals and impurities while enhancing bioavailability and therapeutic strength. The process is conducted under AYUSH-GMP conditions.' },
     { q: 'How long does one jar last?', a: 'A 20g jar provides approximately 40-50 servings of a pea-sized amount (300-500mg per serving), making it a 40-50 day supply for most users.' },
-    { q: 'Is Shilajit Resin suitable for women?', a: 'Yes. Shilajit is beneficial for both men and women — supporting hormonal balance, energy, iron absorption, and skin health. Not recommended during pregnancy or breastfeeding without medical advice from a qualified physician.' },
-    { q: 'What does "≥70% Fulvic Acid" mean?', a: 'Fulvic acid is the primary active compound in Shilajit. It acts as a natural electrolyte transporter, carrying minerals directly into your cells. Our NABL-certified lab report verifies that every batch of ROCKRESIN contains at least 70% fulvic acid by dry weight — significantly higher than most competitors who do not disclose this figure.' },
+    { q: 'Is Shilajit Resin suitable for women?', a: 'Yes. Shilajit is traditionally used by both men and women to support everyday energy, mineral nutrition, and wellbeing. Not recommended during pregnancy or breastfeeding without advice from a qualified physician.' },
+    { q: 'What does "≥70% Fulvic Acid" mean?', a: 'Fulvic acid is the primary active compound in Shilajit. It acts as a natural electrolyte transporter, carrying minerals directly into your cells. Our NABL-accredited third-party lab report verifies that every batch of ROCKRESIN contains at least 70% fulvic acid by dry weight — significantly higher than most competitors who do not disclose this figure.' },
     { q: 'Where is SHODHIT SHILAJIT RESIN sourced and manufactured?', a: 'The raw Shilajit is sourced from Himalayan deposits at 10,000-16,000ft altitude (Asphaltum Punjabanum). It is purified and manufactured in an AYUSH-GMP certified facility in Rajasthan. It is marketed by SankalpaSiddhi Ayupharma Pvt. Ltd., Delhi.' },
   ],
   comparisonRows: [

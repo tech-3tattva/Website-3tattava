@@ -16,5 +16,4 @@ export const ROCKRESIN_FAQS: FAQItem[] = [
   { id: 10, question: "Why does the fulvic acid test method matter?", answer: "Different methods (HPLC vs colorimetric) can produce very different numbers, so a percentage without a stated method is not comparable or fully meaningful." },
   { id: 11, question: "How much should beginners take?", answer: "Beginners should start low — about 250mg (one scoop / half a pea) once daily for the first 1–2 weeks — then adjust as tolerated." },
   { id: 12, question: "Can I take too much Shilajit?", answer: "Yes. Exceeding recommended amounts increases the risk of side effects and excess mineral intake. Stay within 300–500mg per day unless advised otherwise by a physician." },
-  { id: 13, question: "Does Shilajit support testosterone?", answer: "A 2016 trial of purified Shilajit (250mg twice daily for 90 days) reported increased testosterone in healthy men aged 45–55; the proposed mechanism involves antioxidant and mineral support." },
 ];

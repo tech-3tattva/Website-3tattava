@@ -62,7 +62,7 @@ const STATS = [
 const FEATURED_PILLARS: { slug: string; title: string; blurb: string; icon: LucideIcon; color: string }[] = [
   { slug: "what-is-shilajit", title: "What Is Shilajit?", blurb: "The complete doctor-led guide — what it is, how it forms, and what science shows.", icon: Mountain, color: GOLD },
   { slug: "shilajit-science-fulvic-acid", title: "The Science of Shilajit", blurb: "Fulvic acid, dibenzo-\u03b1-pyrones and the mechanisms behind the mineral pitch.", icon: Sparkles, color: GOLD },
-  { slug: "shilajit-for-men", title: "Shilajit for Men", blurb: "Testosterone, fertility and recovery — what the evidence actually shows.", icon: Activity, color: ESPRESSO },
+  { slug: "shilajit-for-men", title: "Shilajit for Men — Energy & Everyday Vitality", blurb: "Energy, stamina and recovery — how Shilajit is traditionally used for everyday vitality.", icon: Activity, color: ESPRESSO },
   { slug: "shilajit-for-women", title: "Shilajit for Women", blurb: "Benefits, safety and the honest evidence for women's health.", icon: Leaf, color: "#6b8e4e" },
   { slug: "how-to-take-shilajit", title: "How to Take Shilajit", blurb: "Dosage, timing, anupana and how to use resin the right way.", icon: BookOpen, color: ESPRESSO },
   { slug: "shilajit-safety", title: "Shilajit Safety", blurb: "Side effects, heavy metals and who should be cautious.", icon: ShieldCheck, color: GOLD },

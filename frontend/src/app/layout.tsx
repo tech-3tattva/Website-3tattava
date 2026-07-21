@@ -15,6 +15,7 @@ import ChatWidget from "@/components/chat/ChatWidget";
 import WhatsAppWidget from "@/components/WhatsAppWidget";
 import LeadCaptureModal from "@/components/LeadCaptureModal";
 import PurchaseNudge from "@/components/home/PurchaseNudge";
+import CookieConsent from "@/components/CookieConsent";
 
 const archivo = localFont({
   src: [
@@ -36,10 +37,10 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://www.3tattava.com"),
   title: {
     default: "3TATTAVA — Performance Ayurveda | Himalayan Shilajit Resin & Honey Sticks",
-    template: "%s | 3TATTAVA",
+    template: "%s",
   },
   description:
-    "India's first Performance Ayurveda brand. Pure Himalayan Shilajit Resin & Honey Sticks. Lab-certified, doctor-formulated. 80+ trace minerals. Shop now.",
+    "India's first Performance Ayurveda brand. Pure Himalayan Shilajit Resin & Honey Sticks. Lab-tested, doctor-formulated. 80+ trace minerals. Shop now.",
   applicationName: "3TATTAVA",
   authors: [{ name: "Dr. Kashish Gupta, BAMS" }],
   keywords: [
@@ -61,14 +62,14 @@ export const metadata: Metadata = {
     siteName: "3TATTAVA",
     title: "3TATTAVA — Performance Ayurveda | Himalayan Shilajit Resin & Honey Sticks",
     description:
-      "India's first Performance Ayurveda brand. Pure Himalayan Shilajit Resin & Honey Sticks. Lab-certified, doctor-formulated.",
+      "India's first Performance Ayurveda brand. Pure Himalayan Shilajit Resin & Honey Sticks. Lab-tested, doctor-formulated.",
     images: [{ url: "/og-default.png", width: 1200, height: 630, alt: "3TATTAVA — Performance Ayurveda" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "3TATTAVA — Performance Ayurveda",
     description:
-      "Pure Himalayan Shilajit. Lab-certified. Doctor-formulated. 80+ trace minerals.",
+      "Pure Himalayan Shilajit. Lab-tested. Doctor-formulated. 80+ trace minerals.",
     images: ["/og-default.png"],
   },
   robots: {
@@ -118,6 +119,7 @@ export default function RootLayout({
           <WhatsAppWidget />
           <LeadCaptureModal />
           <PurchaseNudge />
+          <CookieConsent />
         </Providers>
       </body>
     </html>

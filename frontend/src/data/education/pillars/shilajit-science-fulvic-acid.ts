@@ -51,7 +51,7 @@ export const article: BlogArticle = {
     },
     {
       heading: "What the science does *not* yet show",
-      body: `Being explicit about the gaps is part of the evidence. There is no large, definitive human trial for Shilajit's antioxidant or anti-fatigue claims; no human cognition trial; no women-specific trial; and no standardised, method-transparent consensus figure for fulvic-acid content across the industry. The mechanisms are promising and the small human trials (testosterone, strength) are encouraging, but "promising mechanism" and "proven outcome" are different tiers — and we keep them separate.`,
+      body: `Being explicit about the gaps is part of the evidence. There is no large, definitive human trial for Shilajit's antioxidant or anti-fatigue claims; no human cognition trial; no women-specific trial; and no standardised, method-transparent consensus figure for fulvic-acid content across the industry. The mechanisms are promising and the small human trials (on energy and strength) are encouraging, but "promising mechanism" and "proven outcome" are different tiers — and we keep them separate.`,
     },
     {
       heading: "The bottom line",

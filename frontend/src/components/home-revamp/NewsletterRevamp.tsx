@@ -5,7 +5,7 @@ import { useRef, useState } from 'react'
 import { motion, useInView, AnimatePresence } from 'framer-motion'
 import RevealHeading from '@/components/ui/RevealHeading'
 
-const TRUST_BADGES = 'NABL Certified · AYUSH-GMP · Doctor-Formulated · 16,000+ ft Sourced'
+const TRUST_BADGES = 'NABL-accredited third-party tested · AYUSH-GMP · Doctor-Formulated · 16,000+ ft Sourced'
 
 export default function NewsletterRevamp() {
   const ref = useRef<HTMLElement>(null)

@@ -64,11 +64,9 @@ const communityCards = [
   },
 ]
 
-const counters = [
+const counters: { value: number; suffix: string; label: string; display?: string }[] = [
   { value: 29, suffix: '+', label: 'Experience Centers' },
-  { value: 1, suffix: '', label: 'Founding Athlete' },
   { value: 1, suffix: '', label: 'Doctor-Led Brand' },
-  { value: 0, suffix: '', label: 'Future Transformations', display: 'Thousands' },
 ]
 
 const wtfCSS = `

@@ -23,7 +23,7 @@ export const BRAND = {
 } as const;
 
 export const ANNOUNCEMENT_BAR = {
-  text: "FREE SHIPPING ABOVE \u20B9999  \u00B7  LAB-CERTIFIED PURITY  \u00B7  DOCTOR-FORMULATED BY DR. KASHISH (BAMS)",
+  text: "FREE SHIPPING ABOVE \u20B9999  \u00B7  THIRD-PARTY LAB-TESTED  \u00B7  DOCTOR-FORMULATED BY DR. KASHISH (BAMS)",
 } as const;
 
 export const HERO = {
@@ -37,10 +37,10 @@ export const HERO = {
 
 export const TRUST_BADGES = [
   { icon: "mountain", label: "Sourced at 10,000\u201316,000 ft" },
-  { icon: "flask", label: "NABL Lab-Certified Purity" },
+  { icon: "flask", label: "NABL-accredited third-party tested" },
   { icon: "stethoscope", label: "Doctor-Formulated (BAMS)" },
   { icon: "droplet", label: "80+ Trace Minerals" },
-  { icon: "shield-check", label: "AYUSH-GMP · US-FDA Registered Facility" },
+  { icon: "shield-check", label: "AYUSH-GMP · US-FDA facility registration (not product approval)" },
 ] as const;
 
 export const THREE_PILLARS = {
@@ -64,7 +64,7 @@ export const THREE_PILLARS = {
       number: "03",
       name: "BECOME",
       outcome: "Long-Term Vitality",
-      body: "This isn't a 30-day experiment. It's a daily ritual that compounds \u2014 testosterone support, hormonal balance, recovery, and resilience that builds month over month.",
+      body: "This isn't a 30-day experiment. It's a daily ritual that compounds \u2014 steady energy, recovery, and resilience that builds month over month.",
     },
   ],
 } as const;
@@ -135,14 +135,14 @@ export const RESULTS_TIMELINE = {
     {
       range: "Week 10\u201312",
       title: "Transformation",
-      body: "Hormonal support, testosterone optimization (men), iron levels and hormonal balance (women). Blood work tells the story.",
+      body: "The daily mineral ritual has fully compounded. Many people report their steadiest energy, recovery and overall sense of well-being by this stage.",
     },
   ],
   cta: { label: "Start Your 90-Day Ritual", href: "/products" },
 } as const;
 
 export const TESTIMONIALS = {
-  header: "Real Results. Real People. Real Blood Work.",
+  header: "Real Results. Real People.",
   disclaimer: "These are real customers. We don't edit reviews. We don't pay for testimonials.",
   items: [
     {
@@ -169,7 +169,7 @@ export const TESTIMONIALS = {
       city: "Delhi",
       segment: "Women's Wellness",
       quote:
-        "My iron was at 8.2. My doctor said supplements. I tried everything \u2014 they all upset my stomach. The honey sticks were the first thing I could actually take daily. Iron at 11.4 after 90 days.",
+        "I'd tried so many things that just upset my stomach. The honey sticks were the first thing I could actually take every single day \u2014 and keep taking. It became part of my morning without a second thought.",
       rating: 5,
     },
   ],
@@ -180,7 +180,7 @@ export const FOUNDER = {
   quote:
     "I stopped seeing patients because one consultation can't fix a generation. The same pattern in 20 people every day \u2014 no real energy, broken sleep, dependency on stimulants. They all thought this was normal. It's not. Your cells are starving for minerals. I built 3TATTAVA to fix the foundation.",
   credentials:
-    "Qualified Ayurveda Doctor (BAMS) \u00B7 90-day personal Shilajit protocol with clinical blood work documentation \u00B7 Founder, 3TATTAVA",
+    "Qualified Ayurveda Doctor (BAMS) \u00B7 90-day personal Shilajit protocol \u00B7 Founder, 3TATTAVA",
   cta: { label: "Read Dr. Kashish's Full Story", href: "/about" },
 } as const;
 
@@ -199,7 +199,7 @@ export const EDUCATION_PREVIEW = {
     },
     {
       slug: "iron-deficiency-indian-women",
-      title: "50% of Indian Women Are Iron Deficient. Nobody's Talking About It.",
+      title: "Iron Deficiency in Indian Women: The Crisis Nobody's Talking About.",
       dek: "Shilajit was never a men's product. That's just how it was marketed. Here's the science.",
     },
   ],
@@ -256,10 +256,10 @@ export const FOOTER = {
   },
   legal: {
     complianceLine:
-      "AYUSH-GMP Certified Facility \u00B7 US-FDA Registered Facility \u00B7 NABL 3rd-Party Lab Tested (Eurofins)",
-    certifications: ["NABL 3rd-Party Lab Tested", "AYUSH-GMP Certified", "US-FDA Registered Facility"],
+      "AYUSH-GMP Certified Facility \u00B7 US-FDA facility registration (not product approval) \u00B7 NABL-accredited third-party tested (Eurofins)",
+    certifications: ["NABL-accredited third-party tested", "AYUSH-GMP Certified", "US-FDA facility registration (not product approval)"],
     companyLine:
-      "Marketed by SankalpaSiddhi Ayupharma Pvt. Ltd., 690A/1, Kabool Nagar, Shahdara, Delhi \u2013 110032",
+      "3TATTAVA products are Ayurvedic proprietary medicines (APM) manufactured under a valid Ayurveda manufacturing licence (Mfg. Lic. RJ-926AYU). Use only as directed on the label. This information is for general awareness and is not a substitute for professional medical advice.",
   },
 } as const;
 
@@ -290,7 +290,7 @@ export const OUR_STORY = {
   subheadline: "And built India's first Performance Ayurveda brand instead.",
   problemHeader: "The Problem Nobody's Fixing",
   problemBody: [
-    "Sitting in his clinic, Dr. Kashish saw the same pattern in 20 patients every day. No real energy. Broken sleep. Dependency on stimulants. Hormonal disasters. And the worst part \u2014 they all thought this was normal.",
+    "Sitting in his clinic, Dr. Kashish saw the same pattern in 20 patients every day. No real energy. Broken sleep. Dependency on stimulants. Relentless burnout. And the worst part \u2014 they all thought this was normal.",
     "One consultation can't fix a generation. So he stopped seeing patients and started building something.",
     "Something rooted in what actually works \u2014 Ayurveda's mineral science and adaptogenic intelligence \u2014 but designed for the way people actually live. Not powders you'll forget. Not capsules you don't trust. Something you'll actually want to take every single morning.",
     "That's 3TATTAVA.",
@@ -317,10 +317,10 @@ export const OUR_STORY = {
       {
         number: "04",
         title: "Packaging & QR Verification",
-        body: "Glass jar (never plastic \u2014 plastic leaches into resin). Every pack carries a QR code linking to the batch-specific NABL 3rd-party lab report. Marketed by SankalpaSiddhi Ayupharma Pvt. Ltd., 690A/1 Kabool Nagar, Shahdara, Delhi. Manufactured in an AYUSH-GMP certified, US-FDA registered facility.",
+        body: "Glass jar (never plastic \u2014 plastic leaches into resin). Every pack carries a QR code linking to the batch-specific NABL-accredited third-party lab report. Marketed by SankalpaSiddhi Ayupharma Pvt. Ltd., C-17 Central Market, New Seemapuri, Delhi \u2013 110095. Manufactured in an AYUSH-GMP certified facility with US-FDA facility registration (not product approval).",
       },
     ],
-    certifications: ["NABL 3rd-Party Lab Tested", "AYUSH-GMP Certified", "US-FDA Registered Facility", "Triphala Shodhan Purified"],
+    certifications: ["NABL-accredited third-party tested", "AYUSH-GMP Certified", "US-FDA facility registration (not product approval)", "Triphala Shodhan Purified"],
     cta: { label: "View Our Latest Lab Report", href: "/lab-reports" },
   },
 } as const;
@@ -349,7 +349,7 @@ export const EDUCATION_HUB = {
         "What Is Performance Ayurveda? (And Why It's Not What You Think)",
         "Shilajit vs. Pre-Workout Supplements: An Honest Comparison",
         "Shilajit vs. Ashwagandha: Which Should You Take?",
-        "Natural Testosterone Support: The Ayurvedic Approach",
+        "Ayurvedic Support for Men's Energy & Stamina",
         "The Mineral Deficiency Crisis: Why You're Always Tired",
       ],
     },
@@ -381,12 +381,12 @@ export const PAGE_METADATA = {
   home: {
     title: "3TATTAVA \u2014 Performance Ayurveda | Himalayan Shilajit Resin & Honey Sticks",
     description:
-      "India's first Performance Ayurveda brand. Pure Himalayan Shilajit Resin & Honey Sticks. Lab-certified, doctor-formulated. 80+ trace minerals. Shop now.",
+      "India's first Performance Ayurveda brand. Pure Himalayan Shilajit Resin & Honey Sticks. Lab-tested, doctor-formulated. 80+ trace minerals. Shop now.",
   },
   shop: {
     title: "Shop Shilajit Resin & Honey Sticks | 3TATTAVA Performance Ayurveda",
     description:
-      "Pure Himalayan Shilajit in two formats \u2014 resin jar and daily honey sticks. Lab-certified purity. 60%+ fulvic acid. Free shipping above \u20B9999.",
+      "Pure Himalayan Shilajit in two formats \u2014 resin jar and daily honey sticks. Lab-tested purity. 60%+ fulvic acid. Free shipping above \u20B9999.",
   },
   about: {
     title: "Our Story \u2014 Dr. Kashish & 3TATTAVA | India's Performance Ayurveda Brand",
@@ -399,9 +399,9 @@ export const PAGE_METADATA = {
       "Doctor-reviewed guides on Shilajit benefits, dosage, women's health, Performance Ayurveda, and mineral science. Learn before you buy.",
   },
   shilajitResin: {
-    title: "Pure Himalayan Shilajit Resin 20g | Lab-Certified | 3TATTAVA",
+    title: "Pure Himalayan Shilajit Resin 20g | Lab-Tested | 3TATTAVA",
     description:
-      "100% pure Himalayan Shilajit resin. 60%+ fulvic acid, 80+ trace minerals. NABL lab-tested. Doctor-formulated by Dr. Kashish. \u20B91,299. Free shipping.",
+      "100% pure Himalayan Shilajit resin. 60%+ fulvic acid, 80+ trace minerals. NABL-accredited third-party tested. Doctor-formulated by Dr. Kashish. \u20B91,299. Free shipping.",
   },
   honeySticks: {
     title: "Shilajit Honey Sticks 30-Pack | Daily Energy Ritual | 3TATTAVA",

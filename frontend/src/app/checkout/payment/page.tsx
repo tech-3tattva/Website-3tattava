@@ -131,7 +131,11 @@ export default function CheckoutPaymentPage() {
           <div className="mb-6 p-4 bg-cream rounded">
             <p className="font-bold text-xl">{formatPrice(total)}</p>
             <p className="text-text-light text-sm">{items.length} item(s)</p>
+            <p className="text-text-light text-sm mt-1">All prices are inclusive of applicable taxes (GST).</p>
           </div>
+          <p className="text-text-medium text-sm mb-6">
+            We accept UPI, credit/debit cards and net banking (secured via Cashfree).
+          </p>
           <button
             type="button"
             onClick={handlePayNow}

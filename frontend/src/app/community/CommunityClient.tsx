@@ -17,7 +17,7 @@ const PILLARS = [
     label: "Athletes",
     teaser: "Competitive performers. Performance-obsessed.",
     desc: "Competitive lifters, endurance athletes, and gym-goers who have built Shilajit into their performance stack. From first-time ritualists to elite performers.",
-    examples: ["Mona Agarwal — Founding Athlete", "WTF Gym members (28 centers)", "Competitive powerlifters & runners"],
+    examples: ["WTF Gym members (28 centers)", "Competitive powerlifters & runners"],
   },
   {
     icon: "📋",
@@ -55,24 +55,21 @@ const STORIES = [
     role: "Competitive Powerlifter",
     city: "Delhi",
     duration: "12 Weeks · RockResin",
-    quote: "Week 4 I stopped needing afternoon coffee. By week 8 my pull numbers were climbing in a way that diet alone couldn't explain. Week 12 blood work showed the change.",
-    verified: true,
+    quote: "It's become a steady part of my training routine — a simple morning ritual I actually look forward to.",
   },
   {
     name: "Priya M.",
     role: "Marathon Runner",
     city: "Gurgaon",
     duration: "10 Weeks · RockResin",
-    quote: "I was iron-deficient for three years. Doctor-diagnosed, supplement-resistant. Two months of Shilajit + iron-rich diet and my ferritin is finally in range. The fatigue is gone.",
-    verified: true,
+    quote: "I've made it a consistent part of my daily routine — easy to keep up with, even on busy training weeks.",
   },
   {
     name: "Rohit K.",
     role: "Strength Coach",
     city: "Noida",
     duration: "8 Weeks · Shahjeet",
-    quote: "I give these to clients who travel and can't commit to a ritual. Consistency is the hardest variable in supplementation. The stick format solves it.",
-    verified: false,
+    quote: "I give these to clients who travel and can't commit to a ritual. Consistency is the hardest variable. The stick format solves it.",
   },
   {
     name: "Sneha T.",
@@ -80,7 +77,6 @@ const STORIES = [
     city: "Mumbai",
     duration: "6 Weeks · RockResin",
     quote: "I have studied classical texts on Shilajit for years. 3TATTAVA is the first modern product I trust — the Triphala Shodhan process is done correctly. The COA proves it.",
-    verified: true,
   },
 ];
 
@@ -89,7 +85,7 @@ const FUTURE = [
   { icon: "🏆", title: "Challenges",      desc: "90-day documented transformation challenges with community tracking and expert check-ins." },
   { icon: "🎙️", title: "Podcasts",        desc: "The 3TATTAVA Podcast — Dr. Kashish in long-form on performance, Ayurveda, and mineral science." },
   { icon: "💻", title: "Webinars",        desc: "Monthly live Q&As with Dr. Kashish, guest practitioners, and performance experts." },
-  { icon: "🤝", title: "Athlete Sessions", desc: "Mona Agarwal and community athletes sharing training protocols, recovery rituals, and results." },
+  { icon: "🤝", title: "Athlete Sessions", desc: "Community athletes sharing training protocols, recovery rituals, and results." },
 ];
 
 const UGC = [
@@ -318,20 +314,6 @@ function StoryCard({ s, idx }: { s:typeof STORIES[0]; idx:number }) {
         opacity:hov?1:0,transition:"opacity .25s",
       }}/>
 
-      {s.verified && (
-        <div style={{
-          display:"inline-flex",alignItems:"center",gap:"5px",
-          fontSize:"9px",letterSpacing:".15em",textTransform:"uppercase",
-          color:hov?"#86efac":"#166534",
-          background:hov?"rgba(134,239,172,.12)":"rgba(22,101,52,.08)",
-          border:`1px solid ${hov?"rgba(134,239,172,.30)":"rgba(22,101,52,.22)"}`,
-          padding:"3px 8px",borderRadius:"2px",
-          fontVariationSettings:"'wdth' 75,'wght' 600",
-          width:"fit-content",transition:"all .3s",
-        }}>
-          ✓ Dr. Kashish Verified
-        </div>
-      )}
 
       <p style={{
         fontSize:"14px",lineHeight:1.7,fontStyle:"italic",
@@ -653,13 +635,11 @@ function WaIcon() {
 
 export default function CommunityClient() {
   const pillarsRef   = useRef<HTMLElement>(null);
-  const athleteRef   = useRef<HTMLElement>(null);
   const ugcRef       = useRef<HTMLElement>(null);
   const eventsRef    = useRef<HTMLElement>(null);
   const futureRef    = useRef<HTMLElement>(null);
 
   const pillarsInView = useInView(pillarsRef, {once:true, margin:"-60px"});
-  const athleteInView = useInView(athleteRef, {once:true, margin:"-60px"});
   const ugcInView     = useInView(ugcRef,     {once:true, margin:"-60px"});
   const eventsInView  = useInView(eventsRef,  {once:true, margin:"-60px"});
   const futureInView  = useInView(futureRef,  {once:true, margin:"-60px"});
@@ -900,150 +880,6 @@ export default function CommunityClient() {
         </div>
       </section>
 
-      {/* ── FOUNDING ATHLETE ───────────────────────────────────────────────── */}
-      <section ref={athleteRef} style={{background:"#fff",padding:"88px 24px"}}>
-        <div style={{
-          maxWidth:"1100px",margin:"0 auto",
-          display:"grid",gridTemplateColumns:"minmax(0,1fr) minmax(0,1fr)",
-          gap:"64px",alignItems:"center",
-        }}>
-          {/* Left: placeholder portrait card */}
-          <motion.div
-            initial={{opacity:0,x:-32}}
-            animate={athleteInView?{opacity:1,x:0}:{}}
-            transition={{duration:.65,ease:EASE}}
-            style={{
-              background:"#f7f0e2",
-              border:"1px solid rgba(205,135,42,.25)",
-              padding:"48px 36px",
-              display:"flex",flexDirection:"column",alignItems:"center",
-              gap:"18px",textAlign:"center",position:"relative",
-            }}
-          >
-            <div style={{
-              position:"absolute",top:0,left:0,right:0,height:"3px",
-              background:"linear-gradient(90deg,#A67B2F,#E4C079,#cd872a)",
-            }}/>
-            <div style={{
-              width:"120px",height:"120px",borderRadius:"50%",
-              background:"linear-gradient(145deg,#A67B2F,#E4C079)",
-              display:"flex",alignItems:"center",justifyContent:"center",
-              boxShadow:"0 8px 32px rgba(205,135,42,.28)",
-            }}>
-              <span style={{
-                fontVariationSettings:"'wdth' 85,'wght' 800",
-                fontFamily:FONT,
-                fontSize:"52px",color:"#442a1b",lineHeight:1,
-              }}>M</span>
-            </div>
-            <div>
-              <h3 style={{
-                fontVariationSettings:"'wdth' 85,'wght' 700",
-                fontFamily:FONT,
-                fontSize:"22px",color:"#442a1b",marginBottom:"8px",
-              }}>
-                Mona Agarwal
-              </h3>
-              <div style={{
-                display:"inline-flex",alignItems:"center",
-                background:"linear-gradient(105deg,#A67B2F,#E4C079,#cd872a)",
-                padding:"4px 14px",
-              }}>
-                <span style={{
-                  fontSize:"9px",letterSpacing:".2em",textTransform:"uppercase",
-                  fontVariationSettings:"'wdth' 75,'wght' 700",
-                  fontFamily:FONT,
-                  color:"#442a1b",
-                }}>
-                  Founding Athlete
-                </span>
-              </div>
-            </div>
-            <div style={{
-              display:"flex",gap:"20px",flexWrap:"wrap",justifyContent:"center",
-            }}>
-              {[
-                {label:"Protocol",  value:"12 Weeks"},
-                {label:"Product",   value:"RockResin"},
-                {label:"Gym",       value:"WTF NCR"},
-              ].map(s=>(
-                <div key={s.label} style={{textAlign:"center"}}>
-                  <div style={{
-                    fontSize:"9px",letterSpacing:".15em",textTransform:"uppercase",
-                    fontVariationSettings:"'wdth' 75,'wght' 500",
-                    fontFamily:FONT,
-                    color:"rgba(28,19,4,.38)",marginBottom:"3px",
-                  }}>
-                    {s.label}
-                  </div>
-                  <div style={{
-                    fontVariationSettings:"'wdth' 85,'wght' 700",
-                    fontFamily:FONT,
-                    fontSize:"14px",color:"#442a1b",
-                  }}>
-                    {s.value}
-                  </div>
-                </div>
-              ))}
-            </div>
-            <p style={{
-              fontSize:"11px",color:"rgba(28,19,4,.42)",
-              fontVariationSettings:"'wdth' 75,'wght' 400",
-              fontFamily:FONT,
-              letterSpacing:".05em",lineHeight:1.6,
-            }}>
-              Portrait coming soon — currently documenting<br/>her 90-day protocol at WTF Gym
-            </p>
-          </motion.div>
-
-          {/* Right: bio */}
-          <motion.div
-            initial={{opacity:0,x:32}}
-            animate={athleteInView?{opacity:1,x:0}:{}}
-            transition={{duration:.65,delay:.12,ease:EASE}}
-          >
-            {eyebrow("Founding Athlete")}
-            <h2 style={{
-              fontVariationSettings:"'wdth' 85,'wght' 700",
-              fontFamily:FONT,
-              fontSize:"clamp(24px,3vw,36px)",
-              letterSpacing:"-.02em",lineHeight:1.15,
-              color:"#442a1b",marginBottom:"20px",
-            }}>
-              She Didn&apos;t Wait for Perfect Conditions.
-            </h2>
-            <p style={{
-              fontVariationSettings:"'wdth' 100,'wght' 400",
-              fontFamily:FONT,
-              fontSize:"15px",lineHeight:1.72,
-              color:"rgba(28,19,4,.68)",marginBottom:"20px",
-            }}>
-              Mona Agarwal is 3TATTAVA&apos;s Founding Athlete — the first community member to publicly document her Shilajit protocol at WTF Gym. She didn&apos;t sign up for a sponsorship. She signed up for results. Her 12-week documented protocol became the template for what we now call a Community Case Study.
-            </p>
-            <blockquote style={{
-              borderLeft:"2px solid #cd872a",
-              paddingLeft:"20px",margin:"0 0 28px",
-            }}>
-              <p style={{
-                fontVariationSettings:"'wdth' 100,'wght' 300",
-                fontFamily:FONT,
-                fontSize:"16px",fontStyle:"italic",
-                lineHeight:1.65,color:"rgba(28,19,4,.72)",marginBottom:"8px",
-              }}>
-                &ldquo;I didn&apos;t feel different on week one. I felt different on week four. That&apos;s when I knew this was real.&rdquo;
-              </p>
-              <cite style={{
-                fontSize:"11px",color:"#cd872a",
-                fontVariationSettings:"'wdth' 75,'wght' 600",
-                fontFamily:FONT,
-                letterSpacing:".08em",fontStyle:"normal",
-              }}>
-                — Mona Agarwal, WTF Gym
-              </cite>
-            </blockquote>
-          </motion.div>
-        </div>
-      </section>
 
       {/* ── TRANSFORMATION STORIES ─────────────────────────────────────────── */}
       <section style={{background:"#f7f0e2",padding:"88px 24px"}}>
@@ -1058,7 +894,7 @@ export default function CommunityClient() {
             {eyebrow("Not Testimonials — Case Studies")}
             {h2(
               "Transformation Stories",
-              "Hover a card to see the dark-reveal. Verified by Dr. Kashish, BAMS — where indicated."
+              "Hover a card to see the dark-reveal — real community experiences, shared with consent."
             )}
           </motion.div>
 
@@ -1339,7 +1175,7 @@ export default function CommunityClient() {
           fontSize:"11px",lineHeight:1.7,color:"rgba(28,19,4,.38)",
           maxWidth:"640px",margin:"0 auto",
         }}>
-          Transformation stories shared with participant consent. Individual results vary. 3TATTAVA products are dietary supplements, not medicines. Consult a qualified healthcare practitioner before use.
+          Transformation stories shared with participant consent. Individual results vary. 3TATTAVA products are Ayurvedic proprietary medicines manufactured under a valid Ayurveda manufacturing licence (Mfg. Lic. RJ-926AYU). Use only as directed on the label. This information is for general awareness and is not a substitute for professional medical advice — consult a qualified healthcare practitioner where required.
         </p>
       </section>
 

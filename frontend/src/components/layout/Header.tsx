@@ -67,7 +67,7 @@ const GLASS_LIGHT: GlassStyle = {
 /* ─── Marquee messages ─── */
 const TICKER_ITEMS = [
   "✦ 80+ Ionic Trace Minerals",
-  "◆ 60%+ Fulvic Acid — NABL Certified",
+  "◆ 60%+ Fulvic Acid — NABL-accredited third-party tested",
   "✦ Free Shipping Above ₹999",
   "◆ Tear · Squeeze · Perform — Honey Sticks",
   "✦ Doctor-Formulated by Dr. Kashish (BAMS)",

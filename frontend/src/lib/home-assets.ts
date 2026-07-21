@@ -36,7 +36,7 @@ export const TATTVA_BLOCKS = [
     num: "03",
     title: "Become",
     outcome: "Long-Term Vitality",
-    body: "This isn't a 30-day experiment. It's a daily ritual that compounds — testosterone support, hormonal balance, recovery, and resilience that builds month over month.",
+    body: "This isn't a 30-day experiment. It's a daily ritual that compounds — steady energy, recovery, and resilience that builds month over month.",
     imageSrc: HOME_ASSETS.tattvas.become,
   },
 ] as const;

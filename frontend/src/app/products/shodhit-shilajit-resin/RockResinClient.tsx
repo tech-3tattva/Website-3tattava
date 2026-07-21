@@ -10,6 +10,7 @@ import ScrollFAQAccordion from "@/components/ui/scroll-faqaccordion";
 import { ROCKRESIN_FAQS } from "@/data/faqs/rockresin";
 import BrandDivider from "@/components/product/BrandDivider";
 import ProductSwipeLink from "@/components/product/ProductSwipeLink";
+import { LEGAL } from "@/lib/legal";
 
 // ─── TOKENS ───────────────────────────────────────────────────────────────────
 const F = "var(--font-primary), system-ui, sans-serif";
@@ -513,7 +514,41 @@ function CertBand() {
         </Reveal>
         <Reveal delay={0.08} style={{ display: "flex", justifyContent: "center" }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={media("/rockresin/frame82.png")} alt="Sankalpa Siddhi Ayupharma — ISO 9001, ISO 22000, FDA, NABL, AYUSH-GMP certified" style={{ width: "100%", maxWidth: 900, height: "auto", display: "block" }} />
+          <img src={media("/rockresin/frame82.png")} alt="Sankalpa Siddhi Ayupharma quality marks — ISO 9001 & ISO 22000 quality systems, AYUSH-GMP manufacturing, US-FDA facility registration (not product approval), NABL-accredited third-party lab testing" style={{ width: "100%", maxWidth: 900, height: "auto", display: "block" }} />
+        </Reveal>
+        <p style={{ fontFamily: F, fontSize: 12, lineHeight: 1.55, color: "rgba(247,240,226,.72)", maxWidth: 760, margin: "clamp(18px,2.5vw,26px) auto 0", textAlign: "center" }}>
+          ISO 9001 &amp; ISO 22000 quality systems · AYUSH-GMP manufacturing · US-FDA facility registration (not product approval) · NABL-accredited third-party lab testing. These marks refer to facility registration and independent testing — not approval of the product by any authority.
+        </p>
+      </div>
+    </section>
+  );
+}
+
+// ─── LEGAL METROLOGY / PRODUCT INFORMATION ────────────────────────────────────
+function LegalMetrologySection() {
+  const rows: { label: string; value: ReactNode }[] = [
+    { label: "MRP", value: <>₹{PRODUCT.mrp.toLocaleString("en-IN")} <span style={{ color: TAUPE }}>(inclusive of all taxes)</span></> },
+    { label: "Net Quantity", value: "20 g" },
+    { label: "Manufactured by", value: `${LEGAL.manufacturer}, ${LEGAL.manufacturerAddress} · Ayurveda Lic. ${LEGAL.manufacturerLicence}` },
+    { label: "Marketed by", value: `${LEGAL.companyShort}, ${LEGAL.registeredOffice}` },
+    { label: "Country of Origin", value: LEGAL.countryOfOrigin },
+    { label: "Consumer care", value: `${LEGAL.emailGeneral} · ${LEGAL.careMobile}` },
+  ];
+  return (
+    <section style={{ background: CREAM, padding: "clamp(32px,5vw,64px) 24px" }}>
+      <div style={{ maxWidth: 1120, margin: "0 auto" }}>
+        <Reveal>
+          <p style={{ ...eyebrow, marginBottom: 14 }}>Legal Metrology · Product Information</p>
+          <div style={{ border: "1px solid rgba(68,42,27,.18)", borderRadius: 18, padding: "clamp(20px,3vw,32px)", background: "#fbf6ea" }}>
+            <dl style={{ margin: 0 }}>
+              {rows.map((r, i) => (
+                <div key={r.label} style={{ display: "grid", gridTemplateColumns: "minmax(120px,190px) 1fr", gap: "clamp(8px,2vw,28px)", padding: "12px 0", borderTop: i === 0 ? "none" : "1px solid rgba(68,42,27,.10)" }}>
+                  <dt style={{ fontFamily: F, fontVariationSettings: "'wght' 700", fontSize: 12, letterSpacing: ".06em", textTransform: "uppercase", color: GOLD, margin: 0 }}>{r.label}</dt>
+                  <dd style={{ fontFamily: F, fontVariationSettings: "'wght' 500", fontSize: T.body, lineHeight: 1.5, color: ESPRESSO, margin: 0 }}>{r.value}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
         </Reveal>
       </div>
     </section>
@@ -529,6 +564,7 @@ export default function RockResinClient() {
       <MobileBuyBar />
 
       <HeroSection />
+      <LegalMetrologySection />
       <ReveredSection />
       <BrandDivider />
       <ComparisonSection />

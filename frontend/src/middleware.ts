@@ -2,59 +2,17 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 /**
- * Phased go-live gate.
+ * Launch gate.
  *
- * Public: storefront (Home, Shop, Products, Lab Reports) + commerce flow (cart,
- * checkout, account, order confirmation, login/register) + the admin panel.
- * Everything else is rewritten to /coming-soon until it is launched.
- * Static files, /_next, and /api are excluded via the matcher below, so assets
- * and backend calls keep working.
+ * The site is live. Only a small set of not-yet-ready routes are still held
+ * behind /coming-soon; every other unknown path falls through to Next.js so a
+ * genuine 404 (app/not-found.tsx) is returned instead of a soft-200 coming-soon
+ * page. Static files, /_next and /api are excluded via the matcher below.
  */
-const PUBLIC_ROUTES = new Set<string>([
-  "/",
-  "/products",
-  "/shop",
-  "/products/shahjeet-sticks",
-  "/products/shodhit-shilajit-resin",
-  "/lab-reports",
-  "/knowledge-center",
-  "/research-testing",
-  "/vaidyaconnect",
-  "/assessment",
-  "/community",
-  "/find-us",
-  "/product-journey",
-  "/social-links",
-  "/subscribe-waitlist",
-  "/wellness-club",
-  "/wishlist",
-  "/search",
-  // Legal / policy pages — required live for Razorpay KYC review.
-  "/privacy",
-  "/terms",
-  "/returns",
-  "/shipping",
-  "/contact",
-  "/cookies",
-  "/medical-disclaimer",
-  "/payment",
-  "/intellectual-property",
-  "/grievance",
-  "/coming-soon",
+const GATED_ROUTES = new Set<string>([
+  "/dosha-quiz",
+  "/gifting",
 ]);
-
-// Path prefixes that are fully public: the commerce flow, customer account, and admin panel.
-const PUBLIC_PREFIXES = [
-  "/checkout",
-  "/account",
-  "/order-confirmation",
-  "/admin",
-  "/login",
-  "/register",
-  "/track-order",
-  "/education",
-  "/doctors",
-];
 
 // URL variants (typed / printed / QR) that permanently redirect to the canonical route.
 const REDIRECTS: Record<string, string> = {
@@ -73,16 +31,18 @@ export function middleware(req: NextRequest) {
     return NextResponse.redirect(dest, 308);
   }
 
-  // Local development shows every page — the phased go-live gate applies to production only.
+  // Local development shows every page — the launch gate applies to production only.
   if (process.env.NODE_ENV !== "production") return NextResponse.next();
-  if (PUBLIC_ROUTES.has(pathname)) return NextResponse.next();
-  if (PUBLIC_PREFIXES.some((p) => pathname === p || pathname.startsWith(p + "/"))) {
-    return NextResponse.next();
+
+  // Hold only the explicitly-gated stubs; everything else (including unknown
+  // paths, which must 404) passes through to Next.js.
+  if (GATED_ROUTES.has(pathname)) {
+    const url = req.nextUrl.clone();
+    url.pathname = "/coming-soon";
+    return NextResponse.rewrite(url);
   }
 
-  const url = req.nextUrl.clone();
-  url.pathname = "/coming-soon";
-  return NextResponse.rewrite(url);
+  return NextResponse.next();
 }
 
 export const config = {

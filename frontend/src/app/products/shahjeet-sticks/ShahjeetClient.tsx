@@ -12,6 +12,7 @@ import {
 import ScrollFAQAccordion, { type FAQItem } from "@/components/ui/scroll-faqaccordion";
 import BrandDivider from "@/components/product/BrandDivider";
 import ProductSwipeLink from "@/components/product/ProductSwipeLink";
+import { LEGAL } from "@/lib/legal";
 
 // ─── TOKENS ───────────────────────────────────────────────────────────────────
 const F = "var(--font-primary), system-ui, sans-serif";
@@ -455,8 +456,11 @@ function FinalBand() {
         </Reveal>
         <Reveal delay={0.08} style={{ display: "flex", justifyContent: "center" }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={media("/shahjeet/frame82.png")} alt="Sankalpa Siddhi Ayupharma — ISO 9001, ISO 22000, FDA, NABL, AYUSH-GMP certified" style={{ width: "100%", maxWidth: 820, height: "auto", display: "block" }} />
+          <img src={media("/shahjeet/frame82.png")} alt="Sankalpa Siddhi Ayupharma quality marks — ISO 9001 & ISO 22000 quality systems, AYUSH-GMP manufacturing, US-FDA facility registration (not product approval), NABL-accredited third-party lab testing" style={{ width: "100%", maxWidth: 820, height: "auto", display: "block" }} />
         </Reveal>
+        <p style={{ fontFamily: F, fontSize: 12, lineHeight: 1.55, color: "rgba(60,36,18,.82)", maxWidth: 760, margin: "clamp(18px,2.5vw,26px) auto 0", textAlign: "center" }}>
+          ISO 9001 &amp; ISO 22000 quality systems · AYUSH-GMP manufacturing · US-FDA facility registration (not product approval) · NABL-accredited third-party lab testing. These marks refer to facility registration and independent testing — not approval of the product by any authority.
+        </p>
       </div>
     </section>
   );
@@ -465,14 +469,13 @@ function FinalBand() {
 const SHAHJEET_FAQS: FAQItem[] = [
   { id: 1, question: "When is the best time to take Shahjeet Sticks?", answer: "Morning before breakfast is optimal for all-day sustained energy — or 30 minutes before training for performance, or post-workout for recovery. Honey is the classical Anupana (Ayurvedic carrier) for Shilajit, making morning use especially effective." },
   { id: 2, question: "How many sticks should I take per day?", answer: "One stick per day — providing 600mg of pure Himalayan Shilajit. Each pack of 30 sticks is a full 30-day supply. Do not exceed the recommended daily dose." },
-  { id: 3, question: "Are Shahjeet Sticks suitable for diabetics?", answer: "Each stick contains natural honey (~6g carbohydrates). If you are diabetic or monitoring blood sugar, please consult your physician before use. This product is not intended to treat or manage any medical condition." },
+  { id: 3, question: "Are Shahjeet Sticks suitable for diabetics?", answer: "Each stick contains natural honey (~6g carbohydrates). Shahjeet is an Ayurvedic proprietary medicine; use as directed on the pack. If you are managing diabetes or any medical condition, consult your physician before use." },
   { id: 4, question: "How is the Shilajit purified?", answer: "Every batch is purified using classical Triphala Shodhana (Amalaki, Haritaki, Bibhitaki) in an AYUSH-GMP certified facility — removing rock and heavy-metal impurities while preserving the fulvic-acid matrix." },
   { id: 5, question: "Are your products lab-tested?", answer: "Yes. Every batch is NABL 3rd-party lab tested for fulvic acid, heavy metals, and microbial safety. Scan the QR code on the pack to view your batch's full report." },
   { id: 6, question: "Can women take Shahjeet honey sticks?", answer: "Yes. Shahjeet Sticks (600mg purified Shilajit in honey per stick) are a convenient format many women prefer over bitter resin — for energy, recovery and mineral support. Avoid during pregnancy and breastfeeding." },
   { id: 7, question: "Can I take Shahjeet before the gym?", answer: "Yes. Many take Shilajit pre-workout for energy support, and Shahjeet Sticks are designed for a convenient pre- or post-workout ritual — tear, squeeze, perform." },
   { id: 8, question: "Can I take a stick in water or milk instead of directly?", answer: "Yes. Squeeze the stick into warm (not boiling) water, tea or milk if you prefer — though it is formulated to be taken directly, with no carrier or preparation required." },
   { id: 9, question: "What colour is real, purified Shilajit?", answer: "Purified resin is dark brown to blackish; it softens and becomes pliable in warm hands and dissolves in warm water to a reddish-brown or golden solution." },
-  { id: 10, question: "Does Shilajit support testosterone?", answer: "A 2016 trial of purified Shilajit (250mg twice daily for 90 days) reported increased testosterone in healthy men aged 45–55; the proposed mechanism involves antioxidant and mineral support." },
 ];
 
 function ShahjeetFaqSection() {
@@ -487,6 +490,37 @@ function ShahjeetFaqSection() {
   );
 }
 
+// ─── LEGAL METROLOGY / PRODUCT INFORMATION ────────────────────────────────────
+function LegalMetrologySection() {
+  const rows: { label: string; value: ReactNode }[] = [
+    { label: "MRP", value: <>₹{PRODUCT.mrp.toLocaleString("en-IN")} <span style={{ color: TAUPE }}>(inclusive of all taxes)</span></> },
+    { label: "Net Quantity", value: "30 sticks (30 × 8 g)" },
+    { label: "Manufactured by", value: `${LEGAL.manufacturer}, ${LEGAL.manufacturerAddress} · Ayurveda Lic. ${LEGAL.manufacturerLicence}` },
+    { label: "Marketed by", value: `${LEGAL.companyShort}, ${LEGAL.registeredOffice}` },
+    { label: "Country of Origin", value: LEGAL.countryOfOrigin },
+    { label: "Consumer care", value: `${LEGAL.emailGeneral} · ${LEGAL.careMobile}` },
+  ];
+  return (
+    <section style={{ background: CREAM, padding: "clamp(32px,5vw,64px) 24px" }}>
+      <div style={{ maxWidth: 1120, margin: "0 auto" }}>
+        <Reveal>
+          <p style={{ ...eyebrow, marginBottom: 14 }}>Legal Metrology · Product Information</p>
+          <div style={{ border: "1px solid rgba(68,42,27,.18)", borderRadius: 18, padding: "clamp(20px,3vw,32px)", background: "#fbf6ea" }}>
+            <dl style={{ margin: 0 }}>
+              {rows.map((r, i) => (
+                <div key={r.label} style={{ display: "grid", gridTemplateColumns: "minmax(120px,190px) 1fr", gap: "clamp(8px,2vw,28px)", padding: "12px 0", borderTop: i === 0 ? "none" : "1px solid rgba(68,42,27,.10)" }}>
+                  <dt style={{ fontFamily: F, fontVariationSettings: "'wght' 700", fontSize: 12, letterSpacing: ".06em", textTransform: "uppercase", color: GOLD, margin: 0 }}>{r.label}</dt>
+                  <dd style={{ fontFamily: F, fontVariationSettings: "'wght' 500", fontSize: T.body, lineHeight: 1.5, color: ESPRESSO, margin: 0 }}>{r.value}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
+
 // ─── PAGE ─────────────────────────────────────────────────────────────────────
 export default function ShahjeetClient() {
   return (
@@ -496,6 +530,7 @@ export default function ShahjeetClient() {
       <MobileBuyBar />
 
       <HeroSection />
+      <LegalMetrologySection />
       <WhyCreatedSection />
       <BrandDivider />
       <ComparisonSection />

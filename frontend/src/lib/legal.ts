@@ -1,29 +1,35 @@
 // Single source of truth for the company's legal identity so the name, CIN,
-// addresses, emails and grievance details cannot diverge across pages/footer.
-// NOTE: two fields are legally mandatory before publication and are placeholders:
-//   - grievanceOfficer  ({{GRIEVANCE_OFFICER_NAME}})
-//   - careMobile        ({{CUSTOMER_CARE_MOBILE}})
+// GSTIN, addresses, emails, manufacturer and grievance details cannot diverge
+// across pages / footer / product Legal-Metrology blocks.
+// All values verified against Certificate of Incorporation + GST RC + COA.
 export const LEGAL = {
   company: "SankalpaSiddhi Ayupharma Private Limited",
   companyShort: "SankalpaSiddhi Ayupharma Pvt. Ltd.",
   brand: "3TATTAVA",
   cin: "U21001DL2026PTC464092",
+  gstin: "07ABSCS9652C1ZU",
   website: "https://www.3tattava.com",
 
-  // Per the legal policies master copy (registered = C-17). The homepage footer
-  // block follows the client's explicit spec (registered = 690A/1) — reconcile with counsel.
-  registeredOffice: "C-17, Ground Floor, Central Market, New Seemapuri, East Delhi, Delhi – 110095, India",
-  correspondenceAddress: "690A/1, Kabool Nagar, Shahdara, Delhi – 110032, India",
+  // Registered office per Certificate of Incorporation (authoritative).
+  registeredOffice:
+    "C-17, Ground Floor, Central Market, New Seemapuri, East Delhi, Delhi – 110095, India",
+  // GST principal place of business — used for dispatch / operations.
+  operationsAddress: "690A/1, Kabool Nagar, Shahdara, Delhi – 110032, India",
 
-  // Footer "Marketed by" block — exactly as specified by the client (Image #12).
-  footerRegisteredOffice: "690A/1, Kabool Nagar, Shahdara, Delhi – 110032",
-  footerMarketingOffice: "C-17 G/F, Central Market, New Seemapuri, East Delhi – 110095",
+  // Manufacturer (per COA) — distinct from the marketer above.
+  manufacturer: "URULIFE SCIENCES LLP",
+  manufacturerAddress: "Greater Noida, Uttar Pradesh, India",
+  manufacturerLicence: "RJ-926AYU",
+  countryOfOrigin: "India",
 
   emailGeneral: "care@3tattava.com",
   emailOrders: "orders@3tattava.com",
+  careMobile: "+91 95601 49956",
 
-  grievanceOfficer: "To be designated", // {{GRIEVANCE_OFFICER_NAME}} — required before publish
-  careMobile: "To be added", // {{CUSTOMER_CARE_MOBILE}} — required before publish
+  // Grievance / consumer-complaint + data-protection contact (DPDP).
+  grievanceOfficer: "Dr. Kashish Gupta",
+  grievanceOfficerRole: "Grievance Officer & Data Protection Contact",
+  grievanceEmail: "care@3tattava.com",
 
   policyUpdated: "17 July 2026",
   copyrightYear: 2026,

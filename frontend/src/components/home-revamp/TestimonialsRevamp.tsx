@@ -20,9 +20,9 @@ interface Reel {
 }
 
 const REELS: Reel[] = [
-  { src: media("/videos/morning-ritual.mp4"), poster: media("/home/mona-agarwal.jpg"), name: 'Rahul M.', city: 'Delhi', caption: 'Consistency changed everything.' },
+  { src: media("/videos/morning-ritual.mp4"), poster: media("/home/trinity-poster-v2.png"), name: 'Rahul M.', city: 'Delhi', caption: 'Consistency changed everything.' },
   { src: media("/videos/shahjeet-reveal.mp4"), poster: media("/home/Shilajeet-resins.png"), name: 'Priya S.', city: 'Mumbai', caption: 'Purity you can actually feel.' },
-  { src: media("/home/dip-video.mp4"), poster: media("/home/rockresin.jpg"), name: 'Arjun K.', city: 'Bangalore', caption: 'Faster recovery in a week.' },
+  { src: media("/home/dip-video.mp4"), poster: media("/home/rockresin.jpg"), name: 'Arjun K.', city: 'Bangalore', caption: 'Part of my daily routine now.' },
   { src: media("/videos/morning-ritual.mp4"), poster: media("/home/trinity-poster-v2.png"), name: 'Sneha P.', city: 'Pune', caption: 'My 10-second morning ritual.' },
   { src: media("/videos/shahjeet-reveal.mp4"), poster: media("/home/Ayurveda-insider.png"), name: 'Vikram T.', city: 'Noida', caption: 'Our whole gym swears by it.' },
 ];

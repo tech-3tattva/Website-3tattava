@@ -10,7 +10,7 @@ const rockResinBenefits = [
   '80+ Trace Minerals',
   '3rd Party NABL Lab Tested',
   'AYUSH GMP Manufactured',
-  'US-FDA Registered Facility',
+  'US-FDA facility registration (not product approval)',
 ]
 
 const shahjeetBenefits = [

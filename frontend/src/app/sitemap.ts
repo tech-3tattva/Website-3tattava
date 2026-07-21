@@ -27,6 +27,11 @@ const STATIC_ROUTES: Array<{
   { path: "/privacy", priority: 0.3, changeFrequency: "yearly" },
   { path: "/terms", priority: 0.3, changeFrequency: "yearly" },
   { path: "/track-order", priority: 0.3, changeFrequency: "yearly" },
+  { path: "/medical-disclaimer", priority: 0.3, changeFrequency: "yearly" },
+  { path: "/cookies", priority: 0.3, changeFrequency: "yearly" },
+  { path: "/payment", priority: 0.3, changeFrequency: "yearly" },
+  { path: "/intellectual-property", priority: 0.3, changeFrequency: "yearly" },
+  { path: "/grievance", priority: 0.3, changeFrequency: "yearly" },
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {

@@ -1,7 +1,7 @@
 'use client';
 import { media } from "@/lib/media";
 
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 import Link from 'next/link';
 import {
   motion,
@@ -33,7 +33,7 @@ interface Panel {
   ctaLabel: string;
   ctaHref: string;
   imageSide: 'left' | 'right';
-  media: { type: 'image'; src: string; alt: string; fallback?: 'mona'; fit?: 'cover' | 'contain' };
+  media: { type: 'image'; src: string; alt: string; fit?: 'cover' | 'contain' };
 }
 
 const PANELS: Panel[] = [
@@ -55,7 +55,7 @@ const PANELS: Panel[] = [
     heading: 'RockResin',
     body:
       'Shodhit Shilajit resin, purified through the classical Triphala Shodhana process.\nAn ancient mineral elixir for modern energy, strength and longevity.',
-    meta: 'Shodhit Shilajit Resin · Coming Soon',
+    meta: 'Shodhit Shilajit Resin',
     ctaLabel: 'Discover RockResin',
     ctaHref: '/products/shodhit-shilajit-resin',
     imageSide: 'right',
@@ -94,11 +94,10 @@ const STORY_CSS = `
   }
 `;
 
-/* ─── Scroll-zoomed media (Ken Burns) with graceful Mona fallback ─── */
+/* ─── Scroll-zoomed media (Ken Burns) ─── */
 function PanelMedia({ media }: { media: Panel['media'] }) {
   const ref = useRef<HTMLDivElement>(null);
   const reduce = useReducedMotion();
-  const [broken, setBroken] = useState(false);
 
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -106,64 +105,23 @@ function PanelMedia({ media }: { media: Panel['media'] }) {
   });
   const scale = useTransform(scrollYProgress, [0, 0.5, 1], [1.06, 1.22, 1.06]);
 
-  const showFallback = broken && media.fallback === 'mona';
-
   return (
     <div className="pstory-media" ref={ref} style={{ background: media.fit === 'contain' ? '#ffffff' : undefined }}>
-      {showFallback ? (
-        <div
-          aria-label="Mona Agarwal"
-          style={{
-            position: 'absolute',
-            inset: 0,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: 20,
-            background: 'radial-gradient(120% 100% at 50% 30%, #3a2616 0%, #241708 70%, #1c1304 100%)',
-          }}
-        >
-          <div
-            style={{
-              width: 'clamp(120px, 16vw, 180px)',
-              height: 'clamp(120px, 16vw, 180px)',
-              borderRadius: '50%',
-              border: `2px solid ${GOLD}`,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontFamily: DISPLAY,
-              fontSize: 'clamp(40px, 6vw, 64px)',
-              fontWeight: 700,
-              color: GOLD,
-              background: 'rgba(205,135,42,0.08)',
-            }}
-          >
-            MA
-          </div>
-          <p style={{ fontFamily: F, fontSize: 13, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'rgba(247,240,226,0.7)', margin: 0 }}>
-            Mona Agarwal
-          </p>
-        </div>
-      ) : (
-        // eslint-disable-next-line @next/next/no-img-element
-        <motion.img
-          src={media.src}
-          alt={media.alt}
-          onError={() => setBroken(true)}
-          style={{
-            position: 'absolute',
-            inset: 0,
-            width: '100%',
-            height: '100%',
-            objectFit: media.fit ?? 'cover',
-            padding: media.fit === 'contain' ? 'clamp(32px, 5vw, 80px)' : 0,
-            display: 'block',
-            scale: reduce || media.fit === 'contain' ? 1 : scale,
-          }}
-        />
-      )}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <motion.img
+        src={media.src}
+        alt={media.alt}
+        style={{
+          position: 'absolute',
+          inset: 0,
+          width: '100%',
+          height: '100%',
+          objectFit: media.fit ?? 'cover',
+          padding: media.fit === 'contain' ? 'clamp(32px, 5vw, 80px)' : 0,
+          display: 'block',
+          scale: reduce || media.fit === 'contain' ? 1 : scale,
+        }}
+      />
       {/* subtle inner vignette for text-edge legibility (cover photos only) */}
       {media.fit !== 'contain' && (
         <div
@@ -255,7 +213,7 @@ function StoryPanel({ panel }: { panel: Panel }) {
             {panel.body}
           </motion.p>
 
-          {/* Quote (Mona) */}
+          {/* Quote */}
           {panel.quote && (
             <motion.p
               {...rise(0.22)}

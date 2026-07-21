@@ -7,8 +7,8 @@ const STORAGE_KEY = "3tattava-announcement-dismissed";
 const PINCODE_KEY = "3tattava-pincode";
 
 const TICKER_MESSAGES = [
-  "80+ Trace Minerals · 60%+ Fulvic Acid · NABL Lab-Certified",
-  "Free Shipping Above ₹999 · Lab-Certified Purity · Doctor-Formulated",
+  "80+ Trace Minerals · 60%+ Fulvic Acid · NABL-Accredited Third-Party Tested",
+  "Free Shipping Above ₹999 · Third-Party Lab-Tested · Doctor-Formulated",
   "SHODHIT SHILAJIT — Purified via Classical Triphala Shodhan",
   "AYUSH-GMP Certified Facility",
 ];

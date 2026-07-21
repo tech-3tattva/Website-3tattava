@@ -42,12 +42,10 @@ const products: ProductCard[] = [
     title: 'RockResin',
     subtitle: 'Shodhit Shilajit Resin',
     image: media("/hero/rockresin-product.jpg"),
-    badge: 'COMING SOON',
     bottomText: 'Ancient Mineral Elixir for Modern Vitality',
-    ctaLabel: 'Notify Me →',
-    ctaHoverText: 'Dip. Hook. Swirl — Soon',
-    ctaHref: '#rockresin-reveal',
-    comingSoon: true,
+    ctaLabel: 'Shop Now →',
+    ctaHoverText: 'Dip. Hook. Swirl.',
+    ctaHref: '/products/shodhit-shilajit-resin',
   },
 ]
 

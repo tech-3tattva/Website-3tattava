@@ -25,7 +25,7 @@ export const HOME_FAQS: FAQItem[] = [
     id: 4,
     question: "Is it safe for women?",
     answer:
-      "Absolutely. Our formulations are designed for both men and women. Shilajit has been used in Ayurveda for centuries by all genders for energy, immunity, and hormonal balance.",
+      "Absolutely. Our formulations are designed for both men and women. Shilajit has been used in Ayurveda for centuries by all genders to support everyday energy and vitality.",
   },
   {
     id: 5,

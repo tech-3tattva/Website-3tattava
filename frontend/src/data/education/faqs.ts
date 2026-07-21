@@ -99,7 +99,7 @@ export const FAQS: Faq[] = [
     "pillar": "Shilajit",
     "category": "General",
     "q": "What is Shilajit used for?",
-    "a": "Traditionally it is used as a Rasayana for energy, stamina, strength, recovery and healthy aging. Modern research is preliminary and strongest for energy/fatigue and male fertility markers.",
+    "a": "Traditionally it is used as a Rasayana for energy, stamina, strength, recovery and healthy aging. Modern research is preliminary and strongest for general energy and everyday fatigue support.",
     "intent": "Informational",
     "priority": "P1"
   },
@@ -216,7 +216,7 @@ export const FAQS: Faq[] = [
     "pillar": "Shilajit",
     "category": "General",
     "q": "Is Shilajit a steroid?",
-    "a": "No. Shilajit is not a steroid or hormone. Some studies suggest it may support the body's own testosterone in certain men, but it does not contain hormones.",
+    "a": "No. Shilajit is not a steroid, and it contains no added hormones. It is traditionally used as a Rasayana to support everyday energy and vitality.",
     "intent": "Safety",
     "priority": "P1"
   },
@@ -270,7 +270,7 @@ export const FAQS: Faq[] = [
     "pillar": "Shilajit",
     "category": "General",
     "q": "Is Shilajit backed by science?",
-    "a": "There is preliminary human evidence for fatigue and male fertility/testosterone markers, plus lab and animal antioxidant data; overall the evidence base is small and early-stage.",
+    "a": "There is preliminary human evidence for energy and fatigue, plus lab and animal antioxidant data; overall the evidence base is small and early-stage.",
     "intent": "Informational",
     "priority": "P1"
   },
@@ -449,8 +449,8 @@ export const FAQS: Faq[] = [
     "id": "FAQ050",
     "pillar": "Science",
     "category": "Fulvic & Compounds",
-    "q": "Does Shilajit help testosterone at a cellular level?",
-    "a": "A 2016 trial of purified Shilajit (250 mg twice daily, 90 days) reported increased testosterone in healthy men 45–55; the proposed mechanism involves antioxidant and mineral support.",
+    "q": "How does Shilajit support the body at a cellular level?",
+    "a": "Purified Shilajit is rich in fulvic acid and trace minerals, and its proposed mechanism involves antioxidant and mineral support. Traditionally it is valued as a Rasayana for everyday energy and vitality.",
     "intent": "Informational",
     "priority": "P1"
   },
@@ -504,7 +504,7 @@ export const FAQS: Faq[] = [
     "pillar": "Men",
     "category": "Men's Health",
     "q": "Is Shilajit good for men?",
-    "a": "Shilajit is traditionally used for male vitality, strength and stamina. The best modern evidence is for testosterone and fertility markers in specific groups of men.",
+    "a": "Shilajit is traditionally used as a Rasayana to support men's everyday energy, strength and stamina. Modern evidence is preliminary, so it is best viewed as general wellbeing support rather than a treatment.",
     "intent": "Informational",
     "priority": "P1"
   },
@@ -512,8 +512,8 @@ export const FAQS: Faq[] = [
     "id": "FAQ057",
     "pillar": "Men",
     "category": "Men's Health",
-    "q": "Does Shilajit increase testosterone?",
-    "a": "A 2016 clinical trial found purified Shilajit 250 mg twice daily for 90 days significantly raised total and free testosterone in healthy men aged 45–55. Results may not generalize to all men.",
+    "q": "Is Shilajit used to support men's everyday vitality?",
+    "a": "Purified Shilajit is traditionally used as a Rasayana to support men's everyday energy, stamina and vitality. It is not a treatment for any medical condition, and this information is for general awareness — consult a qualified healthcare practitioner where required.",
     "intent": "Informational",
     "priority": "P1"
   },
@@ -521,8 +521,8 @@ export const FAQS: Faq[] = [
     "id": "FAQ058",
     "pillar": "Men",
     "category": "Men's Health",
-    "q": "How much Shilajit should men take for testosterone?",
-    "a": "The testosterone trial used 250 mg of purified Shilajit twice daily (500 mg/day) for 90 days. This does not guarantee the same effect for everyone.",
+    "q": "How much Shilajit should men take for general vitality?",
+    "a": "A common traditional intake is around 250-500 mg of purified Shilajit per day, which can be split into two servings. Start low, follow the product label, and consult a qualified healthcare practitioner where required.",
     "intent": "Informational",
     "priority": "P1"
   },
@@ -530,8 +530,8 @@ export const FAQS: Faq[] = [
     "id": "FAQ059",
     "pillar": "Men",
     "category": "Men's Health",
-    "q": "Does Shilajit improve male fertility?",
-    "a": "A study in infertile men reported improved sperm count and motility after purified Shilajit twice daily for 90 days; more large trials are needed.",
+    "q": "Is Shilajit used to support men's overall vitality?",
+    "a": "Purified Shilajit is traditionally used as a Rasayana for men's overall energy, stamina and general wellbeing. This information is for general awareness and is not a substitute for professional medical advice — consult a qualified healthcare practitioner where required.",
     "intent": "Informational",
     "priority": "P1"
   },
@@ -539,8 +539,8 @@ export const FAQS: Faq[] = [
     "id": "FAQ060",
     "pillar": "Men",
     "category": "Men's Health",
-    "q": "Does Shilajit boost libido?",
-    "a": "Traditionally used to support libido; some testosterone-related findings may indirectly relate, but direct libido trial evidence is limited.",
+    "q": "Is Shilajit used to support men's everyday energy and stamina?",
+    "a": "Purified Shilajit is traditionally used as a Rasayana to support everyday energy, stamina and general vitality. It is best viewed as general wellbeing support rather than a treatment for any specific concern.",
     "intent": "Informational",
     "priority": "P2"
   },
@@ -548,8 +548,8 @@ export const FAQS: Faq[] = [
     "id": "FAQ061",
     "pillar": "Men",
     "category": "Men's Health",
-    "q": "Is Shilajit good for erectile function?",
-    "a": "There is no strong direct clinical evidence that Shilajit treats erectile dysfunction; it is not a substitute for medical evaluation of ED.",
+    "q": "Can Shilajit address specific men's health concerns?",
+    "a": "Shilajit is traditionally used as a Rasayana for general energy and everyday vitality, not as a treatment for any medical condition. For specific health concerns, consult a qualified healthcare practitioner rather than self-treating.",
     "intent": "Safety",
     "priority": "P2"
   },
@@ -630,7 +630,7 @@ export const FAQS: Faq[] = [
     "pillar": "Men",
     "category": "Men's Health",
     "q": "Is Shilajit good for men over 40?",
-    "a": "The strongest testosterone evidence is in men 45–55, so middle-aged men are a relevant group; younger men have less specific evidence.",
+    "a": "Shilajit is traditionally used across adulthood as a Rasayana, and middle-aged men often value it for everyday energy, stamina and recovery. It is best viewed as general wellbeing support.",
     "intent": "Informational",
     "priority": "P1"
   },
@@ -639,7 +639,7 @@ export const FAQS: Faq[] = [
     "pillar": "Men",
     "category": "Men's Health",
     "q": "Can young men in their 20s take Shilajit?",
-    "a": "Healthy adult men can generally take purified Shilajit, but the testosterone evidence is specific to older men, so younger users should have realistic expectations.",
+    "a": "Healthy adult men can generally take purified Shilajit. It is traditionally used for everyday energy and vitality, so younger users should keep realistic expectations and follow the product label.",
     "intent": "Informational",
     "priority": "P2"
   },
@@ -656,8 +656,8 @@ export const FAQS: Faq[] = [
     "id": "FAQ073",
     "pillar": "Men",
     "category": "Men's Health",
-    "q": "Is Shilajit good for men's fertility if trying to conceive?",
-    "a": "Some data suggest sperm-parameter benefits, but couples trying to conceive should consult a fertility specialist rather than self-treat.",
+    "q": "Is Shilajit suitable for men who are planning a family?",
+    "a": "Shilajit is traditionally used as a Rasayana for general energy and vitality, not as a treatment for any specific condition. Couples planning a family should consult a qualified healthcare practitioner rather than self-treating.",
     "intent": "Safety",
     "priority": "P2"
   },
@@ -692,8 +692,8 @@ export const FAQS: Faq[] = [
     "id": "FAQ077",
     "pillar": "Men",
     "category": "Men's Health",
-    "q": "Is Shilajit good for testosterone in gym-goers?",
-    "a": "Active men use it for vitality; the testosterone data are in a general 45–55 population, not specifically athletes, so extrapolate cautiously.",
+    "q": "Is Shilajit good for gym-goers?",
+    "a": "Active men traditionally use purified Shilajit as a Rasayana to support everyday energy, stamina and recovery. It is best viewed as general wellbeing support alongside training and nutrition.",
     "intent": "Informational",
     "priority": "P2"
   },
@@ -809,8 +809,8 @@ export const FAQS: Faq[] = [
     "id": "FAQ090",
     "pillar": "Women",
     "category": "Women's Health",
-    "q": "Does Shilajit help hormonal balance in women?",
-    "a": "Shilajit is not a hormone and there is little female hormonal trial data; ‘hormonal balance’ should be framed as traditional support, not a proven effect.",
+    "q": "Is Shilajit used to support women's everyday wellbeing?",
+    "a": "Shilajit is traditionally used as a Rasayana to support women's everyday energy and general wellbeing through life's transitions. It is best viewed as general wellbeing support rather than a proven treatment.",
     "intent": "Safety",
     "priority": "P2"
   },
@@ -926,8 +926,8 @@ export const FAQS: Faq[] = [
     "id": "FAQ103",
     "pillar": "Women",
     "category": "Women's Health",
-    "q": "Does Shilajit affect fertility in women?",
-    "a": "There is no strong evidence that Shilajit improves or harms female fertility; women trying to conceive should consult a fertility specialist.",
+    "q": "Is Shilajit suitable for women who are planning a family?",
+    "a": "Shilajit is traditionally used as a Rasayana for general energy and wellbeing, not as a treatment for any specific condition. Women who are planning a family should consult a qualified healthcare practitioner rather than self-treating.",
     "intent": "Safety",
     "priority": "P2"
   },
@@ -1044,7 +1044,7 @@ export const FAQS: Faq[] = [
     "pillar": "Women",
     "category": "Women's Health",
     "q": "Will Shilajit make women grow facial hair or feel ‘masculine’?",
-    "a": "No. Shilajit is not an androgen/hormone and there is no evidence it causes facial hair or masculinizing effects in women.",
+    "a": "No. Shilajit is a mineral-rich Rasayana, not a steroid, and there is no evidence it causes facial hair or masculinizing effects in women.",
     "intent": "Safety",
     "priority": "P1"
   },
@@ -1116,7 +1116,7 @@ export const FAQS: Faq[] = [
     "pillar": "Dosage",
     "category": "Dosage & Timing",
     "q": "Can Shilajit be taken twice daily?",
-    "a": "Yes. The testosterone study used 250 mg twice daily (500 mg total). Splitting the dose is acceptable within the daily limit.",
+    "a": "Yes. A common traditional intake is around 250 mg twice daily (500 mg total). Splitting the dose across the day is acceptable within the daily limit stated on the product label.",
     "intent": "Informational",
     "priority": "P1"
   },
@@ -2132,8 +2132,8 @@ export const FAQS: Faq[] = [
     "id": "FAQ237",
     "pillar": "Ayurveda",
     "category": "Ayurveda & Shilajit",
-    "q": "Is Shilajit part of Vajikarana (aphrodisiac) therapy?",
-    "a": "Shilajit features in Rasayana and is associated with Vajikarana (reproductive/vitality) support in classical use; modern evidence is limited to fertility markers.",
+    "q": "Is Shilajit used in classical Ayurvedic Rasayana traditions?",
+    "a": "Yes. Shilajit features prominently in the Rasayana tradition, where it is valued for supporting everyday energy, strength and vitality. Modern evidence remains preliminary, so it is best viewed as general wellbeing support.",
     "intent": "Informational",
     "priority": "P2"
   },
@@ -2358,7 +2358,7 @@ export const FAQS: Faq[] = [
     "pillar": "Fitness",
     "category": "Fitness & Sports",
     "q": "Is Shilajit good for older/masters athletes?",
-    "a": "Midlife athletes may value the energy/testosterone rationale (evidence is in men 45–55), plus recovery support; start low and monitor.",
+    "a": "Midlife athletes traditionally value purified Shilajit as a Rasayana for everyday energy and recovery support; start low, follow the label and monitor how you feel.",
     "intent": "Informational",
     "priority": "P2"
   },
@@ -3420,7 +3420,7 @@ export const FAQS: Faq[] = [
     "pillar": "Ayurveda Fundamentals",
     "category": "Fundamentals",
     "q": "What is Vajikarana?",
-    "a": "Vajikarana is the Ayurvedic branch dealing with reproductive health, virility and fertility.",
+    "a": "Vajikarana is a classical branch of Ayurveda traditionally concerned with rejuvenation, strength and overall vitality. This is historical and educational context, not a therapeutic claim.",
     "intent": "Informational",
     "priority": "P2"
   },
@@ -4230,7 +4230,7 @@ export const FAQS: Faq[] = [
     "pillar": "Comparisons",
     "category": "Shilajit vs X",
     "q": "Shilajit vs Ashwagandha — which is better?",
-    "a": "They serve different goals: Shilajit is a mineral Rasayana for energy, vitality and (in some men) testosterone; Ashwagandha is an adaptogen for stress and sleep. Many stack both.",
+    "a": "They serve different goals: Shilajit is a mineral Rasayana traditionally used for energy and vitality, while Ashwagandha is an adaptogen associated with stress and sleep support. Many people use both.",
     "intent": "Commercial",
     "priority": "P1"
   },
@@ -4265,8 +4265,8 @@ export const FAQS: Faq[] = [
     "id": "FAQ474",
     "pillar": "Comparisons",
     "category": "Shilajit vs X",
-    "q": "Shilajit vs testosterone boosters?",
-    "a": "Most ‘test boosters’ lack evidence; purified Shilajit has one supportive trial in men 45–55. It is not a hormone or a guaranteed booster.",
+    "q": "Shilajit vs marketed vitality supplements?",
+    "a": "Many marketed vitality supplements lack strong evidence. Purified Shilajit is traditionally used as a Rasayana for everyday energy and vitality — general wellbeing support rather than a guaranteed quick fix.",
     "intent": "Commercial",
     "priority": "P1"
   },
@@ -4356,7 +4356,7 @@ export const FAQS: Faq[] = [
     "pillar": "Comparisons",
     "category": "Shilajit vs X",
     "q": "Shilajit vs Shatavari for women?",
-    "a": "Shatavari is a female-focused reproductive/hormonal tonic; Shilajit is a mineral energy Rasayana. Women sometimes use both for different goals.",
+    "a": "Shatavari is a herb traditionally used in Ayurveda to support women's general wellbeing, while Shilajit is a mineral-rich Rasayana traditionally used for energy and vitality. Women sometimes use both for different everyday goals.",
     "intent": "Commercial",
     "priority": "P2"
   },
@@ -4590,7 +4590,7 @@ export const FAQS: Faq[] = [
     "pillar": "Women",
     "category": "Women's Health (extended)",
     "q": "Does Shilajit affect estrogen?",
-    "a": "There's no reliable evidence that Shilajit meaningfully alters estrogen; it is not a hormone.",
+    "a": "There is no reliable evidence that Shilajit meaningfully affects estrogen; it is a mineral-rich Rasayana and contains no added hormones.",
     "intent": "Safety",
     "priority": "P2"
   },

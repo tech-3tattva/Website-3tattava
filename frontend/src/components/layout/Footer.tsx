@@ -376,11 +376,15 @@ export default function Footer() {
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={media("/logos/sankalpa-siddhi.png")} alt="SankalpaSiddhi Ayupharma" width={54} height={54} style={{ borderRadius: "50%", flexShrink: 0 }} />
             <p className="text-xs text-text-medium text-center sm:text-left leading-relaxed">
-              <strong className="text-text-dark">Marketed by</strong> {LEGAL.companyShort} · CIN {LEGAL.cin}
+              <strong className="text-text-dark">Marketed by</strong> {LEGAL.companyShort} · CIN {LEGAL.cin} · GSTIN {LEGAL.gstin}
               <br />
-              <strong className="text-text-dark">Registered Office:</strong> {LEGAL.footerRegisteredOffice}
+              <strong className="text-text-dark">Registered Office:</strong> {LEGAL.registeredOffice}
               <br />
-              <strong className="text-text-dark">Marketing Office:</strong> {LEGAL.footerMarketingOffice}
+              <strong className="text-text-dark">Dispatch / Operations:</strong> {LEGAL.operationsAddress}
+              <br />
+              <strong className="text-text-dark">Manufactured by:</strong> {LEGAL.manufacturer} · Ayurveda Lic. {LEGAL.manufacturerLicence}
+              <br />
+              <strong className="text-text-dark">Customer care:</strong> {LEGAL.careMobile} · {LEGAL.emailGeneral}
             </p>
           </div>
           <p className="text-xs text-text-medium text-center md:text-left leading-relaxed">
@@ -433,7 +437,7 @@ export default function Footer() {
           </div>
         </div>
         <p className="text-white/50 text-xs text-center mt-3" style={{ fontFamily: "var(--font-primary), system-ui, sans-serif" }}>
-          © {LEGAL.copyrightYear} {LEGAL.companyShort} · {LEGAL.footerRegisteredOffice}
+          © {LEGAL.copyrightYear} {LEGAL.companyShort} · {LEGAL.registeredOffice}
         </p>
       </section>
     </footer>
