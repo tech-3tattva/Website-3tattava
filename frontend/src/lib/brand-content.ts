@@ -259,7 +259,7 @@ export const FOOTER = {
       "AYUSH-GMP Certified Facility \u00B7 US-FDA facility registration (not product approval) \u00B7 NABL-accredited third-party tested (Eurofins)",
     certifications: ["NABL-accredited third-party tested", "AYUSH-GMP Certified", "US-FDA facility registration (not product approval)"],
     companyLine:
-      "3TATTAVA products are Ayurvedic proprietary medicines (APM) manufactured under a valid Ayurveda manufacturing licence (Mfg. Lic. RJ-926AYU). Use only as directed on the label. This information is for general awareness and is not a substitute for professional medical advice.",
+      "3TATTAVA products are Ayurvedic proprietary medicines (APM) manufactured under a valid Ayurveda manufacturing licence. Use only as directed on the label. This information is for general awareness and is not a substitute for professional medical advice.",
   },
 } as const;
 

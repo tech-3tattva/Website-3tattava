@@ -382,8 +382,6 @@ export default function Footer() {
               <br />
               <strong className="text-text-dark">Dispatch / Operations:</strong> {LEGAL.operationsAddress}
               <br />
-              <strong className="text-text-dark">Manufactured by:</strong> {LEGAL.manufacturer} · Ayurveda Lic. {LEGAL.manufacturerLicence}
-              <br />
               <strong className="text-text-dark">Customer care:</strong> {LEGAL.careMobile} · {LEGAL.emailGeneral}
             </p>
           </div>

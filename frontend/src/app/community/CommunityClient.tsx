@@ -1175,7 +1175,7 @@ export default function CommunityClient() {
           fontSize:"11px",lineHeight:1.7,color:"rgba(28,19,4,.38)",
           maxWidth:"640px",margin:"0 auto",
         }}>
-          Transformation stories shared with participant consent. Individual results vary. 3TATTAVA products are Ayurvedic proprietary medicines manufactured under a valid Ayurveda manufacturing licence (Mfg. Lic. RJ-926AYU). Use only as directed on the label. This information is for general awareness and is not a substitute for professional medical advice — consult a qualified healthcare practitioner where required.
+          Transformation stories shared with participant consent. Individual results vary. 3TATTAVA products are Ayurvedic proprietary medicines manufactured under a valid Ayurveda manufacturing licence. Use only as directed on the label. This information is for general awareness and is not a substitute for professional medical advice — consult a qualified healthcare practitioner where required.
         </p>
       </section>
 

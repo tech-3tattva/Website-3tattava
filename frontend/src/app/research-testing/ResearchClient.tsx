@@ -97,7 +97,7 @@ const PILLARS = [
     icon: "✅",
     title: "AYUSH-GMP Certified",
     badge: "AYUSH-GMP",
-    partner: "Mfg. Lic. No. RJ-926AYU E",
+    partner: "Ministry of AYUSH, Govt. of India",
     desc: "Manufactured at an AYUSH-GMP certified facility — the Good Manufacturing Practice standard set by the Ministry of AYUSH, Government of India, for Ayurvedic products.",
     detail: "GMP certification covers manufacturing environment, equipment calibration, batch documentation, quality control procedures, and staff training. This is the baseline standard — not a marketing claim.",
   },
@@ -1038,7 +1038,7 @@ export default function ResearchClient() {
           fontSize:"11px",lineHeight:1.7,color:"rgba(28,19,4,.38)",
           maxWidth:"640px",margin:"0 auto",
         }}>
-          AYUSH-GMP Certified Facility · US-FDA facility registration (not product approval) · NABL-accredited third-party tested (Eurofins) · Heavy Metal &amp; Microbial Tested. 3TATTAVA products are Ayurvedic proprietary medicines manufactured under a valid Ayurveda manufacturing licence (Mfg. Lic. RJ-926AYU). Use only as directed on the label. This information is for general awareness and is not a substitute for professional medical advice — consult a qualified healthcare practitioner where required.
+          AYUSH-GMP Certified Facility · US-FDA facility registration (not product approval) · NABL-accredited third-party tested (Eurofins) · Heavy Metal &amp; Microbial Tested. 3TATTAVA products are Ayurvedic proprietary medicines manufactured under a valid Ayurveda manufacturing licence. Use only as directed on the label. This information is for general awareness and is not a substitute for professional medical advice — consult a qualified healthcare practitioner where required.
         </p>
       </section>
 

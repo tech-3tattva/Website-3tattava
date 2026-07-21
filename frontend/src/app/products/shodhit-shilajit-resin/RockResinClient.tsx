@@ -529,7 +529,6 @@ function LegalMetrologySection() {
   const rows: { label: string; value: ReactNode }[] = [
     { label: "MRP", value: <>₹{PRODUCT.mrp.toLocaleString("en-IN")} <span style={{ color: TAUPE }}>(inclusive of all taxes)</span></> },
     { label: "Net Quantity", value: "20 g" },
-    { label: "Manufactured by", value: `${LEGAL.manufacturer}, ${LEGAL.manufacturerAddress} · Ayurveda Lic. ${LEGAL.manufacturerLicence}` },
     { label: "Marketed by", value: `${LEGAL.companyShort}, ${LEGAL.registeredOffice}` },
     { label: "Country of Origin", value: LEGAL.countryOfOrigin },
     { label: "Consumer care", value: `${LEGAL.emailGeneral} · ${LEGAL.careMobile}` },
