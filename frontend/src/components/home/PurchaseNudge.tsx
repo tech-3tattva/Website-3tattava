@@ -151,51 +151,56 @@ export default function PurchaseNudge() {
   const reduce = useReducedMotion();
   const [containerRef, setContainerRef] = useState<HTMLElement | null>(null);
 
-  const storageKey = `3t_nudge_${pathname}`;
+  // Persisted, global flag so the whole 3-card sequence appears only ONCE per
+  // visitor and never returns after it has been seen or declined.
+  const markSeen = useCallback(() => {
+    try { localStorage.setItem("3t_nudge_seen", "1"); } catch { /* private browsing */ }
+  }, []);
 
   // inject CSS once
   useEffect(() => { ensureStyles(); }, []);
 
-  const advance = useCallback(() => {
+  // Advance to the next card within the single appearance.
+  const next = useCallback(() => {
     setVisible(false);
     setTimeout(() => {
       setStep((prev) => {
-        const next = prev + 1;
-        if (next >= STEPS.length) {
-          try { sessionStorage.setItem(storageKey, "done"); } catch { /* */ }
-          return next;
-        }
-        return next;
+        const n = prev + 1;
+        if (n >= STEPS.length) markSeen();
+        return n;
       });
       setVisible(true);
     }, 400);
-  }, [storageKey]);
+  }, [markSeen]);
 
-  const dismiss = () => advance();
-
-  // reset state when pathname changes (layout persists across navigations)
-  useEffect(() => {
-    setStep(-1);
+  // Decline / close — mark seen and shut the sequence down permanently.
+  const dismiss = useCallback(() => {
+    markSeen();
     setVisible(false);
-    setContainerRef(null);
+    setStep(STEPS.length);
+  }, [markSeen]);
 
+  // Show once per visitor. If already seen/declined (persisted), never again —
+  // across every page and future session. Runs once on mount.
+  useEffect(() => {
     try {
-      if (sessionStorage.getItem(storageKey) === "done") return;
-    } catch { /* private browsing */ }
+      if (localStorage.getItem("3t_nudge_seen")) return;
+    } catch { return; }
 
     const timer = window.setTimeout(() => {
       setStep(0);
       setVisible(true);
+      markSeen();
     }, 3000);
     return () => window.clearTimeout(timer);
-  }, [storageKey]);
+  }, [markSeen]);
 
   // auto-advance every 10s
   useEffect(() => {
     if (step < 0 || step >= STEPS.length) return;
-    const t = window.setTimeout(() => advance(), 10000);
+    const t = window.setTimeout(() => next(), 10000);
     return () => window.clearTimeout(t);
-  }, [step, advance]);
+  }, [step, next]);
 
   // fire celebration when step card mounts
   useEffect(() => {
@@ -260,7 +265,7 @@ export default function PurchaseNudge() {
                   {s.cta}
                   <motion.span aria-hidden animate={reduce ? undefined : { x: [0, 4, 0] }} transition={{ duration: 1.4, repeat: Infinity, ease: "easeInOut" }} style={{ fontSize: 13 }}>→</motion.span>
                 </Link>
-                <button type="button" onClick={dismiss} style={{ fontFamily: F, fontSize: 10.5, letterSpacing: ".06em", color: "rgba(247,240,226,.5)", background: "none", border: "none", cursor: "pointer" }}>
+                <button type="button" onClick={step < STEPS.length - 1 ? next : dismiss} style={{ fontFamily: F, fontSize: 10.5, letterSpacing: ".06em", color: "rgba(247,240,226,.5)", background: "none", border: "none", cursor: "pointer" }}>
                   {step < STEPS.length - 1 ? "Next" : "Close"}
                 </button>
               </div>
