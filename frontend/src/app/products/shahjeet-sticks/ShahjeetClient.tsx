@@ -494,7 +494,7 @@ function ShahjeetFaqSection() {
 function LegalMetrologySection() {
   const rows: { label: string; value: ReactNode }[] = [
     { label: "MRP", value: <>₹{PRODUCT.mrp.toLocaleString("en-IN")} <span style={{ color: TAUPE }}>(inclusive of all taxes)</span></> },
-    { label: "Net Quantity", value: "30 sticks (30 × 8 g)" },
+    { label: "Net Quantity", value: "240 g (30 sticks × 8 g each)" },
     { label: "Manufactured by", value: `${LEGAL.manufacturer}, ${LEGAL.manufacturerAddress} · Ayurveda Lic. ${LEGAL.manufacturerLicence}` },
     { label: "Marketed by", value: `${LEGAL.companyShort}, ${LEGAL.registeredOffice}` },
     { label: "Country of Origin", value: LEGAL.countryOfOrigin },

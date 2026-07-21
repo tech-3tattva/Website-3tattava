@@ -17,8 +17,8 @@ export const LEGAL = {
   operationsAddress: "690A/1, Kabool Nagar, Shahdara, Delhi – 110032, India",
 
   // Manufacturer (per COA) — distinct from the marketer above.
-  manufacturer: "URULIFE SCIENCES LLP",
-  manufacturerAddress: "Greater Noida, Uttar Pradesh, India",
+  manufacturer: "URMILIFE SCIENCES LLP",
+  manufacturerAddress: "Ground Floor, A2/101, Site-V, Kasna Industrial Area, Greater Noida, Gautam Buddha Nagar, Uttar Pradesh – 201308",
   manufacturerLicence: "RJ-926AYU",
   countryOfOrigin: "India",
 

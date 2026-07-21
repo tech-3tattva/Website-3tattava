@@ -53,7 +53,7 @@ export const shodhitShilajitResin: ProductData = {
     { q: 'How long does one jar last?', a: 'A 20g jar provides approximately 40-50 servings of a pea-sized amount (300-500mg per serving), making it a 40-50 day supply for most users.' },
     { q: 'Is Shilajit Resin suitable for women?', a: 'Yes. Shilajit is traditionally used by both men and women to support everyday energy, mineral nutrition, and wellbeing. Not recommended during pregnancy or breastfeeding without advice from a qualified physician.' },
     { q: 'What does "≥70% Fulvic Acid" mean?', a: 'Fulvic acid is the primary active compound in Shilajit. It acts as a natural electrolyte transporter, carrying minerals directly into your cells. Our NABL-accredited third-party lab report verifies that every batch of ROCKRESIN contains at least 70% fulvic acid by dry weight — significantly higher than most competitors who do not disclose this figure.' },
-    { q: 'Where is SHODHIT SHILAJIT RESIN sourced and manufactured?', a: 'The raw Shilajit is sourced from Himalayan deposits at 10,000-16,000ft altitude (Asphaltum Punjabanum). It is purified and manufactured in an AYUSH-GMP certified facility in Rajasthan. It is marketed by SankalpaSiddhi Ayupharma Pvt. Ltd., Delhi.' },
+    { q: 'Where is SHODHIT SHILAJIT RESIN sourced and manufactured?', a: 'The raw Shilajit is sourced from Himalayan deposits at 10,000-16,000ft altitude (Asphaltum Punjabanum). It is manufactured by URMILIFE SCIENCES LLP under Ayurveda licence RJ-926AYU at an AYUSH-GMP certified facility, and marketed by SankalpaSiddhi Ayupharma Pvt. Ltd., New Seemapuri, Delhi.' },
   ],
   comparisonRows: [
     { metric: 'Form Purity', us: '100% Pure', c1: 'Diluted with fillers', c2: 'Often contains malto' },
