@@ -30,7 +30,7 @@ interface NavLink {
 }
 
 const PILL_NAV_LINKS: NavLink[] = [
-  { label: "Shop",              href: "/products",          hasMega: true  },
+  { label: "Shop",              href: "/products",          hasMega: false },
   { label: "Knowledge Center",  href: "/knowledge-center",  hasMega: false },
   { label: "Our Story",         href: "/about",             hasMega: false },
   { label: "VaidyaConnect",     href: "/vaidyaconnect",     hasMega: false, featured: true },

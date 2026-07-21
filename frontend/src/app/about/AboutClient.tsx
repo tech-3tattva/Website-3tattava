@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { useState } from "react";
 
 const CREAM = "#f7f0e2";
 const INK = "#442a1b";
@@ -10,6 +11,13 @@ const GOLD = "#cd872a";
 const GOLD_SOFT = "#E4C079";
 const MUTED = "#6f5a48";
 const F = "var(--font-primary), system-ui, sans-serif";
+
+const PORTRAIT = "https://media.3tattava.com/features/Dr.Kashish+Assests/IMG_6015.JPG.jpeg";
+const CERTIFICATES = [
+  "https://media.3tattava.com/features/Dr.Kashish+Assests/WhatsApp+Image+2026-06-22+at+5.25.41+PM.jpeg",
+  "https://media.3tattava.com/features/Dr.Kashish+Assests/WhatsApp+Image+2026-06-22+at+5.25.44+PM+(1).jpeg",
+  "https://media.3tattava.com/features/Dr.Kashish+Assests/WhatsApp+Image+2026-06-22+at+5.25.44+PM.jpeg",
+];
 
 const reveal = {
   initial: { opacity: 0, y: 24 },
@@ -70,6 +78,7 @@ const QUALITY_POINTS = [
 ];
 
 export default function AboutClient() {
+  const [activeCert, setActiveCert] = useState<string | null>(null);
   return (
     <main style={{ background: CREAM, color: INK, fontFamily: F }}>
       {/* Hero */}
@@ -139,11 +148,30 @@ export default function AboutClient() {
       {/* Founder note */}
       <section style={{ background: ESPRESSO, color: CREAM, padding: "clamp(56px,8vw,96px) 24px" }}>
         <div style={{ maxWidth: 780, margin: "0 auto", textAlign: "center" }}>
-          <motion.div {...reveal} style={{ width: 84, height: 84, borderRadius: "50%", border: `2px solid ${GOLD}`, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 24px", fontSize: 28, fontWeight: 800, color: GOLD_SOFT, background: "rgba(200,150,62,.08)", letterSpacing: ".04em" }}>KG</motion.div>
+          <motion.div {...reveal} style={{ width: 140, height: 140, borderRadius: "50%", border: `2px solid ${GOLD}`, overflow: "hidden", margin: "0 auto 24px", background: "rgba(200,150,62,.08)", boxShadow: "0 10px 30px rgba(0,0,0,.28)" }}>
+            <img src={PORTRAIT} alt={"Dr. Kashish Gupta, BAMS \u2014 Founder of 3Tattava"} loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+          </motion.div>
           <motion.p {...reveal} style={{ fontSize: 11, letterSpacing: ".2em", textTransform: "uppercase", color: GOLD, marginBottom: 20 }}>A Note from the Founder</motion.p>
           <motion.blockquote {...reveal} style={{ fontSize: "clamp(19px,2.6vw,28px)", lineHeight: 1.5, fontWeight: 300, fontStyle: "italic", margin: "0 0 24px" }}>&ldquo;I founded 3Tattava to make Ayurveda easier to trust and practise in modern life. Our responsibility is not to promise shortcuts. It is to build with clarity, discipline and respect for the tradition.&rdquo;</motion.blockquote>
           <motion.p {...reveal} style={{ fontSize: 15, fontWeight: 700, color: GOLD_SOFT, margin: "0 0 2px" }}>&mdash; Dr. Kashish Gupta, BAMS</motion.p>
           <motion.p {...reveal} style={{ fontSize: 13, color: "rgba(247,240,226,.6)", margin: 0 }}>Founder, 3Tattava</motion.p>
+        </div>
+      </section>
+
+      {/* Credentials & Recognition */}
+      <section style={{ background: CREAM, padding: "clamp(56px,7vw,88px) 24px" }}>
+        <div style={{ maxWidth: 1000, margin: "0 auto", textAlign: "center" }}>
+          <motion.p {...reveal} style={{ fontSize: 12, letterSpacing: ".28em", textTransform: "uppercase", color: GOLD, fontWeight: 700, marginBottom: 14 }}>Professional Background</motion.p>
+          <motion.h2 {...reveal} style={{ fontSize: "clamp(24px,3.2vw,34px)", fontWeight: 800, marginBottom: 12 }}>Credentials &amp; Recognition</motion.h2>
+          <motion.p {...reveal} style={{ fontSize: "clamp(15px,1.7vw,17px)", lineHeight: 1.75, color: MUTED, maxWidth: 620, margin: "0 auto" }}>Documentation from Dr. Kashish&rsquo;s education, clinical training and national Ayurveda work. Tap any document to view it in full.</motion.p>
+          <motion.div {...reveal} style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(200px,1fr))", gap: 18, maxWidth: 760, margin: "36px auto 0" }}>
+            {CERTIFICATES.map((url, i) => (
+              <button key={url} type="button" onClick={() => setActiveCert(url)} aria-label={`View credential ${i + 1} full size`} style={{ appearance: "none", boxSizing: "border-box", width: "100%", border: "1px solid rgba(205,135,42,.4)", background: "#fff", borderRadius: 12, padding: 12, cursor: "pointer", boxShadow: "0 6px 22px rgba(42,26,8,.12)", display: "block" }}>
+                <img src={url} alt={`Dr. Kashish Gupta \u2014 credential ${i + 1}`} loading="lazy" style={{ width: "100%", height: 280, objectFit: "contain", display: "block", borderRadius: 6 }} />
+              </button>
+            ))}
+          </motion.div>
+          <motion.p {...reveal} style={{ fontSize: 13, color: MUTED, marginTop: 18 }}>Dr. Kashish Gupta, BAMS &mdash; professional credentials and recognition.</motion.p>
         </div>
       </section>
 
@@ -167,6 +195,21 @@ export default function AboutClient() {
           <p style={{ fontSize: 13, lineHeight: 1.75, color: MUTED, margin: 0 }}>Product information is intended for general awareness. Consumers should follow the product label and seek guidance from an appropriately qualified healthcare professional when required.</p>
         </div>
       </section>
+      {activeCert && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.25, ease: "easeOut" }}
+          onClick={() => setActiveCert(null)}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Credential full-size view"
+          style={{ position: "fixed", inset: 0, zIndex: 10050, background: "rgba(0,0,0,.85)", display: "flex", alignItems: "center", justifyContent: "center", padding: 24 }}
+        >
+          <button type="button" onClick={() => setActiveCert(null)} aria-label="Close" style={{ position: "absolute", top: 20, right: 24, width: 44, height: 44, borderRadius: "50%", border: `1px solid ${GOLD_SOFT}`, background: "rgba(0,0,0,.4)", color: CREAM, fontSize: 26, lineHeight: 1, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>&times;</button>
+          <img src={activeCert} alt="Credential full size" onClick={(e) => e.stopPropagation()} style={{ maxWidth: "90vw", maxHeight: "90vh", objectFit: "contain", borderRadius: 6, boxShadow: "0 24px 70px rgba(0,0,0,.5)" }} />
+        </motion.div>
+      )}
     </main>
   );
 }

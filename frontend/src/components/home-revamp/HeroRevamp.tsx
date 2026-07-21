@@ -2,8 +2,8 @@
 import { media } from "@/lib/media";
 
 import { useEffect, useState, useRef } from 'react'
-import Link from 'next/link'
 import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion'
+import StartRitualButton from "@/components/StartRitualButton";
 
 /* ─── Types ─── */
 interface Particle {
@@ -322,9 +322,9 @@ export default function HeroRevamp() {
           </motion.h2>
 
           <motion.div className="hero-revamp-ctas" variants={fadeUpVariant}>
-            <Link href="/products" className="hero-revamp-btn-primary">
+            <StartRitualButton className="hero-revamp-btn-primary">
               Start Your Ritual
-            </Link>
+            </StartRitualButton>
           </motion.div>
         </motion.div>
 

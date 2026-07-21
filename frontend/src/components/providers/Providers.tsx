@@ -7,6 +7,7 @@ import { CartProvider } from "@/context/CartContext";
 import { WishlistProvider } from "@/context/WishlistContext";
 import { AuthProvider } from "@/context/AuthContext";
 import { DeliveryPincodeProvider } from "@/context/DeliveryPincodeContext";
+import { WaitlistProvider } from "@/context/WaitlistContext";
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   return (
@@ -15,7 +16,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
         <WishlistProvider>
           <CartProvider>
             <SmoothScrollProvider>
-              {children}
+              <WaitlistProvider>{children}</WaitlistProvider>
               <OfflineBanner />
               <CustomCursor />
             </SmoothScrollProvider>

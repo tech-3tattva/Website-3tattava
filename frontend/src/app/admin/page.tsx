@@ -8,7 +8,7 @@ import AdminInventory from "@/components/admin/AdminInventory";
 import AdminOrders from "@/components/admin/AdminOrders";
 import AdminBlog from "@/components/admin/AdminBlog";
 
-type Tab = "overview" | "products" | "inventory" | "orders" | "shipments" | "leads" | "influencers" | "users" | "blog";
+type Tab = "overview" | "products" | "inventory" | "orders" | "shipments" | "leads" | "waitlist" | "influencers" | "users" | "blog";
 
 type Stats = {
   revenue: { today: number; month: number; year: number };
@@ -204,6 +204,85 @@ function AdminLeads() {
                       }}>Mark Converted</button>
                     )}
                   </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────
+// WAITLIST PANEL
+// ─────────────────────────────────────────────
+type WaitlistEntry = {
+  _id: string; name: string; email: string; phone: string;
+  product: string; source: string; createdAt: string;
+};
+
+function AdminWaitlist() {
+  const [entries, setEntries] = useState<WaitlistEntry[]>([]);
+  const [total, setTotal] = useState(0);
+  const [loading, setLoading] = useState(true);
+
+  async function load() {
+    setLoading(true);
+    try {
+      const d = await adminApi.get<{ waitlist: WaitlistEntry[]; total: number }>("/admin/waitlist");
+      setEntries(d.waitlist); setTotal(d.total);
+    } catch { setEntries([]); }
+    setLoading(false);
+  }
+
+  useEffect(() => { void load(); }, []);
+
+  function downloadExcel() {
+    const headers = ["Name", "Email", "Phone", "Product", "Source", "Date"];
+    const esc = (v: unknown) => `"${String(v ?? "").replace(/"/g, '""')}"`;
+    const rows = entries.map((e) => [e.name, e.email, e.phone, e.product, e.source, new Date(e.createdAt).toLocaleString("en-IN")].map(esc).join(","));
+    const csv = "\uFEFF" + [headers.join(","), ...rows].join("\r\n");
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `waitlist-${new Date().toISOString().slice(0, 10)}.csv`;
+    document.body.appendChild(a); a.click(); a.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  return (
+    <div>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 18, gap: 12, flexWrap: "wrap" }}>
+        <p style={{ fontSize: 12, color: "rgba(245,240,235,0.35)" }}>{total} total waitlist signups</p>
+        <button onClick={downloadExcel} disabled={entries.length === 0} style={{
+          fontSize: 11, padding: "8px 16px", background: "rgba(200,150,62,0.12)", color: "#C8963E",
+          border: "1px solid rgba(200,150,62,0.35)", cursor: entries.length ? "pointer" : "not-allowed",
+          borderRadius: 3, letterSpacing: "0.08em", textTransform: "uppercase", opacity: entries.length ? 1 : 0.5,
+        }}>↓ Download Excel</button>
+      </div>
+      {loading ? <p style={{ color: "rgba(245,240,235,0.3)", fontSize: 13 }}>Loading…</p> : entries.length === 0 ? (
+        <p style={{ color: "rgba(245,240,235,0.3)", fontSize: 13 }}>No waitlist signups yet.</p>
+      ) : (
+        <div style={{ overflowX: "auto" }}>
+          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
+            <thead>
+              <tr style={{ borderBottom: "1px solid rgba(200,150,62,0.15)" }}>
+                {["Name", "Email", "Phone", "Product", "Source", "Date"].map(h => (
+                  <th key={h} style={{ padding: "8px 12px", textAlign: "left", fontSize: 10, letterSpacing: "0.15em", color: "rgba(245,240,235,0.35)", textTransform: "uppercase", whiteSpace: "nowrap" }}>{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {entries.map(e => (
+                <tr key={e._id} style={{ borderBottom: "1px solid rgba(200,150,62,0.06)" }}>
+                  <td style={{ padding: "10px 12px", color: "#F5F0EB" }}>{e.name}</td>
+                  <td style={{ padding: "10px 12px", color: "rgba(245,240,235,0.6)" }}>{e.email}</td>
+                  <td style={{ padding: "10px 12px", color: "rgba(245,240,235,0.6)" }}>{e.phone}</td>
+                  <td style={{ padding: "10px 12px", color: "rgba(245,240,235,0.5)", fontSize: 12 }}>{e.product}</td>
+                  <td style={{ padding: "10px 12px", color: "rgba(245,240,235,0.4)", fontSize: 12 }}>{e.source}</td>
+                  <td style={{ padding: "10px 12px", color: "rgba(245,240,235,0.35)", fontSize: 12, whiteSpace: "nowrap" }}>{new Date(e.createdAt).toLocaleString("en-IN")}</td>
                 </tr>
               ))}
             </tbody>
@@ -632,6 +711,7 @@ export default function AdminDashboardPage() {
     { id: "orders",       label: "Orders",       icon: "◎" },
     { id: "shipments",    label: "Shipments",    icon: "◫" },
     { id: "leads",        label: "Leads",        icon: "◑" },
+    { id: "waitlist",     label: "Waitlist",     icon: "◕" },
     { id: "influencers",  label: "Influencers",  icon: "◐" },
     { id: "users",        label: "Customers",    icon: "◔" },
     { id: "blog",         label: "Education",    icon: "✎" },
@@ -640,6 +720,7 @@ export default function AdminDashboardPage() {
   const PAGE_TITLE: Record<Tab, string> = {
     overview: "Dashboard", products: "Products", inventory: "Inventory",
     orders: "Orders", shipments: "Shipments", leads: "Leads & Signups",
+    waitlist: "Waitlist",
     influencers: "Influencers & Promo Codes",
     users: "Customers & Sign-ins",
     blog: "Education Centre",
@@ -651,6 +732,7 @@ export default function AdminDashboardPage() {
     orders: "View and manage customer orders",
     shipments: "NimbusPost shipment tracking & NDR management",
     leads: "Homepage modal captures, newsletter & bookings",
+    waitlist: "Pre-launch product waitlist signups",
     influencers: "Two-tier referral system, promo codes & reward payouts",
     users: "All registered customers, including Google sign-ins",
     blog: "Write & publish articles to the Education Centre page",
@@ -778,6 +860,7 @@ export default function AdminDashboardPage() {
           {tab === "orders"      && <AdminOrders />}
           {tab === "shipments"   && <AdminShipments />}
           {tab === "leads"       && <AdminLeads />}
+          {tab === "waitlist"    && <AdminWaitlist />}
           {tab === "influencers" && <AdminInfluencers />}
           {tab === "users"       && <AdminUsers />}
           {tab === "blog"        && <AdminBlog />}

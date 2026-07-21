@@ -14,6 +14,13 @@ const GATED_ROUTES = new Set<string>([
   "/gifting",
 ]);
 
+// Product detail pages are hidden pre-launch — visitors are sent to the
+// /products waitlist page instead. Temporary (307) so it lifts cleanly at launch.
+const HIDDEN_PRODUCTS = new Set<string>([
+  "/products/shahjeet-sticks",
+  "/products/shodhit-shilajit-resin",
+]);
+
 // URL variants (typed / printed / QR) that permanently redirect to the canonical route.
 const REDIRECTS: Record<string, string> = {
   "/labreports": "/lab-reports",
@@ -33,6 +40,12 @@ export function middleware(req: NextRequest) {
 
   // Local development shows every page — the launch gate applies to production only.
   if (process.env.NODE_ENV !== "production") return NextResponse.next();
+
+  if (HIDDEN_PRODUCTS.has(pathname)) {
+    const url = req.nextUrl.clone();
+    url.pathname = "/products";
+    return NextResponse.redirect(url, 307);
+  }
 
   // Hold only the explicitly-gated stubs; everything else (including unknown
   // paths, which must 404) passes through to Next.js.

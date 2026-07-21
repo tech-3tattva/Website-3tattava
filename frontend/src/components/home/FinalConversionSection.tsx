@@ -1,6 +1,7 @@
 'use client'
 import { motion } from 'framer-motion'
 import { useRouter } from 'next/navigation'
+import { useWaitlist } from '@/context/WaitlistContext'
 
 const paths = [
   {
@@ -326,6 +327,7 @@ const pathIcons: Record<string, React.ReactNode> = {
 
 export default function FinalConversionSection() {
   const router = useRouter()
+  const { open } = useWaitlist()
 
   return (
     <>
@@ -369,7 +371,7 @@ export default function FinalConversionSection() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.12, duration: 0.6 }}
-                  onClick={() => router.push(path.href)}
+                  onClick={() => (path.id === 'shop' ? open() : router.push(path.href))}
                 >
                   <div className="fc-path-visual">
                     <div className="fc-path-visual-bg" style={{ background: path.bgGradient }} />
@@ -422,7 +424,7 @@ export default function FinalConversionSection() {
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
         >
-          <button className="fc-cta-primary" onClick={() => router.push('/products')}>
+          <button className="fc-cta-primary" onClick={() => open()}>
             Shop Now
           </button>
           <button className="fc-cta-secondary" onClick={() => router.push('/assessment')}>

@@ -18,6 +18,7 @@ const Booking = require("../models/Booking");
 const Blog = require("../models/Blog");
 // Lead model is registered by leads.routes.js at startup — access lazily
 function getLead() { return mongoose.models.Lead || null; }
+function getWaitlist() { return mongoose.models.Waitlist || null; }
 
 const router = express.Router();
 
@@ -637,6 +638,32 @@ router.patch("/leads/:id/convert", async (req, res, next) => {
 
     if (!lead) throw new ApiError(404, "Lead not found");
     return res.json(lead);
+  } catch (err) {
+    return next(err);
+  }
+});
+
+// GET /api/admin/waitlist — all pre-launch waitlist submissions
+router.get("/waitlist", async (req, res, next) => {
+  try {
+    const Waitlist = getWaitlist();
+    if (!Waitlist) return res.json({ waitlist: [], total: 0, note: "Waitlist model not loaded yet" });
+
+    const { page = "1", limit = "1000" } = req.query;
+    const pageNum = Math.max(1, Number(page) || 1);
+    const limitNum = Math.min(5000, Number(limit) || 1000);
+
+    const [entries, total] = await Promise.all([
+      Waitlist.find({})
+        .sort({ createdAt: -1 })
+        .skip((pageNum - 1) * limitNum)
+        .limit(limitNum)
+        .lean()
+        .exec(),
+      Waitlist.countDocuments(),
+    ]);
+
+    return res.json({ waitlist: entries, total, page: pageNum, totalPages: Math.ceil(total / limitNum) });
   } catch (err) {
     return next(err);
   }
