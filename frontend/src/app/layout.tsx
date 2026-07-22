@@ -77,6 +77,11 @@ export const metadata: Metadata = {
     googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1 },
   },
   alternates: { canonical: "https://www.3tattava.com" },
+  verification: {
+    other: {
+      "facebook-domain-verification": "5043s7gxpylgyknqrncyloujh6aj1b",
+    },
+  },
 };
 
 export const viewport: Viewport = {
