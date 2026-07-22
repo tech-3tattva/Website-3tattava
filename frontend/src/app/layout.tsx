@@ -15,6 +15,7 @@ import WhatsAppWidget from "@/components/WhatsAppWidget";
 import LeadCaptureModal from "@/components/LeadCaptureModal";
 import PurchaseNudge from "@/components/home/PurchaseNudge";
 import CookieConsent from "@/components/CookieConsent";
+import GoogleAnalytics from "@/components/GoogleAnalytics";
 
 const archivo = localFont({
   src: [
@@ -105,6 +106,7 @@ export default function RootLayout({
       <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
       <body className="antialiased min-h-screen min-w-0 flex flex-col overflow-x-clip" suppressHydrationWarning>
         <OrganizationSchema />
+        <GoogleAnalytics />
         <Providers>
           <ScrollProgress />
           <IntroSplash />
