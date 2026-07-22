@@ -13,6 +13,7 @@ export interface BlogArticle {
   intent: string;
   pillar: string;
   summary: string;
+  quickAnswer?: string;
   readTime: string;
   intro: string;
   sections: BlogArticleSection[];
@@ -33,6 +34,7 @@ export const BLOG_ARTICLES: BlogArticle[] = [
     "intent": "Informational",
     "pillar": "Shilajit Core",
     "summary": "A clear, doctor-led explanation of what Shilajit is, how it forms, what it contains, and how classical use compares with current science.",
+    "quickAnswer": "Shilajit is a sticky, tar-like natural substance that seeps from cracks in high-mountain rocks (most famously the Himalayas), formed over centuries from slowly decomposed plant matter. In Ayurveda it is classified as a mineral pitch and a rasayana (rejuvenative), and it is rich in fulvic acid and trace minerals. It is not a herb or a single mineral but a unique organic-mineral complex — and it should be purified (Shodhana) and lab-tested before use.",
     "readTime": "7 min read",
     "intro": "If you have spent any time exploring Ayurvedic wellness, you have almost certainly come across Shilajit — often described in dramatic terms as a \"conqueror of mountains\" or a rejuvenating tonic. But behind the marketing, what actually is it? As a BAMS physician, I want to give you an honest, balanced picture: what Shilajit really is, how it forms over centuries, what it contains, how it has traditionally been used in Ayurveda, and where modern science stands today — including the places where evidence is still thin.",
     "sections": [
@@ -2832,6 +2834,7 @@ export const BLOG_ARTICLES: BlogArticle[] = [
     "intent": "Informational",
     "pillar": "Dosage & Usage",
     "summary": "A practical, honest guide to timing your Shilajit — morning versus night, pre-workout use, and empty-stomach questions — rooted in Ayurvedic wisdom and mindful of what modern evidence actually shows.",
+    "quickAnswer": "Most people take Shilajit in the morning on an empty stomach, about 30–60 minutes before breakfast, dissolved in warm (never boiling) water or milk. If fasting upsets your stomach, take it after a light meal. Ayurveda traditionally favours the morning as a rasayana, but there is no clinically proven single best time — daily consistency matters more than the exact hour, and if it feels stimulating, keep it earlier in the day.",
     "readTime": "6 min read",
     "intro": "One of the most common questions I hear in clinic is deceptively simple: \"Doctor, when should I actually take my Shilajit?\" People want to know if morning beats night, whether it belongs in their pre-gym routine, and if an empty stomach really matters.\n\nThe honest answer is that timing is less about a magic window and more about consistency and how your body responds. Below, I've broken down the classical Ayurvedic thinking alongside plain notes on where modern evidence is still thin — so you can make a sensible, personal choice.",
     "sections": [

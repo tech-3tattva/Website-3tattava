@@ -142,7 +142,7 @@ function BlogArticleView({ blog }: { blog: BlogArticle }) {
         "@id": `${SITE}/education/${blog.slug}#article`,
         name: blog.title,
         headline: blog.title,
-        description: blog.summary,
+        description: blog.quickAnswer ?? blog.summary,
         url: `${SITE}/education/${blog.slug}`,
         inLanguage: "en-IN",
         datePublished: REVIEWED,
@@ -214,6 +214,12 @@ function BlogArticleView({ blog }: { blog: BlogArticle }) {
             {blog.readTime}
           </div>
           <p className="mt-6 text-lg text-text-medium leading-relaxed">{blog.summary}</p>
+          {blog.quickAnswer && (
+            <div className="mt-6 rounded-xl border-l-4 border-[#cd872a] bg-white p-5 shadow-sm">
+              <p className="text-xs uppercase tracking-[0.2em] text-gold font-semibold mb-2">Quick Answer</p>
+              <p className="text-base leading-relaxed text-text-dark">{blog.quickAnswer}</p>
+            </div>
+          )}
         </div>
       </section>
 
