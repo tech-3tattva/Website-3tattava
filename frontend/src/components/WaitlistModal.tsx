@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { api } from "@/lib/api";
 import { trackPixel } from "@/lib/fbpixel";
+import { trackGa } from "@/lib/gtag";
 
 const CREAM = "#f7f0e2";
 const INK = "#442a1b";
@@ -94,6 +95,7 @@ export default function WaitlistModal({ isOpen, onClose, initialProduct }: Props
       });
       setStatus("success");
       trackPixel("Lead", { content_name: "Product Waitlist", content_category: product });
+      trackGa("generate_lead", { currency: "INR", value: 0, product });
       setName(""); setEmail(""); setPhone("");
     } catch (err) {
       setStatus("error");
