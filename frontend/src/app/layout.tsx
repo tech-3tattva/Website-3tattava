@@ -16,6 +16,7 @@ import LeadCaptureModal from "@/components/LeadCaptureModal";
 import PurchaseNudge from "@/components/home/PurchaseNudge";
 import CookieConsent from "@/components/CookieConsent";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
+import MetaPixel from "@/components/MetaPixel";
 
 const archivo = localFont({
   src: [
@@ -107,6 +108,7 @@ export default function RootLayout({
       <body className="antialiased min-h-screen min-w-0 flex flex-col overflow-x-clip" suppressHydrationWarning>
         <OrganizationSchema />
         <GoogleAnalytics />
+        <MetaPixel />
         <Providers>
           <ScrollProgress />
           <IntroSplash />
