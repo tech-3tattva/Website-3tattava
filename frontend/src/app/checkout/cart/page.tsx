@@ -12,13 +12,14 @@ import { formatPrice } from "@/lib/utils";
 
 export default function CheckoutCartPage() {
   const { isLoggedIn } = useAuth();
-  const { items, updateQty, removeItem, subtotal, total, itemCount, applyCoupon, coupon } = useCart();
+  const { items, updateQty, removeItem, subtotal, total, itemCount, applyCoupon, coupon, discount } = useCart();
   const checkoutHref = isLoggedIn
     ? CHECKOUT_ADDRESS_PATH
     : `/login?redirect=${encodeURIComponent(CHECKOUT_ADDRESS_PATH)}`;
   const [couponCode, setCouponCode] = useState("");
   const [couponError, setCouponError] = useState<string | null>(null);
   const shipping = subtotal >= 999 ? 0 : 150;
+  const isWelcome = !!coupon?.code?.startsWith("W200");
 
   const [promoMsg, setPromoMsg] = useState<string | null>(null);
 
@@ -151,8 +152,18 @@ export default function CheckoutCartPage() {
                 </button>
               </div>
               {coupon && (
-                <p className="text-sm text-primary-green">
-                  Applied: <span className="font-medium">{coupon.code}</span> ({coupon.discount}% off)
+                <p className="flex flex-wrap items-center gap-1.5 text-sm text-primary-green">
+                  <span>
+                    Applied: <span className="font-medium">{coupon.code}</span> (−{formatPrice(discount)})
+                  </span>
+                  {isWelcome && (
+                    <span
+                      className="rounded-full px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider"
+                      style={{ background: "rgba(205,135,42,0.15)", color: "#442a1b", border: "1px solid rgba(205,135,42,0.4)" }}
+                    >
+                      Welcome offer
+                    </span>
+                  )}
                 </p>
               )}
               {couponError && <p className="text-sm text-red-600">{couponError}</p>}
@@ -170,6 +181,12 @@ export default function CheckoutCartPage() {
                   <span>{itemCount} x items</span>
                   <span>{formatPrice(subtotal)}</span>
                 </div>
+                {discount > 0 && (
+                  <div className="flex justify-between text-sm mb-2">
+                    <span>{isWelcome ? "Welcome offer" : "Discount"}</span>
+                    <span className="text-primary-green">−{formatPrice(discount)}</span>
+                  </div>
+                )}
                 <div className="flex justify-between text-sm mb-2">
                   <span>Shipping</span>
                   <span className={shipping === 0 ? "text-primary-green" : ""}>

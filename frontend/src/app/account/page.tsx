@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import type { Address, Order, Product } from "@shared/types";
-import { api } from "@/lib/api";
+import { api, getWelcomeOffer, type WelcomeOffer } from "@/lib/api";
 import { formatPrice } from "@/lib/utils";
 import { useAuth } from "@/context/AuthContext";
 import {
@@ -108,6 +108,7 @@ export default function AccountPage() {
   const [toast, setToast] = useState<ToastState | null>(null);
   const { items: wishlistIds } = useWishlist();
   const [wishlistProducts, setWishlistProducts] = useState<Product[]>([]);
+  const [welcomeOffer, setWelcomeOffer] = useState<WelcomeOffer | null>(null);
 
   const quickOrder = orders[0];
 
@@ -149,6 +150,22 @@ export default function AccountPage() {
     }
 
     void loadAccountData();
+  }, [isLoggedIn]);
+
+  useEffect(() => {
+    if (!isLoggedIn) return;
+    let cancelled = false;
+    void (async () => {
+      try {
+        const { offer } = await getWelcomeOffer();
+        if (!cancelled) setWelcomeOffer(offer);
+      } catch {
+        if (!cancelled) setWelcomeOffer(null);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
   }, [isLoggedIn]);
 
   useEffect(() => {
@@ -333,6 +350,57 @@ export default function AccountPage() {
           <Gift size={18} /> Redeem
         </button>
       </div>
+
+      {welcomeOffer && (
+        <div
+          className="mb-7 sm:mb-9 overflow-hidden rounded-2xl px-5 sm:px-7 py-5 flex flex-wrap items-center justify-between gap-4"
+          style={{
+            background: "linear-gradient(120deg,#442a1b 0%,#573622 100%)",
+            boxShadow: "0 16px 40px rgba(68,42,27,0.22)",
+          }}
+        >
+          <div className="flex items-center gap-4 min-w-0">
+            <span
+              className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl"
+              style={{ background: "linear-gradient(135deg,#cd872a,#e4c079)", boxShadow: "0 8px 20px rgba(205,135,42,0.35)" }}
+            >
+              <Gift size={24} color="#fff" />
+            </span>
+            <div className="min-w-0">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.16em]" style={{ color: "#e4c079" }}>
+                Your Welcome Offer
+              </p>
+              <div className="mt-1.5 flex flex-wrap items-center gap-2">
+                <span
+                  className="rounded-md px-2 py-1 font-mono text-sm font-bold"
+                  style={{ background: "rgba(247,240,226,0.14)", color: CREAM, letterSpacing: "0.06em" }}
+                >
+                  {welcomeOffer.code}
+                </span>
+                <span
+                  className="rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider"
+                  style={
+                    welcomeOffer.used
+                      ? { background: "rgba(247,240,226,0.16)", color: CREAM, border: "1px solid rgba(247,240,226,0.3)" }
+                      : welcomeOffer.expired
+                        ? { background: "rgba(220,120,90,0.18)", color: "#f4d3c4", border: "1px solid rgba(220,120,90,0.4)" }
+                        : { background: "linear-gradient(135deg,#cd872a,#e4c079)", color: ESPRESSO }
+                  }
+                >
+                  {welcomeOffer.used ? "Used ✓" : welcomeOffer.expired ? "Expired" : "Unused · ₹200 off"}
+                </span>
+              </div>
+            </div>
+          </div>
+          <Link
+            href="/account/orders"
+            className="inline-flex shrink-0 items-center gap-1.5 rounded-xl px-4 py-2 text-sm font-semibold transition-all hover:-translate-y-0.5"
+            style={{ background: "linear-gradient(105deg,#A67B2F,#E4C079,#cd872a,#A67B2F)", color: ESPRESSO }}
+          >
+            <History size={15} /> View full order history
+          </Link>
+        </div>
+      )}
 
       <div className="grid gap-6 md:grid-cols-2">
         <section className={CARD_CLASS}>

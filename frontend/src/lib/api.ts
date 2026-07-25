@@ -220,3 +220,49 @@ export const api = {
       auth,
     }),
 };
+
+// ── Welcome offer (per-user ₹200 one-time code) ──────────
+// Shape matches GET /api/welcome → { offer: WelcomeOffer }.
+export interface WelcomeOffer {
+  code: string;
+  value: number;
+  used: boolean;
+  usedAt: string | null;
+  usedOrderNumber: string | null;
+  issuedAt: string;
+  expiresAt: string;
+  expired: boolean;
+  minOrderAmount: number;
+}
+
+export interface WelcomeOfferResponse {
+  offer: WelcomeOffer;
+}
+
+/** GET /welcome — lazily issues + returns the signed-in user's one-time welcome offer. */
+export function getWelcomeOffer() {
+  return api.get<WelcomeOfferResponse>("/welcome", true);
+}
+
+/** POST /welcome/claim — idempotent claim of the welcome offer for the signed-in user. */
+export function claimWelcomeOffer() {
+  return api.post<WelcomeOfferResponse & { claimed: boolean }>("/welcome/claim", {}, true);
+}
+
+// ── Coupon validation (flat + percent aware) ─────────────
+// The backend returns richer fields than the shared CouponValidateResponse:
+// flat welcome coupons carry `type:"flat"` + `discountAmount` (rupees).
+export interface CouponValidation {
+  valid: boolean;
+  code?: string;
+  type?: "flat" | "percent";
+  value?: number;
+  discount: number;
+  discountAmount?: number;
+  message?: string;
+}
+
+/** POST /coupons/validate — pass auth=true when signed in so owner-bound welcome codes resolve. */
+export function validateCoupon(code: string, cartTotal: number, auth = false) {
+  return api.post<CouponValidation>("/coupons/validate", { code, cartTotal }, auth);
+}

@@ -11,6 +11,7 @@ const { ApiError } = require("../middleware/errorHandler");
 const { z } = require("zod");
 const { SESClient, SendEmailCommand } = require("@aws-sdk/client-ses");
 const cashfree = require("../lib/cashfree");
+const { markWelcomeCouponUsed } = require("../utils/welcomeCoupon");
 
 const router = express.Router();
 
@@ -270,6 +271,13 @@ router.post("/place-demo", async (req, res, next) => {
       await session.endSession();
     }
 
+    // Redeem the one-time welcome coupon if this order used it.
+    try {
+      if (order?.user && order?.coupon?.code) {
+        await markWelcomeCouponUsed(order.user, order.coupon.code, order.orderNumber);
+      }
+    } catch (e) { console.error("[welcome] redeem (demo) failed:", e.message); }
+
     const emailResult = await trySendOrderConfirmationEmail({
       toEmail: parsed.shippingAddress.email,
       orderNumber,
@@ -450,6 +458,12 @@ router.post("/verify-cashfree", async (req, res, next) => {
     } finally {
       await session.endSession();
     }
+
+    try {
+      if (order?.user && order?.coupon?.code) {
+        await markWelcomeCouponUsed(order.user, order.coupon.code, order.orderNumber);
+      }
+    } catch (e) { console.error("[welcome] redeem (cashfree) failed:", e.message); }
 
     const emailResult = await trySendOrderConfirmationEmail({
       toEmail: order.shippingAddress.email, orderNumber: order.orderNumber, total: order.total,

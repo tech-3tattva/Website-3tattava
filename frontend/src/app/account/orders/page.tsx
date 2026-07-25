@@ -178,6 +178,11 @@ export default function OrderHistoryPage() {
             const items = order.items ?? [];
             const thumbs = items.slice(0, 4);
             const extraCount = items.length - thumbs.length;
+            const couponCode = order.coupon?.code ?? "";
+            // Welcome codes start with W200; fall back to a bare rupee discount only when
+            // no coupon code was persisted, so percent-coupon orders are never mis-tagged.
+            const isWelcomeOrder =
+              couponCode.startsWith("W200") || (!couponCode && order.discountAmount > 0);
 
             return (
               <li key={order.id} className="premium-card rounded-2xl p-5 sm:p-6 border border-border/80">
@@ -191,6 +196,18 @@ export default function OrderHistoryPage() {
                   </div>
                   <div className="text-right">
                     <p className="font-semibold text-text-dark">{formatPrice(order.total)}</p>
+                    {isWelcomeOrder && (
+                      <span
+                        className="mt-1.5 inline-block rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider"
+                        style={{
+                          background: "rgba(205,135,42,0.15)",
+                          color: "#442a1b",
+                          border: "1px solid rgba(205,135,42,0.45)",
+                        }}
+                      >
+                        Welcome ₹200 offer
+                      </span>
+                    )}
                     <span
                       className={`inline-block mt-2 text-xs uppercase tracking-wider px-2.5 py-1 rounded-full border ${statusBadgeClass(order.status)}`}
                     >

@@ -17,6 +17,8 @@ import PurchaseNudge from "@/components/home/PurchaseNudge";
 import CookieConsent from "@/components/CookieConsent";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
 import MetaPixel from "@/components/MetaPixel";
+import ChromeGate from "@/components/layout/ChromeGate";
+import WelcomeOfferNotification from "@/components/WelcomeOfferNotification";
 
 const archivo = localFont({
   src: [
@@ -111,19 +113,24 @@ export default function RootLayout({
         <MetaPixel />
         <Providers>
           <ScrollProgress />
-          <IntroSplash />
-          <AnnouncementBar />
-          <Header />
+          <ChromeGate>
+            <IntroSplash />
+            <AnnouncementBar />
+            <Header />
+          </ChromeGate>
           <main id="main" className="flex-1 min-w-0">
             {children}
           </main>
-          <Footer />
-          <CartDrawer />
-          <ChatWidget />
-          <WhatsAppWidget />
-          <LeadCaptureModal />
-          <PurchaseNudge />
+          <ChromeGate>
+            <Footer />
+            <CartDrawer />
+            <ChatWidget />
+            <WhatsAppWidget />
+            <LeadCaptureModal />
+            <PurchaseNudge />
+          </ChromeGate>
           <CookieConsent />
+          <WelcomeOfferNotification />
         </Providers>
       </body>
     </html>

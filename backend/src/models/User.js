@@ -31,6 +31,18 @@ const userSchema = new mongoose.Schema(
     wellnessPoints: { type: Number, default: 0 },
     wellnessClub: { type: Boolean, default: false },
 
+    // One-time ₹200 welcome offer issued on signup. Authoritative single-use
+    // ledger lives in the Coupon collection; this mirrors it for fast display.
+    welcomeCoupon: {
+      code: { type: String },
+      value: { type: Number },
+      used: { type: Boolean, default: false },
+      usedOrderNumber: { type: String },
+      usedAt: { type: Date },
+      issuedAt: { type: Date },
+      expiresAt: { type: Date },
+    },
+
     refreshToken: { type: String },
     refreshTokenExp: { type: Date },
 

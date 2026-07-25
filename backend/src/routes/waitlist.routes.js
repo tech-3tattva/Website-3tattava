@@ -15,6 +15,17 @@ const waitlistSchema = new mongoose.Schema({
   source:     { type: String, default: 'website' },
   ip:         String,
   user_agent: String,
+  // Optional paid-ad attribution (all backward compatible).
+  utm_source:   String,
+  utm_medium:   String,
+  utm_campaign: String,
+  utm_content:  String,
+  utm_term:     String,
+  fbclid:       String,
+  fbc:          String,
+  fbp:          String,
+  referrer:     String,
+  landing_path: String,
 }, { timestamps: true });
 
 // One entry per email+product; re-submits refresh the record instead of duplicating.
@@ -40,12 +51,25 @@ router.post('/', async (req, res, next) => {
     const normalizedEmail = email.toLowerCase().trim();
     const productVal = (product || 'not_specified').toString().trim().slice(0, 120);
 
+    // Optional ad-attribution — sliced to a sane length, only stored when present.
+    const clip = (v, n = 300) => (v == null ? undefined : String(v).trim().slice(0, n));
+    const attribution = {};
+    for (const key of ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'fbclid', 'fbc', 'fbp']) {
+      const val = clip(req.body[key]);
+      if (val) attribution[key] = val;
+    }
+    const referrerVal = clip(req.body.referrer, 500);
+    if (referrerVal) attribution.referrer = referrerVal;
+    const landingPathVal = clip(req.body.landing_path, 500);
+    if (landingPathVal) attribution.landing_path = landingPathVal;
+
     const existing = await Waitlist.findOne({ email: normalizedEmail, product: productVal });
 
     const doc = await Waitlist.findOneAndUpdate(
       { email: normalizedEmail, product: productVal },
       {
         $set: {
+          ...attribution,
           name: name.toString().trim().slice(0, 120),
           phone: phone.toString().replace(/\D/g, '').slice(0, 15),
           source: (source || 'website').toString().slice(0, 60),
@@ -67,6 +91,7 @@ router.post('/', async (req, res, next) => {
           phone: doc.phone,
           interest: doc.product,
           source: 'waitlist',
+          utm_campaign: doc.utm_campaign,
           timestamp: doc.createdAt.toISOString(),
         }),
       }).catch(err => console.error('[waitlist] n8n webhook failed:', err.message));

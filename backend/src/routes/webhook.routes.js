@@ -21,6 +21,7 @@ const express = require("express");
 
 const Order = require("../models/Order");
 const Influencer = require("../models/Influencer");
+const { markWelcomeCouponUsed } = require("../utils/welcomeCoupon");
 const PromoCode = require("../models/PromoCode");
 const Redemption = require("../models/Redemption");
 const Product = require("../models/Product");
@@ -233,6 +234,13 @@ async function handlePaymentCaptured(event, eventId) {
     }
 
     await order.save();
+
+    // Redeem the one-time welcome coupon if this order used one.
+    try {
+      if (order.user && order.coupon?.code) {
+        await markWelcomeCouponUsed(order.user, order.coupon.code, order.orderNumber);
+      }
+    } catch (e) { console.error("[welcome] redeem (webhook) failed:", e.message); }
 
     // Send order confirmation email
     if (order.guestEmail || order.shippingAddress?.email) {

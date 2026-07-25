@@ -9,6 +9,7 @@ const twilio = require("twilio");
 const User = require("../models/User");
 const { verifyToken } = require("../middleware/auth");
 const { ApiError } = require("../middleware/errorHandler");
+const { issueWelcomeCoupon } = require("../utils/welcomeCoupon");
 
 const router = express.Router();
 
@@ -118,6 +119,9 @@ router.post("/register", async (req, res, next) => {
       isVerified: true,
     });
 
+    // Grant the one-time ₹200 welcome offer. Non-fatal: signup must not fail on this.
+    try { await issueWelcomeCoupon(user); } catch (e) { console.error("[welcome] issue failed:", e.message); }
+
     return res.json(await establishSession(user, res));
   } catch (err) {
     return next(err);
@@ -203,6 +207,7 @@ router.post("/verify-otp", loginLimiter, async (req, res, next) => {
         role: "customer",
         isVerified: true,
       });
+      try { await issueWelcomeCoupon(user); } catch (e) { console.error("[welcome] issue failed:", e.message); }
     } else if (user.phone !== to) {
       user.phone = to;
     }
@@ -254,6 +259,7 @@ router.post("/google", async (req, res, next) => {
         role: "customer",
         isVerified: true,
       });
+      try { await issueWelcomeCoupon(user); } catch (e) { console.error("[welcome] issue failed:", e.message); }
     } else {
       user.googleId = googleId;
       user.email = email;

@@ -21,6 +21,7 @@ export default function CartDrawer() {
     items,
     subtotal,
     total,
+    discount,
     coupon,
   } = useCart();
 
@@ -39,7 +40,7 @@ export default function CartDrawer() {
   }, [isOpen, toggleDrawer]);
 
   const shipping = subtotal >= 999 ? 0 : 150;
-  const discount = coupon ? (subtotal * coupon.discount) / 100 : 0;
+  const isWelcome = !!coupon?.code?.startsWith("W200");
 
   return (
     <AnimatePresence>
@@ -108,8 +109,18 @@ export default function CartDrawer() {
                     <span>{formatPrice(subtotal)}</span>
                   </div>
                   {coupon && (
-                    <div className="flex justify-between text-sm">
-                      <span>Coupon Discount</span>
+                    <div className="flex justify-between items-center text-sm">
+                      <span className="flex items-center gap-1.5">
+                        Coupon Discount
+                        {isWelcome && (
+                          <span
+                            className="rounded-full px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider"
+                            style={{ background: "rgba(205,135,42,0.15)", color: "#442a1b", border: "1px solid rgba(205,135,42,0.4)" }}
+                          >
+                            Welcome offer
+                          </span>
+                        )}
+                      </span>
                       <span className="text-primary-green">
                         –{formatPrice(discount)}
                       </span>

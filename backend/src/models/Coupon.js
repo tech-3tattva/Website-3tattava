@@ -17,6 +17,11 @@ const couponSchema = new mongoose.Schema(
 
     expiresAt: { type: Date },
     isActive: { type: Boolean, default: true },
+
+    // Per-user "welcome" offer support. kind:"welcome" codes are owned by one
+    // user and enforced single-use via usedBy/usedCount at validate + capture.
+    kind: { type: String, enum: ["generic", "welcome"], default: "generic", index: true },
+    user: { type: mongoose.Schema.Types.ObjectId, ref: "User", index: true },
   },
   { timestamps: true }
 );

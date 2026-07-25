@@ -7,6 +7,7 @@ const Cart = require("../models/Cart");
 const Coupon = require("../models/Coupon");
 const { verifyToken } = require("../middleware/auth");
 const { ApiError } = require("../middleware/errorHandler");
+const { evaluateWelcome } = require("../utils/welcomeCoupon");
 
 const router = express.Router();
 
@@ -82,18 +83,41 @@ async function getOrCreateCart(req, res) {
   return cart;
 }
 
-async function validateCouponCode(code, cartTotal) {
+function optionalUserId(req) {
+  try {
+    const token = req.headers.authorization?.split(" ")[1];
+    if (!token) return null;
+    return jwt.verify(token, process.env.JWT_SECRET)?.id || null;
+  } catch {
+    return null;
+  }
+}
+
+async function validateCouponCode(code, cartTotal, userId) {
   const coupon = await Coupon.findOne({ code: String(code).toUpperCase() }).exec();
   if (!coupon || !coupon.isActive) throw new ApiError(400, "Invalid coupon");
   if (coupon.expiresAt && new Date(coupon.expiresAt).getTime() < Date.now()) {
     throw new ApiError(400, "Coupon expired");
   }
   if (cartTotal < (coupon.minOrderAmount || 0)) {
-    throw new ApiError(400, `Minimum order amount is ${coupon.minOrderAmount}`);
+    throw new ApiError(400, `Minimum order amount is ₹${coupon.minOrderAmount}`);
   }
+  if (coupon.kind === "welcome" || coupon.user) {
+    const check = evaluateWelcome(coupon, userId, cartTotal);
+    if (!check.ok) throw new ApiError(400, check.message);
+  }
+  const pct = Number(coupon.value) || 0;
+  const discountAmount =
+    coupon.type === "flat"
+      ? Math.min(pct, Math.max(0, cartTotal))
+      : coupon.maxDiscount
+        ? Math.min(Math.round((cartTotal * pct) / 100), coupon.maxDiscount)
+        : Math.round((cartTotal * pct) / 100);
   return {
     code: coupon.code,
-    discount: Number(coupon.value) || 0,
+    discount: coupon.type === "percent" ? pct : 0,
+    discountAmount,
+    type: coupon.type,
   };
 }
 
@@ -199,7 +223,7 @@ router.post("/coupon", async (req, res, next) => {
 
     const cart = await getOrCreateCart(req, res);
     const subtotal = cart.items.reduce((sum, item) => sum + item.price * item.quantity, 0);
-    cart.coupon = await validateCouponCode(code, subtotal);
+    cart.coupon = await validateCouponCode(code, subtotal, optionalUserId(req));
     await cart.save();
 
     return res.json(normalizeCart(cart));

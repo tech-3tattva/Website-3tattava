@@ -1,8 +1,8 @@
 "use client";
 
 import React, { createContext, useContext, useReducer, useCallback, useEffect, useRef } from "react";
-import type { CouponValidateResponse, ServerCart } from "@shared/types";
-import { api, USE_MOCK } from "@/lib/api";
+import type { ServerCart } from "@shared/types";
+import { api, USE_MOCK, validateCoupon } from "@/lib/api";
 import { useAuth } from "@/context/AuthContext";
 
 /** Must match the Product `id` from the API (Mongo ObjectId string) so checkout can decrement stock. SKU is accepted server-side as a fallback. */
@@ -18,17 +18,21 @@ export interface CartItem {
   slug: string;
 }
 
+/** Applied coupon. Flat welcome coupons carry `discountAmount` (rupees) + `type:"flat"`;
+ *  legacy percent coupons only carry `discount` (percent). */
+export type CartCoupon = { code: string; discount: number; discountAmount?: number; type?: string };
+
 interface CartState {
   items: CartItem[];
   isOpen: boolean;
-  coupon: { code: string; discount: number } | null;
+  coupon: CartCoupon | null;
 }
 
 type CartAction =
   | { type: "ADD_ITEM"; payload: CartItem }
   | { type: "REMOVE_ITEM"; payload: string }
   | { type: "UPDATE_QTY"; payload: { id: string; qty: number } }
-  | { type: "APPLY_COUPON"; payload: { code: string; discount: number } }
+  | { type: "APPLY_COUPON"; payload: CartCoupon }
   | { type: "HYDRATE_CART"; payload: Pick<CartState, "items" | "coupon"> }
   | { type: "CLEAR_CART" }
   | { type: "TOGGLE_DRAWER" }
@@ -86,6 +90,7 @@ interface CartContextValue extends CartState {
   clearCart: () => Promise<void>;
   toggleDrawer: () => void;
   subtotal: number;
+  discount: number;
   total: number;
   itemCount: number;
 }
@@ -112,7 +117,7 @@ function mapServerCart(cart: ServerCart): Pick<CartState, "items" | "coupon"> {
       slug: item.slug,
       variant: item.variant,
     })),
-    coupon: cart.coupon,
+    coupon: cart.coupon as CartCoupon | null,
   };
 }
 
@@ -125,7 +130,12 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   });
 
   const subtotal = state.items.reduce((sum, i) => sum + i.price * i.quantity, 0);
-  const discount = state.coupon ? (subtotal * state.coupon.discount) / 100 : 0;
+  const discount =
+    state.coupon
+      ? state.coupon.discountAmount && state.coupon.discountAmount > 0
+        ? Math.min(state.coupon.discountAmount, subtotal)
+        : (subtotal * state.coupon.discount) / 100
+      : 0;
   const shipping = subtotal >= 999 ? 0 : 150;
   const total = Math.max(0, subtotal - discount + shipping);
   const itemCount = state.items.reduce((sum, i) => sum + i.quantity, 0);
@@ -215,10 +225,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       return;
     }
 
-    const validation = await api.post<CouponValidateResponse>("/coupons/validate", {
-      code,
-      cartTotal: subtotal,
-    });
+    // Send the user's Bearer when signed in so owner-bound welcome codes resolve.
+    const validation = await validateCoupon(code, subtotal, isLoggedIn);
 
     if (!validation.valid) {
       throw new Error(validation.message ?? "Invalid coupon");
@@ -226,6 +234,16 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
     const cart = await api.post<ServerCart>("/cart/coupon", { code }, isLoggedIn);
     dispatch({ type: "HYDRATE_CART", payload: mapServerCart(cart) });
+    // Overlay the validated flat/percent data so the rupee reduction is authoritative.
+    dispatch({
+      type: "APPLY_COUPON",
+      payload: {
+        code: validation.code ?? code,
+        discount: validation.discount,
+        discountAmount: validation.discountAmount,
+        type: validation.type,
+      },
+    });
   }, [isLoggedIn, subtotal]);
 
   const clearCart = useCallback(async () => {
@@ -249,6 +267,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     clearCart,
     toggleDrawer,
     subtotal,
+    discount,
     total,
     itemCount,
   };

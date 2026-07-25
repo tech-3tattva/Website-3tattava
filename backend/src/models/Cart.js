@@ -25,7 +25,9 @@ const cartSchema = new mongoose.Schema(
     items: { type: [cartItemSchema], default: [] },
     coupon: {
       code: { type: String },
-      discount: { type: Number }, // percent
+      discount: { type: Number }, // percent (legacy) — for flat coupons this is 0
+      discountAmount: { type: Number }, // rupees off (flat coupons + computed percent)
+      type: { type: String }, // "percent" | "flat"
     },
 
     expiresAt: { type: Date, default: () => new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) },
