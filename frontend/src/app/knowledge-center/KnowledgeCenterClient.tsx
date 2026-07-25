@@ -110,7 +110,8 @@ export default function KnowledgeCenterClient() {
   // FAQs
   const faqs = useMemo(() => {
     let list = FAQS;
-    if (faqTopic !== "All") list = list.filter((f) => f.category === faqTopic);
+    if (faqTopic !== "All")
+      list = list.filter((f) => f.category === faqTopic || f.category === `${faqTopic} (extended)`);
     if (query)
       list = list.filter(
         (f) => norm(f.q).includes(query) || norm(f.a).includes(query) || norm(f.category).includes(query)

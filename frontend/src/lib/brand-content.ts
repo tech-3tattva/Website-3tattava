@@ -30,7 +30,7 @@ export const HERO = {
   headline: "Performance Ayurveda.",
   headlineAccent: "Engineered for the Way You Actually Live.",
   subheadline:
-    "Pure Himalayan Shilajit \u2014 80+ trace minerals, 60%+ fulvic acid \u2014 in two formats your body will actually absorb. Resin for the purist. Honey Sticks for the daily ritual.",
+    "Pure Himalayan Shilajit \u2014 80+ trace minerals, 70%+ fulvic acid \u2014 as resin and honey sticks your body will actually absorb. Resin for the purist. Honey Sticks for the daily ritual.",
   primaryCta: { label: "SHOP SHILAJIT RESIN", href: "/products/shodhit-shilajit-resin" },
   secondaryCta: { label: "TRY HONEY STICKS", href: "/products/shahjeet-sticks" },
 } as const;
@@ -70,10 +70,10 @@ export const THREE_PILLARS = {
 } as const;
 
 export const PRODUCT_SHOWCASE = {
-  header: "Two Formats. Zero Excuses.",
+  header: "Resin or Sticks. Zero Excuses.",
   subheader: "We solved all three problems with Shilajit: form, source, and delivery.",
   comparisonCallout:
-    "Not sure which format? Resin = maximum potency for the committed ritualist. Honey Sticks = daily convenience for the person who'll actually stick with it. Both deliver the same 80+ minerals and 60%+ fulvic acid.",
+    "Not sure which format? Resin = maximum potency for the committed ritualist. Honey Sticks = daily convenience for the person who'll actually stick with it. Both deliver the same 80+ minerals and 70%+ fulvic acid.",
   products: [
     {
       slug: "shilajit-resin",
@@ -277,11 +277,11 @@ export const NOT_FOUND = {
 export const SHOP_PAGE = {
   h1: "The Performance Ayurveda Collection",
   subheading:
-    "Two formats. Same pure Himalayan Shilajit. Choose the ritual that fits your life.",
+    "Resin or honey sticks. Same pure Himalayan Shilajit. Choose the ritual that fits your life.",
   filters: ["All Products", "Shilajit Resin", "Honey Sticks", "Bundles", "Subscribe & Save"],
   featuredBanners: [
     { label: "NEW: Shahjeet Honey Sticks — India's First", href: "/products/shahjeet-sticks" },
-    { label: "SHODHIT Shilajit Resin — The Deep Ritual", href: "/products/shodhit-shilajit-resin" },
+    { label: "Classically Purified Shilajit Resin \u2014 The Deep Ritual", href: "/products/shodhit-shilajit-resin" },
   ],
 } as const;
 
@@ -386,7 +386,7 @@ export const PAGE_METADATA = {
   shop: {
     title: "Shop Shilajit Resin & Honey Sticks | 3TATTAVA Performance Ayurveda",
     description:
-      "Pure Himalayan Shilajit in two formats \u2014 resin jar and daily honey sticks. Lab-tested purity. 60%+ fulvic acid. Free shipping above \u20B9999.",
+      "Pure Himalayan Shilajit \u2014 a resin jar and daily honey sticks. Lab-tested purity. 70%+ fulvic acid. Free shipping above \u20B9999.",
   },
   about: {
     title: "Our Story \u2014 Dr. Kashish & 3TATTAVA | India's Performance Ayurveda Brand",
@@ -401,7 +401,7 @@ export const PAGE_METADATA = {
   shilajitResin: {
     title: "Pure Himalayan Shilajit Resin 20g | Lab-Tested | 3TATTAVA",
     description:
-      "100% pure Himalayan Shilajit resin. 60%+ fulvic acid, 80+ trace minerals. NABL-accredited third-party tested. Doctor-formulated by Dr. Kashish. \u20B91,299. Free shipping.",
+      "100% pure Himalayan Shilajit resin. 70%+ fulvic acid, 80+ trace minerals. NABL-accredited third-party tested. Doctor-formulated by Dr. Kashish. \u20B91,299. Free shipping.",
   },
   honeySticks: {
     title: "Shilajit Honey Sticks 30-Pack | Daily Energy Ritual | 3TATTAVA",

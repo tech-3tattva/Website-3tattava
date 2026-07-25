@@ -37,7 +37,7 @@ const T = {
 
 const PRODUCT = {
   id: "shodhit-shilajit-resin",
-  name: "SHODHIT SHILAJIT RESIN",
+  name: "CLASSICALLY PURIFIED SHILAJIT RESIN",
   image: media("/home/rockresin-marquee.png"),
   price: 1199,
   mrp: 1399,
@@ -87,6 +87,13 @@ const RR_CSS = `
 @media(max-width:860px){.rr-journey{grid-template-columns:1fr;}}
 @media(prefers-reduced-motion:reduce){.rr-jcard,.rr-jbenefits{transition:none;}}
 @media(prefers-reduced-motion:reduce){.rr-arch,.rr-arch-rev,.rr-vscroll{animation:none;}}
+.ft-tip{position:relative;border-radius:999px;}
+.ft-tip:focus{outline:none;}
+.ft-tip:focus-visible{box-shadow:0 0 0 2px #cd872a;}
+.ft-tip-pop{position:absolute;left:50%;bottom:calc(100% + 12px);transform:translateX(-50%) translateY(4px);width:min(268px,74vw);background:#442a1b;border-radius:14px;padding:13px 15px;box-shadow:0 16px 38px rgba(68,42,27,.30);opacity:0;visibility:hidden;pointer-events:none;text-align:left;text-transform:none;letter-spacing:normal;transition:opacity .18s ease,transform .18s ease;z-index:40;}
+.ft-tip-pop::after{content:"";position:absolute;left:50%;top:100%;transform:translateX(-50%);border:7px solid transparent;border-top-color:#442a1b;}
+.ft-tip:hover .ft-tip-pop,.ft-tip:focus .ft-tip-pop,.ft-tip:focus-within .ft-tip-pop{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0);}
+@media(prefers-reduced-motion:reduce){.ft-tip-pop{transition:none;}}
 `;
 
 // ─── HELPERS ──────────────────────────────────────────────────────────────────
@@ -102,6 +109,31 @@ function Reveal({ children, delay = 0, y = 20, style, className }: { children: R
 
 const heading: CSSProperties = { fontFamily: F, fontVariationSettings: "'wght' 800", color: ESPRESSO, letterSpacing: "-0.02em", lineHeight: 1.06, margin: 0 };
 const eyebrow: CSSProperties = { fontFamily: F, fontVariationSettings: "'wght' 600", fontSize: T.eyebrow, letterSpacing: "0.14em", textTransform: "uppercase", color: TAUPE, margin: 0 };
+
+// ─── FEATURE ICONS (accessible hover / focus tooltips) ────────────────────────
+const FEATURE_ICONS: { label: string; tip: string }[] = [
+  { label: "70%+ Fulvic Acid", tip: "Fulvic acid carries minerals directly into your cells for absorption." },
+  { label: "80+ Trace Minerals", tip: "80+ ionic trace minerals, including iron, magnesium and zinc." },
+  { label: "Triphala Purified", tip: "Classically purified with Amalaki, Haritaki & Bibhitaki." },
+  { label: "Third-Party Lab Tested", tip: "Independently tested by an NABL-accredited lab (Eurofins)." },
+];
+function FeatureIcons() {
+  return (
+    <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "clamp(8px,1.2vw,14px)", margin: "0 auto clamp(30px,4vw,48px)", maxWidth: 920 }}>
+      {FEATURE_ICONS.map((f) => (
+        <span key={f.label} className="ft-tip" tabIndex={0} aria-label={`${f.label}. ${f.tip}`} title={`${f.label} — ${f.tip}`}
+          style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "9px 15px", background: "#f1e7d4", border: "1px solid rgba(68,42,27,.18)", cursor: "help" }}>
+          <span aria-hidden style={{ width: 7, height: 7, borderRadius: "50%", background: GOLD, flexShrink: 0 }} />
+          <span style={{ fontFamily: F, fontVariationSettings: "'wght' 700", fontSize: "clamp(11px,1.3vw,13px)", letterSpacing: ".04em", textTransform: "uppercase", color: ESPRESSO }}>{f.label}</span>
+          <span className="ft-tip-pop" role="tooltip">
+            <b style={{ display: "block", fontFamily: F, fontVariationSettings: "'wght' 800", fontSize: 12.5, letterSpacing: ".04em", textTransform: "uppercase", color: GOLD, marginBottom: 5 }}>{f.label}</b>
+            <span style={{ display: "block", fontFamily: F, fontVariationSettings: "'wght' 500", fontSize: 13, lineHeight: 1.45, color: CREAM }}>{f.tip}</span>
+          </span>
+        </span>
+      ))}
+    </div>
+  );
+}
 
 // ─── 1 · HERO ─────────────────────────────────────────────────────────────────
 function HeroSection() {
@@ -130,12 +162,13 @@ function HeroSection() {
           style={{ ...heading, fontSize: T.hero, textAlign: "center", maxWidth: "17ch", margin: "0 auto clamp(32px,5vw,56px)" }}>
           ONE RESIN. COMPLETE VITALITY.
         </motion.h1>
+        <FeatureIcons />
 
         <div className="rr-2col" style={{ position: "relative", alignItems: "end" }}>
           <Reveal style={{ position: "relative", zIndex: 1, marginBottom: "clamp(56px,8vw,110px)" }}>
             <p style={{ ...eyebrow, marginBottom: 12 }}>Dip. Hook. Swirl.</p>
             <p style={{ fontFamily: F, fontVariationSettings: "'wght' 700", fontSize: T.bodyLg, lineHeight: 1.42, color: ESPRESSO, maxWidth: "34ch", textTransform: "uppercase", margin: "0 0 clamp(20px,2.5vw,26px)" }}>
-              Authentic Himalayan Shilajit, traditionally purified through Triphala Shodhana — for energy, recovery, and long-term vitality.
+              Classically purified Himalayan shilajit resin crafted for busy professionals, athletes, and anyone seeking authentic Ayurveda without compromise.
             </p>
 
             <p style={{ ...eyebrow, marginBottom: 10 }}>Choose your ritual</p>
@@ -166,7 +199,7 @@ function HeroSection() {
 
           <motion.div className="rr-media" initial={{ opacity: 0, scale: 0.94 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.8, ease: EASE }} style={{ position: "relative", zIndex: 1, display: "flex", justifyContent: "center", marginTop: "clamp(12px,2vw,28px)" }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/home/rockresin-hero-product.png?v=2" alt="RockResin — Shodhit Himalayan Shilajit resin jar, tub and spoon" style={{ width: "100%", maxWidth: 460, height: "auto", display: "block", filter: "drop-shadow(0 26px 50px rgba(68,42,27,.20))" }} />
+            <img src="/home/rockresin-hero-product.png?v=2" alt="Classically purified Himalayan Shilajit resin jar, tub and spoon" style={{ width: "100%", maxWidth: 460, height: "auto", display: "block", filter: "drop-shadow(0 26px 50px rgba(68,42,27,.20))" }} />
           </motion.div>
         </div>
       </div>
@@ -216,10 +249,10 @@ function ReveredSection() {
 
 // ─── 3 · COMPARISON ───────────────────────────────────────────────────────────
 const CMP_ROWS = [
-  { icon: Leaf,         feature: "Purification Process",     ours: "Triple Purified (Triphala Shodhit)",       theirs: "Purification method often not disclosed" },
+  { icon: Leaf,         feature: "Purification Process",     ours: "Triple Purified (Triphala)",              theirs: "Purification method often not disclosed" },
   { icon: FlaskConical, feature: "Laboratory Testing",       ours: "Eurofins & NABL Lab Tested",               theirs: "Testing information may be limited or unavailable" },
   { icon: ShieldCheck,  feature: "Heavy Metal Screening",    ours: "Batch tested — negligible heavy metals",   theirs: "Not always disclosed" },
-  { icon: Droplet,      feature: "Fulvic Acid Verification", ours: "Verified using two analytical methods",    theirs: "Methodology rarely disclosed" },
+  { icon: Droplet,      feature: "Fulvic Acid Verification", ours: "Verified using independent methods",       theirs: "Methodology rarely disclosed" },
   { icon: BadgeCheck,   feature: "Fulvic Acid Transparency", ours: "≥70% — lab-backed results",                theirs: "Marketing claims may omit test methods" },
   { icon: Factory,      feature: "Manufacturing Standard",   ours: "AYUSH GMP Manufactured",                   theirs: "Manufacturing standards vary" },
   { icon: Stethoscope,  feature: "Doctor Formulated",        ours: "Formulated by an Ayurvedic Vaidya",        theirs: "Formulation expertise varies" },
@@ -289,10 +322,10 @@ function ComparisonSection() {
 
 // ─── 4 · CINEMATIC + AUTO-SCROLL FACT TICKER ──────────────────────────────────
 const CINE_FACTS: { stat?: string; text: string }[] = [
-  { stat: "≥70%", text: "Fulvic acid — verified by two independent methods" },
+  { stat: "≥70%", text: "Fulvic acid — verified by independent methods" },
   { stat: "≥80", text: "Ionic trace minerals in every batch" },
   { text: "Eurofins & NABL — third-party lab tested" },
-  { text: "Classically purified through Triphala Shodhan" },
+  { text: "Classically Purified Through Triphala" },
   { text: "Negligible heavy metals — far below ordinary shilajit" },
   { text: "Documented Himalayan sourcing" },
   { stat: "16,000ft", text: "Sourced from high-altitude Himalayan rock" },
@@ -340,6 +373,7 @@ function TriphalaSection() {
           <img src={media("/rockresin/triphala.png")} alt="Triphala — Amalaki, Haritaki and Bibhitaki in wooden bowls" style={{ width: "100%", maxWidth: 620, height: "auto", display: "block" }} />
         </Reveal>
         <Reveal delay={0.08}>
+          <p style={{ ...eyebrow, color: GOLD, marginBottom: 12 }}>Classically Purified Through Triphala</p>
           <h2 style={{ ...heading, fontSize: T.h2, marginBottom: 20 }}>WHY WE PURIFY WITH TRIPHALA</h2>
           <p style={{ fontFamily: F, fontVariationSettings: "'wght' 500", fontSize: T.body, lineHeight: 1.6, color: INK, margin: "0 0 18px" }}>
             Many brands discuss sourcing. Few discuss purification. Before becoming a Rasayana, Shilajit traditionally undergoes <b style={{ color: GOLD }}>Shodhana</b>.
@@ -357,13 +391,30 @@ function TriphalaSection() {
 }
 
 // ─── 6 · THE SWIRL RITUAL (video) ─────────────────────────────────────────────
+const SWIRL_STEPS = [
+  { step: "01", title: "Dip", desc: "Dip the precision spatula into the resin jar." },
+  { step: "02", title: "Hook", desc: "Hook a pea-sized amount (about 300–500mg)." },
+  { step: "03", title: "Swirl", desc: "Swirl into warm water or milk — dissolves in seconds." },
+];
+
 function SwirlRitualSection() {
   return (
     <section style={{ background: `url(${media("/rockresin/swirl-bg-brown.png")}) center/cover no-repeat, linear-gradient(135deg,#7a3a12 0%,#5c2409 55%,#3f1803 100%)`, padding: "clamp(48px,6vw,88px) 24px" }}>
       <div style={{ maxWidth: 1180, margin: "0 auto" }}>
         <Reveal style={{ textAlign: "center" }}>
           <h2 style={{ ...heading, color: CREAM, fontSize: T.big, marginBottom: 8 }}>DIP. HOOK. SWIRL.</h2>
-          <p style={{ fontFamily: F, fontVariationSettings: "'wght' 700", fontSize: "clamp(15px,2vw,20px)", letterSpacing: ".08em", textTransform: "uppercase", color: "#eccf6a", margin: "0 0 clamp(32px,4.5vw,56px)" }}>3Tattava Swirl Ritual™</p>
+          <p style={{ fontFamily: F, fontVariationSettings: "'wght' 700", fontSize: "clamp(15px,2vw,20px)", letterSpacing: ".08em", textTransform: "uppercase", color: "#eccf6a", margin: "0 0 clamp(28px,4vw,44px)" }}>3T Swirl Ritual — Dip · Hook · Swirl</p>
+        </Reveal>
+        <Reveal delay={0.05}>
+          <ol style={{ listStyle: "none", padding: 0, margin: "0 auto clamp(32px,4.5vw,56px)", maxWidth: 900, display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: "clamp(12px,2vw,22px)" }}>
+            {SWIRL_STEPS.map((s) => (
+              <li key={s.title} style={{ background: "rgba(247,240,226,.08)", border: "1px solid rgba(247,240,226,.22)", borderRadius: 16, padding: "clamp(16px,2vw,22px)", textAlign: "left" }}>
+                <span style={{ display: "block", fontFamily: F, fontVariationSettings: "'wght' 800", fontSize: 12, letterSpacing: ".12em", color: "#eccf6a", marginBottom: 6 }}>STEP {s.step}</span>
+                <span style={{ display: "block", fontFamily: F, fontVariationSettings: "'wght' 800", fontSize: "clamp(18px,2.4vw,26px)", color: CREAM, marginBottom: 6 }}>{s.title}</span>
+                <span style={{ display: "block", fontFamily: F, fontVariationSettings: "'wght' 500", fontSize: T.label, lineHeight: 1.45, color: "rgba(247,240,226,.82)" }}>{s.desc}</span>
+              </li>
+            ))}
+          </ol>
         </Reveal>
         <div className="rr-2col" style={{ alignItems: "center", gridTemplateColumns: "1.08fr 0.92fr" }}>
           <Reveal style={{ display: "flex", justifyContent: "center" }}>
@@ -461,7 +512,7 @@ function MarqueeSection() {
       <Row />
       <div style={{ display: "flex", justifyContent: "center", position: "relative", zIndex: 1 }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={media("/rockresin/product.png")} alt="RockResin — Shodhit Himalayan Shilajit resin jar and spoon" style={{ width: "clamp(180px,24vw,320px)", height: "auto", display: "block" }} />
+        <img src={media("/rockresin/product.png")} alt="Classically purified Himalayan Shilajit resin jar and spoon" style={{ width: "clamp(180px,24vw,320px)", height: "auto", display: "block" }} />
       </div>
       <Row dim />
     </section>

@@ -729,7 +729,7 @@ export const FAQS: Faq[] = [
     "pillar": "Women",
     "category": "Women's Health",
     "q": "Can women take Shilajit?",
-    "a": "Yes. Shilajit is not a men-only product; women can take purified Shilajit for energy, recovery and mineral support. It should be avoided in pregnancy and breastfeeding.",
+    "a": "Yes. Shilajit is not a men-only product — women can take purified, lab-tested Shilajit as a classical Rasayana to support everyday energy, recovery and mineral balance. If you are pregnant or breastfeeding, it is best to check with your doctor before use.",
     "intent": "Informational",
     "priority": "P1"
   },
@@ -738,7 +738,7 @@ export const FAQS: Faq[] = [
     "pillar": "Women",
     "category": "Women's Health",
     "q": "Is Shilajit safe for women?",
-    "a": "Purified, lab-tested Shilajit is generally considered safe for healthy adult women at recommended doses, except during pregnancy and lactation or with certain conditions.",
+    "a": "Purified, lab-tested Shilajit is generally well tolerated by healthy adult women at recommended doses of 300–500 mg a day. If you are pregnant or breastfeeding, or managing a specific health condition, it is best to check with your doctor before use.",
     "intent": "Safety",
     "priority": "P1"
   },
@@ -765,7 +765,7 @@ export const FAQS: Faq[] = [
     "pillar": "Women",
     "category": "Women's Health",
     "q": "Does Shilajit help women with low energy?",
-    "a": "Its mineral and proposed mitochondrial support make energy a common reason women use it; expect gradual support, and rule out causes like iron/B12 deficiency or thyroid issues.",
+    "a": "Women often reach for Shilajit for everyday energy — the rationale is its trace-mineral content and traditional Rasayana action. Expect gradual, supportive benefits rather than an instant fix, and if fatigue persists it is worth having a doctor rule out causes such as iron or B12 deficiency or thyroid changes.",
     "intent": "Informational",
     "priority": "P1"
   },
@@ -909,7 +909,7 @@ export const FAQS: Faq[] = [
     "pillar": "Women",
     "category": "Women's Health",
     "q": "Can pregnant women take Shilajit?",
-    "a": "No. Shilajit should be avoided during pregnancy due to insufficient safety data and heavy-metal risk from unpurified products. Consult your doctor.",
+    "a": "Shilajit is a concentrated mineral resin, so during pregnancy it is best to check with your doctor before use. Choosing purified, lab-tested resin also matters, since unpurified products can carry heavy-metal impurities.",
     "intent": "Safety",
     "priority": "P1"
   },
@@ -918,7 +918,7 @@ export const FAQS: Faq[] = [
     "pillar": "Women",
     "category": "Women's Health",
     "q": "Can breastfeeding women take Shilajit?",
-    "a": "No. Shilajit is not recommended during breastfeeding due to lack of safety data. Consult your doctor before use.",
+    "a": "As Shilajit is a concentrated mineral resin, it is best to check with your doctor before use while you are breastfeeding, and to choose only purified, lab-tested resin.",
     "intent": "Safety",
     "priority": "P1"
   },
@@ -945,7 +945,7 @@ export const FAQS: Faq[] = [
     "pillar": "Women",
     "category": "Women's Health",
     "q": "Is Shilajit good for women's energy during pregnancy?",
-    "a": "No — Shilajit should not be used in pregnancy. For pregnancy fatigue, consult your obstetrician.",
+    "a": "During pregnancy it is best to check with your doctor before using Shilajit. For pregnancy-related fatigue, your obstetrician is the right person to guide you.",
     "intent": "Safety",
     "priority": "P1"
   },
@@ -1503,7 +1503,7 @@ export const FAQS: Faq[] = [
     "pillar": "Safety",
     "category": "Safety & Contraindications",
     "q": "Is Shilajit safe during pregnancy?",
-    "a": "No. Avoid Shilajit in pregnancy due to insufficient safety data and heavy-metal risk from impure products.",
+    "a": "Shilajit is a concentrated mineral resin, so during pregnancy it is best to check with your doctor before use, and to choose only purified, lab-tested resin free of heavy-metal impurities.",
     "intent": "Safety",
     "priority": "P1"
   },
@@ -1512,7 +1512,7 @@ export const FAQS: Faq[] = [
     "pillar": "Safety",
     "category": "Safety & Contraindications",
     "q": "Is Shilajit safe while breastfeeding?",
-    "a": "No. It is not recommended during breastfeeding; consult your doctor.",
+    "a": "While breastfeeding, it is best to check with your doctor before using Shilajit; when you do, stick to purified, lab-tested resin.",
     "intent": "Safety",
     "priority": "P1"
   },

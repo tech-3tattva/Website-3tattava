@@ -7,10 +7,10 @@ const STORAGE_KEY = "3tattava-announcement-dismissed";
 const PINCODE_KEY = "3tattava-pincode";
 
 const TICKER_MESSAGES = [
-  "80+ Trace Minerals · 60%+ Fulvic Acid · NABL-Accredited Third-Party Tested",
-  "Free Shipping Above ₹999 · Third-Party Lab-Tested · Doctor-Formulated",
-  "SHODHIT SHILAJIT — Purified via Classical Triphala Shodhan",
-  "AYUSH-GMP Certified Facility",
+  "More than 70%+ Fulvic Acid · Third-Party Lab Tested",
+  "Free Shipping Above ₹999",
+  "Doctor-Led Performance Ayurveda",
+  "Pure Himalayan Ladakhi Shilajit Resin",
 ];
 
 export default function AnnouncementBar() {

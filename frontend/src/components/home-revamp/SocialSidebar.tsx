@@ -7,7 +7,6 @@ const SOCIAL_LINKS = [
   { label: "Instagram", icon: media("/icons/instagram.svg"), href: "https://www.instagram.com/3tattava" },
   { label: "Facebook", icon: media("/icons/facebook.svg"), href: "https://www.facebook.com/3tattava" },
   { label: "LinkedIn", icon: media("/icons/linkedin.svg"), href: "https://www.linkedin.com/company/3tattava" },
-  { label: "WhatsApp", icon: media("/icons/whatsapp-line.svg"), href: "https://whatsapp.com/channel/0029VbCvQM9AzNc0iZDadt1c" },
 ] as const;
 
 export default function SocialSidebar() {

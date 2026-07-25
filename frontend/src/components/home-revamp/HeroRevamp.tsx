@@ -226,7 +226,6 @@ export default function HeroRevamp() {
     offset: ['start start', 'end start'],
   })
   const contentY = useTransform(scrollYProgress, [0, 1], [0, -80])
-  const contentOpacity = useTransform(scrollYProgress, [0, 0.7], [1, 0])
 
   /* Generate particles client-side */
   useEffect(() => {
@@ -303,7 +302,7 @@ export default function HeroRevamp() {
         {/* Content */}
         <motion.div
           className="hero-revamp-content"
-          style={reduce ? undefined : { y: contentY, opacity: contentOpacity }}
+          style={reduce ? undefined : { y: contentY }}
           variants={containerVariants}
           initial="hidden"
           animate="visible"

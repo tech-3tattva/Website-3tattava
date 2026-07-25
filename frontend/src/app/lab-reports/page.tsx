@@ -4,7 +4,7 @@ import { FileText, Download, ExternalLink, ShieldCheck } from "lucide-react";
 export const metadata: Metadata = {
   title: "Lab Reports | 3TATTAVA",
   description:
-    "NABL 3rd-party lab reports for every 3TATTAVA product — RockResin Shodhit Shilajit Resin and Shahjeet Honey Sticks. Fulvic acid, heavy metals, and microbial safety, fully transparent.",
+    "NABL 3rd-party lab reports for every 3TATTAVA product — RockResin Classically Purified Shilajit Resin and Shahjeet Honey Sticks. Fulvic acid, heavy metals, and microbial safety, fully transparent.",
   alternates: { canonical: "https://www.3tattava.com/lab-reports" },
 };
 
@@ -18,7 +18,7 @@ const TAUPE = "#8a7355";
 const REPORTS = [
   {
     name: "RockResin®",
-    subtitle: "Shodhit Shilajit Resin · 20g Jar",
+    subtitle: "Classically Purified Shilajit Resin · 20g Jar",
     type: "NABL 3rd-Party Lab Report",
     file: "/lab-reports/RockResins-labreport.pdf",
     download: "3TATTAVA-RockResin-Lab-Report.pdf",

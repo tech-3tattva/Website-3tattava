@@ -14,27 +14,11 @@ const SPRING = { type:"spring", stiffness:380, damping:22 } as const;
 const GOLD   = "linear-gradient(105deg,#A67B2F,#E4C079,#C8963E,#A67B2F)";
 const GOLD3  = "linear-gradient(90deg,#A67B2F,#E4C079,#C8963E)";
 
-interface Doctor {
-  _id:string; name:string; qualification:string; speciality:string[];
-  city:string; consultation_fee:number; is_free:boolean;
-  patients_visited:number; trust_score:number;
-  monthly_recommendations:number; booking_link:string;
-}
-
-const DUMMY_DOCTORS: Doctor[] = [
-  { _id:"1", name:"Dr. Pooja Arora",  qualification:"BAMS, MD (Ayurveda)", speciality:["Women's Health","Performance Ayurveda"], city:"New Delhi",  consultation_fee:500, is_free:false, patients_visited:142, trust_score:4.8, monthly_recommendations:23, booking_link:"#" },
-  { _id:"2", name:"Dr. Rahul Mehta",  qualification:"BAMS",                speciality:["Sports Medicine","Performance Ayurveda"], city:"Bengaluru", consultation_fee:600, is_free:false, patients_visited:89,  trust_score:4.9, monthly_recommendations:17, booking_link:"#" },
-  { _id:"3", name:"Dr. Kavya Nair",   qualification:"BAMS, PhD (Ayurveda)",speciality:["Hormonal Health","Women's Wellness"],      city:"Mumbai",    consultation_fee:0,   is_free:true,  patients_visited:205, trust_score:4.7, monthly_recommendations:34, booking_link:"#" },
-  { _id:"4", name:"Dr. Ananya Singh", qualification:"BAMS",                speciality:["Gut Health","Performance Ayurveda"],        city:"Delhi",     consultation_fee:450, is_free:false, patients_visited:78,  trust_score:4.6, monthly_recommendations:12, booking_link:"#" },
-];
-
-const CITIES = ["Delhi","Mumbai","Bengaluru","Hyderabad","Chennai","Kolkata","Pune","Jaipur","Noida","Gurgaon","Ahmedabad","Lucknow","Chandigarh"];
-
 const TICKER = [
-  "Dr. Pooja Arora from Delhi recommended 3TATTAVA Shilajit to 23 patients this month",
-  "3TATTAVA is now available at 12 Ayurveda clinics across Delhi NCR",
-  "Dr. Kavya Nair from Mumbai — 34 women referred to Shahjeet Sticks in April",
-  "VaidyaConnect now has practitioners across 8 Indian cities",
+  "Dr. Falguni Chauhan — Ayurveda & Integrative Wellness consultant",
+  "Your first 15-minute online consultation is complimentary",
+  "Every recommendation is personalised to your Prakriti (body type)",
+  "Get a free starter diet chart with your assessment",
 ];
 
 const ASSESSMENT_DOMAINS = [
@@ -286,24 +270,6 @@ function NeuTag({ label }: { label:string }) {
   );
 }
 
-// ─── FLAT TAG (used in search results) ───────────────────────────────────────
-
-function Tag({ label }: { label:string }) {
-  return (
-    <span style={{
-      fontSize:"10px", letterSpacing:".08em",
-      fontVariationSettings:"'wdth' 75,'wght' 500",
-      fontFamily:FONT,
-      color:"rgba(28,19,4,.62)",
-      background:"#f7f0e2",
-      border:"1px solid rgba(183,163,146,.35)",
-      padding:"4px 10px", display:"inline-block",
-    }}>
-      {label}
-    </span>
-  );
-}
-
 // ─── POPABLE BUTTON ──────────────────────────────────────────────────────────
 
 function PopBtn({
@@ -523,85 +489,6 @@ function FeaturedCard({ doc, idx, onConsult }: { doc:FeaturedDoc; idx:number; on
   );
 }
 
-// ─── CITY DOCTOR CARD ─────────────────────────────────────────────────────────
-
-function DoctorResultCard({ doc, idx }: { doc:Doctor; idx:number }) {
-  const initial = doc.name.split(" ")[1]?.[0] || "D";
-
-  return (
-    <motion.div
-      initial={{opacity:0,y:24}}
-      animate={{opacity:1,y:0}}
-      transition={{duration:.45,delay:idx*.08,ease:EASE}}
-      style={{
-        background:"#fff",
-        border:"1px solid rgba(183,163,146,.28)",
-        padding:"24px 20px",
-        display:"flex",gap:"16px",alignItems:"flex-start",
-        position:"relative",overflow:"hidden",
-        fontFamily:FONT,
-      }}
-    >
-      <div style={{
-        position:"absolute",top:0,left:0,right:0,height:"2px",
-        background:GOLD3,
-      }}/>
-
-      <Avatar initial={initial} size={52}/>
-
-      <div style={{flex:1,minWidth:0}}>
-        <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:"4px",flexWrap:"wrap",gap:"6px"}}>
-          <h4 style={{
-            fontVariationSettings:"'wdth' 85,'wght' 700",
-            fontSize:"16px",color:"#1c1304",
-          }}>
-            {doc.name}
-          </h4>
-          <span style={{
-            fontSize:"9px",letterSpacing:".15em",textTransform:"uppercase",
-            fontVariationSettings:"'wdth' 75,'wght' 600",
-            color:"#C8963E",
-            background:"rgba(200,150,62,.10)",
-            border:"1px solid rgba(200,150,62,.28)",
-            padding:"3px 8px",flexShrink:0,
-          }}>
-            ★ {doc.trust_score}
-          </span>
-        </div>
-
-        <p style={{
-          fontSize:"11px",color:"#C8963E",
-          fontVariationSettings:"'wdth' 75,'wght' 500",
-          letterSpacing:".1em",textTransform:"uppercase",
-          marginBottom:"8px",
-        }}>
-          {doc.qualification}
-        </p>
-
-        <div style={{display:"flex",flexWrap:"wrap",gap:"5px",marginBottom:"12px"}}>
-          {doc.speciality.map(s=><Tag key={s} label={s}/>)}
-        </div>
-
-        <div style={{display:"flex",gap:"16px",alignItems:"center",flexWrap:"wrap"}}>
-          <span style={{
-            fontSize:"11px",color:"rgba(28,19,4,.45)",
-            fontVariationSettings:"'wdth' 75,'wght' 400",
-          }}>
-            {doc.patients_visited} patients · {doc.monthly_recommendations} recommendations/mo
-          </span>
-          <PopBtn
-            href={doc.booking_link}
-            variant={doc.is_free?"gold":"ghost"}
-            style={{padding:"9px 20px"}}
-          >
-            {doc.is_free ? "Free Consultation" : `Book ₹${doc.consultation_fee}`}
-          </PopBtn>
-        </div>
-      </div>
-    </motion.div>
-  );
-}
-
 // ─── LEAD FORM ───────────────────────────────────────────────────────────────
 
 function AssessmentForm() {
@@ -640,7 +527,7 @@ function AssessmentForm() {
           fontVariationSettings:"'wdth' 100,'wght' 300",
           fontFamily:FONT,fontSize:"13px",color:"rgba(28,19,4,.55)",lineHeight:1.6,
         }}>
-          Dr. Kashish reviews every submission. You will hear back within 24 hours on WhatsApp.
+          Our Ayurvedic doctor reviews every submission. You will hear back within 24 hours on WhatsApp.
         </p>
       </motion.div>
     );
@@ -698,7 +585,7 @@ function AssessmentForm() {
           fontVariationSettings:"'wdth' 100,'wght' 300",
           fontFamily:FONT,lineHeight:1.5,maxWidth:"340px",
         }}>
-          Dr. Kashish reviews every submission personally. Response within 24 hours.
+          Our Ayurvedic doctor reviews every submission personally. Response within 24 hours.
         </p>
         <PopBtn
           variant="gold"
@@ -714,18 +601,6 @@ function AssessmentForm() {
 // ─── MAIN ────────────────────────────────────────────────────────────────────
 
 const FEATURED_DOCTORS: FeaturedDoc[] = [
-  {
-    initial:"K",
-    name:"Dr. Kashish Gupta",
-    role:"Founder, 3TATTAVA · AYUSH Ministry Consultant",
-    credentials:"BAMS · CBPACS · Ayurveda Physician",
-    badge:"Founder & Lead Physician",
-    quote:"Ayurveda should help people perform better — not just recover after problems arise. 3TATTAVA was built on that belief.",
-    specialties:["Performance Ayurveda","Clinical Shilajit","Sports Recovery","Mineral Medicine"],
-    ctas:[
-      { label:"Explore Performance Ayurveda →", variant:"gold", href:"/research-testing" },
-    ],
-  },
   {
     initial:"F", photo:"/team/dr-falguni-chauhan.jpg",
     name:"Dr. Falguni Chauhan",
@@ -744,45 +619,15 @@ const FEATURED_DOCTORS: FeaturedDoc[] = [
 
 
 export default function VaidyaConnectClient() {
-  const [query, setQuery]           = useState("");
   const [consultOpen, setConsultOpen] = useState(false);
-  const [suggestions, setSuggestions] = useState<string[]>([]);
-  const [searched, setSearched]     = useState(false);
-  const [doctors, setDoctors]       = useState<Doctor[]>([]);
-  const [loading, setLoading]       = useState(false);
 
   const featuredRef  = useRef<HTMLElement>(null);
   const assessRef    = useRef<HTMLElement>(null);
   const compareRef   = useRef<HTMLElement>(null);
-  const searchRef    = useRef<HTMLElement>(null);
 
   const featuredInView = useInView(featuredRef,  { once:true, margin:"-60px" });
   const assessInView   = useInView(assessRef,    { once:true, margin:"-60px" });
   const compareInView  = useInView(compareRef,   { once:true, margin:"-60px" });
-  const searchInView   = useInView(searchRef,    { once:true, margin:"-60px" });
-
-  useEffect(()=>{
-    if (query.length < 2) { setSuggestions([]); return; }
-    setSuggestions(CITIES.filter(c=>c.toLowerCase().includes(query.toLowerCase())));
-  },[query]);
-
-  const handleSearch = (city:string) => {
-    setQuery(city); setSuggestions([]);
-    setLoading(true);
-    setTimeout(()=>{
-      setDoctors(DUMMY_DOCTORS);
-      setSearched(true);
-      setLoading(false);
-    }, 900);
-  };
-
-  const inputStyle: React.CSSProperties = {
-    width:"100%",padding:"14px 20px",
-    background:"#fff",border:"1px solid rgba(183,163,146,.40)",
-    fontFamily:FONT,fontSize:"15px",color:"#1c1304",
-    outline:"none",boxSizing:"border-box",
-    fontVariationSettings:"'wdth' 100,'wght' 300",
-  };
 
   return (
     <div style={{fontFamily:FONT,color:"#1c1304",background:"#f7f0e2"}}>
@@ -848,7 +693,7 @@ export default function VaidyaConnectClient() {
               maxWidth:"520px",margin:"0 auto 32px",
             }}
           >
-            Every practitioner in this network is vetted by Dr. Kashish, BAMS. All recommend 3TATTAVA as part of their clinical practice.
+            Personalised Ayurveda guidance from Dr. Falguni Chauhan, BAMS — built around your Prakriti and everyday performance.
           </motion.p>
 
           {/* Trust badges */}
@@ -857,7 +702,7 @@ export default function VaidyaConnectClient() {
             transition={{duration:.5,delay:.32,ease:EASE}}
             style={{display:"flex",gap:"10px",justifyContent:"center",flexWrap:"wrap",marginBottom:"40px"}}
           >
-            {["BAMS Verified","Dr. Kashish Vetted","8 Cities","Free Starter Guidance"].map(b=>(
+            {["BAMS Qualified","Personalised Diet Chart","First Consult Free","Free Starter Guidance"].map(b=>(
               <motion.div
                 key={b}
                 whileHover={{scale:1.05,y:-1}}
@@ -884,7 +729,6 @@ export default function VaidyaConnectClient() {
             style={{display:"flex",gap:"12px",justifyContent:"center",flexWrap:"wrap"}}
           >
             <PopBtn href="#assessment" variant="gold">Get Free Starter Guide</PopBtn>
-            <PopBtn href="#search" variant="ghost">Find a Doctor in Your City</PopBtn>
           </motion.div>
         </div>
       </section>
@@ -903,7 +747,7 @@ export default function VaidyaConnectClient() {
               fontVariationSettings:"'wdth' 75,'wght' 500",
               fontFamily:FONT,color:"#C8963E",marginBottom:"12px",
             }}>
-              Our Network Leads
+              Your Ayurveda Consultant
             </p>
             <h2 style={{
               fontVariationSettings:"'wdth' 85,'wght' 700",
@@ -911,7 +755,7 @@ export default function VaidyaConnectClient() {
               fontSize:"clamp(24px,3.5vw,38px)",
               letterSpacing:"-.02em",lineHeight:1.1,color:"#1c1304",marginBottom:"12px",
             }}>
-              Meet the Practitioners
+              Meet Your Doctor
             </h2>
           </motion.div>
 
@@ -970,7 +814,7 @@ export default function VaidyaConnectClient() {
                 fontSize:"15px",color:"rgba(28,19,4,.52)",
                 maxWidth:"480px",margin:"0 auto",lineHeight:1.65,
               }}>
-                A six-domain questionnaire — Dr. Kashish reviews every submission and responds with personalised guidance within 24 hours.
+                A six-domain questionnaire — our Ayurvedic doctor reviews every submission and responds with personalised guidance within 24 hours.
               </p>
             </div>
 
@@ -1014,7 +858,7 @@ export default function VaidyaConnectClient() {
                   <LockedTeaser
                     eyebrow="Unlock After Your First Ritual"
                     title="Your Performance Assessment Awaits"
-                    body="Dr. Kashish's personalised six-domain assessment — and his 24-hour WhatsApp guidance — unlock the moment you begin your first ritual. Claim yours with a purchase."
+                    body="Our Ayurvedic doctor's personalised six-domain assessment — and 24-hour WhatsApp guidance — unlock the moment you begin your first ritual. Claim yours with a purchase."
                     ctaLabel="Shop & Unlock"
                   />
                 }
@@ -1090,7 +934,7 @@ export default function VaidyaConnectClient() {
                 {[
                   "Prakriti (body-type) quiz",
                   "Starter diet guide from Dr. Falguni",
-                  "Shilajit ritual guide from Dr. Kashish",
+                  "Shilajit ritual guide from our Ayurvedic doctor",
                 ].map(item=>(
                   <li key={item} style={{
                     display:"flex",gap:"10px",alignItems:"flex-start",
@@ -1164,7 +1008,7 @@ export default function VaidyaConnectClient() {
               </div>
               <ul style={{listStyle:"none",padding:0,margin:"0 0 28px",display:"flex",flexDirection:"column",gap:"12px"}}>
                 {[
-                  "1-on-1 consultation with Dr. Kashish or Dr. Falguni",
+                  "1-on-1 consultation with Dr. Falguni",
                   "Custom Ayurvedic protocol (product + dosage)",
                   "90-day check-in and outcome tracking",
                 ].map(item=>(
@@ -1192,153 +1036,6 @@ export default function VaidyaConnectClient() {
         </div>
       </section>
 
-      {/* ── CITY SEARCH ────────────────────────────────────────────────────── */}
-      <section ref={searchRef} id="search" style={{background:"#f7f0e2",padding:"88px 24px"}}>
-        <div style={{maxWidth:"700px",margin:"0 auto"}}>
-          <motion.div
-            initial={{opacity:0,y:24}}
-            animate={searchInView?{opacity:1,y:0}:{}}
-            transition={{duration:.5,ease:EASE}}
-            style={{textAlign:"center",marginBottom:"40px"}}
-          >
-            <p style={{
-              fontSize:"10px",letterSpacing:".32em",textTransform:"uppercase",
-              fontVariationSettings:"'wdth' 75,'wght' 500",
-              fontFamily:FONT,color:"#C8963E",marginBottom:"12px",
-            }}>
-              Network Directory
-            </p>
-            <h2 style={{
-              fontVariationSettings:"'wdth' 85,'wght' 700",
-              fontFamily:FONT,
-              fontSize:"clamp(22px,3vw,34px)",
-              letterSpacing:"-.02em",color:"#1c1304",marginBottom:"12px",
-            }}>
-              Find a Doctor in Your City
-            </h2>
-            <p style={{
-              fontVariationSettings:"'wdth' 100,'wght' 300",
-              fontFamily:FONT,
-              fontSize:"14px",color:"rgba(28,19,4,.50)",lineHeight:1.6,
-            }}>
-              All practitioners recommend 3TATTAVA as part of their clinical practice.
-            </p>
-          </motion.div>
-
-          {/* Search input */}
-          <motion.div
-            initial={{opacity:0,y:20}}
-            animate={searchInView?{opacity:1,y:0}:{}}
-            transition={{duration:.5,delay:.1,ease:EASE}}
-            style={{position:"relative",marginBottom:"32px"}}
-          >
-            <input
-              type="text"
-              placeholder="Enter your city — Delhi, Mumbai, Bengaluru..."
-              value={query}
-              onChange={e=>setQuery(e.target.value)}
-              onKeyDown={e=>{ if(e.key==="Enter"&&query.trim()) handleSearch(query.trim()); }}
-              style={{...inputStyle,paddingRight:"56px",
-                boxShadow:"0 2px 12px rgba(28,19,4,.06)",
-              }}
-            />
-            <motion.button
-              onClick={()=>{ if(query.trim()) handleSearch(query.trim()); }}
-              whileHover={{scale:1.06}}
-              whileTap={{scale:.96}}
-              transition={SPRING}
-              style={{
-                position:"absolute",right:"8px",top:"50%",transform:"translateY(-50%)",
-                background:"linear-gradient(145deg,#C8963E,#A67B2F)",
-                border:"none",width:"38px",height:"38px",
-                display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",
-              }}
-              aria-label="Search"
-            >
-              <svg width="15" height="15" viewBox="0 0 20 20" fill="#1c1304">
-                <circle cx="8.5" cy="8.5" r="5.75" stroke="#1c1304" strokeWidth="1.5" fill="none"/>
-                <path d="M13 13l4 4" stroke="#1c1304" strokeWidth="1.5" strokeLinecap="round"/>
-              </svg>
-            </motion.button>
-
-            {/* City suggestions */}
-            <AnimatePresence>
-              {suggestions.length>0 && (
-                <motion.div
-                  initial={{opacity:0,y:-4}}
-                  animate={{opacity:1,y:0}}
-                  exit={{opacity:0,y:-4}}
-                  transition={{duration:.2,ease:EASE}}
-                  style={{
-                    position:"absolute",top:"100%",left:0,right:0,zIndex:20,
-                    background:"#fff",
-                    border:"1px solid rgba(183,163,146,.35)",
-                    boxShadow:"0 8px 24px rgba(28,19,4,.10)",
-                  }}
-                >
-                  {suggestions.map(s=>(
-                    <button
-                      key={s}
-                      onClick={()=>handleSearch(s)}
-                      style={{
-                        display:"block",width:"100%",textAlign:"left",
-                        padding:"12px 16px",background:"none",border:"none",
-                        borderBottom:"1px solid rgba(183,163,146,.15)",
-                        cursor:"pointer",fontFamily:FONT,fontSize:"14px",color:"#1c1304",
-                        fontVariationSettings:"'wdth' 100,'wght' 400",
-                      }}
-                      onMouseEnter={e=>{(e.currentTarget as HTMLElement).style.background="#f7f0e2";}}
-                      onMouseLeave={e=>{(e.currentTarget as HTMLElement).style.background="none";}}
-                    >
-                      {s}
-                    </button>
-                  ))}
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </motion.div>
-
-          {/* Loading */}
-          <AnimatePresence>
-            {loading && (
-              <motion.div
-                initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}}
-                style={{textAlign:"center",padding:"32px"}}
-              >
-                <div style={{
-                  width:"32px",height:"32px",borderRadius:"50%",margin:"0 auto",
-                  border:"2px solid rgba(200,150,62,.25)",
-                  borderTop:"2px solid #C8963E",
-                  animation:"vc-spin 0.8s linear infinite",
-                }}/>
-              </motion.div>
-            )}
-          </AnimatePresence>
-
-          {/* Results */}
-          {searched && !loading && (
-            <motion.div
-              initial={{opacity:0}} animate={{opacity:1}}
-              transition={{duration:.4,ease:EASE}}
-            >
-              <p style={{
-                fontSize:"12px",letterSpacing:".1em",textTransform:"uppercase",
-                fontVariationSettings:"'wdth' 75,'wght' 500",
-                fontFamily:FONT,color:"rgba(28,19,4,.40)",
-                marginBottom:"16px",
-              }}>
-                {doctors.length} practitioners found near {query}
-              </p>
-              <div style={{display:"flex",flexDirection:"column",gap:"14px"}}>
-                {doctors.map((d,i)=>(
-                  <DoctorResultCard key={d._id} doc={d} idx={i}/>
-                ))}
-              </div>
-            </motion.div>
-          )}
-        </div>
-      </section>
-
       {/* ── BOTTOM DISCLAIMER ──────────────────────────────────────────────── */}
       <section style={{
         background:"#f7f0e2",padding:"28px 24px",
@@ -1350,7 +1047,7 @@ export default function VaidyaConnectClient() {
           fontSize:"11px",lineHeight:1.7,color:"rgba(28,19,4,.38)",
           maxWidth:"640px",margin:"0 auto",
         }}>
-          VaidyaConnect practitioners are independent Ayurveda physicians. Consultations are not a substitute for emergency medical care. All consultants are BAMS-qualified and vetted by Dr. Kashish Gupta, Founder, 3TATTAVA.
+          Consultations are provided by a BAMS-qualified Ayurveda physician and are not a substitute for emergency or professional medical care.
         </p>
       </section>
 

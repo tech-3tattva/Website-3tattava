@@ -12,6 +12,7 @@ import type { NextRequest } from "next/server";
 const GATED_ROUTES = new Set<string>([
   "/dosha-quiz",
   "/gifting",
+  "/community",
 ]);
 
 // Product detail pages are hidden pre-launch — visitors are sent to the

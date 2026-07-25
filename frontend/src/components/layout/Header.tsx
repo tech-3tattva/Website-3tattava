@@ -35,7 +35,6 @@ const PILL_NAV_LINKS: NavLink[] = [
   { label: "Our Story",         href: "/about",             hasMega: false },
   { label: "VaidyaConnect",     href: "/vaidyaconnect",     hasMega: false, featured: true },
   { label: "Research & Testing", href: "/research-testing",  hasMega: false },
-  { label: "Community",         href: "/community",         hasMega: false },
   { label: "Find Us",           href: "/find-us",           hasMega: false },
 ];
 
@@ -67,12 +66,12 @@ const GLASS_LIGHT: GlassStyle = {
 /* ─── Marquee messages ─── */
 const TICKER_ITEMS = [
   "✦ 80+ Ionic Trace Minerals",
-  "◆ 60%+ Fulvic Acid — NABL-accredited third-party tested",
+  "◆ 70%+ Fulvic Acid — Third-Party Lab Tested",
   "✦ Free Shipping Above ₹999",
   "◆ Tear · Squeeze · Perform — Honey Sticks",
   "✦ Doctor-Formulated by Dr. Kashish (BAMS)",
   "◆ Pure Himalayan Shilajit Resin — 600mg",
-  "✦ AYUSH-GMP Certified Facility",
+  "✦ Classically Purified Through Triphala",
   "◆ Performance Ayurveda for Modern Humans",
   "✦ Lab Reports on Every Product",
   "◆ India\u2019s First Shilajit Honey Sticks",

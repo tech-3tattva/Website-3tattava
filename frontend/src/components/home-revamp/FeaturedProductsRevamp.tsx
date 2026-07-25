@@ -40,7 +40,7 @@ const products: ProductCard[] = [
   },
   {
     title: 'RockResin',
-    subtitle: 'Shodhit Shilajit Resin',
+    subtitle: 'Classically Purified Shilajit Resin',
     image: media("/hero/rockresin-product.jpg"),
     bottomText: 'Ancient Mineral Elixir for Modern Vitality',
     ctaLabel: 'Shop Now →',

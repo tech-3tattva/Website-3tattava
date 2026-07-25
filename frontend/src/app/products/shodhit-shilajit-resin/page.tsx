@@ -22,7 +22,7 @@ export default function RockResinPage() {
     <>
       <ProductSchema
         product={{
-          name: 'SHODHIT SHILAJIT RESIN',
+          name: 'CLASSICALLY PURIFIED SHILAJIT RESIN',
           slug: 'shodhit-shilajit-resin',
           description:
             'RockResin® — authentic Himalayan Shilajit resin, Triphala-purified and NABL lab-tested. One Resin. Complete Vitality.',

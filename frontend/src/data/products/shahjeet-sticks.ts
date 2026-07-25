@@ -5,7 +5,7 @@ export const shahjeetSticks: ProductData = {
   name: 'SHAHJEET STICKS',
   subtitle: 'Honey-Shilajit · 30 Sticks',
   tagline: 'Daily Strength & Vitality Formula',
-  hook: '600mg of pure Himalayan Shilajit per stick, infused with natural honey. Tear. Squeeze. Perform. No measuring, no mixing — your 10-second daily ritual for sustained energy and recovery.',
+  hook: '600mg of classically purified shilajit blended with honey for convenient daily ritual that fits wherever life takes you. Just squeeze and go.',
   price: 1399,
   mrp: 1599,
   weight: '30 Sticks',
@@ -34,7 +34,7 @@ export const shahjeetSticks: ProductData = {
     { num: '04', title: 'Recover Faster, Go Harder', desc: 'Supports post-exertion recovery and sustained endurance so you show up fully, every day.' },
     { num: '05', title: 'Sharp Mind. Strong Body.', desc: 'Supports mental clarity and cognitive sharpness alongside physical vitality — peak performance is never just physical.' },
     { num: '06', title: 'Classically Purified, Verified', desc: 'Triphala-purified per classical Ayurvedic texts, then NABL 3rd-party tested for heavy metals and purity.' },
-    { num: '07', title: 'Just Two Ingredients', desc: 'Honey. Shilajit. Nothing else. No fillers, no artificial additives, no shortcuts. Pure as it gets.' },
+    { num: '07', title: 'Just Honey & Shilajit', desc: 'Honey. Shilajit. Nothing else. No fillers, no artificial additives, no shortcuts. Pure as it gets.' },
   ],
   ritual: [
     { step: '01', title: 'Tear', desc: 'Tear the stick open along the notch.' },

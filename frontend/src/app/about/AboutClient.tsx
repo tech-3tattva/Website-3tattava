@@ -85,7 +85,7 @@ export default function AboutClient() {
       <section style={{ padding: "clamp(96px,13vw,160px) 24px clamp(48px,6vw,72px)", maxWidth: 900, margin: "0 auto", textAlign: "center" }}>
         <motion.p {...reveal} style={{ fontSize: 12, letterSpacing: ".28em", textTransform: "uppercase", color: GOLD, fontWeight: 700, marginBottom: 18 }}>Our Story</motion.p>
         <motion.h1 {...reveal} style={{ fontSize: "clamp(34px,6vw,60px)", lineHeight: 1.05, fontWeight: 800, marginBottom: 18 }}>The 3Tattava Story</motion.h1>
-        <motion.p {...reveal} style={{ fontSize: "clamp(17px,2.4vw,22px)", color: INK, fontWeight: 600, marginBottom: 26 }}>Built from Ayurveda. Designed for Modern Performance.</motion.p>
+        <motion.p {...reveal} style={{ fontSize: "clamp(17px,2.4vw,22px)", color: INK, fontWeight: 600, marginBottom: 26 }}>Build with intention. Become your best through authentic Ayurveda.</motion.p>
         <motion.p {...reveal} style={{ fontSize: "clamp(15px,1.8vw,17px)", lineHeight: 1.75, color: MUTED, maxWidth: 720, margin: "0 auto 14px" }}>3Tattava was founded by Dr. Kashish Gupta, BAMS, with a clear purpose: to make authentic Ayurveda easier to understand, trust and integrate into modern life.</motion.p>
         <motion.p {...reveal} style={{ fontSize: "clamp(15px,1.8vw,17px)", lineHeight: 1.75, color: MUTED, maxWidth: 720, margin: "0 auto 28px" }}>Rooted in classical principles and shaped by contemporary expectations of quality, transparency and usability, 3Tattava represents a disciplined approach to everyday wellbeing.</motion.p>
         <motion.p {...reveal} style={{ fontSize: "clamp(18px,2.4vw,24px)", fontWeight: 800, color: GOLD, letterSpacing: ".02em" }}>Balance. Build. Become.</motion.p>

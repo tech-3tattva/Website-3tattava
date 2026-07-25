@@ -24,7 +24,7 @@ const PRODUCTS = [
     tagline: "Ancient Mineral Elixir for Modern Vitality",
     image: "https://media.3tattava.com/home/homepage-rockresins.png",
     pills: ["≥70% Fulvic Acid", "NABL Tested", "Triphala Purified"],
-    waitlistProduct: "RockResin® — Shodhit Shilajit Resin",
+    waitlistProduct: "RockResin® — Classically Purified Shilajit Resin",
   },
   {
     slug: "shahjeet-sticks",

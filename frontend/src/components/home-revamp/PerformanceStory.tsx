@@ -54,12 +54,12 @@ const PANELS: Panel[] = [
     label: 'One Resin Complete Vitality',
     heading: 'RockResin',
     body:
-      'Shodhit Shilajit resin, purified through the classical Triphala Shodhana process.\nAn ancient mineral elixir for modern energy, strength and longevity.',
-    meta: 'Shodhit Shilajit Resin',
+      'Classically Purified Through Triphala — an authentic Himalayan Shilajit resin.\nAn ancient mineral elixir for modern energy, strength and longevity.',
+    meta: 'Classically Purified Shilajit Resin',
     ctaLabel: 'Discover RockResin',
     ctaHref: '/products/shodhit-shilajit-resin',
     imageSide: 'right',
-    media: { type: 'image', src: media("/home/homepage-rockresins.png"), alt: '3Tattava RockResin — Shodhit Shilajit resin canister, jar and raw resin' },
+    media: { type: 'image', src: media("/home/homepage-rockresins.png"), alt: '3Tattava RockResin — Classically Purified Shilajit resin canister, jar and raw resin' },
   },
 ];
 

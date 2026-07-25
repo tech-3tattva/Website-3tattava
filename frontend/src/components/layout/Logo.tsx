@@ -49,6 +49,19 @@ export default function Logo({ variant = "dark", size = "md", className = "", li
           style={{ ...base, position: "absolute", top: 0, left: 0, opacity: showCream ? 0 : 1 }}
         />
       </span>
+      <sup
+        aria-hidden
+        style={{
+          alignSelf: "flex-start",
+          fontSize: Math.round(height * 0.24),
+          fontWeight: 700,
+          lineHeight: 1,
+          marginLeft: 1,
+          color: showCream ? "#f7f0e2" : "#442a1b",
+        }}
+      >
+        &trade;
+      </sup>
     </Link>
   );
 }

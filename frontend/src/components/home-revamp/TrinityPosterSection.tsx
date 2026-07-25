@@ -167,26 +167,47 @@ export default function TrinityPosterSection() {
           lines={['Featured Products']}
         />
 
-        {/* ── Body copy ── */}
+        {/* ── Section tagline ── */}
         <motion.p
           variants={fadeUp}
           initial="hidden"
           animate={inView ? 'visible' : 'hidden'}
-          transition={{ duration: 0.7, delay: 0.1, ease: 'easeOut' }}
+          transition={{ duration: 0.7, delay: 0.05, ease: 'easeOut' }}
           style={{
             fontFamily: F,
-            fontSize: 'clamp(18px, 2.4vw, 26px)',
+            fontSize: 'clamp(20px, 2.8vw, 30px)',
             fontWeight: 700,
-            lineHeight: 1.6,
+            lineHeight: 1.4,
             color: INK,
             textAlign: 'center',
-            maxWidth: 820,
+            maxWidth: 860,
             margin: '0 auto',
           }}
         >
-          From Traditional Shilajit — classically purified through Triphala Shodhan — to
-          honey-borne delivery, every 3Tattava ritual is Shodhit-purified, lab-verified, and
-          doctor-formulated for real, everyday performance.
+          Ancient Rasayan Wisdom, Modern Scientific Validation — Doctor Formulated
+          Rituals Designed to Elevate Everyday Performance.
+        </motion.p>
+
+        {/* ── Sub-line ── */}
+        <motion.p
+          variants={fadeUp}
+          initial="hidden"
+          animate={inView ? 'visible' : 'hidden'}
+          transition={{ duration: 0.7, delay: 0.15, ease: 'easeOut' }}
+          style={{
+            fontFamily: F,
+            fontSize: 'clamp(15px, 1.8vw, 18px)',
+            fontWeight: 500,
+            lineHeight: 1.6,
+            color: INK,
+            opacity: 0.8,
+            textAlign: 'center',
+            maxWidth: 680,
+            margin: '14px auto 0',
+          }}
+        >
+          Every Three Tatva Ritual is Lab Verified, Doctor Formulated for Real
+          Everyday Performance.
         </motion.p>
 
         {/* ── Product poster (static) ── */}

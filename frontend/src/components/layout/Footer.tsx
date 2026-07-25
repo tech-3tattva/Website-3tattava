@@ -358,20 +358,8 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Certifications + legal line */}
+        {/* Legal line */}
         <div className="max-w-6xl mx-auto mt-10 pt-8 border-t border-[#d6cfc1]">
-          <div className="flex flex-wrap justify-center md:justify-start gap-3 mb-4">
-            {FOOTER.legal.certifications.map((cert) => (
-              <span
-                key={cert}
-                className="inline-flex items-center gap-1.5 rounded-full border border-[#c9ba9f] bg-white/60 px-3 py-1 text-xs uppercase tracking-[0.14em] text-text-dark"
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={media("/icons/lab-certificate.svg")} width={14} height={14} alt="" role="presentation" />
-                {cert}
-              </span>
-            ))}
-          </div>
           <div className="flex flex-col sm:flex-row items-center gap-4 mb-5">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={media("/logos/sankalpa-siddhi.png")} alt="SankalpaSiddhi Ayupharma" width={54} height={54} style={{ borderRadius: "50%", flexShrink: 0 }} />
@@ -393,7 +381,7 @@ export default function Footer() {
 
       <section className="bg-[#1a1a1a] py-4 px-6 text-white">
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4 text-text-light text-sm">
-          <p className="text-white/70">© 2026 SankalpaSiddhi Ayupharma Pvt. Ltd. (3TATTAVA®) · CIN U21001DL2026PTC464092. All rights reserved.</p>
+          <p className="text-white/70">© 2026 SankalpaSiddhi Ayupharma Pvt. Ltd. (3TATTAVA™) · CIN U21001DL2026PTC464092. All rights reserved.</p>
           <div className="flex items-center gap-2 flex-wrap justify-center">
             {["Visa", "MC", "Amex", "UPI", "Paytm", "PhonePe"].map((p) => (
               <span key={p} className="bg-white px-2 py-1 rounded text-xs text-black">

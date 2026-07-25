@@ -774,6 +774,7 @@ export default function FindUsClient() {
 
   return (
     <div style={{ fontFamily:"var(--font-primary), system-ui, sans-serif", color:"#442a1b", background:"#f7f0e2" }}>
+      {/* TODO(founder): replace placeholder AI-generated hero imagery + Panchakarma centre visuals with founder-supplied photos/video (/posters/find-us/1.jpg, /posters/find-us/2.jpg, /videos/find-us-hero.mp4). Do NOT swap until assets are provided. */}
       <PosterSlideshow posters={[{ src: "/posters/find-us/1.jpg", alt: "Find Us — WTF Gym Experience Centers" }, { src: "/posters/find-us/2.jpg" }]} />
 
       {/* ── HERO ─────────────────────────────────────────────────────────────── */}
@@ -990,7 +991,7 @@ export default function FindUsClient() {
               fontVariationSettings:"'wdth' 85,'wght' 700",
               fontSize:"clamp(22px,3vw,30px)", letterSpacing:"-0.01em",
             }}>
-              Shilajit Is A Ritual. Some Things Are Better Learned In Person.
+            Shilajit is a ritual. Some things are better learned in person.
             </h2>
           </div>
           <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill, minmax(240px, 1fr))", gap:"20px" }}>
@@ -1021,53 +1022,6 @@ export default function FindUsClient() {
                 </p>
               </motion.div>
             ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── WTF PARTNERSHIP ───────────────────────────────────────────────────── */}
-      <section style={{ background:"#f7f0e2", padding:"72px 24px", borderTop:"1px solid rgba(183,163,146,0.25)" }}>
-        <div style={{ maxWidth:"960px", margin:"0 auto", display:"flex", gap:"48px", alignItems:"center", flexWrap:"wrap" }}>
-          <div style={{ flex:"1 1 300px" }}>
-            <p style={{
-              fontSize:"10px", letterSpacing:"0.25em", textTransform:"uppercase",
-              color:"#cd872a", fontVariationSettings:"'wdth' 75,'wght' 500", marginBottom:"12px",
-            }}>
-              Our Ecosystem Partner
-            </p>
-            <h2 style={{
-              fontVariationSettings:"'wdth' 85,'wght' 700",
-              fontSize:"clamp(20px,2.5vw,28px)", letterSpacing:"-0.01em",
-              marginBottom:"16px", lineHeight:1.2,
-            }}>
-              Why WTF Gyms?
-            </h2>
-            <p style={{ fontVariationSettings:"'wdth' 100,'wght' 300", fontSize:"14px", lineHeight:1.75, color:"rgba(28,19,4,0.65)", marginBottom:"14px" }}>
-              WTF Gym is where our users train. We didn&apos;t want to be on a pharmacy shelf next to mass-market products. We wanted to be in the gyms where serious athletes actually train — where the staff understands performance, and where the context of why you&apos;re taking Shilajit is already understood.
-            </p>
-            <p style={{ fontVariationSettings:"'wdth' 100,'wght' 300", fontSize:"14px", lineHeight:1.75, color:"rgba(28,19,4,0.65)" }}>
-              That&apos;s the WTF × 3TATTAVA partnership. Performance meets Ayurveda. In person.
-            </p>
-          </div>
-
-          <div style={{
-            flex:"0 0 auto", minWidth:"200px",
-            background:"linear-gradient(135deg, #442a1b 0%, #2a1d08 100%)",
-            padding:"36px 32px", borderRadius:"4px", textAlign:"center",
-            border:"1px solid rgba(205,135,42,0.20)",
-          }}>
-            <p style={{
-              fontVariationSettings:"'wdth' 85,'wght' 800",
-              fontSize:"56px", color:"#cd872a", lineHeight:1, marginBottom:"6px",
-            }}>28</p>
-            <p style={{ fontSize:"10px", letterSpacing:"0.2em", textTransform:"uppercase", color:"rgba(247,240,226,0.55)" }}>
-              Experience Centers
-            </p>
-            <div style={{ margin:"20px 0", height:"1px", background:"rgba(205,135,42,0.20)" }}/>
-            <p style={{ fontVariationSettings:"'wdth' 85,'wght' 700", fontSize:"22px", color:"#E4C079", marginBottom:"4px" }}>136+</p>
-            <p style={{ fontSize:"10px", letterSpacing:"0.15em", textTransform:"uppercase", color:"rgba(247,240,226,0.40)" }}>
-              Certified Trainers
-            </p>
           </div>
         </div>
       </section>

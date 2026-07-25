@@ -4,12 +4,12 @@ import { BreadcrumbSchema } from '@/components/seo/JsonLd'
 
 export const metadata: Metadata = {
   title: 'Shahjeet® — Honey Shilajit Sticks 30-Pack | Portable Single-Serve | Doctor Reviewed | 3TATTAVA',
-  description: 'Shodhit Shilajit + Madhu in a portable honey stick. 600mg Shilajit per stick, 30 single-serve packs. Triphala purified. Tear, Squeeze, Perform. Doctor reviewed by Dr. Kashish Gupta (BAMS).',
+  description: 'Classically purified Shilajit + Madhu in a portable honey stick. 600mg Shilajit per stick, 30 single-serve packs. Triphala purified. Tear, Squeeze, Perform. Doctor reviewed by Dr. Kashish Gupta (BAMS).',
   alternates: { canonical: 'https://www.3tattava.com/products/shahjeet-sticks' },
   openGraph: {
     type: 'website',
     title: 'Shahjeet® — Honey Shilajit Sticks | Performance In Your Pocket | 3TATTAVA',
-    description: '600mg Shodhit Shilajit per stick. Honey-based formula. Portable single-serve. Tear. Squeeze. Perform.',
+    description: '600mg classically purified Shilajit per stick. Honey-based formula. Portable single-serve. Tear. Squeeze. Perform.',
     url: 'https://www.3tattava.com/products/shahjeet-sticks',
     images: [{ url: 'https://media.3tattava.com/products/shahjeet-box.png' }],
   },
@@ -22,7 +22,7 @@ const faqSchema = {
     {
       '@type': 'Question',
       name: 'What is Shahjeet?',
-      acceptedAnswer: { '@type': 'Answer', text: 'Shahjeet is a doctor-formulated, honey-based Shilajit stick pack containing Shodhit Shilajit — purified through classical Triphala Shodhana. Each stick provides 600mg of Shilajit resin in a portable, ready-to-consume format. No preparation, no measuring, no cleanup.' },
+      acceptedAnswer: { '@type': 'Answer', text: 'Shahjeet is a doctor-formulated, honey-based Shilajit stick pack containing classically purified Shilajit — purified through classical Triphala Shodhana. Each stick provides 600mg of Shilajit resin in a portable, ready-to-consume format. No preparation, no measuring, no cleanup.' },
     },
     {
       '@type': 'Question',
@@ -81,7 +81,7 @@ const productSchema = {
   '@context': 'https://schema.org',
   '@type': 'Product',
   name: 'Shahjeet® — Honey Shilajit Sticks 30-Pack',
-  description: 'Shodhit Shilajit + Madhu in a portable honey stick. 600mg Shilajit per stick, 30 single-serve packs. Triphala purified. Tear, Squeeze, Perform.',
+  description: 'Classically purified Shilajit + Madhu in a portable honey stick. 600mg Shilajit per stick, 30 single-serve packs. Triphala purified. Tear, Squeeze, Perform.',
   image: 'https://media.3tattava.com/products/shahjeet-box.png',
   brand: { '@type': 'Brand', name: '3TATTAVA' },
   offers: {

@@ -10,7 +10,7 @@ interface Suggestion {
 }
 
 const SUGGESTIONS: Suggestion[] = [
-  { label: 'Shodhit Shilajit Resin', route: '/products/shodhit-shilajit-resin', type: 'product' },
+  { label: 'Classically Purified Shilajit Resin', route: '/products/shodhit-shilajit-resin', type: 'product' },
   { label: 'Shahjeet Honey Sticks', route: '/products/shahjeet-sticks', type: 'product' },
   { label: 'Shilajit Resin 20g Jar', route: '/products/shodhit-shilajit-resin', type: 'product' },
   { label: 'Honey Shilajit Sticks 30 Pack', route: '/products/shahjeet-sticks', type: 'product' },

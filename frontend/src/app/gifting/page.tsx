@@ -32,7 +32,7 @@ export default function GiftingPage() {
             href="/products/shodhit-shilajit-resin"
             className="premium-card px-6 py-4 text-primary-green font-medium hover:underline"
           >
-            Shodhit Shilajit Resin →
+            Classically Purified Shilajit Resin →
           </Link>
         </div>
         <p className="text-text-medium mt-8">

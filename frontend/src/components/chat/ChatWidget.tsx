@@ -609,7 +609,7 @@ export default function ChatWidget() {
         )}
 
         {/* Orb Button */}
-        <div className="tw-orb-wrap" onClick={() => setOpen((v) => !v)} role="button" aria-label={open ? "Close chat" : "Open chat"}>
+        <div className="tw-orb-wrap" onClick={() => setOpen((v) => !v)} role="button" aria-label={open ? "Close chat" : "Open 3T Assistant"}>
           <div className="tw-particles">
             <div className="tw-p tw-p1" /><div className="tw-p tw-p2" />
             <div className="tw-p tw-p3" /><div className="tw-p tw-p4" />
@@ -624,7 +624,7 @@ export default function ChatWidget() {
               )}
             </span>
           </div>
-          {!open && <div className="tw-tooltip">Ask us anything →</div>}
+          {!open && <div className="tw-tooltip">3T Assistant · Ask anything →</div>}
         </div>
       </div>
     </>

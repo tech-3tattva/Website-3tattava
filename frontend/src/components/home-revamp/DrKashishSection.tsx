@@ -20,8 +20,8 @@ interface Credential {
 
 const credentials: Credential[] = [
   { label: "BAMS" },
-  { label: "CBPACS, New Delhi" },
-  { label: "Ex-Consultant, NCISM — Ministry of AYUSH" },
+  { label: "CBPACS, Government of NCT of Delhi" },
+  { label: "Former Consultant, NCISM | Ministry of Ayush" },
 ];
 
 export default function DrKashishSection() {
@@ -117,6 +117,23 @@ export default function DrKashishSection() {
             ))}
           </motion.div>
 
+          {/* Bio quote (credentials line 5) */}
+          <motion.p
+            {...reveal(0.25)}
+            style={{
+              fontFamily: F,
+              fontSize: "clamp(15px, 1.8vw, 18px)",
+              fontStyle: "italic",
+              lineHeight: 1.7,
+              color: INK,
+              opacity: 0.9,
+              marginBottom: 28,
+              maxWidth: 560,
+            }}
+          >
+            An Ayurvedic physician on a mission to make authentic Ayurveda relevant for modern life.
+          </motion.p>
+
           {/* Paragraph */}
           <motion.p
             {...reveal(0.3)}
@@ -130,10 +147,11 @@ export default function DrKashishSection() {
               maxWidth: 560,
             }}
           >
-            An Ayurveda physician who stopped seeing patients one at a time — to
-            build formulations that reach a generation. 3Tattava is his answer to
-            modern exhaustion: classical preparation, verified quality, zero
-            shortcuts.
+            After working within India&rsquo;s Ayurveda regulatory ecosystem, Dr.
+            Kashish Gupta realized the biggest challenge wasn&rsquo;t Ayurveda — it
+            was trust. Three Tatva was built to bridge that gap by combining
+            authentic classical preparation, modern quality verification, and
+            products designed for real life.
           </motion.p>
 
           {/* Pull quote */}
@@ -150,8 +168,7 @@ export default function DrKashishSection() {
               borderLeft: `3px solid ${GOLD}`,
             }}
           >
-            &ldquo;I don&rsquo;t ask you to believe in Ayurveda. I ask you to
-            verify it.&rdquo;
+            &ldquo;Don&rsquo;t believe our claim — verify our standards.&rdquo;
           </motion.blockquote>
 
           {/* CTA */}
@@ -178,12 +195,13 @@ export default function DrKashishSection() {
                 e.currentTarget.style.opacity = "1";
               }}
             >
-              Read His Story →
+              Meet the Founder →
             </Link>
           </motion.div>
         </div>
 
         {/* ─── RIGHT COLUMN — Video placeholder ─── */}
+        {/* TODO(founder): embed founder video from Nishan when provided — BLOCKED (asset pending); placeholder below stays until then */}
         <motion.div
           {...reveal(0.25)}
           style={{

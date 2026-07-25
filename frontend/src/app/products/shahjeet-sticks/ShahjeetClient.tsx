@@ -64,6 +64,13 @@ const SHJ_CSS = `
   .shj-cmp{grid-template-columns:1.4fr .8fr .8fr;}
 }
 @media(prefers-reduced-motion:reduce){.shj-marquee,.shj-vscroll{animation:none;}}
+.ft-tip{position:relative;border-radius:999px;}
+.ft-tip:focus{outline:none;}
+.ft-tip:focus-visible{box-shadow:0 0 0 2px #cd872a;}
+.ft-tip-pop{position:absolute;left:50%;bottom:calc(100% + 12px);transform:translateX(-50%) translateY(4px);width:min(268px,74vw);background:#442a1b;border-radius:14px;padding:13px 15px;box-shadow:0 16px 38px rgba(68,42,27,.30);opacity:0;visibility:hidden;pointer-events:none;text-align:left;text-transform:none;letter-spacing:normal;transition:opacity .18s ease,transform .18s ease;z-index:40;}
+.ft-tip-pop::after{content:"";position:absolute;left:50%;top:100%;transform:translateX(-50%);border:7px solid transparent;border-top-color:#442a1b;}
+.ft-tip:hover .ft-tip-pop,.ft-tip:focus .ft-tip-pop,.ft-tip:focus-within .ft-tip-pop{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0);}
+@media(prefers-reduced-motion:reduce){.ft-tip-pop{transition:none;}}
 `;
 
 // ─── HELPERS ──────────────────────────────────────────────────────────────────
@@ -79,6 +86,31 @@ function Reveal({ children, delay = 0, y = 20, style, className }: { children: R
 
 const heading: CSSProperties = { fontFamily: F, fontVariationSettings: "'wght' 800", color: ESPRESSO, letterSpacing: "-0.02em", lineHeight: 1.06, margin: 0 };
 const eyebrow: CSSProperties = { fontFamily: F, fontVariationSettings: "'wght' 600", fontSize: T.eyebrow, letterSpacing: "0.14em", textTransform: "uppercase", color: TAUPE, margin: 0 };
+
+// ─── FEATURE ICONS (accessible hover / focus tooltips) ────────────────────────
+const FEATURE_ICONS: { label: string; tip: string }[] = [
+  { label: "70%+ Fulvic Acid", tip: "Fulvic acid carries minerals directly into your cells for absorption." },
+  { label: "80+ Trace Minerals", tip: "80+ ionic trace minerals, including iron, magnesium and zinc." },
+  { label: "Triphala Purified", tip: "Classically purified with Amalaki, Haritaki & Bibhitaki." },
+  { label: "Third-Party Lab Tested", tip: "Independently tested by an NABL-accredited lab (Eurofins)." },
+];
+function FeatureIcons() {
+  return (
+    <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "clamp(8px,1.2vw,14px)", margin: "0 auto clamp(30px,4vw,48px)", maxWidth: 920 }}>
+      {FEATURE_ICONS.map((f) => (
+        <span key={f.label} className="ft-tip" tabIndex={0} aria-label={`${f.label}. ${f.tip}`} title={`${f.label} — ${f.tip}`}
+          style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "9px 15px", background: "#f1e7d4", border: "1px solid rgba(68,42,27,.18)", cursor: "help" }}>
+          <span aria-hidden style={{ width: 7, height: 7, borderRadius: "50%", background: GOLD, flexShrink: 0 }} />
+          <span style={{ fontFamily: F, fontVariationSettings: "'wght' 700", fontSize: "clamp(11px,1.3vw,13px)", letterSpacing: ".04em", textTransform: "uppercase", color: ESPRESSO }}>{f.label}</span>
+          <span className="ft-tip-pop" role="tooltip">
+            <b style={{ display: "block", fontFamily: F, fontVariationSettings: "'wght' 800", fontSize: 12.5, letterSpacing: ".04em", textTransform: "uppercase", color: GOLD, marginBottom: 5 }}>{f.label}</b>
+            <span style={{ display: "block", fontFamily: F, fontVariationSettings: "'wght' 500", fontSize: 13, lineHeight: 1.45, color: CREAM }}>{f.tip}</span>
+          </span>
+        </span>
+      ))}
+    </div>
+  );
+}
 
 
 // ─── 1 · HERO ─────────────────────────────────────────────────────────────────
@@ -114,13 +146,14 @@ function HeroSection() {
           style={{ ...heading, fontSize: T.hero, textAlign: "center", maxWidth: "17ch", margin: "0 auto clamp(32px,5vw,56px)" }}>
           PERFORMANCE IN<br />YOUR POCKET
         </motion.h1>
+        <FeatureIcons />
 
         <div className="shj-2col" style={{ position: "relative", alignItems: "end" }}>
 
           <Reveal style={{ position: "relative", zIndex: 1, marginBottom: "clamp(56px,8vw,110px)" }}>
             <p style={{ ...eyebrow, marginBottom: 12 }}>No spoon. No mess. No excuses.</p>
             <p style={{ fontFamily: F, fontVariationSettings: "'wght' 700", fontSize: T.bodyLg, lineHeight: 1.42, color: ESPRESSO, maxWidth: "34ch", textTransform: "uppercase", margin: "0 0 clamp(20px,2.5vw,28px)" }}>
-              600mg of Triphala-purified Himalayan Shilajit with pure honey — anytime, anywhere.
+              600mg of classically purified shilajit blended with honey for convenient daily ritual that fits wherever life takes you. Just squeeze and go.
             </p>
 
             <p style={{ ...eyebrow, marginBottom: 10 }}>Choose your ritual</p>
@@ -254,9 +287,9 @@ const CINE_FACTS: { stat?: string; text: string }[] = [
   { stat: "NABL", text: "3rd-party lab tested for every batch" },
   { text: "Triphala-purified — Amalaki · Haritaki · Bibhitaki" },
   { text: "Honey (Madhu) — the classical Ayurvedic Anupana" },
-  { stat: "10s", text: "Tear · Squeeze · Perform — the daily ritual" },
+  { stat: "10s", text: "The 10-second daily ritual — no spoon, no mess" },
   { text: "No spoon. No mess. No measuring." },
-  { stat: "80+", text: "Trace minerals · 60%+ fulvic acid" },
+  { stat: "80+", text: "Trace minerals · 70%+ fulvic acid" },
   { text: "AYUSH-GMP certified manufacturing" },
   { stat: "16,000ft", text: "Sourced from high Himalayan deposits" },
   { stat: "30", text: "Sticks per box — ready anytime, anywhere" },
@@ -356,6 +389,7 @@ function TriphalaSection() {
           <img src={media("/hero/triphala-bowls.png")} alt="Triphala — Amalaki, Haritaki and Bibhitaki in wooden bowls" style={{ width: "100%", maxWidth: 560, height: "auto", display: "block" }} />
         </Reveal>
         <Reveal delay={0.08}>
+          <p style={{ ...eyebrow, color: GOLD, marginBottom: 12 }}>Classically Purified Through Triphala</p>
           <h2 style={{ ...heading, fontSize: T.h2, marginBottom: 22, display: "inline-block", borderBottom: `2px solid ${GOLD}`, paddingBottom: 8 }}>TRIPHALA PURIFICATION</h2>
           <p style={{ fontFamily: F, fontVariationSettings: "'wght' 500", fontSize: T.body, lineHeight: 1.65, color: INK, textAlign: "justify", margin: "0 0 18px" }}>
             Our Shilajit is purified using a classical Ayurvedic formulation of <b style={{ color: GOLD }}>Amalaki, Haritaki and Bibhitaki</b>, to <span style={{ color: GOLD }}>refine the resin naturally</span> while preserving and enhancing its authentic essence.
@@ -370,13 +404,30 @@ function TriphalaSection() {
 }
 
 // ─── 7 · BUILT FOR BUSY DAYS + RITUAL VIDEO ───────────────────────────────────
+const SHAJI_STEPS = [
+  { step: "01", title: "Tear", desc: "Tear the stick open along the notch." },
+  { step: "02", title: "Squeeze", desc: "Squeeze the full 8g stick directly into your mouth or warm water." },
+  { step: "03", title: "Perform", desc: "No mixing, no measuring, no mess — just 600mg of daily performance." },
+];
+
 function BuiltForBusySection() {
   return (
     <section style={{ position: "relative", overflow: "hidden", background: "linear-gradient(135deg,#f7edb2 0%,#eccf6a 32%,#dcab44 62%,#c08f2f 100%)", padding: "clamp(52px,7vw,96px) 24px" }}>
       <div style={{ maxWidth: 1180, margin: "0 auto" }}>
         <Reveal style={{ textAlign: "center" }}>
           <h2 style={{ ...heading, color: ESPRESSO, fontSize: T.big, marginBottom: 8 }}>BUILT FOR BUSY DAYS!</h2>
-          <p style={{ fontFamily: F, fontVariationSettings: "'wght' 700", fontSize: "clamp(15px,2vw,20px)", letterSpacing: ".06em", textTransform: "uppercase", color: ESPRESSO, margin: "0 0 clamp(32px,4.5vw,56px)" }}>3Tattava Ritual™</p>
+          <p style={{ fontFamily: F, fontVariationSettings: "'wght' 700", fontSize: "clamp(15px,2vw,20px)", letterSpacing: ".06em", textTransform: "uppercase", color: ESPRESSO, margin: "0 0 clamp(28px,4vw,44px)" }}>3T Shaji Ritual — Tear · Squeeze · Perform</p>
+        </Reveal>
+        <Reveal delay={0.05}>
+          <ol style={{ listStyle: "none", padding: 0, margin: "0 auto clamp(32px,4.5vw,56px)", maxWidth: 880, display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: "clamp(12px,2vw,22px)" }}>
+            {SHAJI_STEPS.map((s) => (
+              <li key={s.title} style={{ background: "rgba(68,42,27,.06)", border: "1px solid rgba(68,42,27,.22)", borderRadius: 16, padding: "clamp(16px,2vw,22px)", textAlign: "left" }}>
+                <span style={{ display: "block", fontFamily: F, fontVariationSettings: "'wght' 800", fontSize: 12, letterSpacing: ".12em", color: ESPRESSO, opacity: 0.55, marginBottom: 6 }}>STEP {s.step}</span>
+                <span style={{ display: "block", fontFamily: F, fontVariationSettings: "'wght' 800", fontSize: "clamp(18px,2.4vw,26px)", color: ESPRESSO, marginBottom: 6 }}>{s.title}</span>
+                <span style={{ display: "block", fontFamily: F, fontVariationSettings: "'wght' 500", fontSize: T.label, lineHeight: 1.45, color: "rgba(60,36,18,.82)" }}>{s.desc}</span>
+              </li>
+            ))}
+          </ol>
         </Reveal>
         <div className="shj-2col" style={{ alignItems: "center", gridTemplateColumns: "1.12fr 0.88fr" }}>
           <Reveal style={{ display: "flex", justifyContent: "center" }}>
