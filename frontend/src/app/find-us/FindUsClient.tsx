@@ -775,7 +775,7 @@ export default function FindUsClient() {
   return (
     <div style={{ fontFamily:"var(--font-primary), system-ui, sans-serif", color:"#442a1b", background:"#f7f0e2" }}>
       {/* TODO(founder): replace placeholder AI-generated hero imagery + Panchakarma centre visuals with founder-supplied photos/video (/posters/find-us/1.jpg, /posters/find-us/2.jpg, /videos/find-us-hero.mp4). Do NOT swap until assets are provided. */}
-      <PosterSlideshow posters={[{ src: "/posters/find-us/1.jpg", alt: "Find Us — WTF Gym Experience Centers" }, { src: "/posters/find-us/2.jpg" }]} />
+      <PosterSlideshow posters={[{ src: "/posters/find-us/1.jpg", alt: "Find Us — 3Tattava Experience Centers" }, { src: "/posters/find-us/2.jpg" }]} />
 
       {/* ── HERO ─────────────────────────────────────────────────────────────── */}
       <section style={{
@@ -799,7 +799,7 @@ export default function FindUsClient() {
               color:"#cd872a", fontVariationSettings:"'wdth' 75,'wght' 500", marginBottom:"16px",
             }}
           >
-            WTF Gym Experience Centers
+            Experience Centers Near You
           </motion.p>
 
           <motion.h1
@@ -829,7 +829,7 @@ export default function FindUsClient() {
               maxWidth:"560px", margin:"0 auto 12px", lineHeight:1.65,
             }}
           >
-            Find A 3Tattava Experience Center Near You — visit a participating WTF Fitness Center to experience products, learn about Performance Ayurveda™, attend activations, and connect with experts.
+            Find A 3Tattava Experience Center Near You — visit a participating Experience Center to experience products, learn about Performance Ayurveda™, attend activations, and connect with experts.
           </motion.p>
 
           <motion.p
@@ -996,9 +996,9 @@ export default function FindUsClient() {
           </div>
           <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill, minmax(240px, 1fr))", gap:"20px" }}>
             {[
-              { icon:"🧪", title:"Try Before You Buy",   desc:"WTF staff demonstrate the Dip · Hook · Swirl ritual and let you experience the texture and quality of RockResin in person." },
+              { icon:"🧪", title:"Try Before You Buy",   desc:"Our staff demonstrate the Dip · Hook · Swirl ritual and let you experience the texture and quality of RockResin in person." },
               { icon:"📋", title:"Lab Reports On Display", desc:"Full NABL COA available at every Experience Center. Scan the QR code on the jar — same NABL batch report, independently verified." },
-              { icon:"👤", title:"Expert Guidance",        desc:"WTF coaches trained in Performance Ayurveda™ protocol guide you on dosage, timing, and Anupana (carrier) selection." },
+              { icon:"👤", title:"Expert Guidance",        desc:"Coaches trained in Performance Ayurveda™ protocol guide you on dosage, timing, and Anupana (carrier) selection." },
               { icon:"📦", title:"In-Person Guidance",   desc:"Visit an Experience Center to explore the ritual in person and ask the staff about current product availability." },
             ].map((item, i) => (
               <motion.div

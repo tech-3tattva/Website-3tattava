@@ -68,10 +68,8 @@ export const FOOTER_LINKS = {
 
 export const TRUST_STRIP_ITEMS = [
   { icon: "⛰️", text: "Sourced at 10,000–16,000ft, Himalayan Deposits" },
-  { icon: "🔬", text: "NABL-accredited third-party tested" },
   { icon: "⚕️", text: "Doctor-Formulated · Dr. Kashish, BAMS" },
   { icon: "💎", text: "80+ Ionic Trace Minerals" },
-  { icon: "✓", text: "AYUSH-GMP Certified Facility" },
 ];
 
 export const CATEGORIES = [
