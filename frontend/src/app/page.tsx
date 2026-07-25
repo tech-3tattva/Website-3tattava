@@ -5,7 +5,6 @@ import PhilosophyRevamp from "@/components/home-revamp/PhilosophyRevamp";
 import TrustRevamp from "@/components/home-revamp/TrustRevamp";
 import DrKashishSection from "@/components/home-revamp/DrKashishSection";
 import FAQRevamp from "@/components/home-revamp/FAQRevamp";
-import ExperienceCenterMap from "@/components/home-revamp/ExperienceCenterMap";
 import NewsletterRevamp from "@/components/home-revamp/NewsletterRevamp";
 import SocialSidebar from "@/components/home-revamp/SocialSidebar";
 import { WebsiteSchema, FAQSchema } from "@/components/seo/JsonLd";
@@ -25,7 +24,6 @@ export default function HomePage() {
       <DrKashishSection />
       {/* Testimonials cleared per founder audit — customer/results videos pending. TODO(founder): re-add with real autoplay video reels. */}
       <FAQRevamp />
-      <ExperienceCenterMap />
       <NewsletterRevamp />
     </>
   );
