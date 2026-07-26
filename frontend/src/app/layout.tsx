@@ -39,7 +39,7 @@ const notoDevanagari = Noto_Serif_Devanagari({
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.3tattava.com"),
   title: {
-    default: "3TATTAVA — Performance Ayurveda | Himalayan Shilajit Resin & Honey Sticks",
+    default: "3TATTAVA — Performance Ayurveda | Shodhit Shilajit & Honey Sticks",
     template: "%s",
   },
   description:
@@ -63,7 +63,7 @@ export const metadata: Metadata = {
     locale: "en_IN",
     url: "https://www.3tattava.com",
     siteName: "3TATTAVA",
-    title: "3TATTAVA — Performance Ayurveda | Himalayan Shilajit Resin & Honey Sticks",
+    title: "3TATTAVA — Performance Ayurveda | Shodhit Shilajit & Honey Sticks",
     description:
       "India's first Performance Ayurveda brand. Pure Himalayan Shilajit Resin & Honey Sticks. Lab-tested, doctor-formulated.",
     images: [{ url: "/og-default.png", width: 1200, height: 630, alt: "3TATTAVA — Performance Ayurveda" }],
