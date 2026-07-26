@@ -266,3 +266,62 @@ export interface CouponValidation {
 export function validateCoupon(code: string, cartTotal: number, auth = false) {
   return api.post<CouponValidation>("/coupons/validate", { code, cartTotal }, auth);
 }
+
+// ── Assessment (per-user performance quiz) ───────────────
+// Shapes match the backend Assessment model returned by /assessments*.
+export interface AssessmentRitual {
+  name: string;
+  slug: string;
+  tagline: string;
+  why: string;
+}
+
+export interface AssessmentAnswer {
+  id: string;
+  question: string;
+  answer: string;
+}
+
+export interface AssessmentRecord {
+  id: string;
+  user?: string;
+  name: string;
+  email: string;
+  phone: string;
+  stage: string;
+  sanskrit: string;
+  stageLine: string;
+  energyScore: number;
+  recoveryScore: number;
+  ritual: AssessmentRitual;
+  other: AssessmentRitual;
+  answers: AssessmentAnswer[];
+  source: string;
+  createdAt: string;
+}
+
+/** Payload for POST /assessments (server derives name/email/phone/user from the token). */
+export interface SaveAssessmentPayload {
+  stage: string;
+  sanskrit: string;
+  stageLine: string;
+  energyScore: number;
+  recoveryScore: number;
+  ritual: AssessmentRitual;
+  other: AssessmentRitual;
+  answers: AssessmentAnswer[];
+  source: string;
+}
+
+/** GET /assessments/mine — signed-in user's assessment history + latest. */
+export function getMyAssessment() {
+  return api.get<{ assessments: AssessmentRecord[]; latest: AssessmentRecord | null }>(
+    "/assessments/mine",
+    true,
+  );
+}
+
+/** POST /assessments — persist a completed assessment for the signed-in user. */
+export function saveAssessment(payload: SaveAssessmentPayload) {
+  return api.post<{ assessment: AssessmentRecord }>("/assessments", payload, true);
+}

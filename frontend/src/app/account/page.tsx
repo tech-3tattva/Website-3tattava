@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import type { Address, Order, Product } from "@shared/types";
-import { api, getWelcomeOffer, type WelcomeOffer } from "@/lib/api";
+import { api, getMyAssessment, getWelcomeOffer, type AssessmentRecord, type WelcomeOffer } from "@/lib/api";
 import { formatPrice } from "@/lib/utils";
 import { useAuth } from "@/context/AuthContext";
 import {
@@ -109,6 +109,7 @@ export default function AccountPage() {
   const { items: wishlistIds } = useWishlist();
   const [wishlistProducts, setWishlistProducts] = useState<Product[]>([]);
   const [welcomeOffer, setWelcomeOffer] = useState<WelcomeOffer | null>(null);
+  const [assessment, setAssessment] = useState<AssessmentRecord | null>(null);
 
   const quickOrder = orders[0];
 
@@ -161,6 +162,22 @@ export default function AccountPage() {
         if (!cancelled) setWelcomeOffer(offer);
       } catch {
         if (!cancelled) setWelcomeOffer(null);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [isLoggedIn]);
+
+  useEffect(() => {
+    if (!isLoggedIn) return;
+    let cancelled = false;
+    void (async () => {
+      try {
+        const res = await getMyAssessment();
+        if (!cancelled) setAssessment(res.latest);
+      } catch {
+        if (!cancelled) setAssessment(null);
       }
     })();
     return () => {
@@ -401,6 +418,99 @@ export default function AccountPage() {
           </Link>
         </div>
       )}
+
+      {assessment ? (
+        <div
+          className="mb-7 sm:mb-9 overflow-hidden rounded-2xl px-5 sm:px-7 py-5"
+          style={{
+            background: "linear-gradient(120deg,#442a1b 0%,#573622 100%)",
+            boxShadow: "0 16px 40px rgba(68,42,27,0.22)",
+          }}
+        >
+          <div className="flex flex-wrap items-start justify-between gap-4">
+            <div className="flex items-start gap-4 min-w-0">
+              <span
+                className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl"
+                style={{ background: "linear-gradient(135deg,#cd872a,#e4c079)", boxShadow: "0 8px 20px rgba(205,135,42,0.35)" }}
+              >
+                <ClipboardList size={24} color="#fff" />
+              </span>
+              <div className="min-w-0">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.16em]" style={{ color: "#e4c079" }}>
+                  My Assessment Report
+                </p>
+                <div className="mt-1.5 flex flex-wrap items-center gap-2">
+                  <span
+                    className="rounded-full px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wider"
+                    style={{ background: "linear-gradient(135deg,#cd872a,#e4c079)", color: ESPRESSO }}
+                  >
+                    {assessment.stage}
+                  </span>
+                  <span className="text-sm" style={{ color: "rgba(247,240,226,0.72)", fontFamily: "var(--font-devanagari), serif" }}>
+                    {assessment.sanskrit}
+                  </span>
+                </div>
+                <div className="mt-2 flex flex-wrap items-center gap-2">
+                  <span
+                    className="rounded-md px-2 py-1 text-[11px] font-semibold"
+                    style={{ background: "rgba(247,240,226,0.14)", color: CREAM }}
+                  >
+                    Energy {assessment.energyScore}
+                  </span>
+                  <span
+                    className="rounded-md px-2 py-1 text-[11px] font-semibold"
+                    style={{ background: "rgba(247,240,226,0.14)", color: CREAM }}
+                  >
+                    Recovery {assessment.recoveryScore}
+                  </span>
+                </div>
+                <p className="mt-2 text-sm font-semibold" style={{ color: CREAM }}>
+                  {assessment.ritual.name}
+                  <span className="ml-2 font-normal" style={{ color: "rgba(247,240,226,0.62)" }}>
+                    {assessment.ritual.tagline}
+                  </span>
+                </p>
+                <p className="mt-1 text-[11px]" style={{ color: "rgba(247,240,226,0.5)" }}>
+                  Completed on {formatOrderedAt(assessment.createdAt)}
+                </p>
+              </div>
+            </div>
+            <Link
+              href="/assessment"
+              className="inline-flex shrink-0 items-center gap-1.5 rounded-xl px-4 py-2 text-sm font-semibold transition-all hover:-translate-y-0.5"
+              style={{ background: "linear-gradient(105deg,#A67B2F,#E4C079,#cd872a,#A67B2F)", color: ESPRESSO }}
+            >
+              Retake assessment →
+            </Link>
+          </div>
+        </div>
+      ) : isLoggedIn ? (
+        <Link
+          href="/assessment"
+          className="mb-7 sm:mb-9 flex items-center justify-between gap-4 rounded-2xl px-5 sm:px-7 py-5 transition-all hover:-translate-y-0.5"
+          style={{ background: "rgba(205,135,42,0.06)", border: "1px dashed rgba(205,135,42,0.4)" }}
+        >
+          <div className="flex items-center gap-4 min-w-0">
+            <span
+              className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl"
+              style={{ background: "rgba(205,135,42,0.14)" }}
+            >
+              <ClipboardList size={24} color={GOLD} />
+            </span>
+            <div className="min-w-0">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.16em]" style={{ color: GOLD }}>
+                Performance Assessment
+              </p>
+              <p className="mt-1 text-sm font-semibold" style={{ color: ESPRESSO }}>
+                Take your performance assessment
+              </p>
+            </div>
+          </div>
+          <span className="shrink-0 text-sm font-semibold" style={{ color: GOLD }}>
+            Start →
+          </span>
+        </Link>
+      ) : null}
 
       <div className="grid gap-6 md:grid-cols-2">
         <section className={CARD_CLASS}>

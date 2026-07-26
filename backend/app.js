@@ -34,6 +34,7 @@ const promoRoutes = require("./src/routes/promo.routes");
 const webhookRoutes = require("./src/routes/webhook.routes");
 const blogRoutes = require("./src/routes/blog.routes");
 const welcomeRoutes = require("./src/routes/welcome.routes");
+const assessmentRoutes = require("./src/routes/assessment.routes");
 
 const app = express();
 
@@ -126,6 +127,7 @@ app.use("/api/shipments", shipmentsRoutes);
 app.use("/api/promo", promoRoutes);
 app.use("/api/blogs", blogRoutes);
 app.use("/api/welcome", welcomeRoutes);
+app.use("/api/assessments", assessmentRoutes);
 
 app.all("*", (req, res) => {
   res.status(404).json({ message: `Route not found: ${req.method} ${req.originalUrl}` });

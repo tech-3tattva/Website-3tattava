@@ -16,6 +16,7 @@ const Redemption = require("../models/Redemption");
 const NewsletterSub = require("../models/NewsletterSub");
 const Booking = require("../models/Booking");
 const Blog = require("../models/Blog");
+const Assessment = require("../models/Assessment");
 // Lead model is registered by leads.routes.js at startup — access lazily
 function getLead() { return mongoose.models.Lead || null; }
 function getWaitlist() { return mongoose.models.Waitlist || null; }
@@ -664,6 +665,26 @@ router.get("/waitlist", async (req, res, next) => {
     ]);
 
     return res.json({ waitlist: entries, total, page: pageNum, totalPages: Math.ceil(total / limitNum) });
+  } catch (err) {
+    return next(err);
+  }
+});
+
+// GET /api/admin/assessments — all performance-assessment submissions
+router.get("/assessments", async (req, res, next) => {
+  try {
+    const { page = "1", limit = "500" } = req.query;
+    const pageNum = Math.max(1, Number(page) || 1);
+    const limitNum = Math.min(1000, Number(limit) || 500);
+    const [assessments, total] = await Promise.all([
+      Assessment.find({})
+        .sort({ createdAt: -1 })
+        .skip((pageNum - 1) * limitNum)
+        .limit(limitNum)
+        .exec(),
+      Assessment.countDocuments(),
+    ]);
+    return res.json({ assessments, total, page: pageNum, totalPages: Math.ceil(total / limitNum) });
   } catch (err) {
     return next(err);
   }

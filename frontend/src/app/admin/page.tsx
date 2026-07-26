@@ -7,8 +7,9 @@ import AdminProducts from "@/components/admin/AdminProducts";
 import AdminInventory from "@/components/admin/AdminInventory";
 import AdminOrders from "@/components/admin/AdminOrders";
 import AdminBlog from "@/components/admin/AdminBlog";
+import AdminAssessments from "@/components/admin/AdminAssessments";
 
-type Tab = "overview" | "products" | "inventory" | "orders" | "shipments" | "leads" | "waitlist" | "influencers" | "users" | "blog";
+type Tab = "overview" | "products" | "inventory" | "orders" | "shipments" | "leads" | "waitlist" | "assessments" | "influencers" | "users" | "blog";
 
 type Stats = {
   revenue: { today: number; month: number; year: number };
@@ -712,6 +713,7 @@ export default function AdminDashboardPage() {
     { id: "shipments",    label: "Shipments",    icon: "◫" },
     { id: "leads",        label: "Leads",        icon: "◑" },
     { id: "waitlist",     label: "Waitlist",     icon: "◕" },
+    { id: "assessments",  label: "Assessments",  icon: "◓" },
     { id: "influencers",  label: "Influencers",  icon: "◐" },
     { id: "users",        label: "Customers",    icon: "◔" },
     { id: "blog",         label: "Education",    icon: "✎" },
@@ -721,6 +723,7 @@ export default function AdminDashboardPage() {
     overview: "Dashboard", products: "Products", inventory: "Inventory",
     orders: "Orders", shipments: "Shipments", leads: "Leads & Signups",
     waitlist: "Waitlist",
+    assessments: "Performance Assessments",
     influencers: "Influencers & Promo Codes",
     users: "Customers & Sign-ins",
     blog: "Education Centre",
@@ -733,6 +736,7 @@ export default function AdminDashboardPage() {
     shipments: "NimbusPost shipment tracking & NDR management",
     leads: "Homepage modal captures, newsletter & bookings",
     waitlist: "Pre-launch product waitlist signups",
+    assessments: "User-submitted health & ritual assessments",
     influencers: "Two-tier referral system, promo codes & reward payouts",
     users: "All registered customers, including Google sign-ins",
     blog: "Write & publish articles to the Education Centre page",
@@ -861,6 +865,7 @@ export default function AdminDashboardPage() {
           {tab === "shipments"   && <AdminShipments />}
           {tab === "leads"       && <AdminLeads />}
           {tab === "waitlist"    && <AdminWaitlist />}
+          {tab === "assessments" && <AdminAssessments />}
           {tab === "influencers" && <AdminInfluencers />}
           {tab === "users"       && <AdminUsers />}
           {tab === "blog"        && <AdminBlog />}

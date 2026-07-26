@@ -4,13 +4,13 @@ import { ROCKRESIN_FAQS } from '@/data/faqs/rockresin'
 import { ProductSchema, FAQSchema, BreadcrumbSchema } from '@/components/seo/JsonLd'
 
 export const metadata: Metadata = {
-  title: 'RockResin® — Shodhit Himalayan Shilajit Resin (20g) | 3TATTAVA',
+  title: 'RockResin® — Himalayan Shilajit Resin (20g) | 3TATTAVA',
   description:
     'RockResin® — authentic Himalayan Shilajit resin, Triphala-purified and NABL 3rd-party lab-tested. ≥70% fulvic acid, 80+ trace minerals. One Resin. Complete Vitality.',
   alternates: { canonical: 'https://www.3tattava.com/products/shodhit-shilajit-resin' },
   openGraph: {
     type: 'website',
-    title: 'RockResin® — Shodhit Himalayan Shilajit Resin | 3TATTAVA',
+    title: 'RockResin® — Himalayan Shilajit Resin | 3TATTAVA',
     description:
       'Authentic Himalayan Shilajit resin. Triphala-purified. NABL tested. One Resin. Complete Vitality.',
     url: 'https://www.3tattava.com/products/shodhit-shilajit-resin',

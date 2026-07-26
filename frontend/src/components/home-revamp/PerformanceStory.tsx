@@ -68,7 +68,7 @@ const STORY_CSS = `
   .pstory-panel {
     display: flex;
     align-items: stretch;
-    gap: clamp(16px, 2vw, 36px);
+    gap: 0;
     min-height: clamp(560px, 86vh, 880px);
   }
   .pstory-panel.pstory-right { flex-direction: row-reverse; }

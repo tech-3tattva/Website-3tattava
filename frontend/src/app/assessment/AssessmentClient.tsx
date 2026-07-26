@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import LeadForm from "@/components/forms/LeadForm";
 import { useAuth } from "@/context/AuthContext";
-import { api } from "@/lib/api";
+import { api, saveAssessment } from "@/lib/api";
 import type { Order } from "@shared/types";
 
 const F = "var(--font-primary), system-ui, sans-serif";
@@ -259,6 +259,36 @@ export default function AssessmentClient() {
   const purchase = useHasPurchased();
   const done = step >= QUESTIONS.length;
   const result = done ? computeResult(answers) : null;
+  const savedRef = useRef(false);
+
+  // Persist the completed assessment once per completion (auth is guaranteed by the purchase gate).
+  useEffect(() => {
+    if (!done || !result || savedRef.current) return;
+    savedRef.current = true;
+    const answersPayload = QUESTIONS.map((q, i) => ({
+      id: q.id,
+      question: q.question,
+      answer: answers[i]?.label,
+    }));
+    void (async () => {
+      try {
+        await saveAssessment({
+          stage: result.stage,
+          sanskrit: result.sanskrit,
+          stageLine: result.stageLine,
+          energyScore: result.energyScore,
+          recoveryScore: result.recoveryScore,
+          ritual: result.ritual,
+          other: result.other,
+          answers: answersPayload,
+          source: "assessment",
+        });
+      } catch {
+        // Non-fatal: a save failure must never break the result UI.
+      }
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [done, result]);
 
   const choose = (opt: Option) => {
     setAnswers((prev) => {
@@ -269,7 +299,7 @@ export default function AssessmentClient() {
     setStep((s) => s + 1);
   };
   const back = () => setStep((s) => Math.max(0, s - 1));
-  const restart = () => { setAnswers([]); setStep(0); };
+  const restart = () => { setAnswers([]); setStep(0); savedRef.current = false; };
 
   const progress = Math.min(100, Math.round((step / QUESTIONS.length) * 100));
   if (purchase === "loading") return <AssessmentGateLoading />;
