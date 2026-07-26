@@ -47,7 +47,7 @@ const PANELS: Panel[] = [
     ctaLabel: 'Shop Shahjeet Sticks',
     ctaHref: '/products/shahjeet-sticks',
     imageSide: 'left',
-    media: { type: 'image', src: "https://media.3tattava.com/products/3-Tattava+A%2B-02S.png", alt: '3Tattava Shahjeet Sticks honey sachets', fit: 'contain' },
+    media: { type: 'image', src: "https://media.3tattava.com/products/3-Tattava+A%2B-09.png", alt: '3Tattava Shahjeet Sticks — honey-infused Shilajit jar on a Himalayan honeyscape', fit: 'cover' },
   },
   {
     n: '02',
