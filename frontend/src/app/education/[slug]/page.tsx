@@ -133,6 +133,52 @@ function Paragraphs({ text, prefix }: { text: string; prefix: string }) {
   );
 }
 
+/* Founding-waitlist conversion CTA — renders on every education article. */
+function WaitlistCTA() {
+  return (
+    <div className="mt-12 rounded-2xl border-2 border-[#cd872a] bg-white px-6 py-8 md:px-10 md:py-10 text-center shadow-sm">
+      <p className="text-xs uppercase tracking-[0.25em] text-[#cd872a] font-semibold">
+        Founding Waitlist · Pre-Launch
+      </p>
+      <h2
+        className="mt-3 text-2xl md:text-3xl text-[#442a1b]"
+        style={{ fontFamily: "var(--font-primary), system-ui, sans-serif" }}
+      >
+        Join the Founding Waitlist — ₹200 off your first order
+      </h2>
+      <p className="mx-auto mt-3 max-w-xl text-[15px] leading-relaxed text-text-medium">
+        3TATTAVA launches soon: Classically Triphala-purified, NABL third-party lab-tested
+        Shilajit, formulated by Dr. Kashish Gupta (BAMS). Founding members lock in ₹200 off
+        their first order and receive the lab report first.
+      </p>
+      <Link
+        href="/waitlist"
+        className="mt-6 inline-block rounded-full bg-[#cd872a] px-8 py-3 text-sm font-semibold uppercase tracking-[0.08em] text-[#442a1b] transition-transform hover:-translate-y-0.5"
+      >
+        Join the Founding Waitlist →
+      </Link>
+      <p className="mt-3 text-xs text-text-light">No spam — just the lab report and your founding offer.</p>
+    </div>
+  );
+}
+
+/* Lighter inline nudge for mid-article placement. */
+function InlineWaitlistNote() {
+  return (
+    <div className="mt-8 flex flex-col gap-3 rounded-xl border border-[#cd872a]/40 bg-[#efe7d3] px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+      <p className="text-sm text-[#442a1b]">
+        <span className="font-semibold">Launching soon.</span> Join the founding waitlist for ₹200 off your first order.
+      </p>
+      <Link
+        href="/waitlist"
+        className="inline-block shrink-0 whitespace-nowrap rounded-full bg-[#cd872a] px-5 py-2 text-xs font-semibold uppercase tracking-[0.08em] text-[#442a1b] transition-transform hover:-translate-y-0.5"
+      >
+        Join the waitlist →
+      </Link>
+    </div>
+  );
+}
+
 function BlogArticleView({ blog }: { blog: BlogArticle }) {
   const graph = {
     "@context": "https://schema.org",
@@ -247,6 +293,9 @@ function BlogArticleView({ blog }: { blog: BlogArticle }) {
             </div>
           )}
 
+          {/* Lighter inline waitlist nudge */}
+          <InlineWaitlistNote />
+
           {/* Body sections */}
           <div className="mt-12 space-y-10">
             {blog.sections.map((s, i) => (
@@ -303,6 +352,9 @@ function BlogArticleView({ blog }: { blog: BlogArticle }) {
               </div>
             </div>
           )}
+
+          {/* Founding waitlist conversion CTA — every article */}
+          <WaitlistCTA />
 
           {/* Related reading */}
           {blog.related.length > 0 && (
@@ -398,6 +450,7 @@ function DbBlogView({ blog }: { blog: DbBlog }) {
               ))}
             </div>
           )}
+          <WaitlistCTA />
         </article>
       </MotionSection>
     </main>
@@ -491,6 +544,7 @@ export default async function EducationArticlePage({
                 </p>
               ))}
             </div>
+            <WaitlistCTA />
           </article>
         </MotionSection>
       </main>

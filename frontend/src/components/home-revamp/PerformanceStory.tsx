@@ -1,5 +1,6 @@
 'use client';
 import { media } from "@/lib/media";
+import Image from "next/image";
 
 import { useRef } from 'react';
 import Link from 'next/link';
@@ -107,21 +108,24 @@ function PanelMedia({ media }: { media: Panel['media'] }) {
 
   return (
     <div className="pstory-media" ref={ref} style={{ background: media.fit === 'contain' ? '#ffffff' : undefined }}>
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <motion.img
-        src={media.src}
-        alt={media.alt}
+      <motion.div
         style={{
           position: 'absolute',
           inset: 0,
-          width: '100%',
-          height: '100%',
-          objectFit: media.fit ?? 'cover',
-          padding: media.fit === 'contain' ? 'clamp(32px, 5vw, 80px)' : 0,
-          display: 'block',
           scale: reduce || media.fit === 'contain' ? 1 : scale,
         }}
-      />
+      >
+        <Image
+          src={media.src}
+          alt={media.alt}
+          fill
+          sizes="(max-width: 900px) 100vw, 50vw"
+          style={{
+            objectFit: media.fit ?? 'cover',
+            padding: media.fit === 'contain' ? 'clamp(32px, 5vw, 80px)' : 0,
+          }}
+        />
+      </motion.div>
       {/* subtle inner vignette for text-edge legibility (cover photos only) */}
       {media.fit !== 'contain' && (
         <div

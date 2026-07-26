@@ -6,8 +6,8 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 
 const SPLASH_KEY = "3tattva-intro-played";
-const TOTAL_MS = 3600;
-const FADE_START_MS = 3000;
+const TOTAL_MS = 1500;
+const FADE_START_MS = 950;
 
 export default function IntroSplash() {
   const [show, setShow] = useState(false);

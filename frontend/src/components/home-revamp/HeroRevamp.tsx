@@ -271,6 +271,8 @@ export default function HeroRevamp() {
             className="hero-revamp-poster"
             src={media("/hero/himalaya-bg.png")}
             alt=""
+            fetchPriority="high"
+            decoding="async"
             aria-hidden="true"
           />
         )}

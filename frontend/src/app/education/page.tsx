@@ -43,6 +43,17 @@ const LIBRARY_GROUPS: { pillar: string; items: { slug: string; title: string }[]
   return Object.entries(groups).map(([pillar, items]) => ({ pillar, items }));
 })();
 
+const HIGH_INTENT_GUIDES: { slug: string; title: string }[] = [
+  { slug: "what-is-shilajit", title: "What Is Shilajit? The Complete Guide" },
+  { slug: "shilajit-benefits", title: "Shilajit Benefits: Claims vs Evidence" },
+  { slug: "best-time-to-take-shilajit", title: "Best Time to Take Shilajit" },
+  { slug: "shilajit-dosage-guide", title: "Shilajit Dosage: How Much to Take" },
+  { slug: "how-to-check-real-shilajit", title: "How to Check If Your Shilajit Is Real" },
+  { slug: "how-to-read-shilajit-lab-report", title: "How to Read a Shilajit Lab Report" },
+  { slug: "shilajit-vs-ashwagandha", title: "Shilajit vs Ashwagandha: Honest Comparison" },
+  { slug: "shilajit-side-effects", title: "Shilajit Side Effects & Safety, Explained" },
+];
+
 export default async function EducationPage() {
   const dbBlogs = await getPublishedBlogs();
   return (
@@ -354,6 +365,48 @@ export default async function EducationPage() {
                 </ul>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Founding waitlist CTA + high-intent article links */}
+      <section className="border-t border-[#d9cdb8] bg-[#442a1b] px-6 py-14 md:px-10 md:py-20">
+        <div className="mx-auto max-w-5xl text-center">
+          <p className="text-xs uppercase tracking-[0.28em] text-[#cd872a] mb-3">
+            Founding Waitlist · Pre-Launch
+          </p>
+          <h2
+            className="text-3xl md:text-4xl text-[#f3eedd]"
+            style={{ fontFamily: "var(--font-primary), system-ui, sans-serif" }}
+          >
+            Learn Now. Save ₹200 When We Launch.
+          </h2>
+          <p className="mx-auto mt-4 max-w-2xl text-[15px] leading-relaxed text-[#efe7d3]/80">
+            3TATTAVA is launching soon: Classically Triphala-purified, NABL third-party lab-tested
+            Shilajit, formulated by Dr. Kashish Gupta (BAMS). Join the founding waitlist to lock in
+            ₹200 off your first order and get the lab report first.
+          </p>
+          <Link
+            href="/waitlist"
+            className="mt-7 inline-block rounded-full bg-[#cd872a] px-9 py-3.5 text-sm font-semibold uppercase tracking-[0.08em] text-[#442a1b] transition-transform hover:-translate-y-0.5"
+          >
+            Join the Founding Waitlist →
+          </Link>
+          <div className="mt-10 border-t border-white/10 pt-8">
+            <p className="text-xs uppercase tracking-[0.22em] text-[#cd872a] mb-4">
+              Start With the Most-Read Guides
+            </p>
+            <div className="mx-auto grid max-w-3xl gap-3 sm:grid-cols-2">
+              {HIGH_INTENT_GUIDES.map((g) => (
+                <Link
+                  key={g.slug}
+                  href={`/education/${g.slug}`}
+                  className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-left text-sm text-[#efe7d3] transition-colors hover:border-[#cd872a] hover:text-white"
+                >
+                  {g.title}
+                </Link>
+              ))}
+            </div>
           </div>
         </div>
       </section>

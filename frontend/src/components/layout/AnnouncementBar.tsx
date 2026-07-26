@@ -7,6 +7,7 @@ const STORAGE_KEY = "3tattava-announcement-dismissed";
 const PINCODE_KEY = "3tattava-pincode";
 
 const TICKER_MESSAGES = [
+  "Founding Waitlist Open · ₹200 Off Your First Order",
   "More than 70%+ Fulvic Acid · Third-Party Lab Tested",
   "Free Shipping Above ₹999",
   "Doctor-Led Performance Ayurveda",
