@@ -760,7 +760,7 @@ export default function AdminDashboardPage() {
         .ad-sidebar-foot { padding: 18px 10px; border-top: 1px solid rgba(200,150,62,0.08); }
         .ad-logout { display: flex; align-items: center; gap: 9px; width: 100%; padding: 10px 14px; background: transparent; border: 1px solid rgba(200,150,62,0.14); color: rgba(245,240,235,0.38); font-family: var(--font-jost,'Jost'),sans-serif; font-size: 12px; letter-spacing: 0.08em; cursor: pointer; transition: all 0.18s; border-radius: 3px; }
         .ad-logout:hover { border-color: rgba(200,150,62,0.4); color: rgba(245,240,235,0.75); }
-        .ad-main { flex: 1; padding: 36px 40px; overflow-y: auto; min-width: 0; }
+        .ad-main { flex: 1; padding: 36px 40px; min-width: 0; }
         .ad-topbar { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 36px; }
         .ad-page-title { font-family: var(--font-cormorant,'Cormorant Garamond'),serif; font-size: 34px; font-weight: 700; color: #F5F0EB; }
         .ad-page-sub { font-size: 12px; color: rgba(245,240,235,0.32); margin-top: 3px; font-weight: 300; }
