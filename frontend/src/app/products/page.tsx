@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { PAGE_METADATA } from "@/lib/brand-content";
-import StartRitualButton from "@/components/StartRitualButton";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: PAGE_METADATA.shop.title,
@@ -22,7 +22,7 @@ const PRODUCTS = [
     label: "RockResin®",
     subtitle: "Pure Himalayan Shilajit · 20g Jar",
     tagline: "Ancient Mineral Elixir for Modern Vitality",
-    image: "https://media.3tattava.com/home/homepage-rockresins.png",
+    image: "https://media.3tattava.com/features/home/homepage-rockresins.png",
     pills: ["≥70% Fulvic Acid", "NABL Tested", "Triphala Purified"],
     waitlistProduct: "RockResin® — Classically Purified Shilajit Resin",
   },
@@ -37,6 +37,17 @@ const PRODUCTS = [
     pills: ["600mg Per Stick", "NABL Tested", "AYUSH GMP"],
     waitlistProduct: "Shahjeet® — Honey Sticks",
   },
+  {
+    slug: "founding-bundle-pack",
+    badge: "SAVE ₹600",
+    badgeGold: true,
+    label: "Founding Bundle",
+    subtitle: "RockResin® + Shahjeet® · Complete Ritual",
+    tagline: "The full Balance · Build · Become ritual in one pack.",
+    image: "https://media.3tattava.com/products/Boxess%20copy%201.png",
+    pills: ["2 Products", "Save ₹600", "Founding ₹2,198"],
+    waitlistProduct: "Founding Bundle Pack",
+  },
 ] as const;
 
 const F = "var(--font-primary), system-ui, sans-serif";
@@ -44,7 +55,8 @@ const F = "var(--font-primary), system-ui, sans-serif";
 // ─── Product Card (pre-launch — opens the waitlist) ──────────────────────────
 function ProductCard({ p }: { p: (typeof PRODUCTS)[number] }) {
   return (
-    <div
+    <Link
+      href={`/products/${p.slug}`}
       style={{
         display: "block",
         background: "#ffffff",
@@ -52,6 +64,8 @@ function ProductCard({ p }: { p: (typeof PRODUCTS)[number] }) {
         overflow: "hidden",
         transition: "transform .32s cubic-bezier(.16,1,.3,1), box-shadow .32s ease",
         position: "relative",
+        textDecoration: "none",
+        color: "inherit",
       }}
       className="group shop-card"
     >
@@ -76,18 +90,6 @@ function ProductCard({ p }: { p: (typeof PRODUCTS)[number] }) {
         {p.badge}
       </div>
 
-      {/* Launching-soon ribbon */}
-      <div
-        style={{
-          position: "absolute", top: "16px", right: "16px", zIndex: 2,
-          background: "rgba(247,240,226,.92)", color: "#6f5a48",
-          fontFamily: F, fontVariationSettings: "'wdth' 75,'wght' 700",
-          fontSize: "8px", letterSpacing: ".2em", textTransform: "uppercase",
-          padding: "4px 10px", border: "1px solid rgba(183,163,146,.5)",
-        }}
-      >
-        Launching Soon
-      </div>
 
       {/* Image */}
       <div
@@ -122,20 +124,19 @@ function ProductCard({ p }: { p: (typeof PRODUCTS)[number] }) {
           ))}
         </div>
 
-        <StartRitualButton
-          product={p.waitlistProduct}
+        <span
           className="shop-cta"
           style={{
-            display: "block", width: "100%", border: "none", cursor: "pointer",
+            display: "block", width: "100%",
             background: "#C8963E", color: "#1c1304", fontFamily: F,
             fontVariationSettings: "'wdth' 85,'wght' 700", fontSize: "11px",
             letterSpacing: ".18em", textTransform: "uppercase", padding: "13px 0", textAlign: "center",
           }}
         >
-          Join the Waitlist →
-        </StartRitualButton>
+          View Product →
+        </span>
       </div>
-    </div>
+    </Link>
   );
 }
 
@@ -148,26 +149,27 @@ export default function ProductsPage() {
         <div style={{ position: "absolute", inset: 0, opacity: 0.04, backgroundImage: "radial-gradient(circle, rgba(228,192,121,.8) 1px, transparent 1px)", backgroundSize: "36px 36px" }} />
         <div style={{ position: "relative", zIndex: 1, maxWidth: 720, margin: "0 auto" }}>
           <p style={{ fontFamily: F, fontVariationSettings: "'wdth' 75,'wght' 500", fontSize: "9px", letterSpacing: ".32em", textTransform: "uppercase", color: "rgba(247,240,226,.45)", marginBottom: "16px" }}>
-            Performance Ayurveda · Launching Soon
+            Performance Ayurveda
           </p>
           <h1 style={{ fontFamily: F, fontVariationSettings: "'wdth' 85,'wght' 800", fontSize: "clamp(30px,5vw,56px)", letterSpacing: "-.025em", color: "#f7f0e2", marginBottom: "14px", lineHeight: 1.08 }}>
             The Performance Ayurveda Collection
           </h1>
           <p style={{ fontFamily: F, fontVariationSettings: "'wdth' 100,'wght' 300", fontStyle: "italic", fontSize: "clamp(15px,1.8vw,18px)", color: "#C8963E", marginBottom: "28px" }}>
-            Two formats. Same pure Himalayan Shilajit. Our rituals are launching soon — join the waitlist to be first.
+            Two formats. Same pure Himalayan Shilajit. Explore both rituals below.
           </p>
 
-          <StartRitualButton
+          <a
+            href="#collection"
             style={{
-              display: "inline-block", border: "none", cursor: "pointer",
+              display: "inline-block", cursor: "pointer", textDecoration: "none",
               background: "linear-gradient(105deg,#A67B2F,#E4C079,#cd872a,#A67B2F)",
               color: "#1c1304", fontFamily: F, fontVariationSettings: "'wdth' 85,'wght' 800",
               fontSize: "12px", letterSpacing: ".16em", textTransform: "uppercase",
               padding: "15px 34px", borderRadius: 999, marginBottom: "36px",
             }}
           >
-            Join the Waitlist →
-          </StartRitualButton>
+            Explore the Collection ↓
+          </a>
 
           <div style={{ display: "flex", gap: "clamp(12px,2vw,28px)", justifyContent: "center", flexWrap: "wrap" }}>
             {["NABL Lab-Tested Purity", "AYUSH-GMP Certified", "Doctor Formulated", "Himalayan Sourced"].map((t) => (
@@ -180,7 +182,7 @@ export default function ProductsPage() {
       </section>
 
       {/* Products grid */}
-      <section style={{ background: "#f7f0e2", padding: "clamp(48px,6vw,80px) 24px" }}>
+      <section id="collection" style={{ background: "#f7f0e2", padding: "clamp(48px,6vw,80px) 24px" }}>
         <div style={{ maxWidth: "900px", margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(320px,1fr))", gap: "28px" }}>
           {PRODUCTS.map((p) => (
             <ProductCard key={p.slug} p={p} />

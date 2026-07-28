@@ -8,10 +8,10 @@ const PINCODE_KEY = "3tattava-pincode";
 
 const TICKER_MESSAGES = [
   "Founding Waitlist Open · ₹200 Off Your First Order",
-  "More than 70%+ Fulvic Acid · Third-Party Lab Tested",
+  "70%+ Fulvic Acid · NABL Third-Party Lab Tested",
   "Free Shipping Above ₹999",
-  "Doctor-Led Performance Ayurveda",
-  "Pure Himalayan Ladakhi Shilajit Resin",
+  "Doctor-Led Performance Ayurveda · Dr. Kashish Gupta",
+  "Pure Himalayan Ladakhi Shodhit Shilajit Resins",
 ];
 
 export default function AnnouncementBar() {

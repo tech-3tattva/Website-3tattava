@@ -9,6 +9,7 @@ import Image from "@/components/ui/SafeImage";
 import CheckoutHeader from "@/components/checkout/CheckoutHeader";
 import QuantityStepper from "@/components/product/QuantityStepper";
 import { formatPrice } from "@/lib/utils";
+import BundleUpsell from "@/components/cart/BundleUpsell";
 
 export default function CheckoutCartPage() {
   const { isLoggedIn } = useAuth();
@@ -129,6 +130,7 @@ export default function CheckoutCartPage() {
                     </Link>
                   </div>
                 </details>
+                <BundleUpsell />
               </div>
             )}
           </div>

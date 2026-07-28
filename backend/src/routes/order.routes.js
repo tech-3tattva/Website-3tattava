@@ -459,6 +459,29 @@ router.post("/verify-cashfree", async (req, res, next) => {
       await session.endSession();
     }
 
+    // Best-effort: a bundle sale also draws down its component products' stock
+    // (units defined on the bundle Product). Non-fatal — never blocks capture.
+    try {
+      for (const it of order.items) {
+        const bundle = await Product.findById(it.productId).lean().exec();
+        if (!bundle?.isBundle || !Array.isArray(bundle.bundleItems)) continue;
+        for (const comp of bundle.bundleItems) {
+          if (!comp?.slug) continue;
+          const dec = (Number(comp.quantity) || 1) * it.quantity;
+          const compProd = await Product.findOne({ slug: comp.slug }).exec();
+          if (!compProd) continue;
+          const before = compProd.stockQuantity;
+          compProd.stockQuantity = Math.max(0, before - dec);
+          await compProd.save();
+          await InventoryLog.create({
+            product: compProd._id, changeType: "sale",
+            quantityBefore: before, quantityChange: -dec, quantityAfter: compProd.stockQuantity,
+            reason: `Bundle ${order.orderNumber} (${bundle.slug})`, orderId: order._id,
+          });
+        }
+      }
+    } catch (e) { console.error("[bundle] component stock decrement failed:", e.message); }
+
     try {
       if (order?.user && order?.coupon?.code) {
         await markWelcomeCouponUsed(order.user, order.coupon.code, order.orderNumber);

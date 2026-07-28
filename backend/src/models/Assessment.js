@@ -26,6 +26,16 @@ const answerSchema = new mongoose.Schema(
   { _id: false }
 );
 
+const vpkSchema = new mongoose.Schema(
+  { vata: { type: Number, default: 0 }, pitta: { type: Number, default: 0 }, kapha: { type: Number, default: 0 } },
+  { _id: false }
+);
+
+const prakritiAnswerSchema = new mongoose.Schema(
+  { section: { type: String }, key: { type: String }, question: { type: String }, answer: { type: String }, dosha: { type: String } },
+  { _id: false }
+);
+
 const assessmentSchema = new mongoose.Schema(
   {
     user: { type: mongoose.Schema.Types.ObjectId, ref: "User", index: true },
@@ -42,6 +52,32 @@ const assessmentSchema = new mongoose.Schema(
     ritual: ritualSchema,
     other: ritualSchema,
     answers: { type: [answerSchema], default: [] },
+
+    // ── Prakriti Analysis (VaidyaConnect consultation intake) ─────────────
+    kind: { type: String, default: "performance", index: true }, // "performance" | "prakriti"
+    patient: {
+      fullName: String, age: String, gender: String, height: String, weight: String,
+      occupation: String, dailyActivity: String, chiefComplaints: String, durationComplaints: String,
+    },
+    prakritiAnswers: { type: [prakritiAnswerSchema], default: [] },
+    medicalHistory: {
+      chronicConditions: String, painAreas: String, inflammation: String,
+      hormonalIssues: String, lifestyleDiseases: String,
+    },
+    preliminaryDosha: {
+      vata: { type: Number, default: 0 }, pitta: { type: Number, default: 0 }, kapha: { type: Number, default: 0 },
+      primary: String,
+    },
+    // Section 12 — Final Prakriti Scoring, filled by the doctor, shown to the user.
+    doctorScoring: {
+      filled: { type: Boolean, default: false },
+      filledAt: { type: Date },
+      filledBy: { type: String },
+      bodyType: vpkSchema, digestion: vpkSchema, sleep: vpkSchema,
+      mind: vpkSchema, skin: vpkSchema, energy: vpkSchema,
+      analysis: { type: String },
+      doshaResult: { type: String },
+    },
 
     source: { type: String, default: "assessment" },
     ip: { type: String },

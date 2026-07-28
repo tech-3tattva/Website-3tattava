@@ -282,34 +282,77 @@ export interface AssessmentAnswer {
   answer: string;
 }
 
+export interface PrakritiPatient {
+  fullName?: string; age?: string; gender?: string; height?: string; weight?: string;
+  occupation?: string; dailyActivity?: string; chiefComplaints?: string; durationComplaints?: string;
+}
+
+export interface PrakritiAnswerRecord {
+  section?: string; key?: string; question?: string; answer?: string; dosha?: string;
+}
+
+export interface PrakritiMedicalHistory {
+  chronicConditions?: string; painAreas?: string; inflammation?: string;
+  hormonalIssues?: string; lifestyleDiseases?: string;
+}
+
+export interface DoshaScore { vata?: number; pitta?: number; kapha?: number; }
+
+export interface PreliminaryDosha extends DoshaScore { primary?: string; }
+
+export interface DoctorScoring {
+  filled?: boolean;
+  filledAt?: string;
+  filledBy?: string;
+  bodyType?: DoshaScore; digestion?: DoshaScore; sleep?: DoshaScore;
+  mind?: DoshaScore; skin?: DoshaScore; energy?: DoshaScore;
+  analysis?: string;
+  doshaResult?: string;
+}
+
 export interface AssessmentRecord {
   id: string;
   user?: string;
   name: string;
   email: string;
   phone: string;
-  stage: string;
-  sanskrit: string;
-  stageLine: string;
-  energyScore: number;
-  recoveryScore: number;
-  ritual: AssessmentRitual;
-  other: AssessmentRitual;
-  answers: AssessmentAnswer[];
+  kind?: "performance" | "prakriti";
+  // legacy performance quiz
+  stage?: string;
+  sanskrit?: string;
+  stageLine?: string;
+  energyScore?: number;
+  recoveryScore?: number;
+  ritual?: AssessmentRitual;
+  other?: AssessmentRitual;
+  answers?: AssessmentAnswer[];
+  // prakriti analysis
+  patient?: PrakritiPatient;
+  prakritiAnswers?: PrakritiAnswerRecord[];
+  medicalHistory?: PrakritiMedicalHistory;
+  preliminaryDosha?: PreliminaryDosha;
+  doctorScoring?: DoctorScoring;
   source: string;
   createdAt: string;
 }
 
 /** Payload for POST /assessments (server derives name/email/phone/user from the token). */
 export interface SaveAssessmentPayload {
-  stage: string;
-  sanskrit: string;
-  stageLine: string;
-  energyScore: number;
-  recoveryScore: number;
-  ritual: AssessmentRitual;
-  other: AssessmentRitual;
-  answers: AssessmentAnswer[];
+  kind?: "performance" | "prakriti";
+  // legacy performance quiz
+  stage?: string;
+  sanskrit?: string;
+  stageLine?: string;
+  energyScore?: number;
+  recoveryScore?: number;
+  ritual?: AssessmentRitual;
+  other?: AssessmentRitual;
+  answers?: AssessmentAnswer[];
+  // prakriti analysis
+  patient?: PrakritiPatient;
+  prakritiAnswers?: PrakritiAnswerRecord[];
+  medicalHistory?: PrakritiMedicalHistory;
+  preliminaryDosha?: PreliminaryDosha;
   source: string;
 }
 

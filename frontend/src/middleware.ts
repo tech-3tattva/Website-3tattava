@@ -15,12 +15,9 @@ const GATED_ROUTES = new Set<string>([
   "/community",
 ]);
 
-// Product detail pages are hidden pre-launch — visitors are sent to the
-// /products waitlist page instead. Temporary (307) so it lifts cleanly at launch.
-const HIDDEN_PRODUCTS = new Set<string>([
-  "/products/shahjeet-sticks",
-  "/products/shodhit-shilajit-resin",
-]);
+// Product detail pages are now LIVE (un-gated). Left empty so PDPs render directly;
+// re-add a slug here to hide it behind the /products page again if ever needed.
+const HIDDEN_PRODUCTS = new Set<string>([]);
 
 // URL variants (typed / printed / QR) that permanently redirect to the canonical route.
 const REDIRECTS: Record<string, string> = {

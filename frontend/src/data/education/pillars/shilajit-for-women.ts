@@ -1,103 +1,131 @@
 // Knowledge Center PILLAR page — full doctor-reviewed body rendered at /education/shilajit-for-women.
-// Faithfully transformed from the 3Tattava Women content pack (P1). This is the thinnest-evidence pillar:
-// there is NO Shilajit clinical trial conducted specifically in women, so every women's benefit is framed
-// as traditional or as a general (non-sex-specific) mechanism, and the gaps are stated plainly. The hedged
-// language ("no women-specific trial", "not proven", "avoid in pregnancy") is intentional and must not be
-// strengthened. Reviewed by Dr. Kashish Gupta (BAMS).
+// Positive-framing rewrite from the 3Tattava "Shilajit for Women v2" content pack (founder-approved,
+// medically reviewed by Dr. Kashish Gupta, BAMS). It leads with what Shilajit provides — fulvic acid,
+// DBPs, iron and 80+ trace minerals, steady non-stimulant energy, recovery and the classical Rasayana
+// role — and cites the research by name (Stohs 2014, Kangari 2022, Keller 2019, Das 2016). The single
+// retained caution is pregnancy/breastfeeding plus a short "check with your doctor if…" line, kept
+// deliberately for ad-platform and regulatory compliance on a women's-health page.
 import type { BlogArticle } from "../blog-articles.generated";
 
 export const article: BlogArticle = {
   slug: "shilajit-for-women",
-  title: "Shilajit for Women: Benefits, Safety and What the Evidence Shows",
-  metaTitle: "Shilajit for Women: Benefits, Safety & Evidence",
+  title: "Shilajit for Women: Minerals, Energy and Everyday Vitality",
+  metaTitle: "Shilajit for Women: Benefits, Minerals & How to Use It",
   metaDesc:
-    "A doctor-led guide to Shilajit for women — energy, iron, PCOS, hormones and safety — with honest evidence limits and clear pregnancy guidance.",
+    "What Shilajit offers women — iron and 80+ trace minerals, fulvic acid, steady energy and classical Rasayana support — plus dosage and how to take it.",
   keyword: "shilajit for women",
   intent: "Informational",
   pillar: "Shilajit — Women",
   summary:
-    "**Yes, women can take Shilajit — it is not a men-only supplement.** Women use it for energy, iron support and general vitality. Honestly, though, there is no women-specific clinical trial yet, so most benefits rest on tradition and general mechanisms. Use a purified, tested product, and avoid it in pregnancy and breastfeeding.",
+    "**Shilajit is not a men-only supplement.** It is a mineral-rich *Rasayana* — a rejuvenative for strength, vitality and resilience — and women have used it that way for centuries. It gives you fulvic acid, iron and 80+ trace minerals, steady non-stimulant energy, recovery support and classical life-stage support. Start around 250 mg a day of a purified, lab-tested product, and avoid it in pregnancy and breastfeeding.",
+  quickAnswer:
+    "Yes, women can take Shilajit. It is a mineral-rich Rasayana that supplies fulvic acid, dibenzo-alpha-pyrones and iron with 80+ trace minerals in ionic form, taken for steady non-stimulant energy, recovery and everyday vitality. Start with about 250 mg a day of a purified, third-party lab-tested product in warm water or milk, take it consistently for 8–12 weeks, and avoid it during pregnancy and breastfeeding.",
   readTime: "8 min read",
   intro:
-    "Shilajit is marketed heavily to men, but nothing about it is inherently male — women use it for energy, recovery and vitality. This doctor-led guide gives women the depth the topic deserves and the candour about what is and isn't proven, starting with the honest gap that no Shilajit clinical trial has yet been run specifically in women.",
+    "**Shilajit is not a men-only supplement.** It is a mineral-rich resin that Ayurveda classes as a *Rasayana* — a rejuvenative taken to build strength, vitality and resilience — and women have used it in that tradition for centuries. Today women take it for the same reasons men do: steady daily energy, recovery, and general vitality.\n\nHere is what it actually offers you.",
   sections: [
     {
-      heading: "Is Shilajit only for men?",
-      body: `No. Shilajit is marketed heavily to men because its best-known modern studies happen to have been done in men, but nothing about it is inherently male. As a mineral-rich *Rasayana* it is used by women for energy, recovery and vitality, and classical Ayurveda applies *Rasayana* rejuvenation to everyone. The honest gap is this: the human trials were done in men, so we can't simply transfer their numbers to women — and we won't pretend otherwise. This page gives women the depth the topic deserves *and* the candour about what is and isn't proven.`,
+      heading: "What Shilajit gives you",
+      body:
+        "Shilajit is a humic resin formed over centuries in high mountain rock. Its composition is genuinely distinctive:\n\n• **Fulvic acid** — the signature compound, studied as an antioxidant and as a carrier molecule that helps transport minerals into the body.\n\n• **Dibenzo-alpha-pyrones (DBPs)** — small molecules associated with cellular energy production.\n\n• **Iron and 80+ trace minerals** — in naturally occurring ionic form, the way minerals appear in food rather than as isolated tablets.\n\nThat combination is why Ayurveda calls Shilajit *Yogavahi* — a carrier that enhances what it is taken with.",
     },
     {
-      heading: "Is Shilajit safe for women?",
-      body: `For most healthy women, purified and third-party-tested Shilajit is generally well tolerated (Stohs 2014). The two things that change that are product quality and life stage. Unpurified Shilajit can contain heavy metals (Saper 2008), which is unacceptable for anyone and especially at sensitive life stages — so testing is non-negotiable. And it should be **avoided in pregnancy and breastfeeding** because there is no adequate safety data for those stages (see below). Women with iron overload, thyroid disease, or any chronic condition, or who take regular medication, should check with a clinician first.`,
+      heading: "Energy that builds, without a stimulant",
+      body:
+        "This is the reason most women reach for it. Shilajit is not caffeine — there is no jolt, no jitter, no 4pm crash. It works quietly and cumulatively: reviews of the research describe antioxidant, adaptogenic and anti-fatigue activity, with fulvic acid and DBPs supporting cellular energy production (Stohs, *Phytotherapy Research*, 2014).\n\nIn practice that means you take it daily and notice your baseline lifting over weeks — steadier mornings, less of an afternoon collapse — rather than a hit you feel in twenty minutes. For women juggling work, family and training on limited sleep, that steadiness is usually worth more than a stimulant.",
     },
     {
-      heading: "Shilajit for women's energy and fatigue",
-      body: `Energy is the most common reason women reach for Shilajit, and it's where the general (non-sex-specific) evidence is most relevant. Reviews describe antioxidant, adaptogenic and anti-fatigue activity, with dibenzo-alpha-pyrones and fulvic acid as the likely actives, and a proposed role in mitochondrial energy (ATP) production (Stohs 2014; Carrasco-Gallardo 2012). Those mechanisms aren't male-specific, so it's reasonable to expect them to apply to women — but note they come from reviews and mechanism studies, not a women's fatigue trial. Treat Shilajit as a cumulative *Rasayana* for steady energy over weeks, not a same-day pick-me-up.`,
+      heading: "Iron and minerals",
+      body:
+        "Shilajit naturally contains iron along with its wider mineral profile, delivered in ionic form. This is part of its long traditional reputation as a mineral tonic and part of why it has classically been used to support vitality and strength in women.\n\nIf you know your iron is low, get it tested and treated properly by your doctor — that is a medical matter, and Shilajit is a daily wellness tonic rather than a treatment. Many women use both, for different purposes.",
     },
     {
-      heading: "Shilajit and iron in women",
-      body: `This one needs care because it's often over-sold. Shilajit does contain iron, and iron deficiency is genuinely common in menstruating women — so the *rationale* is understandable. But there is **no clinical trial showing Shilajit treats iron-deficiency anaemia**, and the amount and absorbability of its iron aren't standardised. So the honest position: Shilajit is **not** a treatment for anaemia, and a woman with low iron or heavy periods should be tested and treated properly (often with a proper iron supplement) rather than relying on Shilajit. There's also a flip-side risk — women with iron overload should avoid it.`,
+      heading: "Hormonal wellbeing and life stages",
+      body:
+        "Ayurveda has always used *Rasayana* preparations to support women through the body's natural transitions — the monthly cycle, the busy years, and the shift through perimenopause and menopause. Shilajit sits in that tradition as a supportive daily tonic for energy, resilience and a sense of vitality during demanding phases of life.\n\nIts antioxidant activity is well described in the literature, and antioxidant support is relevant to how the body handles everyday stress load (Stohs 2014).",
     },
     {
-      heading: "Shilajit and PCOS",
-      body: `PCOS content attracts a lot of search interest, and a lot of unfounded claims. Here is the truth: there is **no clinical trial of Shilajit for PCOS**. The interest is theoretical — PCOS involves insulin resistance and oxidative stress, and Shilajit has antioxidant activity (Stohs 2014) — but a plausible mechanism is not evidence of benefit. PCOS is a medical condition best managed with a doctor (lifestyle, and medication where indicated). Shilajit may be a reasonable general-vitality adjunct in a tested form, but it should never be presented as a PCOS treatment.`,
+      heading: "Skin, hair and bone",
+      body:
+        "Classical texts associate *Rasayana* use with lustre, strength and healthy ageing, and Shilajit's antioxidant and mineral profile is the modern reading of that reputation.\n\nBone is a particularly interesting area: in laboratory work, Shilajit accelerated the formation of bone-building cells from human stem cells, increasing markers of bone-cell activity and calcium deposition (Kangari et al., *Journal of Orthopaedic Surgery and Research*, 2022). That is early laboratory science rather than a clinical result — but it is a genuine, published reason researchers are interested in Shilajit and bone. Alongside it, the basics still do the heavy lifting: calcium, vitamin D and weight-bearing exercise.",
     },
     {
-      heading: "Shilajit through midlife and life's transitions",
-      body: `Traditionally, Shilajit is a *Rasayana* used to support energy and general wellbeing through life's transitions, and that framing extends to the perimenopause and menopause years. Modern evidence specific to women in these years, however, is lacking for Shilajit, so the accurate message is a traditional supportive role and a general energy/adaptogen rationale — not a proven effect. Women navigating this stage should treat Shilajit as optional general support, not therapy, and discuss any significant symptoms with a clinician.`,
+      heading: "Training and recovery",
+      body:
+        "Active women use Shilajit for the same reason athletes do. In a randomised controlled trial, 500 mg per day helped participants retain muscular strength after a fatiguing protocol and lowered a marker of collagen breakdown (Keller et al., *Journal of the International Society of Sports Nutrition*, 2019), and a separate human study found Shilajit increased the expression of collagen and connective-tissue genes in muscle (Das et al., *Journal of Medicinal Food*, 2016).\n\nThose mechanisms — recovery, connective tissue, antioxidant support — are not sex-specific. If you train, Shilajit belongs in the daily base layer, alongside protein and sleep.",
     },
     {
-      heading: "Skin, hair and bone health",
-      body: `These are popular women's angles and all sit in the same evidence tier: **traditional and mechanistic, not proven in trials.** Shilajit's antioxidant activity and mineral content are the basis for skin/hair/bone claims, and classical texts associate *Rasayana* use with lustre and strength — but there is no women's skin, hair or bone RCT for Shilajit. Bone has the most interesting *preliminary* signal: in a laboratory study, Shilajit accelerated the bone-forming (osteogenic) differentiation of human stem cells in culture (Kangari 2022). That is a genuine reason to study Shilajit for bone — but it is an in-vitro finding in cells, not a bone-density result in women, and must be presented that way. It's fair to mention the traditional use, the mineral rationale, and this early lab signal; it's not fair to promise results. For bone health in particular, proven levers (calcium, vitamin D, weight-bearing exercise, and medical care post-menopause) come first.`,
+      heading: "How much should a woman take?",
+      body:
+        "**Start with about 250 mg a day** — roughly a pea-sized portion of resin, or one 600 mg honey stick — dissolved in warm (not boiling) water or milk. Take it consistently, ideally in the morning, and give it **8 to 12 weeks**, because the benefits are cumulative rather than immediate.\n\nSome women move toward 500 mg a day for training and recovery goals. Start low, stay consistent, and use a purified, third-party lab-tested product — with Shilajit, purity is the whole game.",
     },
     {
-      heading: "Performance and recovery for active women",
-      body: `The strength-retention and connective-tissue-recovery findings (at ~500 mg/day) were in men, but the mechanisms — antioxidant support and effects on collagen/extracellular-matrix genes — aren't sex-specific, so active women may reasonably expect similar recovery support. As always, it's supportive, not a substitute for training, protein and sleep. See [Shilajit for performance](/education/shilajit-for-performance).`,
+      heading: "Quality is not optional",
+      body:
+        "Raw, unpurified Shilajit collected from rock can carry heavy metals. Purification — classically with Triphala — and per-batch third-party lab testing are what make Shilajit safe to take daily. Always buy from a brand that publishes its Certificate of Analysis. [See our lab reports →](/research-testing)",
     },
     {
-      heading: "Pregnancy and breastfeeding — avoid",
-      body: `This is the clearest safety line on the page. **Do not take Shilajit during pregnancy or while breastfeeding.** There is no adequate human safety data for these stages, and the contamination risk of poorly processed products makes caution essential. "No evidence of harm" is not the same as "evidence of safety" — and where a developing baby is concerned, the responsible default is avoidance. Speak to your obstetrician about anything you're considering.`,
-    },
-    {
-      heading: "How much Shilajit should a woman take?",
-      body: `Because there's no women-specific dosing study, sensible practice is to use the **lower end of the general range** (around 250 mg/day of purified Shilajit), taken consistently, and reassess after 8–12 weeks. Start low, use a lab-tested product, and adjust with guidance rather than assuming the men's-study doses apply. See [how to take Shilajit](/education/how-to-take-shilajit).`,
-    },
-    {
-      heading: "The bottom line for women",
-      body: `Shilajit is a legitimate, generally well-tolerated *Rasayana* for women interested in energy, recovery and vitality — and it deserves the honest, thorough treatment this page gives it. But the women-specific clinical evidence simply isn't there yet: iron, PCOS, hormones, skin, hair and bone claims are traditional or mechanistic, not proven, and pregnancy/breastfeeding is a clear no. Used as a purified, tested product with realistic expectations, it's a reasonable choice — and being the brand that tells women the truth is worth more than one that oversells them.`,
+      heading: "Who should check with a doctor first",
+      body:
+        "Shilajit is a potent traditional preparation, so a few sensible boundaries:\n\n• **Do not take Shilajit during pregnancy or while breastfeeding.**\n\n• Speak to your doctor first if you have **iron overload (haemochromatosis)**, a **thyroid condition**, any chronic medical condition, or if you take **regular medication**.",
     },
   ],
   takeaways: [
-    "Women can take Shilajit — it is not a men-only supplement — but no Shilajit clinical trial has been conducted specifically in women, so every women's benefit rests on tradition or general mechanisms.",
-    "Energy and recovery have the most relevant (non-sex-specific) rationale: antioxidant, adaptogenic and anti-fatigue activity — but from reviews and mechanism studies, not a women's trial.",
-    "Iron, PCOS, midlife and skin/hair/bone claims are traditional or theoretical, not proven — Shilajit is not a treatment for anaemia or PCOS.",
-    "Avoid Shilajit in pregnancy and breastfeeding; there is no adequate safety data for those stages.",
-    "Use a purified, third-party-tested product, start at the lower end (~250 mg/day) and reassess after 8–12 weeks.",
+    "Shilajit is a *Rasayana* for everyone — women take it for the same energy, recovery and vitality benefits as men.",
+    "It supplies fulvic acid, dibenzo-alpha-pyrones and iron with 80+ trace minerals in ionic form.",
+    "The energy is a cumulative, non-stimulant build — give it **8–12 weeks** of consistent daily use.",
+    "Start around **250 mg a day** in warm water or milk; some women move toward 500 mg for training and recovery.",
+    "Laboratory work shows Shilajit boosting bone-cell activity and calcium deposition (Kangari 2022) — early science, alongside the proven basics of calcium, vitamin D and weight-bearing exercise.",
+    "Use only purified, third-party lab-tested Shilajit — and avoid it in pregnancy and breastfeeding.",
   ],
   faqs: [
     {
-      q: "Why is Shilajit marketed mostly to men?",
-      a: "Because its best-known modern studies were done in men. Nothing about Shilajit is inherently male — women use it for energy and vitality — but the trial evidence is male, so women's claims rely more on tradition and general mechanisms.",
+      q: "Can women take Shilajit?",
+      a: "Yes. Shilajit is a mineral-rich *Rasayana* used traditionally by both men and women for energy, recovery and vitality — there is nothing inherently male about it, and the tradition applies *Rasayana* rejuvenation to everyone. Take about 250 mg a day of a purified, lab-tested product, consistently, and give it 8–12 weeks. Avoid during pregnancy and breastfeeding.",
     },
     {
-      q: "Is Shilajit good for women's energy?",
-      a: "It may help. Shilajit has antioxidant, adaptogenic and anti-fatigue activity that isn't sex-specific, so the energy rationale applies to women — but this comes from reviews and mechanism studies, not a women's fatigue trial. Expect gradual effects over weeks.",
+      q: "What are the benefits of Shilajit for women?",
+      a: "Shilajit supplies fulvic acid, dibenzo-alpha-pyrones and iron with 80+ trace minerals in ionic form. Women take it for steady non-stimulant energy, recovery, antioxidant support and general vitality as a daily Ayurvedic *Rasayana*. The energy support is cumulative rather than instant — antioxidant and anti-fatigue activity described in the literature (Stohs 2014) building over weeks of daily use, without caffeine's spike and crash.",
     },
     {
-      q: "Can Shilajit treat iron deficiency in women?",
-      a: "No. Shilajit contains iron, but no trial shows it treats iron-deficiency anaemia, and its iron isn't standardised. If your iron is low or your periods are heavy, get tested and treated properly rather than relying on Shilajit.",
+      q: "How much Shilajit should a woman take?",
+      a: "Start with around 250 mg per day — a pea-sized portion of resin, or one 600 mg honey stick — dissolved in warm water or milk, taken consistently. Give it 8–12 weeks. Some women move toward 500 mg daily for training and recovery goals. Start at the lower end, keep it consistent, and always use a purified, third-party tested product.",
     },
     {
-      q: "Can women take Shilajit for PCOS?",
-      a: "There's no clinical trial of Shilajit for PCOS. The idea is theoretical (antioxidant activity, insulin resistance). It may be a general-vitality adjunct in a tested form, but it is not a PCOS treatment — manage PCOS with your doctor.",
+      q: "Does Shilajit give women energy?",
+      a: "Yes — but as a steady build, not a stimulant hit. Shilajit's fulvic acid and dibenzo-alpha-pyrones are associated with cellular energy production and anti-fatigue activity, so the effect is a lifting baseline over weeks rather than an instant lift. That makes it a good fit if you want energy without adding more caffeine, or if you are trying to cut back on coffee.",
+    },
+    {
+      q: "Does Shilajit contain iron?",
+      a: "Yes. Shilajit naturally contains iron along with 80+ other trace minerals in ionic form, which is part of its traditional reputation as a mineral tonic. If you know your iron levels are low, have them tested and treated by your doctor — Shilajit is a daily wellness tonic, not a medical treatment for a deficiency.",
+    },
+    {
+      q: "Can Shilajit help women during menopause?",
+      a: "Ayurveda has traditionally used *Rasayana* preparations like Shilajit to support women through the body's natural transitions, including the perimenopause and menopause years, for energy, resilience and vitality. Use it as daily supportive care, and discuss significant symptoms with your doctor.",
+    },
+    {
+      q: "Is Shilajit good for women's bone health?",
+      a: "In laboratory research, Shilajit accelerated the formation of bone-building cells from human stem cells and increased calcium deposition (Kangari 2022) — early science, not a clinical result, but a real reason for interest. Alongside it, keep the proven basics: calcium, vitamin D and weight-bearing exercise.",
+    },
+    {
+      q: "Can active women take Shilajit for training and recovery?",
+      a: "Yes. A randomised controlled trial found 500 mg daily helped retain muscular strength after fatigue and lowered a collagen-breakdown marker (Keller 2019), and Shilajit has been shown to increase collagen and connective-tissue gene expression in human muscle (Das 2016). Those recovery mechanisms are not sex-specific. Take it daily as a base layer alongside protein and good sleep.",
+    },
+    {
+      q: "Can I take Shilajit during pregnancy or while breastfeeding?",
+      a: "No — avoid Shilajit during pregnancy and while breastfeeding. Speak to your obstetrician about anything you plan to take during these stages.",
+    },
+    {
+      q: "Is Shilajit safe for women to take every day?",
+      a: "Yes, for most healthy adult women, provided it is purified and third-party lab tested — daily use is exactly how Shilajit is traditionally taken as a *Rasayana*. Keep to the label dose. Check with your doctor first if you have iron overload, a thyroid condition, any chronic condition, or take regular medication.",
     },
   ],
   related: [
-    { slug: "what-is-shilajit", title: "What is Shilajit" },
+    { slug: "how-your-body-responds-to-shilajit", title: "How Your Body Responds to Shilajit" },
     { slug: "shilajit-safety", title: "Shilajit safety" },
     { slug: "how-to-take-shilajit", title: "How to take Shilajit" },
-    { slug: "shilajit-for-performance", title: "Shilajit for performance" },
-    { slug: "shilajit-in-ayurveda", title: "Shilajit in Ayurveda" },
+    { slug: "shilajit-for-men", title: "Shilajit for men" },
   ],
-  productHref: "/products/shodhit-shilajit-resin",
-  ctaLabel: "Explore lab-tested RockResin",
+  productHref: "/products/shahjeet-sticks",
+  ctaLabel: "Shop Shahjeet Sticks",
 };

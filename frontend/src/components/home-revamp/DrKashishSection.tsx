@@ -13,6 +13,10 @@ const GOLD = "#cd872a";
 const CREAM = "#f7f0e2";
 const TAUPE = "#b7a392";
 
+/* Founder video — set FOUNDER_VIDEO_URL to Dr. Kashish's video (e.g. https://media.3tattava.com/videos/founder-story.mp4) to embed it here. Empty = branded placeholder. */
+const FOUNDER_VIDEO_URL: string = "";
+const FOUNDER_VIDEO_POSTER: string = "";
+
 /* ─── Credential chips ─── */
 interface Credential {
   label: string;
@@ -20,7 +24,7 @@ interface Credential {
 
 const credentials: Credential[] = [
   { label: "BAMS" },
-  { label: "CBPACS, Government of NCT of Delhi" },
+  { label: "CBPACS, New Delhi, Government of NCT of Delhi" },
   { label: "Former Consultant, NCISM | Ministry of Ayush" },
 ];
 
@@ -223,44 +227,56 @@ export default function DrKashishSection() {
               overflow: "hidden",
             }}
           >
-            {/* Gold play icon */}
-            <div
-              style={{
-                width: 64,
-                height: 64,
-                borderRadius: "50%",
-                border: `2px solid ${GOLD}`,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                marginBottom: 16,
-              }}
-            >
-              {/* Play triangle */}
-              <div
-                style={{
-                  width: 0,
-                  height: 0,
-                  borderTop: "12px solid transparent",
-                  borderBottom: "12px solid transparent",
-                  borderLeft: `20px solid ${GOLD}`,
-                  marginLeft: 4,
-                }}
-              />
-            </div>
-
-            <p
-              style={{
-                fontFamily: F,
-                fontSize: 13,
-                letterSpacing: "0.12em",
-                textTransform: "uppercase",
-                color: TAUPE,
-                margin: 0,
-              }}
-            >
-              Video Coming Soon
-            </p>
+            {FOUNDER_VIDEO_URL ? (
+              <video
+                controls
+                playsInline
+                preload="metadata"
+                poster={FOUNDER_VIDEO_POSTER || undefined}
+                style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+              >
+                <source src={FOUNDER_VIDEO_URL} type="video/mp4" />
+              </video>
+            ) : (
+              <>
+                {/* Gold play icon */}
+                <div
+                  style={{
+                    width: 64,
+                    height: 64,
+                    borderRadius: "50%",
+                    border: `2px solid ${GOLD}`,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginBottom: 16,
+                  }}
+                >
+                  <div
+                    style={{
+                      width: 0,
+                      height: 0,
+                      borderTop: "12px solid transparent",
+                      borderBottom: "12px solid transparent",
+                      borderLeft: `20px solid ${GOLD}`,
+                      marginLeft: 4,
+                    }}
+                  />
+                </div>
+                <p
+                  style={{
+                    fontFamily: F,
+                    fontSize: 13,
+                    letterSpacing: "0.12em",
+                    textTransform: "uppercase",
+                    color: TAUPE,
+                    margin: 0,
+                  }}
+                >
+                  Video Coming Soon
+                </p>
+              </>
+            )}
           </div>
         </motion.div>
       </div>

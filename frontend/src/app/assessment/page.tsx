@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import AssessmentClient from "./AssessmentClient";
 
 export const metadata: Metadata = {
-  title: "Performance Assessment | 3TATTAVA — Discover Your Starting Point",
-  description: "A 60-second Performance Ayurveda assessment. Discover your energy and recovery baseline, your Balance · Build · Become stage, and the ritual that fits your life.",
+  title: "Prakriti Analysis | 3TATTAVA — Discover Your Ayurvedic Body Type",
+  description:
+    "A guided Prakriti (body-type) analysis reviewed by our Ayurvedic doctor. Answer one question at a time; your Vaidya finalises your Vata · Pitta · Kapha constitution.",
   alternates: { canonical: "https://www.3tattava.com/assessment" },
 };
 

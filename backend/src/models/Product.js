@@ -62,6 +62,18 @@ const productSchema = new mongoose.Schema(
     isFeatured: { type: Boolean, default: false },
     isGiftable: { type: Boolean, default: false },
 
+    // Bundle products (e.g. Founding Bundle Pack) — composition + units.
+    isBundle: { type: Boolean, default: false },
+    bundleItems: {
+      type: [
+        new mongoose.Schema(
+          { slug: { type: String }, name: { type: String }, unit: { type: String }, quantity: { type: Number, default: 1 } },
+          { _id: false }
+        ),
+      ],
+      default: [],
+    },
+
     categoryRef: { type: mongoose.Schema.Types.ObjectId, ref: "Category" },
   },
   { timestamps: true }

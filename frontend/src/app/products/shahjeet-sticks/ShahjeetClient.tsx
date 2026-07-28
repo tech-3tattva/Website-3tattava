@@ -92,7 +92,7 @@ const FEATURE_ICONS: { label: string; tip: string }[] = [
   { label: "70%+ Fulvic Acid", tip: "Fulvic acid carries minerals directly into your cells for absorption." },
   { label: "80+ Trace Minerals", tip: "80+ ionic trace minerals, including iron, magnesium and zinc." },
   { label: "Triphala Purified", tip: "Classically purified with Amalaki, Haritaki & Bibhitaki." },
-  { label: "Third-Party Lab Tested", tip: "Independently tested by an NABL-accredited lab (Eurofins)." },
+  { label: "NABL Third-Party Lab Tested", tip: "Independently tested by an NABL-accredited lab (Eurofins)." },
 ];
 function FeatureIcons() {
   return (
@@ -180,11 +180,17 @@ function HeroSection() {
             <button type="button" onClick={handleAdd} style={{ width: "100%", maxWidth: 360, height: 48, padding: "0 26px", background: ESPRESSO, color: CREAM, border: "none", borderRadius: 999, fontFamily: F, fontVariationSettings: "'wght' 700", fontSize: 13, letterSpacing: ".08em", textTransform: "uppercase", cursor: "pointer" }}>
               {added ? "Added ✓" : "Shop Now"}
             </button>
+            <div style={{ maxWidth: 360, marginTop: 14, borderLeft: `3px solid ${GOLD}`, background: "#f1e7d4", borderRadius: 10, padding: "10px 14px" }}>
+              <p style={{ ...eyebrow, color: GOLD, margin: "0 0 4px" }}>Founding Member Offer · First 200</p>
+              <p style={{ fontFamily: F, fontSize: 13, lineHeight: 1.4, color: ESPRESSO, margin: 0 }}>
+                Get an extra ₹200 off with your welcome code — a single 30-day box as low as <span style={{ fontVariationSettings: "'wght' 800" }}>₹1,199</span>.
+              </p>
+            </div>
           </Reveal>
 
           <motion.div className="shj-media" initial={{ opacity: 0, scale: 0.94 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.8, ease: EASE }} style={{ position: "relative", zIndex: 1, display: "flex", justifyContent: "center" }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={media("/shahjeet/hero-product.png")} alt="3tattava Shahjeet Sticks canister with a honey stick" style={{ width: "100%", maxWidth: 340, height: "auto", display: "block", filter: "drop-shadow(0 26px 50px rgba(68,42,27,.22))" }} />
+            <img src="https://media.3tattava.com/products/tgftcf%201.png" alt="3tattava Shahjeet Sticks canister with a honey stick" style={{ width: "100%", maxWidth: 520, height: "auto", display: "block", filter: "drop-shadow(0 26px 50px rgba(68,42,27,.22))" }} />
           </motion.div>
         </div>
       </div>
@@ -410,13 +416,83 @@ const SHAJI_STEPS = [
   { step: "03", title: "Perform", desc: "No mixing, no measuring, no mess — just 600mg of daily performance." },
 ];
 
+const SHAHJEET_VIDEOS = [
+  { title: "Tear", url: "https://media.3tattava.com/products/IMG_0040.MP4" },
+  { title: "Squeeze", url: "https://media.3tattava.com/products/IMG_0039.MP4" },
+  // "Perform" video — add the third entry here when the URL is provided.
+];
+
+function ShahjeetRitualPlayer() {
+  const [idx, setIdx] = useState(0);
+  const go = (i: number) => setIdx((i + SHAHJEET_VIDEOS.length) % SHAHJEET_VIDEOS.length);
+  const v = SHAHJEET_VIDEOS[idx];
+  return (
+    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "clamp(18px,2.5vw,26px)", width: "100%" }}>
+      <div style={{ position: "relative" }}>
+        {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
+        <video key={v.url} autoPlay muted playsInline onEnded={() => go(idx + 1)} src={v.url}
+          style={{ height: "clamp(400px,48vw,600px)", width: "auto", aspectRatio: "4 / 5", objectFit: "cover", borderRadius: 20, display: "block", boxShadow: "0 24px 60px rgba(0,0,0,.42)" }} />
+        <span style={{ position: "absolute", top: 16, left: 16, background: "rgba(28,19,4,.6)", color: "#f7f0e2", fontFamily: F, fontVariationSettings: "'wght' 800", fontSize: 12, letterSpacing: ".12em", textTransform: "uppercase", padding: "6px 12px", borderRadius: 999 }}>
+          {String(idx + 1).padStart(2, "0")} · {v.title}
+        </span>
+        <button type="button" onClick={() => go(idx + 1)} aria-label="Next video"
+          style={{ position: "absolute", right: 14, top: "50%", transform: "translateY(-50%)", width: 46, height: 46, borderRadius: "50%", border: "1px solid rgba(247,240,226,.7)", background: "rgba(28,19,4,.55)", color: "#f7f0e2", cursor: "pointer", fontSize: 20, lineHeight: 1, display: "flex", alignItems: "center", justifyContent: "center" }}>
+          →
+        </button>
+      </div>
+      <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", justifyContent: "center" }}>
+        {SHAHJEET_VIDEOS.map((sv, i) => (
+          <button key={sv.title} type="button" onClick={() => setIdx(i)}
+            style={{ fontFamily: F, fontVariationSettings: "'wght' 700", fontSize: 12, letterSpacing: ".1em", textTransform: "uppercase", padding: "8px 16px", borderRadius: 999, cursor: "pointer",
+              border: i === idx ? "1px solid #7a4a1c" : "1px solid rgba(68,42,27,.3)",
+              background: i === idx ? "rgba(68,42,27,.14)" : "transparent",
+              color: i === idx ? "#5c2f12" : "rgba(68,42,27,.72)" }}>
+            {sv.title}
+          </button>
+        ))}
+        <button type="button" onClick={() => go(idx + 1)}
+          style={{ fontFamily: F, fontVariationSettings: "'wght' 800", fontSize: 12, letterSpacing: ".1em", textTransform: "uppercase", padding: "8px 18px", borderRadius: 999, cursor: "pointer", border: "none", background: ESPRESSO, color: "#f7f0e2" }}>
+          Next →
+        </button>
+      </div>
+    </div>
+  );
+}
+
+const SHAHJEET_GENDER = [
+  { url: "https://media.3tattava.com/products/Sticks-Men.png", alt: "Shahjeet Sticks for men — daily strength, energy and vitality" },
+  { url: "https://media.3tattava.com/products/Sticks-Women.png", alt: "Shahjeet Sticks for women — daily strength, energy and vitality" },
+];
+function GenderRitualSection() {
+  return (
+    <section style={{ background: CREAM, padding: "clamp(40px,6vw,80px) 24px" }}>
+      <div className="shj-2col" style={{ maxWidth: 1200, margin: "0 auto", alignItems: "stretch" }}>
+        {SHAHJEET_GENDER.map((g, i) => (
+          <Reveal key={g.url} delay={i * 0.08} style={{ display: "flex", justifyContent: "center" }}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={g.url} alt={g.alt} style={{ width: "100%", height: "auto", display: "block", borderRadius: 20, boxShadow: "0 20px 50px rgba(68,42,27,.14)" }} />
+          </Reveal>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 function BuiltForBusySection() {
   return (
     <section style={{ position: "relative", overflow: "hidden", background: "linear-gradient(135deg,#f7edb2 0%,#eccf6a 32%,#dcab44 62%,#c08f2f 100%)", padding: "clamp(52px,7vw,96px) 24px" }}>
       <div style={{ maxWidth: 1180, margin: "0 auto" }}>
         <Reveal style={{ textAlign: "center" }}>
           <h2 style={{ ...heading, color: ESPRESSO, fontSize: T.big, marginBottom: 8 }}>BUILT FOR BUSY DAYS!</h2>
-          <p style={{ fontFamily: F, fontVariationSettings: "'wght' 700", fontSize: "clamp(15px,2vw,20px)", letterSpacing: ".06em", textTransform: "uppercase", color: ESPRESSO, margin: "0 0 clamp(28px,4vw,44px)" }}>3T Shaji Ritual — Tear · Squeeze · Perform</p>
+          <p style={{ fontFamily: F, fontVariationSettings: "'wght' 700", fontSize: "clamp(15px,2vw,20px)", letterSpacing: ".06em", textTransform: "uppercase", color: ESPRESSO, lineHeight: 1.5, margin: "0 0 clamp(28px,4vw,44px)" }}>
+            No Spoon · No Mess
+            <br />
+            <span style={{ textTransform: "none", fontStyle: "italic", fontVariationSettings: "'wght' 500", opacity: 0.9 }}>Just</span>
+            <br />
+            Tear · Squeeze · Perform™
+            <br />
+            <span style={{ fontSize: "0.82em", opacity: 0.85 }}>3Tattava — ShajiRitual™</span>
+          </p>
         </Reveal>
         <Reveal delay={0.05}>
           <ol style={{ listStyle: "none", padding: 0, margin: "0 auto clamp(32px,4.5vw,56px)", maxWidth: 880, display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: "clamp(12px,2vw,22px)" }}>
@@ -432,11 +508,10 @@ function BuiltForBusySection() {
         <div className="shj-2col" style={{ alignItems: "center", gridTemplateColumns: "1.12fr 0.88fr" }}>
           <Reveal style={{ display: "flex", justifyContent: "center" }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={media("/shahjeet/ritual-steps.png")} alt="The Shahjeet ritual" style={{ height: "clamp(400px,48vw,600px)", width: "auto", maxWidth: "100%", objectFit: "contain", display: "block", filter: "blur(12px)", userSelect: "none", pointerEvents: "none" }} />
+            <img src={media("/shahjeet/ritual-steps.png")} alt="The Shahjeet ritual" style={{ height: "clamp(400px,48vw,600px)", width: "auto", maxWidth: "100%", objectFit: "contain", display: "block" }} />
           </Reveal>
           <Reveal delay={0.1} style={{ display: "flex", justifyContent: "center" }}>
-            {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
-            <video autoPlay muted loop playsInline src={media("/videos/morning-ritual.mp4")} style={{ height: "clamp(400px,48vw,600px)", width: "auto", aspectRatio: "4 / 5", objectFit: "cover", borderRadius: 20, display: "block", boxShadow: "0 24px 60px rgba(0,0,0,.42)" }} />
+            <ShahjeetRitualPlayer />
           </Reveal>
         </div>
       </div>
@@ -546,6 +621,8 @@ function LegalMetrologySection() {
   const rows: { label: string; value: ReactNode }[] = [
     { label: "MRP", value: <>₹{PRODUCT.mrp.toLocaleString("en-IN")} <span style={{ color: TAUPE }}>(inclusive of all taxes)</span></> },
     { label: "Net Quantity", value: "240 g (30 sticks × 8 g each)" },
+    { label: "Ingredients", value: "Himalayan Ladakhi Multifloral Honey" },
+    { label: "Dosage", value: "1 Stick / Day" },
     { label: "Marketed by", value: `${LEGAL.companyShort}, ${LEGAL.registeredOffice}` },
     { label: "Country of Origin", value: LEGAL.countryOfOrigin },
     { label: "Consumer care", value: `${LEGAL.emailGeneral} · ${LEGAL.careMobile}` },
@@ -571,6 +648,7 @@ function LegalMetrologySection() {
   );
 }
 
+
 // ─── PAGE ─────────────────────────────────────────────────────────────────────
 export default function ShahjeetClient() {
   return (
@@ -583,15 +661,17 @@ export default function ShahjeetClient() {
       <LegalMetrologySection />
       <WhyCreatedSection />
       <BrandDivider />
-      <ComparisonSection />
+      <BuiltForBusySection />
       <BrandDivider />
-      <CinematicSection />
+      <GenderRitualSection />
       <BrandDivider />
       <HoneySection />
       <BrandDivider />
       <TriphalaSection />
       <BrandDivider />
-      <BuiltForBusySection />
+      <CinematicSection />
+      <BrandDivider />
+      <ComparisonSection />
       <BrandDivider />
       <TomorrowSection />
       <ShahjeetFaqSection />

@@ -32,7 +32,7 @@ export default function WhatsAppWidget() {
       <style suppressHydrationWarning>{`
         .wa-wrap {
           position: fixed;
-          bottom: 96px;
+          bottom: 118px;
           right: 28px;
           z-index: 9999;
           display: flex;
@@ -165,7 +165,7 @@ export default function WhatsAppWidget() {
         }
 
         @media (max-width: 480px) {
-          .wa-wrap { bottom: 74px; right: 14px; }
+          .wa-wrap { bottom: 86px; right: 14px; }
           .wa-tooltip { width: 190px; }
           .wa-btn { width: 48px; height: 48px; }
           .wa-btn::before, .wa-btn::after { width: 48px; height: 48px; }

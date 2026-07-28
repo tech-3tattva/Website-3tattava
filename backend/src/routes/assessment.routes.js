@@ -33,7 +33,8 @@ const ritualSchema = z
 router.post("/", verifyToken, async (req, res, next) => {
   try {
     const schema = z.object({
-      stage: z.string().min(1),
+      // legacy performance quiz (optional now)
+      stage: z.string().optional(),
       sanskrit: z.string().optional(),
       stageLine: z.string().optional(),
       energyScore: z.number().optional(),
@@ -41,13 +42,28 @@ router.post("/", verifyToken, async (req, res, next) => {
       ritual: ritualSchema,
       other: ritualSchema,
       answers: z
-        .array(
-          z.object({
-            id: z.string().optional(),
-            question: z.string().optional(),
-            answer: z.string().optional(),
-          })
-        )
+        .array(z.object({ id: z.string().optional(), question: z.string().optional(), answer: z.string().optional() }))
+        .optional(),
+      // Prakriti Analysis (sections 1–11)
+      kind: z.string().optional(),
+      patient: z
+        .object({
+          fullName: z.string().optional(), age: z.string().optional(), gender: z.string().optional(),
+          height: z.string().optional(), weight: z.string().optional(), occupation: z.string().optional(),
+          dailyActivity: z.string().optional(), chiefComplaints: z.string().optional(), durationComplaints: z.string().optional(),
+        })
+        .partial()
+        .optional(),
+      prakritiAnswers: z
+        .array(z.object({ section: z.string().optional(), key: z.string().optional(), question: z.string().optional(), answer: z.string().optional(), dosha: z.string().optional() }))
+        .optional(),
+      medicalHistory: z
+        .object({ chronicConditions: z.string().optional(), painAreas: z.string().optional(), inflammation: z.string().optional(), hormonalIssues: z.string().optional(), lifestyleDiseases: z.string().optional() })
+        .partial()
+        .optional(),
+      preliminaryDosha: z
+        .object({ vata: z.number().optional(), pitta: z.number().optional(), kapha: z.number().optional(), primary: z.string().optional() })
+        .partial()
         .optional(),
       source: z.string().optional(),
     });
@@ -58,9 +74,10 @@ router.post("/", verifyToken, async (req, res, next) => {
 
     const assessment = await Assessment.create({
       user: user._id,
-      name: user.name,
+      name: data.patient?.fullName || user.name,
       email: user.email,
       phone: user.phone,
+      kind: data.kind || (data.prakritiAnswers ? "prakriti" : "performance"),
       stage: data.stage,
       sanskrit: data.sanskrit,
       stageLine: data.stageLine,
@@ -69,6 +86,10 @@ router.post("/", verifyToken, async (req, res, next) => {
       ritual: data.ritual,
       other: data.other,
       answers: data.answers || [],
+      patient: data.patient,
+      prakritiAnswers: data.prakritiAnswers || [],
+      medicalHistory: data.medicalHistory,
+      preliminaryDosha: data.preliminaryDosha,
       source: data.source || "assessment",
       ip: req.ip,
       userAgent: req.headers["user-agent"],

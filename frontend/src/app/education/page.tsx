@@ -52,6 +52,7 @@ const HIGH_INTENT_GUIDES: { slug: string; title: string }[] = [
   { slug: "how-to-read-shilajit-lab-report", title: "How to Read a Shilajit Lab Report" },
   { slug: "shilajit-vs-ashwagandha", title: "Shilajit vs Ashwagandha: Honest Comparison" },
   { slug: "shilajit-side-effects", title: "Shilajit Side Effects & Safety, Explained" },
+  { slug: "how-your-body-responds-to-shilajit", title: "How Your Body Responds to Shilajit" },
 ];
 
 export default async function EducationPage() {

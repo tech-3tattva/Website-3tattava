@@ -66,13 +66,13 @@ const GLASS_LIGHT: GlassStyle = {
 /* ─── Marquee messages ─── */
 const TICKER_ITEMS = [
   "✦ 80+ Ionic Trace Minerals",
-  "◆ 70%+ Fulvic Acid — Third-Party Lab Tested",
+  "◆ 70%+ Fulvic Acid — NABL Third-Party Lab Tested",
   "✦ Free Shipping Above ₹999",
-  "◆ Tear · Squeeze · Perform — Honey Sticks",
-  "✦ Doctor-Formulated by Dr. Kashish (BAMS)",
-  "◆ Pure Himalayan Shilajit Resin — 600mg",
+  "◆ Tear · Squeeze · Perform · Honey Shilajit Sticks",
+  "✦ Doctor-Led Performance Ayurveda · Dr. Kashish Gupta",
+  "◆ Pure Himalayan Ladakhi Shodhit Shilajit Resins",
   "✦ Classically Purified Through Triphala",
-  "◆ Performance Ayurveda for Modern Humans",
+  "◆ Government of NCT of Delhi Graduate · CBPACS · Former Consultant, NCISM Ministry of Ayush",
   "✦ Lab Reports on Every Product",
   "◆ India\u2019s First Shilajit Honey Sticks",
 ];

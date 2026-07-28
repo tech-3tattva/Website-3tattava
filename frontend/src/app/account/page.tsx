@@ -5,7 +5,8 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import type { Address, Order, Product } from "@shared/types";
-import { api, getMyAssessment, getWelcomeOffer, type AssessmentRecord, type WelcomeOffer } from "@/lib/api";
+import { api, getMyAssessment, getWelcomeOffer, type AssessmentRecord, type DoshaScore, type WelcomeOffer } from "@/lib/api";
+import { DOCTOR_SCORING_TRAITS } from "@/data/prakriti";
 import { formatPrice } from "@/lib/utils";
 import { useAuth } from "@/context/AuthContext";
 import {
@@ -427,62 +428,159 @@ export default function AccountPage() {
             boxShadow: "0 16px 40px rgba(68,42,27,0.22)",
           }}
         >
-          <div className="flex flex-wrap items-start justify-between gap-4">
-            <div className="flex items-start gap-4 min-w-0">
-              <span
-                className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl"
-                style={{ background: "linear-gradient(135deg,#cd872a,#e4c079)", boxShadow: "0 8px 20px rgba(205,135,42,0.35)" }}
-              >
-                <ClipboardList size={24} color="#fff" />
-              </span>
-              <div className="min-w-0">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.16em]" style={{ color: "#e4c079" }}>
-                  My Assessment Report
-                </p>
-                <div className="mt-1.5 flex flex-wrap items-center gap-2">
+          {assessment.kind === "prakriti" || (assessment.prakritiAnswers?.length ?? 0) > 0 || assessment.doctorScoring ? (
+            /* ── Prakriti report ─────────────────────────────────────────── */
+            <div>
+              <div className="flex flex-wrap items-start justify-between gap-4">
+                <div className="flex items-start gap-4 min-w-0">
                   <span
-                    className="rounded-full px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wider"
-                    style={{ background: "linear-gradient(135deg,#cd872a,#e4c079)", color: ESPRESSO }}
+                    className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl"
+                    style={{ background: "linear-gradient(135deg,#cd872a,#e4c079)", boxShadow: "0 8px 20px rgba(205,135,42,0.35)" }}
                   >
-                    {assessment.stage}
+                    <ClipboardList size={24} color="#fff" />
                   </span>
-                  <span className="text-sm" style={{ color: "rgba(247,240,226,0.72)", fontFamily: "var(--font-devanagari), serif" }}>
-                    {assessment.sanskrit}
-                  </span>
+                  <div className="min-w-0">
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.16em]" style={{ color: "#e4c079" }}>
+                      My Prakriti Report
+                    </p>
+                    {assessment.doctorScoring?.filled ? (
+                      <>
+                        <div className="mt-1.5 flex flex-wrap items-center gap-2">
+                          <span
+                            className="rounded-full px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wider"
+                            style={{ background: "linear-gradient(135deg,#cd872a,#e4c079)", color: ESPRESSO }}
+                          >
+                            {assessment.doctorScoring.doshaResult || "Prakriti finalised"}
+                          </span>
+                        </div>
+                        <p className="mt-2 text-[11px]" style={{ color: "rgba(247,240,226,0.6)" }}>
+                          Reviewed by your Vaidya{assessment.doctorScoring.filledAt ? ` on ${formatOrderedAt(assessment.doctorScoring.filledAt)}` : ""}
+                        </p>
+                      </>
+                    ) : (
+                      <>
+                        <div className="mt-1.5 flex flex-wrap items-center gap-2">
+                          <span
+                            className="rounded-full px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wider"
+                            style={{ background: "rgba(247,240,226,0.14)", color: CREAM }}
+                          >
+                            Preliminary:{" "}
+                            {assessment.preliminaryDosha?.primary
+                              ? assessment.preliminaryDosha.primary.charAt(0).toUpperCase() + assessment.preliminaryDosha.primary.slice(1)
+                              : "—"}
+                            -leaning
+                          </span>
+                        </div>
+                        <p className="mt-2 text-[13px]" style={{ color: "rgba(247,240,226,0.7)" }}>
+                          Your Vaidya is reviewing your analysis. Your final Prakriti will appear here.
+                        </p>
+                      </>
+                    )}
+                    <p className="mt-1 text-[11px]" style={{ color: "rgba(247,240,226,0.5)" }}>
+                      Submitted on {formatOrderedAt(assessment.createdAt)}
+                    </p>
+                  </div>
                 </div>
-                <div className="mt-2 flex flex-wrap items-center gap-2">
-                  <span
-                    className="rounded-md px-2 py-1 text-[11px] font-semibold"
-                    style={{ background: "rgba(247,240,226,0.14)", color: CREAM }}
-                  >
-                    Energy {assessment.energyScore}
-                  </span>
-                  <span
-                    className="rounded-md px-2 py-1 text-[11px] font-semibold"
-                    style={{ background: "rgba(247,240,226,0.14)", color: CREAM }}
-                  >
-                    Recovery {assessment.recoveryScore}
-                  </span>
-                </div>
-                <p className="mt-2 text-sm font-semibold" style={{ color: CREAM }}>
-                  {assessment.ritual.name}
-                  <span className="ml-2 font-normal" style={{ color: "rgba(247,240,226,0.62)" }}>
-                    {assessment.ritual.tagline}
-                  </span>
-                </p>
-                <p className="mt-1 text-[11px]" style={{ color: "rgba(247,240,226,0.5)" }}>
-                  Completed on {formatOrderedAt(assessment.createdAt)}
-                </p>
+                <Link
+                  href="/assessment"
+                  className="inline-flex shrink-0 items-center gap-1.5 rounded-xl px-4 py-2 text-sm font-semibold transition-all hover:-translate-y-0.5"
+                  style={{ background: "linear-gradient(105deg,#A67B2F,#E4C079,#cd872a,#A67B2F)", color: ESPRESSO }}
+                >
+                  Retake →
+                </Link>
               </div>
+
+              {assessment.doctorScoring?.filled && (
+                <div className="mt-4 rounded-xl p-3 sm:p-4" style={{ background: "rgba(247,240,226,0.06)" }}>
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left" style={{ fontSize: 12, color: CREAM, borderCollapse: "collapse" }}>
+                      <thead>
+                        <tr style={{ color: "rgba(247,240,226,0.55)" }}>
+                          {["Trait", "Vata", "Pitta", "Kapha"].map((h) => (
+                            <th key={h} className="py-1 px-2 font-semibold uppercase tracking-wider" style={{ fontSize: 10 }}>{h}</th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {DOCTOR_SCORING_TRAITS.map((t) => {
+                          const ds = assessment.doctorScoring as unknown as Record<string, DoshaScore | undefined>;
+                          const row = ds[t.key];
+                          return (
+                            <tr key={t.key} style={{ borderTop: "1px solid rgba(247,240,226,0.1)" }}>
+                              <td className="py-1.5 px-2 font-semibold">{t.label}</td>
+                              <td className="py-1.5 px-2">{row?.vata ?? 0}</td>
+                              <td className="py-1.5 px-2">{row?.pitta ?? 0}</td>
+                              <td className="py-1.5 px-2">{row?.kapha ?? 0}</td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                  {assessment.doctorScoring.analysis && (
+                    <p className="mt-3 text-[13px] leading-relaxed" style={{ color: "rgba(247,240,226,0.82)" }}>
+                      <span className="font-semibold" style={{ color: "#e4c079" }}>Analysis: </span>
+                      {assessment.doctorScoring.analysis}
+                    </p>
+                  )}
+                </div>
+              )}
             </div>
-            <Link
-              href="/assessment"
-              className="inline-flex shrink-0 items-center gap-1.5 rounded-xl px-4 py-2 text-sm font-semibold transition-all hover:-translate-y-0.5"
-              style={{ background: "linear-gradient(105deg,#A67B2F,#E4C079,#cd872a,#A67B2F)", color: ESPRESSO }}
-            >
-              Retake assessment →
-            </Link>
-          </div>
+          ) : (
+            /* ── Legacy performance report ───────────────────────────────── */
+            <div className="flex flex-wrap items-start justify-between gap-4">
+              <div className="flex items-start gap-4 min-w-0">
+                <span
+                  className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl"
+                  style={{ background: "linear-gradient(135deg,#cd872a,#e4c079)", boxShadow: "0 8px 20px rgba(205,135,42,0.35)" }}
+                >
+                  <ClipboardList size={24} color="#fff" />
+                </span>
+                <div className="min-w-0">
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.16em]" style={{ color: "#e4c079" }}>
+                    My Assessment Report
+                  </p>
+                  <div className="mt-1.5 flex flex-wrap items-center gap-2">
+                    <span
+                      className="rounded-full px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wider"
+                      style={{ background: "linear-gradient(135deg,#cd872a,#e4c079)", color: ESPRESSO }}
+                    >
+                      {assessment.stage ?? "—"}
+                    </span>
+                    <span className="text-sm" style={{ color: "rgba(247,240,226,0.72)", fontFamily: "var(--font-devanagari), serif" }}>
+                      {assessment.sanskrit}
+                    </span>
+                  </div>
+                  <div className="mt-2 flex flex-wrap items-center gap-2">
+                    <span className="rounded-md px-2 py-1 text-[11px] font-semibold" style={{ background: "rgba(247,240,226,0.14)", color: CREAM }}>
+                      Energy {assessment.energyScore ?? 0}
+                    </span>
+                    <span className="rounded-md px-2 py-1 text-[11px] font-semibold" style={{ background: "rgba(247,240,226,0.14)", color: CREAM }}>
+                      Recovery {assessment.recoveryScore ?? 0}
+                    </span>
+                  </div>
+                  {assessment.ritual && (
+                    <p className="mt-2 text-sm font-semibold" style={{ color: CREAM }}>
+                      {assessment.ritual.name}
+                      <span className="ml-2 font-normal" style={{ color: "rgba(247,240,226,0.62)" }}>
+                        {assessment.ritual.tagline}
+                      </span>
+                    </p>
+                  )}
+                  <p className="mt-1 text-[11px]" style={{ color: "rgba(247,240,226,0.5)" }}>
+                    Completed on {formatOrderedAt(assessment.createdAt)}
+                  </p>
+                </div>
+              </div>
+              <Link
+                href="/assessment"
+                className="inline-flex shrink-0 items-center gap-1.5 rounded-xl px-4 py-2 text-sm font-semibold transition-all hover:-translate-y-0.5"
+                style={{ background: "linear-gradient(105deg,#A67B2F,#E4C079,#cd872a,#A67B2F)", color: ESPRESSO }}
+              >
+                Retake assessment →
+              </Link>
+            </div>
+          )}
         </div>
       ) : isLoggedIn ? (
         <Link

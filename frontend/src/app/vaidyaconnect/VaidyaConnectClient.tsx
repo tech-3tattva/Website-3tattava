@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence, useInView } from "framer-motion";
-import PurchaseGate, { LockedTeaser } from "@/components/purchase/PurchaseGate";
+import PrakritiAssessment from "@/components/assessment/PrakritiAssessment";
 import ConsultationModal from "@/components/vaidyaconnect/ConsultationModal";
 
 // ─── TYPES & CONSTANTS ───────────────────────────────────────────────────────
@@ -491,112 +491,6 @@ function FeaturedCard({ doc, idx, onConsult }: { doc:FeaturedDoc; idx:number; on
 
 // ─── LEAD FORM ───────────────────────────────────────────────────────────────
 
-function AssessmentForm() {
-  const [form, setForm] = useState({name:"",email:"",whatsapp:""});
-  const [submitted, setSubmitted] = useState(false);
-
-  const inputStyle: React.CSSProperties = {
-    width:"100%",padding:"12px 16px",
-    background:"#fff",border:"1px solid rgba(183,163,146,.40)",
-    fontFamily:FONT,fontSize:"14px",color:"#1c1304",
-    outline:"none",
-    fontVariationSettings:"'wdth' 100,'wght' 300",
-    boxSizing:"border-box",
-  };
-
-  if (submitted) {
-    return (
-      <motion.div
-        initial={{opacity:0,scale:.96}}
-        animate={{opacity:1,scale:1}}
-        transition={SPRING}
-        style={{
-          textAlign:"center",padding:"32px 24px",
-          background:"rgba(200,150,62,.08)",
-          border:"1px solid rgba(200,150,62,.28)",
-        }}
-      >
-        <div style={{fontSize:"28px",marginBottom:"12px"}}>✓</div>
-        <p style={{
-          fontVariationSettings:"'wdth' 85,'wght' 700",
-          fontFamily:FONT,fontSize:"16px",color:"#1c1304",marginBottom:"6px",
-        }}>
-          Assessment Submitted
-        </p>
-        <p style={{
-          fontVariationSettings:"'wdth' 100,'wght' 300",
-          fontFamily:FONT,fontSize:"13px",color:"rgba(28,19,4,.55)",lineHeight:1.6,
-        }}>
-          Our Ayurvedic doctor reviews every submission. You will hear back within 24 hours on WhatsApp.
-        </p>
-      </motion.div>
-    );
-  }
-
-  return (
-    <div style={{display:"flex",flexDirection:"column",gap:"12px"}}>
-      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"12px"}}>
-        <div>
-          <label style={{
-            display:"block",fontSize:"10px",letterSpacing:".14em",textTransform:"uppercase",
-            fontVariationSettings:"'wdth' 75,'wght' 600",
-            fontFamily:FONT,color:"rgba(28,19,4,.50)",marginBottom:"6px",
-          }}>
-            Your Name
-          </label>
-          <input
-            type="text" placeholder="Arjun Kumar"
-            value={form.name} onChange={e=>setForm(f=>({...f,name:e.target.value}))}
-            style={inputStyle}
-          />
-        </div>
-        <div>
-          <label style={{
-            display:"block",fontSize:"10px",letterSpacing:".14em",textTransform:"uppercase",
-            fontVariationSettings:"'wdth' 75,'wght' 600",
-            fontFamily:FONT,color:"rgba(28,19,4,.50)",marginBottom:"6px",
-          }}>
-            Email
-          </label>
-          <input
-            type="email" placeholder="you@email.com"
-            value={form.email} onChange={e=>setForm(f=>({...f,email:e.target.value}))}
-            style={inputStyle}
-          />
-        </div>
-      </div>
-      <div>
-        <label style={{
-          display:"block",fontSize:"10px",letterSpacing:".14em",textTransform:"uppercase",
-          fontVariationSettings:"'wdth' 75,'wght' 600",
-          fontFamily:FONT,color:"rgba(28,19,4,.50)",marginBottom:"6px",
-        }}>
-          WhatsApp Number
-        </label>
-        <input
-          type="tel" placeholder="+91 98765 43210"
-          value={form.whatsapp} onChange={e=>setForm(f=>({...f,whatsapp:e.target.value}))}
-          style={inputStyle}
-        />
-      </div>
-      <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",flexWrap:"wrap",gap:"12px",marginTop:"4px"}}>
-        <p style={{
-          fontSize:"11px",color:"rgba(28,19,4,.40)",
-          fontVariationSettings:"'wdth' 100,'wght' 300",
-          fontFamily:FONT,lineHeight:1.5,maxWidth:"340px",
-        }}>
-          Our Ayurvedic doctor reviews every submission personally. Response within 24 hours.
-        </p>
-        <PopBtn
-          variant="gold"
-          onClick={()=>{ if(form.name&&form.email) setSubmitted(true); }}
-        >
-          Take Assessment →
-        </PopBtn>
-      </div>
-    </div>
-  );
-}
 
 // ─── MAIN ────────────────────────────────────────────────────────────────────
 
@@ -806,7 +700,7 @@ export default function VaidyaConnectClient() {
                 letterSpacing:"-.02em",lineHeight:1.1,
                 color:"#1c1304",marginBottom:"12px",
               }}>
-                Take the Performance Assessment
+                Take Your Prakriti Analysis
               </h2>
               <p style={{
                 fontVariationSettings:"'wdth' 100,'wght' 300",
@@ -814,7 +708,7 @@ export default function VaidyaConnectClient() {
                 fontSize:"15px",color:"rgba(28,19,4,.52)",
                 maxWidth:"480px",margin:"0 auto",lineHeight:1.65,
               }}>
-                A six-domain questionnaire — our Ayurvedic doctor reviews every submission and responds with personalised guidance within 24 hours.
+                A guided body-type questionnaire — our Ayurvedic doctor reviews every submission and finalises your Prakriti (Vata · Pitta · Kapha) within 24 hours.
               </p>
             </div>
 
@@ -853,18 +747,7 @@ export default function VaidyaConnectClient() {
               borderTop:"1px solid rgba(183,163,146,.20)",
               paddingTop:"32px",
             }}>
-              <PurchaseGate
-                fallback={
-                  <LockedTeaser
-                    eyebrow="Unlock After Your First Ritual"
-                    title="Your Performance Assessment Awaits"
-                    body="Our Ayurvedic doctor's personalised six-domain assessment — and 24-hour WhatsApp guidance — unlock the moment you begin your first ritual. Claim yours with a purchase."
-                    ctaLabel="Shop & Unlock"
-                  />
-                }
-              >
-                <AssessmentForm/>
-              </PurchaseGate>
+              <PrakritiAssessment embedded />
             </div>
           </motion.div>
         </div>

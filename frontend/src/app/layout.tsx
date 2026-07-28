@@ -19,6 +19,7 @@ import GoogleAnalytics from "@/components/GoogleAnalytics";
 import MetaPixel from "@/components/MetaPixel";
 import ChromeGate from "@/components/layout/ChromeGate";
 import WelcomeOfferNotification from "@/components/WelcomeOfferNotification";
+import WaitlistAutoOpen from "@/components/WaitlistAutoOpen";
 
 const archivo = localFont({
   src: [
@@ -131,6 +132,7 @@ export default function RootLayout({
           </ChromeGate>
           <CookieConsent />
           <WelcomeOfferNotification />
+          <WaitlistAutoOpen />
         </Providers>
       </body>
     </html>

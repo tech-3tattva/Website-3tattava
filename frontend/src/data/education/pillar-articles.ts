@@ -10,6 +10,7 @@ import { article as shilajitSafety } from "./pillars/shilajit-safety";
 import { article as howToCheckRealShilajit } from "./pillars/how-to-check-real-shilajit";
 import { article as howToTakeShilajit } from "./pillars/how-to-take-shilajit";
 import { article as whatIsTriphala } from "./pillars/what-is-triphala";
+import { article as howYourBodyResponds } from "./pillars/how-your-body-responds";
 
 export const PILLAR_ARTICLES: BlogArticle[] = [
   {
@@ -107,6 +108,7 @@ export const PILLAR_ARTICLES: BlogArticle[] = [
   howToCheckRealShilajit,
   howToTakeShilajit,
   whatIsTriphala,
+  howYourBodyResponds,
 ];
 
 const MAP: Record<string, BlogArticle> = Object.fromEntries(PILLAR_ARTICLES.map((a) => [a.slug, a]));

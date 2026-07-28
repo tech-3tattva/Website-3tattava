@@ -206,7 +206,7 @@ export default function TrinityPosterSection() {
             margin: '14px auto 0',
           }}
         >
-          Every Three Tatva Ritual is Lab Verified, Doctor Formulated for Real
+          Every 3Tattava Ritual is Lab Verified, Doctor Formulated for Real
           Everyday Performance.
         </motion.p>
 

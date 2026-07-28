@@ -140,7 +140,7 @@ export default function PhilosophyRevamp() {
                   initial={reduce ? { opacity: 0 } : { opacity: 0, scale: 0.5, filter: 'blur(10px)' }}
                   animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
                   transition={reduce ? { duration: 0.2 } : { duration: 0.75, ease: EASE }}
-                  style={{ width: 'clamp(150px, 20vw, 220px)', height: 'auto', display: 'block', margin: '0.5rem auto 1.9rem' }}
+                  style={{ width: 'clamp(150px, 20vw, 220px)', height: 'auto', display: 'block', margin: '0.5rem auto 3.75rem' }}
                 />
                 <div
                   className="philo-bbb"

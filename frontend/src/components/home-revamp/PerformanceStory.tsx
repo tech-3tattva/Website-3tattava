@@ -43,7 +43,7 @@ const PANELS: Panel[] = [
     label: 'Performance In Your Pocket',
     heading: 'Shahjeet Sticks',
     body:
-      '600mg of purified Himalayan Shilajit in every honey stick. Tear, squeeze, perform —\na 10-second daily ritual for strength, stamina and vitality.',
+      '600mg of classically purified shilajit blended with honey for a convenient daily ritual that fits wherever life takes you. Just squeeze and go.',
     meta: '30 Sticks · 600mg · Honey-Infused · ₹1,399',
     ctaLabel: 'Shop Shahjeet Sticks',
     ctaHref: '/products/shahjeet-sticks',
@@ -55,7 +55,7 @@ const PANELS: Panel[] = [
     label: 'One Resin Complete Vitality',
     heading: 'RockResin',
     body:
-      'Classically Purified Through Triphala — an authentic Himalayan Shilajit resin.\nAn ancient mineral elixir for modern energy, strength and longevity.',
+      'Experience the 3Tattava Dip · Hook · Swirl Ritual.\nClassically purified Himalayan shilajit resin crafted for busy professionals, athletes, and anyone seeking authentic Ayurveda without compromise.',
     meta: 'Classically Purified Shilajit Resin',
     ctaLabel: 'Discover RockResin',
     ctaHref: '/products/shodhit-shilajit-resin',

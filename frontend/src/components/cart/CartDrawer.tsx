@@ -8,6 +8,7 @@ import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
 import { CHECKOUT_ADDRESS_PATH } from "@/lib/auth-redirect";
 import { formatPrice } from "@/lib/utils";
+import BundleUpsell from "./BundleUpsell";
 import CartItem from "./CartItem";
 
 export default function CartDrawer() {
@@ -103,6 +104,7 @@ export default function CartDrawer() {
             {items.length > 0 && (
               <>
                 <div className="border-t border-border" />
+                <BundleUpsell className="mx-4 mt-3" />
                 <div className="px-4 py-4 bg-cream/50 rounded-t-lg mx-4 mb-2 space-y-2">
                   <div className="flex justify-between text-sm">
                     <span>Subtotal</span>

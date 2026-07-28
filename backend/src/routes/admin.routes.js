@@ -690,6 +690,38 @@ router.get("/assessments", async (req, res, next) => {
   }
 });
 
+// PATCH /api/admin/assessments/:id/scoring — doctor fills Section 12 (Final Prakriti Scoring)
+router.patch("/assessments/:id/scoring", async (req, res, next) => {
+  try {
+    const vpk = z
+      .object({ vata: z.number().min(0).max(5).optional(), pitta: z.number().min(0).max(5).optional(), kapha: z.number().min(0).max(5).optional() })
+      .partial()
+      .optional();
+    const schema = z.object({
+      bodyType: vpk, digestion: vpk, sleep: vpk, mind: vpk, skin: vpk, energy: vpk,
+      analysis: z.string().max(4000).optional(),
+      doshaResult: z.string().max(200).optional(),
+    });
+    const data = schema.parse(req.body);
+    const assessment = await Assessment.findById(req.params.id).exec();
+    if (!assessment) throw new ApiError(404, "Assessment not found");
+
+    assessment.doctorScoring = {
+      filled: true,
+      filledAt: new Date(),
+      filledBy: req.user?.email || "doctor",
+      bodyType: data.bodyType || {}, digestion: data.digestion || {}, sleep: data.sleep || {},
+      mind: data.mind || {}, skin: data.skin || {}, energy: data.energy || {},
+      analysis: data.analysis || "", doshaResult: data.doshaResult || "",
+    };
+    await assessment.save();
+    return res.json({ assessment });
+  } catch (err) {
+    if (err instanceof z.ZodError) return next(new ApiError(400, err.issues[0]?.message || "Invalid scoring"));
+    return next(err);
+  }
+});
+
 // GET /api/admin/newsletter — newsletter subscribers
 router.get("/newsletter", async (req, res, next) => {
   try {
