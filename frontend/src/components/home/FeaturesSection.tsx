@@ -26,7 +26,7 @@ const features = [
     number: '03',
     eyebrow: 'BECOME → LONGEVITY',
     title: 'The Source',
-    body: 'Formed over 300 years under extreme Himalayan pressure at 10,000–16,000ft. Purified using classical Triphala Shodhan — the same method prescribed in Ashtanga Hridayam. Every batch third-party tested by NABL-accredited laboratory.',
+    body: 'Formed over 300 years under extreme Himalayan pressure above 16,000 ft. Purified using classical Triphala Shodhan — the same method prescribed in Ashtanga Hridayam. Every batch third-party tested by NABL-accredited laboratory.',
     nablLink: 'https://media.3tattava.com/lab-reports/RK2024-08.pdf',
     image: 'https://media.3tattava.com/features/resin-mountain.png',
     imageLeft: true,

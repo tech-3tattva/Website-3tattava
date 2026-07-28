@@ -11,6 +11,7 @@ import { ROCKRESIN_FAQS } from "@/data/faqs/rockresin";
 import BrandDivider from "@/components/product/BrandDivider";
 import ProductSwipeLink from "@/components/product/ProductSwipeLink";
 import { LEGAL } from "@/lib/legal";
+import TmMark from "@/components/ui/TmMark";
 
 // ─── TOKENS ───────────────────────────────────────────────────────────────────
 const F = "var(--font-primary), system-ui, sans-serif";
@@ -156,7 +157,7 @@ function HeroSection() {
       <div style={{ maxWidth: 1180, margin: "0 auto", padding: "clamp(118px,13vh,158px) 24px clamp(8px,1.2vh,18px)", position: "relative", zIndex: 1 }}>
         <motion.p initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, ease: EASE }}
           style={{ ...eyebrow, textAlign: "center", color: GOLD, marginBottom: 14 }}>
-          Doctor-Led Performance Ayurveda™
+          Doctor-Led Performance Ayurveda<TmMark />
         </motion.p>
         <motion.h1 initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.7, ease: EASE }}
           style={{ ...heading, fontSize: T.hero, textAlign: "center", maxWidth: "17ch", margin: "0 auto clamp(32px,5vw,56px)" }}>
@@ -168,7 +169,7 @@ function HeroSection() {
           <Reveal style={{ position: "relative", zIndex: 1, marginBottom: "clamp(56px,8vw,110px)" }}>
             <p style={{ ...eyebrow, marginBottom: 12 }}>Dip. Hook. Swirl.</p>
             <p style={{ fontFamily: F, fontVariationSettings: "'wght' 700", fontSize: T.bodyLg, lineHeight: 1.42, color: ESPRESSO, maxWidth: "34ch", textTransform: "uppercase", margin: "0 0 clamp(20px,2.5vw,26px)" }}>
-              Classically purified Himalayan shilajit resin crafted for busy professionals, athletes, and anyone seeking authentic Ayurveda without compromise.
+              Classically purified Himalayan Ladakhi shilajit resin crafted for busy professionals, athletes, and anyone seeking authentic Ayurveda without compromise.
             </p>
 
             <p style={{ ...eyebrow, marginBottom: 10 }}>Choose your ritual</p>
@@ -204,6 +205,11 @@ function HeroSection() {
           </Reveal>
 
           <motion.div className="rr-media" initial={{ opacity: 0, scale: 0.94 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.8, ease: EASE }} style={{ position: "relative", zIndex: 1, display: "flex", justifyContent: "center", marginTop: "clamp(12px,2vw,28px)" }}>
+            <div aria-hidden style={{ position: "absolute", top: "clamp(-46px,-4vw,-20px)", right: "clamp(-6px,1vw,12px)", zIndex: 4, background: "#fff", border: `2px solid ${GOLD}`, borderRadius: "46% 54% 55% 45% / 54% 46% 54% 46%", padding: "14px 20px", textAlign: "center", transform: "rotate(-6deg)", boxShadow: "0 12px 30px rgba(68,42,27,.20)" }}>
+              <span style={{ display: "block", fontFamily: F, fontVariationSettings: "'wght' 700", fontSize: 9, letterSpacing: ".16em", textTransform: "uppercase", color: GOLD, marginBottom: 2 }}>Costing / Day</span>
+              <span style={{ display: "block", fontFamily: F, fontVariationSettings: "'wght' 800", fontSize: "clamp(20px,2.6vw,28px)", color: ESPRESSO, lineHeight: 1 }}>₹29.97</span>
+              <span style={{ display: "block", fontFamily: F, fontSize: 10, color: TAUPE, marginTop: 2 }}>per day</span>
+            </div>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/home/rockresin-hero-product.png?v=2" alt="Classically purified Himalayan Shilajit resin jar, tub and spoon" style={{ width: "100%", maxWidth: 460, height: "auto", display: "block", filter: "drop-shadow(0 26px 50px rgba(68,42,27,.20))" }} />
           </motion.div>
@@ -333,8 +339,8 @@ const CINE_FACTS: { stat?: string; text: string }[] = [
   { text: "Eurofins & NABL — third-party lab tested" },
   { text: "Classically Purified Through Triphala" },
   { text: "Negligible heavy metals — far below ordinary shilajit" },
-  { text: "Documented Himalayan sourcing" },
-  { stat: "16,000ft", text: "Sourced from high-altitude Himalayan rock" },
+  { text: "Documented Himalayan Ladakhi sourcing" },
+  { stat: "16,000ft", text: "Sourced above 16,000 ft — high-altitude Himalayan Ladakhi rock" },
   { text: "Vaidya (doctor) formulated by Dr. Kashish Gupta (BAMS)" },
   { text: "100% pure resin form — authentic traditional Shilajit" },
   { text: "Formulated for men and women both" },
@@ -411,13 +417,14 @@ const SWIRL_VIDEOS = [
 
 function SwirlVideoPlayer() {
   const [idx, setIdx] = useState(0);
+  const [muted, setMuted] = useState(true);
   const go = (i: number) => setIdx((i + SWIRL_VIDEOS.length) % SWIRL_VIDEOS.length);
   const v = SWIRL_VIDEOS[idx];
   return (
     <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "clamp(18px,2.5vw,26px)", width: "100%" }}>
       <div style={{ position: "relative" }}>
         {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
-        <video key={v.url} autoPlay muted playsInline onEnded={() => go(idx + 1)} src={v.url}
+        <video key={v.url} autoPlay muted={muted} playsInline onEnded={() => go(idx + 1)} src={v.url}
           style={{ height: "clamp(400px,46vw,560px)", width: "auto", aspectRatio: "4 / 5", objectFit: "cover", borderRadius: 20, display: "block", boxShadow: "0 24px 60px rgba(68,42,27,.28)" }} />
         <span style={{ position: "absolute", top: 16, left: 16, background: "rgba(28,19,4,.55)", color: CREAM, fontFamily: F, fontVariationSettings: "'wght' 800", fontSize: 12, letterSpacing: ".12em", textTransform: "uppercase", padding: "6px 12px", borderRadius: 999 }}>
           {String(idx + 1).padStart(2, "0")} · {v.title}
@@ -425,6 +432,10 @@ function SwirlVideoPlayer() {
         <button type="button" onClick={() => go(idx + 1)} aria-label="Next video"
           style={{ position: "absolute", right: 14, top: "50%", transform: "translateY(-50%)", width: 46, height: 46, borderRadius: "50%", border: "1px solid rgba(247,240,226,.55)", background: "rgba(28,19,4,.5)", color: CREAM, cursor: "pointer", fontSize: 20, lineHeight: 1, display: "flex", alignItems: "center", justifyContent: "center" }}>
           →
+        </button>
+        <button type="button" onClick={() => setMuted((m) => !m)} aria-label={muted ? "Unmute video" : "Mute video"}
+          style={{ position: "absolute", bottom: 14, right: 14, width: 40, height: 40, borderRadius: "50%", border: "1px solid rgba(247,240,226,.55)", background: "rgba(28,19,4,.5)", color: CREAM, cursor: "pointer", fontSize: 16, lineHeight: 1, display: "flex", alignItems: "center", justifyContent: "center" }}>
+          {muted ? "🔇" : "🔊"}
         </button>
       </div>
       <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", justifyContent: "center" }}>
@@ -453,13 +464,9 @@ function SwirlRitualSection() {
         <Reveal style={{ textAlign: "center" }}>
           <h2 style={{ ...heading, color: CREAM, fontSize: T.big, marginBottom: 8 }}>DIP. HOOK. SWIRL</h2>
           <p style={{ fontFamily: F, fontVariationSettings: "'wght' 700", fontSize: "clamp(15px,2vw,20px)", letterSpacing: ".08em", textTransform: "uppercase", color: "#eccf6a", lineHeight: 1.5, margin: "0 0 clamp(28px,4vw,44px)" }}>
-            No Spoon · No Mess
+            No Stirring · No Spillage · No Sticky Fingers · No Wasted Resin
             <br />
-            <span style={{ textTransform: "none", fontStyle: "italic", fontVariationSettings: "'wght' 500", opacity: 0.9 }}>Just</span>
-            <br />
-            Dip · Hook · Swirl™
-            <br />
-            <span style={{ fontSize: "0.82em", opacity: 0.85 }}>3Tattava — SwirlRitual™</span>
+            <span style={{ fontSize: "0.82em", opacity: 0.85 }}>3Tattava — SwirlRitual<TmMark /></span>
           </p>
         </Reveal>
         <Reveal delay={0.05}>
@@ -473,10 +480,10 @@ function SwirlRitualSection() {
             ))}
           </ol>
         </Reveal>
-        <div className="rr-2col" style={{ alignItems: "center", gridTemplateColumns: "1.08fr 0.92fr" }}>
-          <Reveal style={{ display: "flex", justifyContent: "center" }}>
+        <div className="rr-2col" style={{ alignItems: "flex-start", gridTemplateColumns: "1.08fr 0.92fr" }}>
+          <Reveal style={{ display: "flex", justifyContent: "center", marginTop: "clamp(-76px,-4.2vw,-30px)" }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={media("/rockresin/swirl-poster.png")} alt="The RockResin ritual" style={{ width: "100%", maxWidth: 640, height: "auto", display: "block", borderRadius: 20 }} />
+            <img src={media("/rockresin/swirl-poster.png")} alt="The RockResin ritual" style={{ height: "clamp(400px,46vw,560px)", width: "auto", maxWidth: "100%", objectFit: "contain", display: "block", borderRadius: 20 }} />
           </Reveal>
           <Reveal delay={0.1} style={{ display: "flex", justifyContent: "center" }}>
             <SwirlVideoPlayer />

@@ -67,7 +67,7 @@ export const FOOTER_LINKS = {
 };
 
 export const TRUST_STRIP_ITEMS = [
-  { icon: "⛰️", text: "Sourced at 10,000–16,000ft, Himalayan Deposits" },
+  { icon: "⛰️", text: "Sourced above 16,000 ft, Himalayan Ladakhi Deposits" },
   { icon: "⚕️", text: "Doctor-Formulated · Dr. Kashish, BAMS" },
   { icon: "💎", text: "80+ Ionic Trace Minerals" },
 ];

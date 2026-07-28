@@ -4,6 +4,7 @@ import { media } from "@/lib/media";
 import { useEffect, useState, useRef } from 'react'
 import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion'
 import StartRitualButton from "@/components/StartRitualButton";
+import TmMark from "@/components/ui/TmMark";
 
 /* ─── Types ─── */
 interface Particle {
@@ -310,7 +311,7 @@ export default function HeroRevamp() {
           animate="visible"
         >
           <motion.p className="hero-revamp-eyebrow" variants={fadeUpVariant}>
-            Doctor-Led Performance Ayurveda
+            Doctor-Led Performance Ayurveda<TmMark />
           </motion.p>
 
           <motion.h1 className="hero-revamp-h1" variants={fadeUpVariant}>

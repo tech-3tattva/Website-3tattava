@@ -14,7 +14,7 @@ const CREAM = "#f7f0e2";
 const TAUPE = "#b7a392";
 
 /* Founder video — set FOUNDER_VIDEO_URL to Dr. Kashish's video (e.g. https://media.3tattava.com/videos/founder-story.mp4) to embed it here. Empty = branded placeholder. */
-const FOUNDER_VIDEO_URL: string = "";
+const FOUNDER_VIDEO_URL: string = "https://media.3tattava.com/videos/Our%20Story%20(HomePage).MP4";
 const FOUNDER_VIDEO_POSTER: string = "";
 
 /* ─── Credential chips ─── */
@@ -210,7 +210,7 @@ export default function DrKashishSection() {
           {...reveal(0.25)}
           style={{
             flex: "1 1 400px",
-            maxWidth: 520,
+            maxWidth: 360,
             minWidth: 280,
           }}
         >
@@ -219,7 +219,7 @@ export default function DrKashishSection() {
               position: "relative",
               background: INK,
               borderRadius: 16,
-              aspectRatio: "16/9",
+            aspectRatio: "9/16",
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
@@ -230,10 +230,14 @@ export default function DrKashishSection() {
             {FOUNDER_VIDEO_URL ? (
               <video
                 controls
+                muted
+                loop
                 playsInline
                 preload="metadata"
                 poster={FOUNDER_VIDEO_POSTER || undefined}
-                style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                onMouseEnter={(e) => { void e.currentTarget.play().catch(() => {}); }}
+                onMouseLeave={(e) => { e.currentTarget.pause(); }}
+                style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", borderRadius: "inherit" }}
               >
                 <source src={FOUNDER_VIDEO_URL} type="video/mp4" />
               </video>

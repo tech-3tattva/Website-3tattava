@@ -17,8 +17,6 @@ export const metadata: Metadata = {
 const PRODUCTS = [
   {
     slug: "shodhit-shilajit-resin",
-    badge: "DOCTOR-LED",
-    badgeGold: true,
     label: "RockResin®",
     subtitle: "Pure Himalayan Shilajit · 20g Jar",
     tagline: "Ancient Mineral Elixir for Modern Vitality",
@@ -28,8 +26,6 @@ const PRODUCTS = [
   },
   {
     slug: "shahjeet-sticks",
-    badge: "INDIA'S FIRST",
-    badgeGold: false,
     label: "Shahjeet™",
     subtitle: "Honey-Shilajit · 30 Single-Serve Sticks",
     tagline: "Tear. Squeeze. Perform.",
@@ -39,8 +35,6 @@ const PRODUCTS = [
   },
   {
     slug: "founding-bundle-pack",
-    badge: "SAVE ₹600",
-    badgeGold: true,
     label: "Founding Bundle",
     subtitle: "RockResin® + Shahjeet® · Complete Ritual",
     tagline: "The full Balance · Build · Become ritual in one pack.",
@@ -76,20 +70,6 @@ function ProductCard({ p }: { p: (typeof PRODUCTS)[number] }) {
         .shop-cta { transition: background .24s ease, transform .24s ease; }
         .shop-card:hover .shop-cta { background: #1c1304 !important; color: #f7f0e2 !important; }
       `}</style>
-
-      {/* Badge */}
-      <div
-        style={{
-          position: "absolute", top: "16px", left: "16px", zIndex: 2,
-          background: p.badgeGold ? "linear-gradient(105deg,#A67B2F,#E4C079,#C8963E)" : "#1c1304",
-          color: p.badgeGold ? "#1c1304" : "#f7f0e2",
-          fontFamily: F, fontVariationSettings: "'wdth' 75,'wght' 700",
-          fontSize: "8px", letterSpacing: ".22em", textTransform: "uppercase", padding: "4px 10px",
-        }}
-      >
-        {p.badge}
-      </div>
-
 
       {/* Image */}
       <div

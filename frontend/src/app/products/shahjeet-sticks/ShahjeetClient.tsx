@@ -13,6 +13,7 @@ import ScrollFAQAccordion, { type FAQItem } from "@/components/ui/scroll-faqacco
 import BrandDivider from "@/components/product/BrandDivider";
 import ProductSwipeLink from "@/components/product/ProductSwipeLink";
 import { LEGAL } from "@/lib/legal";
+import TmMark from "@/components/ui/TmMark";
 
 // ─── TOKENS ───────────────────────────────────────────────────────────────────
 const F = "var(--font-primary), system-ui, sans-serif";
@@ -140,7 +141,7 @@ function HeroSection() {
       <div style={{ maxWidth: 1180, margin: "0 auto", padding: "clamp(118px,13vh,158px) 24px clamp(8px,1.2vh,18px)", position: "relative", zIndex: 1 }}>
         <motion.p initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, ease: EASE }}
           style={{ ...eyebrow, textAlign: "center", color: GOLD, marginBottom: 16 }}>
-          Doctor-Led Performance Ayurveda™
+          Doctor-Led Performance Ayurveda<TmMark />
         </motion.p>
         <motion.h1 initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.7, ease: EASE }}
           style={{ ...heading, fontSize: T.hero, textAlign: "center", maxWidth: "17ch", margin: "0 auto clamp(32px,5vw,56px)" }}>
@@ -153,7 +154,7 @@ function HeroSection() {
           <Reveal style={{ position: "relative", zIndex: 1, marginBottom: "clamp(56px,8vw,110px)" }}>
             <p style={{ ...eyebrow, marginBottom: 12 }}>No spoon. No mess. No excuses.</p>
             <p style={{ fontFamily: F, fontVariationSettings: "'wght' 700", fontSize: T.bodyLg, lineHeight: 1.42, color: ESPRESSO, maxWidth: "34ch", textTransform: "uppercase", margin: "0 0 clamp(20px,2.5vw,28px)" }}>
-              600mg of classically purified shilajit blended with honey for convenient daily ritual that fits wherever life takes you. Just squeeze and go.
+              600mg of classically purified Himalayan Ladakhi Shilajit blended with honey for a convenient daily ritual that fits wherever life takes you. Just squeeze and go.
             </p>
 
             <p style={{ ...eyebrow, marginBottom: 10 }}>Choose your ritual</p>
@@ -189,6 +190,11 @@ function HeroSection() {
           </Reveal>
 
           <motion.div className="shj-media" initial={{ opacity: 0, scale: 0.94 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.8, ease: EASE }} style={{ position: "relative", zIndex: 1, display: "flex", justifyContent: "center" }}>
+            <div aria-hidden style={{ position: "absolute", top: "clamp(-10px,-1vw,6px)", right: "clamp(-6px,1vw,12px)", zIndex: 4, background: "#fff", border: `2px solid ${GOLD}`, borderRadius: "46% 54% 55% 45% / 54% 46% 54% 46%", padding: "14px 20px", textAlign: "center", transform: "rotate(-6deg)", boxShadow: "0 12px 30px rgba(68,42,27,.20)" }}>
+              <span style={{ display: "block", fontFamily: F, fontVariationSettings: "'wght' 700", fontSize: 9, letterSpacing: ".16em", textTransform: "uppercase", color: GOLD, marginBottom: 2 }}>Costing / Day</span>
+              <span style={{ display: "block", fontFamily: F, fontVariationSettings: "'wght' 800", fontSize: "clamp(20px,2.6vw,28px)", color: ESPRESSO, lineHeight: 1 }}>₹46.63</span>
+              <span style={{ display: "block", fontFamily: F, fontSize: 10, color: TAUPE, marginTop: 2 }}>per day</span>
+            </div>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="https://media.3tattava.com/products/tgftcf%201.png" alt="3tattava Shahjeet Sticks canister with a honey stick" style={{ width: "100%", maxWidth: 520, height: "auto", display: "block", filter: "drop-shadow(0 26px 50px rgba(68,42,27,.22))" }} />
           </motion.div>
@@ -297,7 +303,7 @@ const CINE_FACTS: { stat?: string; text: string }[] = [
   { text: "No spoon. No mess. No measuring." },
   { stat: "80+", text: "Trace minerals · 70%+ fulvic acid" },
   { text: "AYUSH-GMP certified manufacturing" },
-  { stat: "16,000ft", text: "Sourced from high Himalayan deposits" },
+  { stat: "16,000ft", text: "Sourced above 16,000 ft — Himalayan Ladakhi deposits" },
   { stat: "30", text: "Sticks per box — ready anytime, anywhere" },
 ];
 function CinematicSection() {
@@ -328,7 +334,7 @@ function CinematicSection() {
 }
 
 // ─── 5 · WHY WE INFUSE HONEY ──────────────────────────────────────────────────
-const HONEY_ENHANCES = ["Convenience", "Improves Palatability", "Transforms Shilajit Smoothly", "Ready-to-Consume Daily Basis."];
+const HONEY_ENHANCES = ["Convenience", "Improves Palatability", "Transforms Shilajit Smoothly", "Ready-to-Consume on daily basis"];
 const STAGES = [
   { icon: Sun, title: "Morning", desc: "Before breakfast for all day sustained energy." },
   { icon: Dumbbell, title: "Pre-workout", desc: "30 minutes before training for performance." },
@@ -424,13 +430,14 @@ const SHAHJEET_VIDEOS = [
 
 function ShahjeetRitualPlayer() {
   const [idx, setIdx] = useState(0);
+  const [muted, setMuted] = useState(true);
   const go = (i: number) => setIdx((i + SHAHJEET_VIDEOS.length) % SHAHJEET_VIDEOS.length);
   const v = SHAHJEET_VIDEOS[idx];
   return (
     <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "clamp(18px,2.5vw,26px)", width: "100%" }}>
       <div style={{ position: "relative" }}>
         {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
-        <video key={v.url} autoPlay muted playsInline onEnded={() => go(idx + 1)} src={v.url}
+        <video key={v.url} autoPlay muted={muted} playsInline onEnded={() => go(idx + 1)} src={v.url}
           style={{ height: "clamp(400px,48vw,600px)", width: "auto", aspectRatio: "4 / 5", objectFit: "cover", borderRadius: 20, display: "block", boxShadow: "0 24px 60px rgba(0,0,0,.42)" }} />
         <span style={{ position: "absolute", top: 16, left: 16, background: "rgba(28,19,4,.6)", color: "#f7f0e2", fontFamily: F, fontVariationSettings: "'wght' 800", fontSize: 12, letterSpacing: ".12em", textTransform: "uppercase", padding: "6px 12px", borderRadius: 999 }}>
           {String(idx + 1).padStart(2, "0")} · {v.title}
@@ -438,6 +445,10 @@ function ShahjeetRitualPlayer() {
         <button type="button" onClick={() => go(idx + 1)} aria-label="Next video"
           style={{ position: "absolute", right: 14, top: "50%", transform: "translateY(-50%)", width: 46, height: 46, borderRadius: "50%", border: "1px solid rgba(247,240,226,.7)", background: "rgba(28,19,4,.55)", color: "#f7f0e2", cursor: "pointer", fontSize: 20, lineHeight: 1, display: "flex", alignItems: "center", justifyContent: "center" }}>
           →
+        </button>
+        <button type="button" onClick={() => setMuted((m) => !m)} aria-label={muted ? "Unmute video" : "Mute video"}
+          style={{ position: "absolute", bottom: 14, right: 14, width: 40, height: 40, borderRadius: "50%", border: "1px solid rgba(247,240,226,.7)", background: "rgba(28,19,4,.55)", color: "#f7f0e2", cursor: "pointer", fontSize: 16, lineHeight: 1, display: "flex", alignItems: "center", justifyContent: "center" }}>
+          {muted ? "🔇" : "🔊"}
         </button>
       </div>
       <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", justifyContent: "center" }}>
@@ -489,9 +500,9 @@ function BuiltForBusySection() {
             <br />
             <span style={{ textTransform: "none", fontStyle: "italic", fontVariationSettings: "'wght' 500", opacity: 0.9 }}>Just</span>
             <br />
-            Tear · Squeeze · Perform™
+            Tear · Squeeze · Perform<TmMark />
             <br />
-            <span style={{ fontSize: "0.82em", opacity: 0.85 }}>3Tattava — ShajiRitual™</span>
+            <span style={{ fontSize: "0.82em", opacity: 0.85 }}>3Tattava — Shahjeet Ritual<TmMark /></span>
           </p>
         </Reveal>
         <Reveal delay={0.05}>
@@ -505,10 +516,10 @@ function BuiltForBusySection() {
             ))}
           </ol>
         </Reveal>
-        <div className="shj-2col" style={{ alignItems: "center", gridTemplateColumns: "1.12fr 0.88fr" }}>
-          <Reveal style={{ display: "flex", justifyContent: "center" }}>
+        <div className="shj-2col" style={{ alignItems: "flex-start", gridTemplateColumns: "1.12fr 0.88fr" }}>
+          <Reveal style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "clamp(400px,48vw,600px)" }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={media("/shahjeet/ritual-steps.png")} alt="The Shahjeet ritual" style={{ height: "clamp(400px,48vw,600px)", width: "auto", maxWidth: "100%", objectFit: "contain", display: "block" }} />
+            <img src={media("/shahjeet/ritual-steps.png")} alt="The Shahjeet ritual" style={{ maxHeight: "100%", maxWidth: "100%", width: "auto", height: "auto", objectFit: "contain", display: "block" }} />
           </Reveal>
           <Reveal delay={0.1} style={{ display: "flex", justifyContent: "center" }}>
             <ShahjeetRitualPlayer />
@@ -621,8 +632,8 @@ function LegalMetrologySection() {
   const rows: { label: string; value: ReactNode }[] = [
     { label: "MRP", value: <>₹{PRODUCT.mrp.toLocaleString("en-IN")} <span style={{ color: TAUPE }}>(inclusive of all taxes)</span></> },
     { label: "Net Quantity", value: "240 g (30 sticks × 8 g each)" },
-    { label: "Ingredients", value: "Himalayan Ladakhi Multifloral Honey" },
-    { label: "Dosage", value: "1 Stick / Day" },
+    { label: "Ingredients", value: "Himalayan Ladakhi Shilajit Multifloral Honey" },
+    { label: "Dosage", value: "1 Stick of 8 g per day" },
     { label: "Marketed by", value: `${LEGAL.companyShort}, ${LEGAL.registeredOffice}` },
     { label: "Country of Origin", value: LEGAL.countryOfOrigin },
     { label: "Consumer care", value: `${LEGAL.emailGeneral} · ${LEGAL.careMobile}` },

@@ -4,6 +4,7 @@ import PerformanceStory from "@/components/home-revamp/PerformanceStory";
 import PhilosophyRevamp from "@/components/home-revamp/PhilosophyRevamp";
 import TrustRevamp from "@/components/home-revamp/TrustRevamp";
 import DrKashishSection from "@/components/home-revamp/DrKashishSection";
+import TestimonialVideo from "@/components/home-revamp/TestimonialVideo";
 import FAQRevamp from "@/components/home-revamp/FAQRevamp";
 import NewsletterRevamp from "@/components/home-revamp/NewsletterRevamp";
 import SocialSidebar from "@/components/home-revamp/SocialSidebar";
@@ -22,7 +23,7 @@ export default function HomePage() {
       <PhilosophyRevamp />
       <TrustRevamp />
       <DrKashishSection />
-      {/* Testimonials cleared per founder audit — customer/results videos pending. TODO(founder): re-add with real autoplay video reels. */}
+      <TestimonialVideo />
       <FAQRevamp />
       <NewsletterRevamp />
     </>

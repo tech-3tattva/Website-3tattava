@@ -3,6 +3,7 @@ import { media } from "@/lib/media";
 
 import Link from "next/link";
 import type { CSSProperties } from "react";
+import TmMark from "@/components/ui/TmMark";
 
 interface LogoProps {
   variant?: "dark" | "white" | "gold";
@@ -48,20 +49,19 @@ export default function Logo({ variant = "dark", size = "md", className = "", li
           className={className}
           style={{ ...base, position: "absolute", top: 0, left: 0, opacity: showCream ? 0 : 1 }}
         />
+        {/* ™ hugging the wordmark's top-right (superscript, close to the last glyph) */}
+        <TmMark
+          style={{
+            position: "absolute",
+            top: -Math.round(height * 0.04),
+            right: -Math.round(height * 0.26),
+            fontSize: Math.round(height * 0.22),
+            color: showCream ? "#f7f0e2" : "#442a1b",
+            marginLeft: 0,
+            transform: "none",
+          }}
+        />
       </span>
-      <sup
-        aria-hidden
-        style={{
-          alignSelf: "flex-start",
-          fontSize: Math.round(height * 0.24),
-          fontWeight: 700,
-          lineHeight: 1,
-          marginLeft: 1,
-          color: showCream ? "#f7f0e2" : "#442a1b",
-        }}
-      >
-        &trade;
-      </sup>
     </Link>
   );
 }

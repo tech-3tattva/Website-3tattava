@@ -12,6 +12,7 @@ import {
   useReducedMotion,
 } from 'framer-motion';
 import RevealHeading from '@/components/ui/RevealHeading';
+import TmMark from '@/components/ui/TmMark';
 
 /* ─── Type system ─── */
 const F = 'var(--font-primary), system-ui, sans-serif';
@@ -43,7 +44,7 @@ const PANELS: Panel[] = [
     label: 'Performance In Your Pocket',
     heading: 'Shahjeet Sticks',
     body:
-      '600mg of classically purified shilajit blended with honey for a convenient daily ritual that fits wherever life takes you. Just squeeze and go.',
+      '600mg of classically purified shilajit blended with honey for a convenient daily ritual that fits wherever life takes you. Just Tear, Squeeze and Go.',
     meta: '30 Sticks · 600mg · Honey-Infused · ₹1,399',
     ctaLabel: 'Shop Shahjeet Sticks',
     ctaHref: '/products/shahjeet-sticks',
@@ -55,7 +56,7 @@ const PANELS: Panel[] = [
     label: 'One Resin Complete Vitality',
     heading: 'RockResin',
     body:
-      'Experience the 3Tattava Dip · Hook · Swirl Ritual.\nClassically purified Himalayan shilajit resin crafted for busy professionals, athletes, and anyone seeking authentic Ayurveda without compromise.',
+      'Experience the 3Tattava Dip · Hook · Swirl Ritual.\nClassically purified Himalayan Ladakhi shilajit resin crafted for busy professionals, athletes, and anyone seeking authentic Ayurveda without compromise.',
     meta: 'Classically Purified Shilajit Resin',
     ctaLabel: 'Discover RockResin',
     ctaHref: '/products/shodhit-shilajit-resin',
@@ -155,6 +156,25 @@ function StoryPanel({ panel }: { panel: Panel }) {
     transition: { duration: 0.6, delay, ease: 'easeOut' as const },
   });
 
+  const isTM =
+    panel.ctaHref.includes('shahjeet') || panel.ctaHref.includes('shodhit-shilajit');
+
+  const headingEl = (
+    <RevealHeading
+      as="h2"
+      style={{
+        fontFamily: DISPLAY,
+        fontSize: 'clamp(26px, 3.8vw, 46px)',
+        fontWeight: 700,
+        lineHeight: 1.05,
+        letterSpacing: '-0.02em',
+        color: INK,
+        margin: isTM ? 0 : '0 0 20px',
+      }}
+      lines={panel.heading.split('\n')}
+    />
+  );
+
   return (
     <div className={`pstory-panel${panel.imageSide === 'right' ? ' pstory-right' : ''}`}>
       <PanelMedia media={panel.media} />
@@ -188,19 +208,14 @@ function StoryPanel({ panel }: { panel: Panel }) {
           </motion.div>
 
           {/* Heading */}
-          <RevealHeading
-            as="h2"
-            style={{
-              fontFamily: DISPLAY,
-              fontSize: 'clamp(26px, 3.8vw, 46px)',
-              fontWeight: 700,
-              lineHeight: 1.05,
-              letterSpacing: '-0.02em',
-              color: INK,
-              margin: '0 0 20px',
-            }}
-            lines={panel.heading.split('\n')}
-          />
+          {isTM ? (
+            <div style={{ display: 'inline-flex', alignItems: 'flex-start', fontSize: 'clamp(26px, 3.8vw, 46px)', margin: '0 0 20px' }}>
+              {headingEl}
+              <TmMark style={{ color: INK }} />
+            </div>
+          ) : (
+            headingEl
+          )}
 
           {/* Body */}
           <motion.p

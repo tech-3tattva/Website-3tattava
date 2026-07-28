@@ -36,7 +36,7 @@ export const HERO = {
 } as const;
 
 export const TRUST_BADGES = [
-  { icon: "mountain", label: "Sourced at 10,000\u201316,000 ft" },
+  { icon: "mountain", label: "Sourced above 16,000 ft" },
   { icon: "flask", label: "NABL-accredited third-party tested" },
   { icon: "stethoscope", label: "Doctor-Formulated (BAMS)" },
   { icon: "droplet", label: "80+ Trace Minerals" },
@@ -302,7 +302,7 @@ export const OUR_STORY = {
       {
         number: "01",
         title: "Sourcing",
-        body: "Raw Shilajit (Asphaltum Punjabanum) is harvested from Himalayan deposits at 10,000\u201316,000ft altitude \u2014 where mineral concentration and resin maturity peak. The ore is sourced from verified Himalayan sites with known geological provenance.",
+        body: "Raw Shilajit (Asphaltum Punjabanum) is harvested from Himalayan Ladakhi deposits above 16,000 ft altitude \u2014 where mineral concentration and resin maturity peak. The ore is sourced from verified Himalayan sites with known geological provenance.",
       },
       {
         number: "02",
