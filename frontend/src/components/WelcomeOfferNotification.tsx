@@ -311,18 +311,26 @@ export default function WelcomeOfferNotification() {
           <button
             type="button"
             onClick={dismiss}
-            aria-label="Dismiss"
+            aria-label="Close"
             style={{
               position: "absolute",
-              top: 9,
-              right: 11,
-              background: "none",
-              border: "none",
-              color: "rgba(247,240,226,.55)",
-              fontSize: 18,
+              top: -12,
+              right: -12,
+              width: 32,
+              height: 32,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              background: CREAM,
+              border: `1.5px solid ${GOLD}`,
+              borderRadius: "50%",
+              color: INK,
+              fontSize: 20,
               lineHeight: 1,
               cursor: "pointer",
-              padding: 4,
+              boxShadow: "0 4px 14px rgba(68,42,27,.4)",
+              zIndex: 3,
+              padding: 0,
             }}
           >
             ×

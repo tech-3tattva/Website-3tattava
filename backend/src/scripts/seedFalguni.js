@@ -1,7 +1,7 @@
 /**
  * Seed / upsert Dr. Falguni Chauhan as an active online-consultation doctor.
  * Run:  node src/scripts/seedFalguni.js
- * Notification email defaults to care@3tattava.com (verified via SES domain).
+ * Notification email defaults to support@3tattava.com (verified via SES domain).
  * Change `personal.email` to Dr. Falguni's real inbox once known.
  */
 const path = require("path");
@@ -18,7 +18,7 @@ const data = {
   personal: {
     fullName: "Dr. Falguni Chauhan",
     phone: "+919999999999",
-    email: process.env.CONSULT_NOTIFY_EMAIL || "care@3tattava.com",
+    email: process.env.CONSULT_NOTIFY_EMAIL || "support@3tattava.com",
     photo: "/team/dr-falguni-chauhan.jpg",
     gender: "female",
   },

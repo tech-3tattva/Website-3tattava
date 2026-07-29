@@ -55,7 +55,7 @@ export const HOME_FAQS: FAQItem[] = [
     id: 6,
     question: "What is your return policy?",
     answer:
-      "We offer hassle-free returns within 7 days of delivery. If you\u2019re not satisfied, reach out to care@3tattava.com and we\u2019ll make it right.",
+      "We offer hassle-free returns within 7 days of delivery. If you\u2019re not satisfied, reach out to support@3tattava.com and we\u2019ll make it right.",
   },
   {
     id: 7,

@@ -88,7 +88,7 @@ async function sendOrderEmail({ toEmail, orderNumber, total }) {
                   <p><strong>Total Paid:</strong> ₹${total}</p>
                   <p>You'll receive a tracking number once your shipment is booked.</p>
                   <p style="margin-top:24px;color:#888;font-size:12px">
-                    3TATTAVA · care@3tattava.com · +91 95601 49956
+                    3TATTAVA · support@3tattava.com · +91 95601 49956
                   </p>
                 </div>
               `,

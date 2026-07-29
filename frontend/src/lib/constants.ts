@@ -52,7 +52,6 @@ export const FOOTER_LINKS = {
   ],
   company: [
     { label: "Our Story", href: "/about" },
-    { label: "Dr. Kashish", href: "/about#founder" },
     { label: "Research & Testing", href: "/research-testing" },
     { label: "Community", href: "/community" },
     { label: "Find Us", href: "/find-us" },
@@ -68,7 +67,7 @@ export const FOOTER_LINKS = {
 
 export const TRUST_STRIP_ITEMS = [
   { icon: "⛰️", text: "Sourced above 16,000 ft, Himalayan Ladakhi Deposits" },
-  { icon: "⚕️", text: "Doctor-Formulated · Dr. Kashish, BAMS" },
+  { icon: "⚕️", text: "Doctor-Formulated · Dr. Kashish Gupta, BAMS" },
   { icon: "💎", text: "80+ Ionic Trace Minerals" },
 ];
 

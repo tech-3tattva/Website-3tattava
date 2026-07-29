@@ -17,7 +17,7 @@ export const BRAND = {
   tagline: "Performance Ayurveda for Modern Humans.",
   domain: "3tattava.com",
   url: "https://www.3tattava.com",
-  email: "care@3tattava.com",
+  email: "support@3tattava.com",
   founderName: "Dr. Kashish Gupta",
   founderCredentials: "BAMS",
 } as const;
@@ -208,14 +208,14 @@ export const EDUCATION_PREVIEW = {
 export const NEWSLETTER = {
   headline: "The Performance Ayurveda Brief",
   subheadline:
-    "Weekly insights on minerals, energy, and what your body is actually missing. Written by Dr. Kashish. No spam. No fluff. Just science.",
+    "Weekly insights on minerals, energy, and what your body is actually missing. Written by Dr. Kashish Gupta. No spam. No fluff. Just science.",
   placeholder: "Your email",
   cta: "JOIN THE BRIEF",
 } as const;
 
 export const FOOTER = {
   tagline: "Performance Ayurveda for Modern Humans.",
-  email: "care@3tattava.com",
+  email: "support@3tattava.com",
   columns: {
     shop: {
       heading: "Shop",

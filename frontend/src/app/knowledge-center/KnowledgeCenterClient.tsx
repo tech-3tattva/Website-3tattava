@@ -396,6 +396,18 @@ export default function KnowledgeCenterClient() {
             sub={`${FAQS.length} concise, doctor-reviewed answers — structured for search engines and AI assistants.`}
           />
 
+          {/* Live keyword search */}
+          <div style={{ maxWidth: 560, margin: "0 auto clamp(20px,3vw,28px)" }}>
+            <input
+              type="search"
+              value={q}
+              onChange={(e) => { setQ(e.target.value); setFaqLimit(24); }}
+              placeholder="Search answers — e.g. dosage, women, fulvic acid…"
+              aria-label="Search answers"
+              style={{ width: "100%", padding: "14px 20px", borderRadius: 999, border: `1px solid ${GOLD}55`, background: "#fff", fontFamily: F, fontSize: 15, color: INK, outline: "none", boxShadow: "0 2px 10px rgba(68,42,27,.06)" }}
+            />
+          </div>
+
           {/* Topic chips */}
           <div style={{ display: "flex", flexWrap: "wrap", gap: 8, justifyContent: "center", marginBottom: "clamp(28px,3.5vw,40px)" }}>
             {FAQ_TOPICS.map((t) => {

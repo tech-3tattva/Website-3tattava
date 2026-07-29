@@ -142,7 +142,7 @@ export default function BookingFlow({
           </div>
 
           <p className="mt-5 text-xs text-text-light">
-            Need to reschedule? Email <a href="mailto:care@3tattava.com" className="underline">care@3tattava.com</a>
+            Need to reschedule? Email <a href="mailto:support@3tattava.com" className="underline">support@3tattava.com</a>
           </p>
 
           <div className="mt-6 flex flex-col sm:flex-row gap-3 justify-center">

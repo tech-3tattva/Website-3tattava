@@ -18,6 +18,9 @@ const Coupon = require("../models/Coupon");
 const User = require("../models/User");
 
 const WELCOME_VALUE = 200; // rupees off
+const WELCOME_GLOBAL_LIMIT = Number.isFinite(Number(process.env.WELCOME_GLOBAL_LIMIT))
+  ? Number(process.env.WELCOME_GLOBAL_LIMIT)
+  : 200; // total ₹200 founding redemptions across all users (override via WELCOME_GLOBAL_LIMIT env)
 const WELCOME_MIN_ORDER = 0; // usable on any first order; checkout clamps net >= 0
 const WELCOME_TTL_DAYS = 90;
 // Unambiguous alphabet (no 0/O/1/I/L) so a support agent can read codes aloud.
@@ -130,10 +133,19 @@ async function markWelcomeCouponUsed(userId, code, orderNumber) {
 }
 
 /**
- * Server-side eligibility check for a welcome coupon at validate/apply time.
+ * Count of welcome coupons already redeemed (globally). Authoritative + real-time:
+ * an issued-but-unused code does NOT count, so unclaimed slots roll over to the
+ * next buyer. Backed by usedCount, which is set once per redemption.
+ */
+async function getWelcomeRedeemedCount() {
+  return Coupon.countDocuments({ kind: "welcome", usedCount: { $gte: 1 } }).exec();
+}
+
+/**
+ * Server-side eligibility check for a welcome coupon at validate/apply/order time.
  * Returns { ok, discountAmount, message }. `subtotal` is in rupees.
  */
-function evaluateWelcome(coupon, userId, subtotal) {
+async function evaluateWelcome(coupon, userId, subtotal) {
   if (!userId) return { ok: false, discountAmount: 0, message: "Sign in to use this offer" };
   if (coupon.user && String(coupon.user) !== String(userId)) {
     return { ok: false, discountAmount: 0, message: "This offer belongs to another account" };
@@ -142,14 +154,20 @@ function evaluateWelcome(coupon, userId, subtotal) {
     (coupon.usedBy || []).some((id) => String(id) === String(userId)) ||
     (coupon.usageLimit && coupon.usedCount >= coupon.usageLimit);
   if (alreadyUsed) return { ok: false, discountAmount: 0, message: "You've already used your welcome offer" };
+  // Founding cap: only the first WELCOME_GLOBAL_LIMIT buyers get ₹200 off.
+  if ((await getWelcomeRedeemedCount()) >= WELCOME_GLOBAL_LIMIT) {
+    return { ok: false, discountAmount: 0, message: "The ₹200 founding offer has been fully claimed." };
+  }
   const discountAmount = Math.min(Number(coupon.value) || 0, Math.max(0, subtotal));
   return { ok: true, discountAmount, message: "Welcome offer applied" };
 }
 
 module.exports = {
   WELCOME_VALUE,
+  WELCOME_GLOBAL_LIMIT,
   issueWelcomeCoupon,
   getWelcomeCoupon,
+  getWelcomeRedeemedCount,
   markWelcomeCouponUsed,
   evaluateWelcome,
   toView,

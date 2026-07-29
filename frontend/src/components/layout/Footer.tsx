@@ -160,19 +160,6 @@ function FooterWatermark() {
           }}
         />
       </div>
-      <p
-        style={{
-          textAlign: "right",
-          color: "#cd872a",
-          fontSize: 14,
-          fontFamily: "var(--font-primary), system-ui, sans-serif",
-          fontStyle: "italic",
-          margin: 0,
-          letterSpacing: "0.04em",
-        }}
-      >
-        Balance. Build. Become.
-      </p>
     </section>
   );
 }

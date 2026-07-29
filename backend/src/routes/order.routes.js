@@ -11,7 +11,8 @@ const { ApiError } = require("../middleware/errorHandler");
 const { z } = require("zod");
 const { SESClient, SendEmailCommand } = require("@aws-sdk/client-ses");
 const cashfree = require("../lib/cashfree");
-const { markWelcomeCouponUsed } = require("../utils/welcomeCoupon");
+const { markWelcomeCouponUsed, evaluateWelcome } = require("../utils/welcomeCoupon");
+const Coupon = require("../models/Coupon");
 
 const router = express.Router();
 
@@ -24,6 +25,20 @@ function getOptionalCustomerId(req) {
     return decoded?.id ? String(decoded.id) : null;
   } catch {
     return null;
+  }
+}
+
+/** Re-validate a founding welcome coupon server-side before granting the discount.
+ *  Throws ApiError when the code isn't the buyer's, is already used, or the global
+ *  200-redemption cap is reached. No-op for non-welcome (or no) coupons. */
+async function assertWelcomeCouponEligible(couponInput, userId, subtotal) {
+  if (!couponInput || !couponInput.code) return;
+  const coupon = await Coupon.findOne({ code: String(couponInput.code).toUpperCase() }).exec();
+  if (!coupon) return; // not a system coupon (e.g. influencer promo) — unchanged
+  if (coupon.kind !== "welcome" && !coupon.user) return; // non-welcome coupon — unchanged
+  const check = await evaluateWelcome(coupon, userId, Number(subtotal) || 0);
+  if (!check.ok) {
+    throw new ApiError(400, check.message || "This offer is no longer available. Please remove the code.");
   }
 }
 
@@ -145,6 +160,7 @@ router.post("/place-demo", async (req, res, next) => {
 
     const parsed = schema.parse(req.body);
     const customerId = getOptionalCustomerId(req);
+    await assertWelcomeCouponEligible(parsed.coupon, customerId, parsed.subtotal);
 
     const resolvedLines = [];
     for (const item of parsed.items) {
@@ -331,6 +347,7 @@ router.post("/create-cashfree", async (req, res, next) => {
     const parsed = cfOrderSchema.parse(req.body);
     if (!cashfree.getCashfree()) return next(new ApiError(503, "Online payments are not configured yet."));
     const customerId = getOptionalCustomerId(req);
+    await assertWelcomeCouponEligible(parsed.coupon, customerId, parsed.subtotal);
 
     const resolvedLines = [];
     for (const item of parsed.items) {

@@ -103,7 +103,7 @@ async function validateCouponCode(code, cartTotal, userId) {
     throw new ApiError(400, `Minimum order amount is ₹${coupon.minOrderAmount}`);
   }
   if (coupon.kind === "welcome" || coupon.user) {
-    const check = evaluateWelcome(coupon, userId, cartTotal);
+    const check = await evaluateWelcome(coupon, userId, cartTotal);
     if (!check.ok) throw new ApiError(400, check.message);
   }
   const pct = Number(coupon.value) || 0;

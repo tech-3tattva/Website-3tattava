@@ -90,7 +90,7 @@ export default function LabReportsPage() {
 
         <p style={{ fontFamily: F, fontSize: 12, color: TAUPE, textAlign: "center", marginTop: "clamp(28px,4vw,44px)", maxWidth: 640, marginLeft: "auto", marginRight: "auto", lineHeight: 1.6 }}>
           Reports are batch-specific. Scan the QR code on your pack to verify the exact batch you received, or contact{" "}
-          <a href="mailto:care@3tattava.com" style={{ color: GOLD, textDecoration: "none", fontWeight: 600 }}>care@3tattava.com</a>.
+          <a href="mailto:support@3tattava.com" style={{ color: GOLD, textDecoration: "none", fontWeight: 600 }}>support@3tattava.com</a>.
         </p>
       </section>
     </div>

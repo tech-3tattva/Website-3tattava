@@ -20,7 +20,7 @@ const PRODUCTS = [
     label: "RockResin®",
     subtitle: "Pure Himalayan Shilajit · 20g Jar",
     tagline: "Ancient Mineral Elixir for Modern Vitality",
-    image: "https://media.3tattava.com/features/home/homepage-rockresins.png",
+    image: "https://media.3tattava.com/products/rockresin/2.png",
     pills: ["≥70% Fulvic Acid", "NABL Tested", "Triphala Purified"],
     waitlistProduct: "RockResin® — Classically Purified Shilajit Resin",
   },

@@ -176,7 +176,6 @@ function HeroSection() {
               <span style={{ fontFamily: F, fontVariationSettings: "'wght' 800", fontSize: T.price, color: ESPRESSO }}>₹{bundle.price.toLocaleString("en-IN")}</span>
               <span style={{ fontFamily: F, fontSize: T.body, color: TAUPE, textDecoration: "line-through" }}>₹{bundle.mrp.toLocaleString("en-IN")}</span>
               <span style={{ fontFamily: F, fontVariationSettings: "'wght' 700", fontSize: 10, letterSpacing: ".1em", color: GOLD, border: `1px solid ${GOLD}`, padding: "3px 8px", borderRadius: 4 }}>SAVE {save}%</span>
-              <span style={{ fontFamily: F, fontSize: 11, color: TAUPE }}>{bundle.boxes} box{bundle.boxes > 1 ? "es" : ""} · 30 sticks/box</span>
             </div>
             <button type="button" onClick={handleAdd} style={{ width: "100%", maxWidth: 360, height: 48, padding: "0 26px", background: ESPRESSO, color: CREAM, border: "none", borderRadius: 999, fontFamily: F, fontVariationSettings: "'wght' 700", fontSize: 13, letterSpacing: ".08em", textTransform: "uppercase", cursor: "pointer" }}>
               {added ? "Added ✓" : "Shop Now"}
@@ -192,7 +191,7 @@ function HeroSection() {
           <motion.div className="shj-media" initial={{ opacity: 0, scale: 0.94 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.8, ease: EASE }} style={{ position: "relative", zIndex: 1, display: "flex", justifyContent: "center" }}>
             <div aria-hidden style={{ position: "absolute", top: "clamp(-10px,-1vw,6px)", right: "clamp(-6px,1vw,12px)", zIndex: 4, background: "#fff", border: `2px solid ${GOLD}`, borderRadius: "46% 54% 55% 45% / 54% 46% 54% 46%", padding: "14px 20px", textAlign: "center", transform: "rotate(-6deg)", boxShadow: "0 12px 30px rgba(68,42,27,.20)" }}>
               <span style={{ display: "block", fontFamily: F, fontVariationSettings: "'wght' 700", fontSize: 9, letterSpacing: ".16em", textTransform: "uppercase", color: GOLD, marginBottom: 2 }}>Costing / Day</span>
-              <span style={{ display: "block", fontFamily: F, fontVariationSettings: "'wght' 800", fontSize: "clamp(20px,2.6vw,28px)", color: ESPRESSO, lineHeight: 1 }}>₹46.63</span>
+              <span style={{ display: "block", fontFamily: F, fontVariationSettings: "'wght' 800", fontSize: "clamp(20px,2.6vw,28px)", color: ESPRESSO, lineHeight: 1 }}>₹40</span>
               <span style={{ display: "block", fontFamily: F, fontSize: 10, color: TAUPE, marginTop: 2 }}>per day</span>
             </div>
             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -219,7 +218,7 @@ function WhyCreatedSection() {
           </Reveal>
           <Reveal className="shj-media" delay={0.1} style={{ display: "flex", justifyContent: "center" }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="https://media.3tattava.com/products/Sticks+refined.png" alt="Three Shahjeet honey sticks" style={{ width: "100%", maxWidth: 420, height: "auto", display: "block", filter: "drop-shadow(0 20px 40px rgba(68,42,27,.2))" }} />
+            <img src="https://media.3tattava.com/products/3.png" alt="Shahjeet honey sticks with Shodhit Shilajit resin" style={{ width: "100%", maxWidth: 420, height: "auto", display: "block", filter: "drop-shadow(0 20px 40px rgba(68,42,27,.2))" }} />
           </Reveal>
         </div>
 

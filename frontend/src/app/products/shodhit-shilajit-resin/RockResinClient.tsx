@@ -191,7 +191,6 @@ function HeroSection() {
               <span style={{ fontFamily: F, fontVariationSettings: "'wght' 800", fontSize: T.price, color: ESPRESSO }}>₹{bundle.price.toLocaleString("en-IN")}</span>
               <span style={{ fontFamily: F, fontSize: T.body, color: TAUPE, textDecoration: "line-through" }}>₹{bundle.mrp.toLocaleString("en-IN")}</span>
               <span style={{ fontFamily: F, fontVariationSettings: "'wght' 700", fontSize: 10, letterSpacing: ".1em", color: GOLD, border: `1px solid ${GOLD}`, padding: "3px 8px", borderRadius: 4 }}>SAVE {save}%</span>
-              <span style={{ fontFamily: F, fontSize: 11, color: TAUPE }}>{bundle.jars} jar{bundle.jars > 1 ? "s" : ""} · ₹{unit.toLocaleString("en-IN")}/jar</span>
             </div>
             <button type="button" onClick={handleAdd} style={{ width: "100%", maxWidth: 360, height: 48, padding: "0 26px", background: ESPRESSO, color: CREAM, border: "none", borderRadius: 999, fontFamily: F, fontVariationSettings: "'wght' 700", fontSize: 13, letterSpacing: ".08em", textTransform: "uppercase", cursor: "pointer" }}>
               {added ? "Added ✓" : "Begin Your Ritual"}
@@ -211,7 +210,7 @@ function HeroSection() {
               <span style={{ display: "block", fontFamily: F, fontSize: 10, color: TAUPE, marginTop: 2 }}>per day</span>
             </div>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/home/rockresin-hero-product.png?v=2" alt="Classically purified Himalayan Shilajit resin jar, tub and spoon" style={{ width: "100%", maxWidth: 460, height: "auto", display: "block", filter: "drop-shadow(0 26px 50px rgba(68,42,27,.20))" }} />
+            <img src="https://media.3tattava.com/products/rockresin/1.png" alt="Classically purified Himalayan Shilajit resin jar, tub and spoon" style={{ width: "100%", maxWidth: 460, height: "auto", display: "block", filter: "drop-shadow(0 26px 50px rgba(68,42,27,.20))" }} />
           </motion.div>
         </div>
       </div>
@@ -410,9 +409,9 @@ const SWIRL_STEPS = [
 ];
 
 const SWIRL_VIDEOS = [
-  { title: "Dip", url: "https://media.3tattava.com/products/rockresin/Dip.mp4" },
-  { title: "Hook", url: "https://media.3tattava.com/products/rockresin/Hook.mp4" },
-  { title: "Swirl", url: "https://media.3tattava.com/products/rockresin/Swirl.mp4" },
+  { title: "Dip", url: "https://media.3tattava.com/products/rockresin/N-Dip.mp4" },
+  { title: "Hook", url: "https://media.3tattava.com/products/rockresin/N-Hook.mp4" },
+  { title: "Swirl", url: "https://media.3tattava.com/products/rockresin/N-Swirl.mp4" },
 ];
 
 function SwirlVideoPlayer() {
@@ -425,7 +424,7 @@ function SwirlVideoPlayer() {
       <div style={{ position: "relative" }}>
         {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
         <video key={v.url} autoPlay muted={muted} playsInline onEnded={() => go(idx + 1)} src={v.url}
-          style={{ height: "clamp(400px,46vw,560px)", width: "auto", aspectRatio: "4 / 5", objectFit: "cover", borderRadius: 20, display: "block", boxShadow: "0 24px 60px rgba(68,42,27,.28)" }} />
+          style={{ height: "clamp(400px,46vw,560px)", width: "auto", aspectRatio: "9 / 16", objectFit: "cover", borderRadius: 20, display: "block", boxShadow: "0 24px 60px rgba(68,42,27,.28)" }} />
         <span style={{ position: "absolute", top: 16, left: 16, background: "rgba(28,19,4,.55)", color: CREAM, fontFamily: F, fontVariationSettings: "'wght' 800", fontSize: 12, letterSpacing: ".12em", textTransform: "uppercase", padding: "6px 12px", borderRadius: 999 }}>
           {String(idx + 1).padStart(2, "0")} · {v.title}
         </span>
@@ -466,7 +465,7 @@ function SwirlRitualSection() {
           <p style={{ fontFamily: F, fontVariationSettings: "'wght' 700", fontSize: "clamp(15px,2vw,20px)", letterSpacing: ".08em", textTransform: "uppercase", color: "#eccf6a", lineHeight: 1.5, margin: "0 0 clamp(28px,4vw,44px)" }}>
             No Stirring · No Spillage · No Sticky Fingers · No Wasted Resin
             <br />
-            <span style={{ fontSize: "0.82em", opacity: 0.85 }}>3Tattava — SwirlRitual<TmMark /></span>
+            <span style={{ fontSize: "0.82em", opacity: 0.85 }}>3Tattava — SwirlRitual<TmMark style={{ marginLeft: "-0.12em", transform: "translateY(0.22em)" }} /></span>
           </p>
         </Reveal>
         <Reveal delay={0.05}>
@@ -624,7 +623,7 @@ function CertBand() {
       <div style={{ maxWidth: 1120, margin: "0 auto", background: "linear-gradient(135deg,#52341f 0%,#67421f 48%,#3b2515 100%)", borderRadius: 26, padding: "clamp(36px,5vw,64px) clamp(26px,5vw,64px)", overflow: "hidden", textAlign: "center" }}>
         <Reveal>
           <p style={{ fontFamily: F, fontVariationSettings: "'wght' 600", fontSize: T.eyebrow, letterSpacing: ".14em", textTransform: "uppercase", color: "#e2ac4d", margin: "0 0 8px" }}>Certified &amp; Lab-Tested</p>
-          <p style={{ fontFamily: F, fontVariationSettings: "'wght' 800", fontSize: "clamp(22px,3vw,34px)", color: CREAM, margin: "0 0 clamp(24px,3.5vw,40px)", letterSpacing: ".01em" }}>ROCKRESIN®</p>
+          <p style={{ fontFamily: F, fontVariationSettings: "'wght' 800", fontSize: "clamp(22px,3vw,34px)", color: CREAM, margin: "0 0 clamp(24px,3.5vw,40px)", letterSpacing: ".01em" }}>ROCKRESIN<TmMark /></p>
         </Reveal>
         <Reveal delay={0.08} style={{ display: "flex", justifyContent: "center" }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}

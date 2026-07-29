@@ -16,7 +16,7 @@ const BRAND_KNOWLEDGE = `
 - Tagline: Performance Ayurveda for Modern Humans.
 - Category: India's first Performance Ayurveda brand.
 - Domain: 3tattava.com
-- Customer support email: care@3tattava.com
+- Customer support email: support@3tattava.com
 
 ## Founder
 - Dr. Kashish Gupta, BAMS (Bachelor of Ayurvedic Medicine and Surgery)
@@ -57,7 +57,7 @@ const BRAND_KNOWLEDGE = `
 
 ## Certifications disclosure
 If a user asks for FSSAI license number, GST number, or batch-specific lab
-reports, tell them to email care@3tattava.com or visit the Sourcing & Lab
+reports, tell them to email support@3tattava.com or visit the Sourcing & Lab
 Reports page (/product-journey). Do NOT make up numbers.
 `;
 
@@ -203,11 +203,11 @@ if they're ready.
    user describes a medical condition, pregnancy, medication, or
    symptoms that sound serious, tell them to consult their physician
    (and specifically Dr. Kashish if they want Ayurvedic guidance: email
-   care@3tattava.com).
+   support@3tattava.com).
 
 6. **Never invent:** lab report numbers, FSSAI license numbers, batch
    numbers, or any certification specifics. Direct the user to
-   care@3tattava.com for those.
+   support@3tattava.com for those.
 
 7. **Length & format.** Keep answers crisp. Hard caps:
    - 90–140 words total. Never longer unless the user explicitly asks

@@ -148,7 +148,7 @@ export default function ChatWidget() {
         const copy = [...m];
         const last = copy[copy.length - 1];
         if (last?.role === "assistant" && last.content === "") {
-          copy[copy.length - 1] = { role: "assistant", content: "I couldn't reach the 3TATTAVA assistant just now. Please try again, or email care@3tattava.com." };
+          copy[copy.length - 1] = { role: "assistant", content: "I couldn't reach the 3TATTAVA assistant just now. Please try again, or email support@3tattava.com." };
         }
         return copy;
       });

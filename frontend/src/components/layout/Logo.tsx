@@ -53,8 +53,8 @@ export default function Logo({ variant = "dark", size = "md", className = "", li
         <TmMark
           style={{
             position: "absolute",
-            top: -Math.round(height * 0.04),
-            right: -Math.round(height * 0.26),
+            top: -Math.round(height * 0.03),
+            right: -Math.round(height * 0.10),
             fontSize: Math.round(height * 0.22),
             color: showCream ? "#f7f0e2" : "#442a1b",
             marginLeft: 0,

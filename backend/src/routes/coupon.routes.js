@@ -52,7 +52,7 @@ router.post("/validate", async (req, res, next) => {
 
     // Per-user welcome codes: require the owner and enforce single use.
     if (coupon.kind === "welcome" || coupon.user) {
-      const check = evaluateWelcome(coupon, optionalUserId(req), cartTotal);
+      const check = await evaluateWelcome(coupon, optionalUserId(req), cartTotal);
       if (!check.ok) return res.json({ valid: false, discount: 0, discountAmount: 0, message: check.message });
     }
 

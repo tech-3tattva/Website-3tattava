@@ -95,19 +95,7 @@ export default function GrievancePage() {
         </li>
       </ul>
 
-      <h2>5. External consumer remedies</h2>
-      <p>
-        If a consumer grievance remains unresolved, you may contact the Government of India&apos;s{" "}
-        <strong>National Consumer Helpline</strong> at{" "}
-        <a href="https://consumerhelpline.gov.in" target="_blank" rel="noopener noreferrer">
-          consumerhelpline.gov.in
-        </a>{" "}
-        or call <a href="tel:1915">1915</a> / <a href="tel:18001114000">1800-11-4000</a>, or use
-        another competent Consumer Commission or statutory remedy. This information does not restrict
-        any legal right or remedy.
-      </p>
-
-      <h2>6. Privacy complaints</h2>
+      <h2>5. Privacy complaints</h2>
       <p>
         For a privacy request, use the subject <strong>Privacy Request</strong>. We may verify
         identity before disclosing or changing personal data. Where an applicable data-protection law

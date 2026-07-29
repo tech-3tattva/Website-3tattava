@@ -153,7 +153,7 @@ export default function DrKashishSection() {
           >
             After working within India&rsquo;s Ayurveda regulatory ecosystem, Dr.
             Kashish Gupta realized the biggest challenge wasn&rsquo;t Ayurveda — it
-            was trust. Three Tatva was built to bridge that gap by combining
+            was trust. 3Tattava was built to bridge that gap by combining
             authentic classical preparation, modern quality verification, and
             products designed for real life.
           </motion.p>

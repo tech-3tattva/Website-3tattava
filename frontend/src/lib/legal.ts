@@ -22,14 +22,14 @@ export const LEGAL = {
   manufacturerLicence: "RJ-926AYU",
   countryOfOrigin: "India",
 
-  emailGeneral: "care@3tattava.com",
+  emailGeneral: "support@3tattava.com",
   emailOrders: "orders@3tattava.com",
   careMobile: "+91 95601 49956",
 
   // Grievance / consumer-complaint + data-protection contact (DPDP).
   grievanceOfficer: "Dr. Kashish Gupta",
   grievanceOfficerRole: "Grievance Officer & Data Protection Contact",
-  grievanceEmail: "care@3tattava.com",
+  grievanceEmail: "support@3tattava.com",
 
   policyUpdated: "17 July 2026",
   copyrightYear: 2026,

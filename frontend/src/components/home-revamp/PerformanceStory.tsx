@@ -1,5 +1,4 @@
 'use client';
-import { media } from "@/lib/media";
 import Image from "next/image";
 
 import { useRef } from 'react';
@@ -35,7 +34,7 @@ interface Panel {
   ctaLabel: string;
   ctaHref: string;
   imageSide: 'left' | 'right';
-  media: { type: 'image'; src: string; alt: string; fit?: 'cover' | 'contain' };
+  media: { type: 'image'; src: string; alt: string; fit?: 'cover' | 'contain'; zoom?: boolean };
 }
 
 const PANELS: Panel[] = [
@@ -61,7 +60,7 @@ const PANELS: Panel[] = [
     ctaLabel: 'Discover RockResin',
     ctaHref: '/products/shodhit-shilajit-resin',
     imageSide: 'right',
-    media: { type: 'image', src: media("/home/homepage-rockresins.png"), alt: '3Tattava RockResin — Classically Purified Shilajit resin canister, jar and raw resin' },
+    media: { type: 'image', src: "https://media.3tattava.com/products/rockresin/vccvb+1.png", alt: '3Tattava RockResin — Classically Purified Shilajit resin canister, jar and raw resin', fit: 'cover', zoom: false },
   },
 ];
 
@@ -108,12 +107,12 @@ function PanelMedia({ media }: { media: Panel['media'] }) {
   const scale = useTransform(scrollYProgress, [0, 0.5, 1], [1.06, 1.22, 1.06]);
 
   return (
-    <div className="pstory-media" ref={ref} style={{ background: media.fit === 'contain' ? '#ffffff' : undefined }}>
+    <div className="pstory-media" ref={ref}>
       <motion.div
         style={{
           position: 'absolute',
           inset: 0,
-          scale: reduce || media.fit === 'contain' ? 1 : scale,
+          scale: reduce || media.fit === 'contain' || media.zoom === false ? 1 : scale,
         }}
       >
         <Image
@@ -123,7 +122,7 @@ function PanelMedia({ media }: { media: Panel['media'] }) {
           sizes="(max-width: 900px) 100vw, 50vw"
           style={{
             objectFit: media.fit ?? 'cover',
-            padding: media.fit === 'contain' ? 'clamp(32px, 5vw, 80px)' : 0,
+            padding: media.fit === 'contain' ? 'clamp(20px, 3.5vw, 56px)' : 0,
           }}
         />
       </motion.div>
