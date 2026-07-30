@@ -26,11 +26,11 @@ const PORT = Number(process.env.OAUTH_PORT || 53682);
 const REDIRECT_URI = `http://localhost:${PORT}`;
 const SCOPES = ["https://www.googleapis.com/auth/calendar.events"];
 
-const clientId = process.env.GOOGLE_CLIENT_ID;
-const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
+const clientId = process.env.GOOGLE_CALENDAR_CLIENT_ID || process.env.GOOGLE_CLIENT_ID;
+const clientSecret = process.env.GOOGLE_CALENDAR_CLIENT_SECRET || process.env.GOOGLE_CLIENT_SECRET;
 
 if (!clientId || !clientSecret) {
-  console.error("Missing GOOGLE_CLIENT_ID / GOOGLE_CLIENT_SECRET in backend/.env");
+  console.error("Missing GOOGLE_CALENDAR_CLIENT_ID / GOOGLE_CALENDAR_CLIENT_SECRET (or GOOGLE_CLIENT_ID / GOOGLE_CLIENT_SECRET) in backend/.env");
   process.exit(1);
 }
 

@@ -39,11 +39,19 @@ function isPresent(value) {
   return true;
 }
 
+/** Calendar OAuth client id/secret — dedicated vars, falling back to the Sign-In client. */
+function calendarClientId() {
+  return process.env.GOOGLE_CALENDAR_CLIENT_ID || process.env.GOOGLE_CLIENT_ID;
+}
+function calendarClientSecret() {
+  return process.env.GOOGLE_CALENDAR_CLIENT_SECRET || process.env.GOOGLE_CLIENT_SECRET;
+}
+
 /** True when all OAuth credentials needed to talk to the Calendar API are set. */
 function isConfigured() {
   return (
-    isPresent(process.env.GOOGLE_CLIENT_ID) &&
-    isPresent(process.env.GOOGLE_CLIENT_SECRET) &&
+    isPresent(calendarClientId()) &&
+    isPresent(calendarClientSecret()) &&
     isPresent(process.env.GOOGLE_CALENDAR_REFRESH_TOKEN)
   );
 }
@@ -67,10 +75,7 @@ function toRfc3339(dateStr, hhmm, tz) {
 
 /** Return a short-lived access token from the stored refresh token. */
 async function getAccessToken() {
-  const client = new OAuth2Client(
-    process.env.GOOGLE_CLIENT_ID,
-    process.env.GOOGLE_CLIENT_SECRET
-  );
+  const client = new OAuth2Client(calendarClientId(), calendarClientSecret());
   client.setCredentials({ refresh_token: process.env.GOOGLE_CALENDAR_REFRESH_TOKEN });
   const { token } = await client.getAccessToken();
   if (!token) throw new Error("Google returned no access token");
