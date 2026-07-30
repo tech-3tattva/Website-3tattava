@@ -30,6 +30,13 @@ const REPORTS = [
     file: "/lab-reports/Shahjeet-Sticks.pdf",
     download: "3TATTAVA-Shahjeet-Sticks-Lab-Report.pdf",
   },
+  {
+    name: "Shahjeet Sticks®",
+    subtitle: "Honey-Shilajit Sticks · 30 Pack",
+    type: "NABL 3rd-Party Lab Report",
+    file: "https://media.3tattava.com/misc/lab-reports/Shahjeet-Sticks(Lab+Report).pdf",
+    download: "3TATTAVA-Shahjeet-Sticks-Lab-Report-2.pdf",
+  },
 ];
 
 const TESTED = ["Fulvic Acid %", "Heavy Metals", "Microbial Safety", "Purity & Identity"];

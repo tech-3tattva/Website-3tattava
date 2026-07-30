@@ -4,6 +4,7 @@ const Booking = require("../models/Booking");
 const { generateBookingId, getEndTime } = require("../utils/slots");
 const crypto = require("crypto");
 const { SESClient, SendEmailCommand } = require("@aws-sdk/client-ses");
+const { createConsultationEvent } = require("../lib/googleCalendar");
 
 const router = express.Router();
 
@@ -234,7 +235,13 @@ router.get("/doctor/:doctorId/reviews", async (req, res, next) => {
  * Creates the booking, generates a video-meet link, and emails the doctor + patient.
  */
 function meetLinkFor(bookingId) {
-  // Instant, no-auth video room. Unguessable suffix. Swap to Google Meet later if desired.
+  // Preferred: a fixed Google Meet room set via CONSULT_MEET_LINK
+  // (e.g. https://meet.google.com/abc-defg-hij). Dr. Falguni admits each
+  // patient from the Meet waiting room at their booked slot.
+  const fixed = (process.env.CONSULT_MEET_LINK || "").trim();
+  if (fixed) return fixed;
+  // Fallback when no Google Meet room is configured: instant, no-auth Jitsi
+  // room with an unguessable suffix.
   const token = crypto.randomBytes(4).toString("hex");
   return `https://meet.jit.si/3TATTAVA-Consult-${bookingId}-${token}`;
 }
@@ -345,7 +352,34 @@ router.post("/consultation", async (req, res, next) => {
 
     const duration = doctor.slotConfig?.durationMinutes || 30;
     const bookingId = generateBookingId(date);
-    const meetLink = meetLinkFor(bookingId);
+
+    // Doctor's notification / calendar-invite address (env override wins).
+    const doctorEmail =
+      (process.env.CONSULT_NOTIFY_EMAIL || "").trim() ||
+      doctor.personal?.email ||
+      process.env.AWS_SES_FROM_EMAIL;
+
+    // Try to create a Google Calendar event with a unique Meet link; this also
+    // emails calendar invites to the patient + doctor and lands the slot on the
+    // doctor's Google Calendar. Falls back to meetLinkFor() (fixed Meet room or
+    // Jitsi) when the Calendar integration isn't configured or the call fails.
+    const prakritiText = Object.entries(prakriti || {})
+      .filter(([, v]) => v && String(v).trim())
+      .map(([k, v]) => `${PRAKRITI_LABELS[k] || k}: ${v}`)
+      .join("\n");
+    const calendarEvent = await createConsultationEvent({
+      summary: `3TATTAVA Consultation — ${String(name).trim()}`,
+      description:
+        `Online Ayurveda consultation${isFree ? " (free first consultation)" : ""} with ${doctor.personal.fullName}.\n\n` +
+        `Patient: ${String(name).trim()}\nPhone: ${String(phone).trim()}\nEmail: ${emailLc}\n` +
+        `Age: ${Number(age)}   Gender: ${gender || "prefer-not-to-say"}\n\n` +
+        `Prakriti intake:\n${prakritiText || "(none provided)"}\n\nBooking ID: ${bookingId}`,
+      date,
+      startTime: timeSlot,
+      durationMin: duration,
+      attendees: [emailLc, doctorEmail],
+    });
+    const meetLink = calendarEvent?.meetLink || meetLinkFor(bookingId);
 
     const booking = new Booking({
       bookingId,
@@ -380,7 +414,6 @@ router.post("/consultation", async (req, res, next) => {
       { $inc: { "analytics.totalBookings": 1, "analytics.bookingsThisMonth": 1 } }
     ).catch(() => {});
 
-    const doctorEmail = doctor.personal?.email || process.env.AWS_SES_FROM_EMAIL;
     const emailResult = await sendConsultEmails({
       doctorEmail,
       patient: booking.patient,
