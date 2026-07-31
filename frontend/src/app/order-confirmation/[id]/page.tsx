@@ -7,6 +7,8 @@ import { motion } from "framer-motion";
 import Button from "@/components/ui/Button";
 import { useCart } from "@/context/CartContext";
 import { api } from "@/lib/api";
+import { trackPixel } from "@/lib/fbpixel";
+import { trackGa } from "@/lib/gtag";
 
 type VerifyStatus = "verifying" | "paid" | "pending" | "failed";
 
@@ -40,6 +42,30 @@ export default function OrderConfirmationPage() {
 
         if (res?.payment?.status === "captured") {
           setStatus("paid");
+          try {
+            const key = `pending_purchase_${orderId}`;
+            const raw = localStorage.getItem(key);
+            if (raw) {
+              const p = JSON.parse(raw);
+              trackPixel("Purchase", {
+                value: p.value,
+                currency: p.currency || "INR",
+                content_ids: p.content_ids,
+                contents: p.contents,
+                content_type: "product",
+                num_items: p.num_items,
+              });
+              trackGa("purchase", {
+                transaction_id: orderId,
+                value: p.value,
+                currency: p.currency || "INR",
+                items: p.items,
+              });
+              localStorage.removeItem(key);
+            }
+          } catch {
+            /* tracking must never block confirmation */
+          }
           localStorage.removeItem("checkoutShippingAddress");
           await clearCart();
           return;

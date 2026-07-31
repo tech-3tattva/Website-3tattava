@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { useCart } from "@/context/CartContext";
+import { useProductViewTracking } from "@/lib/useProductViewTracking";
 
 const F = "var(--font-primary), system-ui, sans-serif";
 const EASE = [0.16, 1, 0.3, 1] as const;
@@ -44,6 +45,7 @@ const CSS = `
 export default function BundleClient() {
   const { addItem } = useCart();
   const [added, setAdded] = useState(false);
+  useProductViewTracking({ id: "founding-bundle-pack", name: "Founding Bundle Pack — RockResin + Shahjeet", price: 2398 });
 
   const handleAdd = async () => {
     await addItem({

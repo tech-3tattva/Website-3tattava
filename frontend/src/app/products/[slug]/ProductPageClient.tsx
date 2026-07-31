@@ -15,6 +15,7 @@ import { useCart } from "@/context/CartContext";
 import { useWishlist } from "@/context/WishlistContext";
 import { useDeliveryPincode } from "@/context/DeliveryPincodeContext";
 import { formatPrice } from "@/lib/utils";
+import { useProductViewTracking } from "@/lib/useProductViewTracking";
 
 const DEFAULT_INGREDIENTS = [
   {
@@ -94,6 +95,7 @@ export default function ProductPageClient({
   const { addItem } = useCart();
   const { toggle, isWishlisted } = useWishlist();
   const { openModal, pincode, lastCheck } = useDeliveryPincode();
+  useProductViewTracking({ id: product.id, name: product.name, price: product.price });
 
   const images = product.images?.length ? product.images : ["/placeholder.svg"];
   const ingredients = product.ingredients?.length

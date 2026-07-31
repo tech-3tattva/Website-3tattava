@@ -12,6 +12,7 @@ import BrandDivider from "@/components/product/BrandDivider";
 import ProductSwipeLink from "@/components/product/ProductSwipeLink";
 import { LEGAL } from "@/lib/legal";
 import TmMark from "@/components/ui/TmMark";
+import { useProductViewTracking } from "@/lib/useProductViewTracking";
 
 // ─── TOKENS ───────────────────────────────────────────────────────────────────
 const F = "var(--font-primary), system-ui, sans-serif";
@@ -691,6 +692,7 @@ function GenderRitualSection() {
 }
 
 export default function RockResinClient() {
+  useProductViewTracking(PRODUCT);
   return (
     <div style={{ fontFamily: F, color: ESPRESSO, background: CREAM }}>
       <style dangerouslySetInnerHTML={{ __html: RR_CSS }} />

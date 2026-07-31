@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useCart } from "@/context/CartContext";
 import { useRouter } from "next/navigation";
@@ -8,6 +8,8 @@ import CheckoutHeader from "@/components/checkout/CheckoutHeader";
 import { CHECKOUT_PAYMENT_PATH } from "@/lib/auth-redirect";
 import { formatPrice } from "@/lib/utils";
 import { api, ApiError } from "@/lib/api";
+import { trackPixel } from "@/lib/fbpixel";
+import { trackGa } from "@/lib/gtag";
 
 declare global {
   interface Window {
@@ -49,6 +51,7 @@ export default function CheckoutPaymentPage() {
 
   const [isPlacing, setIsPlacing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const checkoutFired = useRef(false);
 
   useEffect(() => {
     if (authLoading) return;
@@ -56,6 +59,24 @@ export default function CheckoutPaymentPage() {
       router.replace(`/login?redirect=${encodeURIComponent(CHECKOUT_PAYMENT_PATH)}`);
     }
   }, [authLoading, isLoggedIn, router]);
+
+  // Fire InitiateCheckout / begin_checkout once, when the payment step has items.
+  useEffect(() => {
+    if (checkoutFired.current || items.length === 0) return;
+    checkoutFired.current = true;
+    const numItems = items.reduce((n, i) => n + i.quantity, 0);
+    trackPixel("InitiateCheckout", {
+      value: total,
+      currency: "INR",
+      num_items: numItems,
+      content_ids: items.map((i) => i.productId),
+    });
+    trackGa("begin_checkout", {
+      currency: "INR",
+      value: total,
+      items: items.map((i) => ({ item_id: i.productId, item_name: i.name, price: i.price, quantity: i.quantity })),
+    });
+  }, [items, total]);
 
   const handlePayNow = async () => {
     setIsPlacing(true);
@@ -89,6 +110,24 @@ export default function CheckoutPaymentPage() {
         },
         isLoggedIn,
       );
+
+      // Stash the authoritative order value so the confirmation page can fire a
+      // Purchase event with the real amount (survives the Cashfree redirect).
+      try {
+        localStorage.setItem(
+          `pending_purchase_${order.orderNumber}`,
+          JSON.stringify({
+            value: total,
+            currency: "INR",
+            num_items: items.reduce((n, i) => n + i.quantity, 0),
+            content_ids: items.map((i) => i.productId),
+            contents: items.map((i) => ({ id: i.productId, quantity: i.quantity, item_price: i.price })),
+            items: items.map((i) => ({ item_id: i.productId, item_name: i.name, price: i.price, quantity: i.quantity })),
+          })
+        );
+      } catch {
+        /* storage unavailable — Purchase simply won't fire client-side */
+      }
 
       // Order + session created and SDK is ready — redirect to Cashfree.
       const cf = new window.Cashfree(order.paymentSessionId);

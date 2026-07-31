@@ -14,6 +14,7 @@ import BrandDivider from "@/components/product/BrandDivider";
 import ProductSwipeLink from "@/components/product/ProductSwipeLink";
 import { LEGAL } from "@/lib/legal";
 import TmMark from "@/components/ui/TmMark";
+import { useProductViewTracking } from "@/lib/useProductViewTracking";
 
 // ─── TOKENS ───────────────────────────────────────────────────────────────────
 const F = "var(--font-primary), system-ui, sans-serif";
@@ -661,6 +662,7 @@ function LegalMetrologySection() {
 
 // ─── PAGE ─────────────────────────────────────────────────────────────────────
 export default function ShahjeetClient() {
+  useProductViewTracking(PRODUCT);
   return (
     <div style={{ fontFamily: F, color: ESPRESSO, background: CREAM }}>
       <style dangerouslySetInnerHTML={{ __html: SHJ_CSS }} />

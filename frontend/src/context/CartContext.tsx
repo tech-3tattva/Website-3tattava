@@ -4,6 +4,8 @@ import React, { createContext, useContext, useReducer, useCallback, useEffect, u
 import type { ServerCart } from "@shared/types";
 import { api, USE_MOCK, validateCoupon } from "@/lib/api";
 import { useAuth } from "@/context/AuthContext";
+import { trackPixel } from "@/lib/fbpixel";
+import { trackGa } from "@/lib/gtag";
 
 /** Must match the Product `id` from the API (Mongo ObjectId string) so checkout can decrement stock. SKU is accepted server-side as a fallback. */
 export interface CartItem {
@@ -171,9 +173,25 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   }, [authLoading, isLoggedIn, hydrateCart]);
 
   const addItem = useCallback(async (item: CartItem) => {
+    const trackAdd = () => {
+      trackPixel("AddToCart", {
+        content_ids: [item.productId],
+        content_name: item.name,
+        content_type: "product",
+        value: item.price * item.quantity,
+        currency: "INR",
+        contents: [{ id: item.productId, quantity: item.quantity, item_price: item.price }],
+      });
+      trackGa("add_to_cart", {
+        currency: "INR",
+        value: item.price * item.quantity,
+        items: [{ item_id: item.productId, item_name: item.name, price: item.price, quantity: item.quantity }],
+      });
+    };
     if (USE_MOCK) {
       dispatch({ type: "ADD_ITEM", payload: item });
       dispatch({ type: "OPEN_DRAWER" });
+      trackAdd();
       return;
     }
 
@@ -193,6 +211,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     );
     dispatch({ type: "HYDRATE_CART", payload: mapServerCart(cart) });
     dispatch({ type: "OPEN_DRAWER" });
+    trackAdd();
   }, [isLoggedIn]);
 
   const removeItem = useCallback(async (id: string) => {
