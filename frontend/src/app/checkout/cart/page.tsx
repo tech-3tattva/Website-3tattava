@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
 import { CHECKOUT_ADDRESS_PATH } from "@/lib/auth-redirect";
@@ -10,6 +10,7 @@ import CheckoutHeader from "@/components/checkout/CheckoutHeader";
 import QuantityStepper from "@/components/product/QuantityStepper";
 import { formatPrice } from "@/lib/utils";
 import BundleUpsell from "@/components/cart/BundleUpsell";
+import { api } from "@/lib/api";
 
 export default function CheckoutCartPage() {
   const { isLoggedIn } = useAuth();
@@ -23,6 +24,22 @@ export default function CheckoutCartPage() {
   const isWelcome = !!coupon?.code?.startsWith("W200");
 
   const [promoMsg, setPromoMsg] = useState<string | null>(null);
+
+  // Founding program: show a ₹200-off banner while global founding slots remain.
+  // Non-breaking — a failed fetch simply leaves this null and renders nothing.
+  const [foundingRemaining, setFoundingRemaining] = useState<number | null>(null);
+  useEffect(() => {
+    let cancelled = false;
+    api
+      .get<{ redeemed: number; limit: number; remaining: number }>("/coupons/founding-status")
+      .then((res) => {
+        if (!cancelled && res && typeof res.remaining === "number") setFoundingRemaining(res.remaining);
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   async function handleApplyCoupon() {
     const raw = couponCode.trim();
@@ -135,6 +152,20 @@ export default function CheckoutCartPage() {
             )}
           </div>
           <div className="md:sticky md:top-24 self-start">
+            {foundingRemaining !== null && foundingRemaining > 0 && (
+              <div
+                className="mb-4 rounded-lg p-4 text-sm leading-relaxed"
+                style={{
+                  background: "rgba(200,150,62,0.12)",
+                  border: "1px solid rgba(200,150,62,0.45)",
+                  color: "#1c1304",
+                }}
+              >
+                <span aria-hidden>✨</span>{" "}
+                <span className="font-semibold">You&apos;re a founding member</span> — ₹200 off your
+                first order (first 200 customers). Applied automatically at checkout.
+              </div>
+            )}
             <div className="premium-card p-6 space-y-4">
               <h3 className="font-sans font-bold text-lg">Promo Code</h3>
               <div className="flex gap-2">

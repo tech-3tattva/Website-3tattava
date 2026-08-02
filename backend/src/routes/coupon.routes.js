@@ -4,7 +4,7 @@ const { z } = require("zod");
 
 const Coupon = require("../models/Coupon");
 const { ApiError } = require("../middleware/errorHandler");
-const { evaluateWelcome } = require("../utils/welcomeCoupon");
+const { evaluateWelcome, getWelcomeRedeemedCount, WELCOME_GLOBAL_LIMIT } = require("../utils/welcomeCoupon");
 
 const router = express.Router();
 
@@ -69,6 +69,21 @@ router.post("/validate", async (req, res, next) => {
     });
   } catch (err) {
     return next(err instanceof ApiError ? err : err);
+  }
+});
+
+/**
+ * GET /founding-status — public, real-time founding-program status (no auth).
+ * The welcome coupon IS the ₹200 founding discount, capped at WELCOME_GLOBAL_LIMIT
+ * globally. Returns how many of the founding slots have been redeemed + remain.
+ */
+router.get("/founding-status", async (req, res, next) => {
+  try {
+    const redeemed = await getWelcomeRedeemedCount();
+    const limit = WELCOME_GLOBAL_LIMIT;
+    res.json({ redeemed, limit, remaining: Math.max(0, limit - redeemed) });
+  } catch (e) {
+    next(e);
   }
 });
 

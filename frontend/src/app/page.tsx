@@ -1,6 +1,7 @@
 import HeroRevamp from "@/components/home-revamp/HeroRevamp";
 import TrinityPosterSection from "@/components/home-revamp/TrinityPosterSection";
 import PerformanceStory from "@/components/home-revamp/PerformanceStory";
+import FoundingProgram from "@/components/home-revamp/FoundingProgram";
 import PhilosophyRevamp from "@/components/home-revamp/PhilosophyRevamp";
 import TrustRevamp from "@/components/home-revamp/TrustRevamp";
 import KanwarSevaSection from "@/components/home-revamp/KanwarSevaSection";
@@ -22,6 +23,7 @@ export default function HomePage() {
       <HeroRevamp />
       <TrinityPosterSection />
       <PerformanceStory />
+      <FoundingProgram />
       <PhilosophyRevamp />
       <TrustRevamp />
       <KanwarSevaSection />
