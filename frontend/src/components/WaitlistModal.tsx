@@ -13,8 +13,8 @@ const MUTED = "#6f5a48";
 const F = "var(--font-primary), system-ui, sans-serif";
 
 export const WAITLIST_PRODUCTS = [
-  "RockResin® — Classically Purified Shilajit Resin",
-  "Shahjeet® — Honey Sticks",
+  "RockResin™ — Classically Purified Shilajit Resin",
+  "Shahjeet™ — Honey Sticks",
   "Both products",
   "Not sure yet",
 ] as const;

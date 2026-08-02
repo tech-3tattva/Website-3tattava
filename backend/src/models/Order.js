@@ -124,6 +124,20 @@ const orderSchema = new mongoose.Schema(
       discountPercent: { type: Number, default: 0 },
     },
 
+    // Paid-ad attribution captured at checkout (mirrors the Waitlist model shape).
+    attribution: {
+      utm_source: { type: String },
+      utm_medium: { type: String },
+      utm_campaign: { type: String },
+      utm_content: { type: String },
+      utm_term: { type: String },
+      fbclid: { type: String },
+      fbc: { type: String },
+      fbp: { type: String },
+      referrer: { type: String },
+      landing_path: { type: String },
+    },
+
     giftBox: { type: Boolean, default: false },
     giftMessage: { type: String },
     wellnessClub: { type: Boolean, default: false },

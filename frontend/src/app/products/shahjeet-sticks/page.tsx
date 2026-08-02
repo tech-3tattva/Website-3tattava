@@ -3,12 +3,12 @@ import ShahjeetClient from './ShahjeetClient'
 import { BreadcrumbSchema } from '@/components/seo/JsonLd'
 
 export const metadata: Metadata = {
-  title: 'Shahjeet® — Honey Shilajit Sticks 30-Pack | Portable Single-Serve | Doctor Reviewed | 3TATTAVA',
+  title: 'Shahjeet™ — Honey Shilajit Sticks 30-Pack | Portable Single-Serve | Doctor Reviewed | 3TATTAVA',
   description: 'Classically purified Shilajit + Madhu in a portable honey stick. 600mg Shilajit per stick, 30 single-serve packs. Triphala purified. Tear, Squeeze, Perform. Doctor reviewed by Dr. Kashish Gupta (BAMS).',
   alternates: { canonical: 'https://www.3tattava.com/products/shahjeet-sticks' },
   openGraph: {
     type: 'website',
-    title: 'Shahjeet® — Honey Shilajit Sticks | Performance In Your Pocket | 3TATTAVA',
+    title: 'Shahjeet™ — Honey Shilajit Sticks | Performance In Your Pocket | 3TATTAVA',
     description: '600mg classically purified Shilajit per stick. Honey-based formula. Portable single-serve. Tear. Squeeze. Perform.',
     url: 'https://www.3tattava.com/products/shahjeet-sticks',
     images: [{ url: 'https://media.3tattava.com/products/shahjeet-box.png' }],
@@ -80,7 +80,7 @@ const faqSchema = {
 const productSchema = {
   '@context': 'https://schema.org',
   '@type': 'Product',
-  name: 'Shahjeet® — Honey Shilajit Sticks 30-Pack',
+  name: 'Shahjeet™ — Honey Shilajit Sticks 30-Pack',
   description: 'Classically purified Shilajit + Madhu in a portable honey stick. 600mg Shilajit per stick, 30 single-serve packs. Triphala purified. Tear, Squeeze, Perform.',
   image: 'https://media.3tattava.com/products/shahjeet-box.png',
   brand: { '@type': 'Brand', name: '3TATTAVA' },
@@ -88,7 +88,7 @@ const productSchema = {
     '@type': 'Offer',
     url: 'https://www.3tattava.com/products/shahjeet-sticks',
     priceCurrency: 'INR',
-    price: '999',
+    price: '1399',
     availability: 'https://schema.org/InStock',
     seller: { '@type': 'Organization', name: 'SankalpaSiddhi Ayupharma Pvt. Ltd.' },
   },
@@ -109,7 +109,7 @@ export default function ShahjeetSticksPage() {
         items={[
           { name: 'Home', url: 'https://www.3tattava.com' },
           { name: 'Shop', url: 'https://www.3tattava.com/products' },
-          { name: 'Shahjeet® — Honey Shilajit Sticks', url: 'https://www.3tattava.com/products/shahjeet-sticks' },
+          { name: 'Shahjeet™ — Honey Shilajit Sticks', url: 'https://www.3tattava.com/products/shahjeet-sticks' },
         ]}
       />
       <ShahjeetClient />

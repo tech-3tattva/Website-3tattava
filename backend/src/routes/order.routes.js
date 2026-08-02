@@ -11,6 +11,7 @@ const { ApiError } = require("../middleware/errorHandler");
 const { z } = require("zod");
 const { SESClient, SendEmailCommand } = require("@aws-sdk/client-ses");
 const cashfree = require("../lib/cashfree");
+const metaCapi = require("../lib/metaCapi");
 const { markWelcomeCouponUsed, evaluateWelcome } = require("../utils/welcomeCoupon");
 const Coupon = require("../models/Coupon");
 
@@ -26,6 +27,23 @@ function getOptionalCustomerId(req) {
   } catch {
     return null;
   }
+}
+
+// Paid-ad attribution sent from the checkout client. Only the declared keys are
+// kept, each clipped to a sane length; returns undefined when nothing usable.
+const ATTRIBUTION_KEYS = [
+  "utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term",
+  "fbclid", "fbc", "fbp", "referrer", "landing_path",
+];
+function pickAttribution(raw) {
+  if (!raw || typeof raw !== "object") return undefined;
+  const clip = (v, n = 500) => (v == null ? undefined : String(v).trim().slice(0, n));
+  const out = {};
+  for (const key of ATTRIBUTION_KEYS) {
+    const val = clip(raw[key]);
+    if (val) out[key] = val;
+  }
+  return Object.keys(out).length ? out : undefined;
 }
 
 /** Re-validate a founding welcome coupon server-side before granting the discount.
@@ -413,6 +431,7 @@ router.post("/create-cashfree", async (req, res, next) => {
         },
       },
       tracking: {},
+      attribution: pickAttribution(req.body.attribution),
     });
 
     return res.status(201).json({
@@ -504,6 +523,24 @@ router.post("/verify-cashfree", async (req, res, next) => {
         await markWelcomeCouponUsed(order.user, order.coupon.code, order.orderNumber);
       }
     } catch (e) { console.error("[welcome] redeem (cashfree) failed:", e.message); }
+
+    // Server-side Meta Conversions API Purchase. Shares its event_id with the
+    // browser Pixel event (orderNumber) so Meta dedups the pair. No-op unless
+    // CAPI env is configured; wrapped so it never breaks order verification.
+    try {
+      await metaCapi.sendPurchaseEvent({
+        eventId: order.orderNumber,
+        value: order.total,
+        currency: "INR",
+        email: order.shippingAddress?.email,
+        phone: order.shippingAddress?.phone,
+        fbc: order.attribution?.fbc,
+        fbp: order.attribution?.fbp,
+        clientIp: (req.headers["x-forwarded-for"] || "").split(",")[0].trim() || req.ip,
+        userAgent: req.get("user-agent"),
+        sourceUrl: `${process.env.FRONTEND_URL || "http://localhost:3000"}/order-confirmation/${order.orderNumber}`,
+      });
+    } catch (e) { console.error("[meta-capi] purchase event failed:", e.message); }
 
     const emailResult = await trySendOrderConfirmationEmail({
       toEmail: order.shippingAddress.email, orderNumber: order.orderNumber, total: order.total,

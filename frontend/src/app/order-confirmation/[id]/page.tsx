@@ -48,6 +48,7 @@ export default function OrderConfirmationPage() {
             if (raw) {
               const p = JSON.parse(raw);
               trackPixel("Purchase", {
+                eventID: orderId,
                 value: p.value,
                 currency: p.currency || "INR",
                 content_ids: p.content_ids,

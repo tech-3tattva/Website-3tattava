@@ -114,7 +114,7 @@ const eyebrow: CSSProperties = { fontFamily: F, fontVariationSettings: "'wght' 6
 
 // ─── FEATURE ICONS (accessible hover / focus tooltips) ────────────────────────
 const FEATURE_ICONS: { label: string; tip: string }[] = [
-  { label: "70%+ Fulvic Acid", tip: "Fulvic acid carries minerals directly into your cells for absorption." },
+  { label: "70%+ Fulvic Acid", tip: "Fulvic acid content, NABL-accredited third-party lab tested." },
   { label: "80+ Trace Minerals", tip: "80+ ionic trace minerals, including iron, magnesium and zinc." },
   { label: "Triphala Purified", tip: "Classically purified with Amalaki, Haritaki & Bibhitaki." },
   { label: "NABL Third-Party Lab Tested", tip: "Independently tested by an NABL-accredited lab (Eurofins)." },
@@ -224,7 +224,7 @@ function HeroSection() {
 const VALUES = [
   { icon: media("/rockresin/icon-source.png"), eyebrow: "From the roof of the world", text: "Harvested from mineral-rich rocks at elevations above 16,000 ft." },
   { icon: media("/rockresin/icon-minerals.png"), eyebrow: "Nature's complete complex", text: "Packed with 80+ ionic trace minerals in their most bioavailable form." },
-  { icon: media("/rockresin/icon-ring.png"), eyebrow: "Absorption you can feel", text: "Lab-verified ≥70% fulvic acid — so your body absorbs what you take." },
+  { icon: media("/rockresin/icon-ring.png"), eyebrow: "Lab-verified potency", text: "Fulvic acid content independently verified by an NABL-accredited lab." },
 ];
 function ReveredSection() {
   return (

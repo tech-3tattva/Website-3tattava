@@ -115,27 +115,27 @@ export const PRODUCT_SHOWCASE = {
 } as const;
 
 export const RESULTS_TIMELINE = {
-  header: "What to Expect \u2014 Week by Week",
+  header: "Your Ritual, Week by Week",
   weeks: [
     {
       range: "Week 1\u20132",
-      title: "Foundation",
-      body: "Your body begins absorbing 80+ trace minerals. Most people notice the afternoon energy crash starting to fade.",
+      title: "Begin",
+      body: "Start the daily ritual \u2014 one serving each morning, delivering 80+ ionic trace minerals and fulvic acid.",
     },
     {
       range: "Week 3\u20134",
-      title: "Momentum",
-      body: "Sustained energy without caffeine dependency. Better sleep quality. Sharper mornings.",
+      title: "Settle In",
+      body: "The ritual becomes routine \u2014 a simple, consistent daily practice you don't have to think about.",
     },
     {
       range: "Week 6\u20138",
-      title: "Performance",
-      body: "Measurable improvements in stamina, recovery time, and mental clarity. This is where the compounding begins.",
+      title: "Consistency",
+      body: "Consistency is the heart of Ayurveda. The daily mineral ritual is now second nature.",
     },
     {
       range: "Week 10\u201312",
-      title: "Transformation",
-      body: "The daily mineral ritual has fully compounded. Many people report their steadiest energy, recovery and overall sense of well-being by this stage.",
+      title: "The 90-Day Mark",
+      body: "A sustained 90-day practice \u2014 Ayurveda has always rewarded consistency over intensity.",
     },
   ],
   cta: { label: "Start Your 90-Day Ritual", href: "/products" },
@@ -144,35 +144,7 @@ export const RESULTS_TIMELINE = {
 export const TESTIMONIALS = {
   header: "Real Results. Real People.",
   disclaimer: "These are real customers. We don't edit reviews. We don't pay for testimonials.",
-  items: [
-    {
-      name: "[Placeholder Name]",
-      age: 28,
-      city: "Bangalore",
-      segment: "Fitness",
-      quote:
-        "I was spending \u20B93,000/month on pre-workouts and recovery supplements. Replaced all of it with one honey stick every morning. Week 4, my trainer noticed the difference before I did.",
-      rating: 5,
-    },
-    {
-      name: "[Placeholder Name]",
-      age: 34,
-      city: "Mumbai",
-      segment: "Professional",
-      quote:
-        "Three coffees before noon was my normal. By week 3 with the resin, I was down to one \u2014 and I wasn't crashing at 3pm anymore. My wife noticed I was sleeping better too.",
-      rating: 5,
-    },
-    {
-      name: "[Placeholder Name]",
-      age: 31,
-      city: "Delhi",
-      segment: "Women's Wellness",
-      quote:
-        "I'd tried so many things that just upset my stomach. The honey sticks were the first thing I could actually take every single day \u2014 and keep taking. It became part of my morning without a second thought.",
-      rating: 5,
-    },
-  ],
+  items: [] as { name: string; age: number; city: string; segment: string; quote: string; rating: number }[],
 } as const;
 
 export const FOUNDER = {
@@ -280,14 +252,14 @@ export const SHOP_PAGE = {
     "Resin or honey sticks. Same pure Himalayan Shilajit. Choose the ritual that fits your life.",
   filters: ["All Products", "Shilajit Resin", "Honey Sticks", "Bundles", "Subscribe & Save"],
   featuredBanners: [
-    { label: "NEW: Shahjeet Honey Sticks — India's First", href: "/products/shahjeet-sticks" },
+    { label: "NEW: Shahjeet Honey Sticks \u2014 Honey-Shilajit Format", href: "/products/shahjeet-sticks" },
     { label: "Classically Purified Shilajit Resin \u2014 The Deep Ritual", href: "/products/shodhit-shilajit-resin" },
   ],
 } as const;
 
 export const OUR_STORY = {
   h1: "Why an Ayurveda Doctor Stopped Seeing Patients",
-  subheadline: "And built India's first Performance Ayurveda brand instead.",
+  subheadline: "And built a Performance Ayurveda brand instead.",
   problemHeader: "The Problem Nobody's Fixing",
   problemBody: [
     "Sitting in his clinic, Dr. Kashish saw the same pattern in 20 patients every day. No real energy. Broken sleep. Dependency on stimulants. Relentless burnout. And the worst part \u2014 they all thought this was normal.",

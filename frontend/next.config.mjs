@@ -53,6 +53,16 @@ const nextConfig = {
         destination: '/products',
         permanent: true,
       },
+      {
+        source: '/products/rockresin',
+        destination: '/products/shodhit-shilajit-resin',
+        permanent: true,
+      },
+      {
+        source: '/products/shahjeet',
+        destination: '/products/shahjeet-sticks',
+        permanent: true,
+      },
     ];
   },
 };

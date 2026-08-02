@@ -185,7 +185,7 @@ export default function WhatsAppWidget() {
               Join early — get launch pricing first
             </div>
             <div className="wa-tooltip-sub">
-              300+ members waiting for launch day
+              Questions? Chat with us on WhatsApp
             </div>
           </div>
         )}

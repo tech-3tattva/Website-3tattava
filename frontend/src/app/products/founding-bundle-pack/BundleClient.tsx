@@ -15,8 +15,8 @@ const TAUPE = "rgba(28,19,4,.55)";
 const BUNDLE_IMG = "https://media.3tattava.com/products/Boxess%20copy%201.png";
 
 const INCLUDES = [
-  "RockResin® 20g classically purified resin jar — 40–50 daily servings",
-  "30 Shahjeet® honey sticks — 600mg purified Shilajit each",
+  "RockResin™ 20g classically purified resin jar — 40–50 daily servings",
+  "30 Shahjeet™ honey sticks — 600mg purified Shilajit each",
   "The full Balance · Build · Become ritual in one box",
   "Founding welcome perks — priority access + care guide",
 ];
@@ -24,13 +24,13 @@ const INCLUDES = [
 const INSIDE = [
   {
     slug: "shodhit-shilajit-resin",
-    label: "RockResin®",
+    label: "RockResin™",
     desc: "Classically purified Himalayan Shilajit resin — the Dip · Hook · Swirl ritual for daily strength and vitality.",
     img: "https://media.3tattava.com/features/home/homepage-rockresins.png",
   },
   {
     slug: "shahjeet-sticks",
-    label: "Shahjeet®",
+    label: "Shahjeet™",
     desc: "600mg purified Shilajit blended with raw honey in 30 single-serve sticks. Tear. Squeeze. Perform.",
     img: "https://media.3tattava.com/products/full+shahjeet+box.png",
   },
@@ -95,7 +95,7 @@ export default function BundleClient() {
               Founding Bundle Pack
             </h1>
             <p style={{ fontFamily: F, fontSize: "clamp(15px,1.9vw,18px)", lineHeight: 1.6, color: TAUPE, margin: "0 0 clamp(24px,3vw,30px)", maxWidth: "44ch" }}>
-              RockResin® Resin + Shahjeet® Honey Sticks — the full Balance · Build · Become ritual in one pack, at the founding price.
+              RockResin™ Resin + Shahjeet™ Honey Sticks — the full Balance · Build · Become ritual in one pack, at the founding price.
             </p>
 
             {/* Pricing */}

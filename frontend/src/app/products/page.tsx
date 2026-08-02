@@ -17,12 +17,12 @@ export const metadata: Metadata = {
 const PRODUCTS = [
   {
     slug: "shodhit-shilajit-resin",
-    label: "RockResin®",
+    label: "RockResin™",
     subtitle: "Pure Himalayan Shilajit · 20g Jar",
     tagline: "Ancient Mineral Elixir for Modern Vitality",
     image: "https://media.3tattava.com/products/rockresin/2.png",
     pills: ["≥70% Fulvic Acid", "NABL Tested", "Triphala Purified"],
-    waitlistProduct: "RockResin® — Classically Purified Shilajit Resin",
+    waitlistProduct: "RockResin™ — Classically Purified Shilajit Resin",
   },
   {
     slug: "shahjeet-sticks",
@@ -31,12 +31,12 @@ const PRODUCTS = [
     tagline: "Tear. Squeeze. Perform.",
     image: "https://media.3tattava.com/products/full+shahjeet+box.png",
     pills: ["600mg Per Stick", "NABL Tested", "AYUSH GMP"],
-    waitlistProduct: "Shahjeet® — Honey Sticks",
+    waitlistProduct: "Shahjeet™ — Honey Sticks",
   },
   {
     slug: "founding-bundle-pack",
     label: "Founding Bundle",
-    subtitle: "RockResin® + Shahjeet® · Complete Ritual",
+    subtitle: "RockResin™ + Shahjeet™ · Complete Ritual",
     tagline: "The full Balance · Build · Become ritual in one pack.",
     image: "https://media.3tattava.com/products/Boxess%20copy%201.png",
     pills: ["2 Products", "Save ₹600", "Founding ₹2,198"],

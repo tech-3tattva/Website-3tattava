@@ -44,7 +44,7 @@ export const metadata: Metadata = {
     template: "%s",
   },
   description:
-    "India's first Performance Ayurveda brand. Pure Himalayan Shilajit Resin & Honey Sticks. Lab-tested, doctor-formulated. 80+ trace minerals. Shop now.",
+    "Doctor-formulated Performance Ayurveda. Pure Himalayan Shilajit Resin & Honey Sticks. Lab-tested, 80+ trace minerals. Shop now.",
   applicationName: "3TATTAVA",
   authors: [{ name: "Dr. Kashish Gupta, BAMS" }],
   keywords: [
@@ -66,7 +66,7 @@ export const metadata: Metadata = {
     siteName: "3TATTAVA",
     title: "3TATTAVA — Performance Ayurveda | Shodhit Shilajit Resins & Honey Sticks",
     description:
-      "India's first Performance Ayurveda brand. Pure Himalayan Shilajit Resin & Honey Sticks. Lab-tested, doctor-formulated.",
+      "Doctor-formulated Performance Ayurveda. Pure Himalayan Shilajit Resin & Honey Sticks. Lab-tested.",
     images: [{ url: "/og-default.png", width: 1200, height: 630, alt: "3TATTAVA — Performance Ayurveda" }],
   },
   twitter: {
@@ -131,8 +131,10 @@ export default function RootLayout({
             <PurchaseNudge />
           </ChromeGate>
           <CookieConsent />
-          <WelcomeOfferNotification />
-          <WaitlistAutoOpen />
+          <ChromeGate>
+            <WelcomeOfferNotification />
+            <WaitlistAutoOpen />
+          </ChromeGate>
         </Providers>
       </body>
     </html>

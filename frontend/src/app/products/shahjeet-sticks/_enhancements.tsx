@@ -296,7 +296,7 @@ export function StickyBuyRail() {
             />
             <div>
               <p style={{ fontFamily: F, fontVariationSettings: "'wdth' 85,'wght' 700", fontSize: 13, color: C.espresso, margin: 0 }}>
-                Shahjeet®
+                Shahjeet™
               </p>
               <p style={{ fontFamily: F, fontSize: 10.5, color: C.muted, margin: "1px 0 0" }}>
                 Honey-Shilajit · 30 Sticks

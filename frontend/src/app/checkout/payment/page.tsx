@@ -10,6 +10,7 @@ import { formatPrice } from "@/lib/utils";
 import { api, ApiError } from "@/lib/api";
 import { trackPixel } from "@/lib/fbpixel";
 import { trackGa } from "@/lib/gtag";
+import { getAttribution } from "@/lib/attribution";
 
 declare global {
   interface Window {
@@ -96,9 +97,14 @@ export default function CheckoutPaymentPage() {
       // CartContext total = subtotal - discount + shippingFee
       const discountAmount = subtotal - (total - shippingFee);
 
+      // Capture the paid-ad attribution so the order (and server-side CAPI
+      // Purchase) can be tied back to the ad that drove the sale.
+      const attribution = getAttribution();
+
       const order = await api.post<CreateCashfreeResponse>(
         "/orders/create-cashfree",
         {
+          attribution,
           items,
           shippingAddress,
           subtotal,

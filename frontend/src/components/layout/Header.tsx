@@ -74,7 +74,6 @@ const TICKER_ITEMS = [
   "✦ Classically Purified Through Triphala",
   "◆ Government of NCT of Delhi Graduate · CBPACS · Former Consultant, NCISM Ministry of Ayush",
   "✦ Lab Reports on Every Product",
-  "◆ India\u2019s First Shilajit Honey Sticks",
 ];
 
 export default function Header() {

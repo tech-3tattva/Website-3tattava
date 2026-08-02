@@ -77,7 +77,7 @@ export const shodhitShilajitResin: ProductData = {
     { value: '16,000ft', label: 'Himalayan Source' },
     { value: 'AYUSH', label: 'GMP Certified' },
   ],
-  finalCta: 'Shop the Classically Purified Resin — ₹1,299',
+  finalCta: 'Shop the Classically Purified Resin — ₹1,199',
   seoTitle: 'ROCKRESIN — Classically Purified Himalayan Shilajit Resin 20g | NABL Lab-Tested | Doctor-Formulated | 3TATTAVA',
   seoDescription: 'Classically purified Himalayan Shilajit resin. NABL lab-tested, ≥70% fulvic acid, 80+ trace minerals. Doctor-formulated by Dr. Kashish Gupta (BAMS).',
   breadcrumbName: 'CLASSICALLY PURIFIED SHILAJIT RESIN',

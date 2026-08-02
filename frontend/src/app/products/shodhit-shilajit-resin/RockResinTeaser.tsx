@@ -114,7 +114,7 @@ export default function RockResinTeaser() {
         {/* Title */}
         <h1 style={{ fontFamily: F, fontVariationSettings: "'wdth' 88,'wght' 800", fontSize: "clamp(44px,9vw,108px)", letterSpacing: "-0.03em", lineHeight: 0.98, margin: "0 0 8px" }}>
           <AnimWords text="RockResin" delay={0.35} color="#f7f0e2" />
-          <span style={{ background: "linear-gradient(105deg,#A67B2F,#E4C079,#cd872a)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>®</span>
+          <span style={{ background: "linear-gradient(105deg,#A67B2F,#E4C079,#cd872a)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>™</span>
         </h1>
         <p style={{ fontFamily: F, fontStyle: "italic", fontVariationSettings: "'wdth' 90,'wght' 600", fontSize: "clamp(16px,2.4vw,24px)", color: "#E4C079", marginBottom: 26 }}>
           <AnimWords text="The Deep Ritual" delay={0.5} />

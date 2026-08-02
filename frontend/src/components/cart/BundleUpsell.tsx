@@ -57,7 +57,7 @@ export default function BundleUpsell({ className = "" }: { className?: string })
           Founding Bundle Pack
         </p>
         <p className="mt-0.5 text-[12px]" style={{ color: "rgba(28,19,4,.6)" }}>
-          Add RockResin® + Shahjeet® together —{" "}
+          Add RockResin™ + Shahjeet™ together —{" "}
           <span style={{ textDecoration: "line-through" }}>₹2,998</span>{" "}
           <strong style={{ color: "#1c1304" }}>₹2,398</strong>{" "}
           <span style={{ color: GOLD, fontWeight: 700 }}>save ₹600</span>

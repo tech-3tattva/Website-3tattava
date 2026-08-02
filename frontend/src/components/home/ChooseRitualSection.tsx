@@ -462,7 +462,7 @@ export default function ChooseRitualSection() {
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src="https://media.3tattava.com/products/Rockresin-hero.jpeg"
-                  alt="ROCKRESIN® — Shodhit Shilajit Resin in jar"
+                  alt="ROCKRESIN™ — Shodhit Shilajit Resin in jar"
                   style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
                   onError={(e) => {
                     const el = e.currentTarget as HTMLImageElement
@@ -475,7 +475,7 @@ export default function ChooseRitualSection() {
               </div>
 
               <p className="ritual-product-tag">The Deep Ritual</p>
-              <h3 className="ritual-product-name">ROCKRESIN®</h3>
+              <h3 className="ritual-product-name">ROCKRESIN™</h3>
               <p className="ritual-product-tagline">One Resin. Complete Vitality.</p>
 
               <ul className="ritual-benefits" aria-label="RockResin benefits">
@@ -538,7 +538,7 @@ export default function ChooseRitualSection() {
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src="https://media.3tattava.com/products/shahjeet-box.png"
-                  alt="SHAHJEET® — Performance Honey Shilajit Sticks box"
+                  alt="SHAHJEET™ — Performance Honey Shilajit Sticks box"
                   style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block', padding: '12px', background: 'transparent' }}
                   onError={(e) => {
                     const el = e.currentTarget as HTMLImageElement
@@ -551,7 +551,7 @@ export default function ChooseRitualSection() {
               </div>
 
               <p className="ritual-product-tag">The Fast Ritual</p>
-              <h3 className="ritual-product-name">SHAHJEET®</h3>
+              <h3 className="ritual-product-name">SHAHJEET™</h3>
               <p className="ritual-product-tagline">Performance In Your Pocket.</p>
 
               <ul className="ritual-benefits" aria-label="Shahjeet benefits">

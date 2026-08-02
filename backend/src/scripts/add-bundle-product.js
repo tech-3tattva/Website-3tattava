@@ -17,17 +17,17 @@ const BUNDLE = {
   price: 2398,
   mrp: 2998,
   images: ["https://media.3tattava.com/products/Boxess%20copy%201.png"],
-  shortDescription: "RockResin® resin + Shahjeet® honey sticks — the complete Balance · Build · Become ritual in one pack.",
+  shortDescription: "RockResin™ resin + Shahjeet™ honey sticks — the complete Balance · Build · Become ritual in one pack.",
   description:
-    "The Founding Bundle Pack brings the full 3TATTAVA ritual together: one RockResin® 20g classically-purified Shilajit resin jar (40–50 daily servings) and one box of 30 Shahjeet® honey sticks (600mg purified Shilajit each). Save ₹600 vs buying separately; founding members (first 200) pay ₹2,198 with the welcome code.",
+    "The Founding Bundle Pack brings the full 3TATTAVA ritual together: one RockResin™ 20g classically-purified Shilajit resin jar (40–50 daily servings) and one box of 30 Shahjeet™ honey sticks (600mg purified Shilajit each). Save ₹600 vs buying separately; founding members (first 200) pay ₹2,198 with the welcome code.",
   stockQuantity: 100,
   lowStockThreshold: 10,
   isActive: true,
   isFeatured: true,
   isBundle: true,
   bundleItems: [
-    { slug: "shodhit-shilajit-resin", name: "RockResin® 20g Resin Jar", unit: "20g jar (40–50 servings)", quantity: 1 },
-    { slug: "shahjeet-sticks", name: "Shahjeet® Honey Sticks", unit: "30 sticks · 600mg each", quantity: 1 },
+    { slug: "shodhit-shilajit-resin", name: "RockResin™ 20g Resin Jar", unit: "20g jar (40–50 servings)", quantity: 1 },
+    { slug: "shahjeet-sticks", name: "Shahjeet™ Honey Sticks", unit: "30 sticks · 600mg each", quantity: 1 },
   ],
 };
 

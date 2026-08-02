@@ -91,7 +91,7 @@ const eyebrow: CSSProperties = { fontFamily: F, fontVariationSettings: "'wght' 6
 
 // ─── FEATURE ICONS (accessible hover / focus tooltips) ────────────────────────
 const FEATURE_ICONS: { label: string; tip: string }[] = [
-  { label: "70%+ Fulvic Acid", tip: "Fulvic acid carries minerals directly into your cells for absorption." },
+  { label: "70%+ Fulvic Acid", tip: "Fulvic acid content, NABL-accredited third-party lab tested." },
   { label: "80+ Trace Minerals", tip: "80+ ionic trace minerals, including iron, magnesium and zinc." },
   { label: "Triphala Purified", tip: "Classically purified with Amalaki, Haritaki & Bibhitaki." },
   { label: "NABL Third-Party Lab Tested", tip: "Independently tested by an NABL-accredited lab (Eurofins)." },
