@@ -1,8 +1,9 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import {
   motion,
+  AnimatePresence,
   useScroll,
   useTransform,
   useReducedMotion,
@@ -55,7 +56,56 @@ const SERVICES: { icon: string; label: string }[] = [
   { icon: 'mdi:ambulance', label: 'Emergency / red-flag referral' },
 ];
 
-const DAYS = ['3', '4', '5', '6', '7', '8'];
+/* ─── Per-day schedule (interactive popups) ───
+   Derived honestly from the camp brief: the SAME daily services run every day;
+   no invented times or distinct agendas. Only Day 1 (open) and Day 6 (final)
+   carry a framing line. */
+type DayChip = { icon: string; label: string };
+type DayInfo = { day: string; label: string; line: string; chips: DayChip[] };
+
+const FULL_LINE =
+  'Free consultations, medicines, first aid, foot & blister care, muscular-fatigue & hydration support.';
+
+const FULL_CHIPS: DayChip[] = [
+  { icon: 'healthicons:doctor-outline', label: 'Free consultation' },
+  { icon: 'mdi:medical-bag', label: 'Ayurvedic medicines' },
+  { icon: 'mdi:medical-cotton-swab', label: 'First aid' },
+  { icon: 'mdi:bandage', label: 'Foot & blister care' },
+  { icon: 'mdi:arm-flex', label: 'Muscular-fatigue support' },
+  { icon: 'mdi:cup-water', label: 'Hydration support' },
+];
+
+const DAY_INFO: DayInfo[] = [
+  {
+    day: '3',
+    label: 'Day 1 · Camp opens',
+    line: 'Registration & first consultations begin.',
+    chips: [
+      { icon: 'healthicons:doctor-outline', label: 'Free consultation' },
+      { icon: 'mdi:medical-bag', label: 'Ayurvedic medicines' },
+      { icon: 'mdi:medical-cotton-swab', label: 'First aid' },
+      { icon: 'mdi:bandage', label: 'Foot & blister care' },
+      { icon: 'mdi:cup-water', label: 'Hydration support' },
+    ],
+  },
+  { day: '4', label: 'Day 2 · Full Seva', line: FULL_LINE, chips: FULL_CHIPS },
+  { day: '5', label: 'Day 3 · Full Seva', line: FULL_LINE, chips: FULL_CHIPS },
+  { day: '6', label: 'Day 4 · Full Seva', line: FULL_LINE, chips: FULL_CHIPS },
+  { day: '7', label: 'Day 5 · Full Seva', line: FULL_LINE, chips: FULL_CHIPS },
+  {
+    day: '8',
+    label: 'Day 6 · Final day',
+    line: 'Consultations, medicines, first aid, foot care & hydration; emergency / red-flag cases referred.',
+    chips: [
+      { icon: 'healthicons:doctor-outline', label: 'Free consultation' },
+      { icon: 'mdi:medical-bag', label: 'Ayurvedic medicines' },
+      { icon: 'mdi:medical-cotton-swab', label: 'First aid' },
+      { icon: 'mdi:bandage', label: 'Foot & blister care' },
+      { icon: 'mdi:cup-water', label: 'Hydration support' },
+      { icon: 'mdi:ambulance', label: 'Emergency / red-flag referral' },
+    ],
+  },
+];
 
 const INSTITUTIONS = [
   'CBPACS, New Delhi',
@@ -134,8 +184,41 @@ const KANWAR_CSS = `
     .kanwar-services { grid-template-columns: repeat(2, 1fr); }
     .kanwar-timeline { grid-template-columns: repeat(3, 1fr); row-gap: 16px; }
   }
+  .kanwar-date-btn {
+    appearance: none;
+    background: none;
+    border: none;
+    margin: 0;
+    padding: 6px 4px;
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    border-radius: 16px;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .kanwar-date-btn:focus { outline: none; }
+  .kanwar-date-btn:focus-visible {
+    outline: 2px solid ${GOLD};
+    outline-offset: 4px;
+  }
+  .kanwar-date-dot {
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  }
+  .kanwar-date-btn:hover .kanwar-date-dot,
+  .kanwar-date-btn[aria-expanded="true"] .kanwar-date-dot {
+    transform: scale(1.08);
+    box-shadow: 0 16px 34px rgba(28,19,4,0.24);
+    border-color: ${GOLD_DEEP};
+  }
   @media (prefers-reduced-motion: reduce) {
     .kanwar-card { transition: none; }
+    .kanwar-date-dot { transition: none; }
+    .kanwar-date-btn:hover .kanwar-date-dot,
+    .kanwar-date-btn[aria-expanded="true"] .kanwar-date-dot { transform: none; }
   }
 `;
 
@@ -264,6 +347,235 @@ function LotusDecoration() {
         </div>
       )}
     </div>
+  );
+}
+
+/* ─── Interactive schedule date + camp-info popup ───
+   Opens on hover (desktop), tap (mobile), and keyboard focus. The popup is
+   framer-motion (spring scale/fade via AnimatePresence). Horizontal position is
+   measured at open time so it never overflows the viewport at edge columns, and
+   a caret always points back at the date. */
+function TimelineDate({ info, itemVariants }: { info: DayInfo; itemVariants: Variants }) {
+  const reduce = useReducedMotion();
+  const [open, setOpen] = useState(false);
+  const [box, setBox] = useState<{ left: number; width: number; caret: number } | null>(null);
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const popupId = useId();
+
+  const measure = () => {
+    const el = wrapRef.current;
+    if (!el || typeof window === 'undefined') return;
+    const rect = el.getBoundingClientRect();
+    const vw = window.innerWidth;
+    const width = Math.min(280, vw - 24);
+    const margin = 12;
+    const center = rect.left + rect.width / 2;
+    const leftScreen = Math.min(Math.max(center - width / 2, margin), vw - margin - width);
+    const caret = Math.min(Math.max(center - leftScreen, 18), width - 18);
+    setBox({ left: leftScreen - rect.left, width, caret });
+  };
+
+  const show = () => {
+    measure();
+    setOpen(true);
+  };
+  const hide = () => setOpen(false);
+
+  /* Keep the popup within bounds if the viewport is resized while open. */
+  useEffect(() => {
+    if (!open) return;
+    const onResize = () => measure();
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open]);
+
+  /* Outside pointer dismisses (mobile tap-opened state). */
+  useEffect(() => {
+    if (!open) return;
+    const onDown = (e: PointerEvent) => {
+      if (wrapRef.current && !wrapRef.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener('pointerdown', onDown);
+    return () => document.removeEventListener('pointerdown', onDown);
+  }, [open]);
+
+  return (
+    <motion.div
+      ref={wrapRef}
+      variants={itemVariants}
+      onMouseEnter={show}
+      onMouseLeave={hide}
+      style={{
+        position: 'relative',
+        zIndex: open ? 40 : 1,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+      }}
+    >
+      <button
+        type="button"
+        className="kanwar-date-btn"
+        aria-haspopup="dialog"
+        aria-expanded={open}
+        aria-controls={open ? popupId : undefined}
+        aria-label={`${info.day} August 2026 — ${info.label}`}
+        onClick={() => (open ? setOpen(false) : show())}
+        onFocus={(e) => {
+          // Open on keyboard focus only; pointer focus is handled by click/hover.
+          try {
+            if (e.currentTarget.matches(':focus-visible')) show();
+          } catch {
+            /* older engines without :focus-visible — click/hover still work */
+          }
+        }}
+        onBlur={hide}
+        onKeyDown={(e) => {
+          if (e.key === 'Escape' && open) {
+            setOpen(false);
+            e.currentTarget.blur();
+          }
+        }}
+      >
+        <span
+          className="kanwar-date-dot"
+          style={{
+            width: 54,
+            height: 54,
+            borderRadius: '50%',
+            background: `linear-gradient(135deg, ${FOREST}, #17302680)`,
+            color: IVORY,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: 20,
+            fontWeight: 700,
+            border: `2px solid ${GOLD}`,
+            boxShadow: '0 10px 24px rgba(28,19,4,0.16)',
+          }}
+        >
+          {info.day}
+        </span>
+        <span style={{ fontSize: 12, fontWeight: 500, color: 'rgba(28,19,4,0.7)' }}>
+          August 2026
+        </span>
+      </button>
+
+      <AnimatePresence>
+        {open && box && (
+          <motion.div
+            id={popupId}
+            role="dialog"
+            aria-label={`${info.day} August 2026 — ${info.label}`}
+            initial={{ opacity: 0, scale: reduce ? 1 : 0.9, y: reduce ? 0 : 8 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: reduce ? 1 : 0.94, y: reduce ? 0 : 6 }}
+            transition={
+              reduce
+                ? { duration: 0.14 }
+                : { type: 'spring', stiffness: 460, damping: 30, mass: 0.7 }
+            }
+            style={{
+              position: 'absolute',
+              bottom: 'calc(100% + 16px)',
+              left: box.left,
+              width: box.width,
+              transformOrigin: `${box.caret}px 100%`,
+              background: 'linear-gradient(180deg, #ffffff 0%, #fbf5e9 100%)',
+              border: '1px solid rgba(200,150,62,0.5)',
+              borderRadius: 16,
+              boxShadow: '0 22px 50px rgba(28,19,4,0.22)',
+              padding: '15px 16px 14px',
+              textAlign: 'left',
+              zIndex: 40,
+            }}
+          >
+            <div style={{ marginBottom: 10 }}>
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 6,
+                  fontSize: 10.5,
+                  fontWeight: 700,
+                  letterSpacing: '0.14em',
+                  textTransform: 'uppercase',
+                  color: GOLD_DEEP,
+                }}
+              >
+                <Icon icon="mdi:calendar-heart" width={14} height={14} />
+                {info.day} August 2026
+              </div>
+              <div
+                style={{
+                  fontSize: 15,
+                  fontWeight: 700,
+                  color: FOREST,
+                  marginTop: 3,
+                  letterSpacing: '-0.005em',
+                }}
+              >
+                {info.label}
+              </div>
+            </div>
+            <p
+              style={{
+                margin: '0 0 12px',
+                fontSize: 12.5,
+                lineHeight: 1.5,
+                color: 'rgba(28,19,4,0.75)',
+              }}
+            >
+              {info.line}
+            </p>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+              {info.chips.map((c) => (
+                <span
+                  key={c.label}
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: 5,
+                    fontSize: 11,
+                    fontWeight: 600,
+                    lineHeight: 1.2,
+                    color: INK,
+                    background: 'rgba(200,150,62,0.12)',
+                    border: '1px solid rgba(200,150,62,0.28)',
+                    borderRadius: 999,
+                    padding: '4px 9px',
+                  }}
+                >
+                  <Icon
+                    icon={c.icon}
+                    width={13}
+                    height={13}
+                    style={{ color: GOLD_DEEP, flexShrink: 0 }}
+                  />
+                  {c.label}
+                </span>
+              ))}
+            </div>
+            {/* caret pointing back at the date node */}
+            <span
+              aria-hidden
+              style={{
+                position: 'absolute',
+                bottom: -6,
+                left: box.caret,
+                width: 12,
+                height: 12,
+                transform: 'translateX(-50%) rotate(45deg)',
+                background: '#fbf5e9',
+                borderRight: '1px solid rgba(200,150,62,0.5)',
+                borderBottom: '1px solid rgba(200,150,62,0.5)',
+              }}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
   );
 }
 
@@ -596,43 +908,32 @@ export default function KanwarSevaSection() {
                 zIndex: 0,
               }}
             />
-            {DAYS.map((d) => (
-              <motion.div
-                key={d}
-                variants={item}
-                style={{
-                  position: 'relative',
-                  zIndex: 1,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  gap: 8,
-                }}
-              >
-                <span
-                  style={{
-                    width: 54,
-                    height: 54,
-                    borderRadius: '50%',
-                    background: `linear-gradient(135deg, ${FOREST}, #17302680)`,
-                    color: IVORY,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: 20,
-                    fontWeight: 700,
-                    border: `2px solid ${GOLD}`,
-                    boxShadow: '0 10px 24px rgba(28,19,4,0.16)',
-                  }}
-                >
-                  {d}
-                </span>
-                <span style={{ fontSize: 12, fontWeight: 500, color: 'rgba(28,19,4,0.7)' }}>
-                  August 2026
-                </span>
-              </motion.div>
+            {DAY_INFO.map((info) => (
+              <TimelineDate key={info.day} info={info} itemVariants={item} />
             ))}
           </motion.div>
+          <motion.p
+            {...rise(0.08)}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 7,
+              margin: 'clamp(18px, 2.4vw, 26px) 0 0',
+              fontSize: 'clamp(11.5px, 1.35vw, 13.5px)',
+              fontWeight: 500,
+              fontStyle: 'italic',
+              color: 'rgba(28,19,4,0.6)',
+            }}
+          >
+            <Icon
+              icon="mdi:gesture-tap"
+              width={16}
+              height={16}
+              style={{ color: GOLD_DEEP, flexShrink: 0 }}
+            />
+            Hover or tap a date for that day&rsquo;s Seva.
+          </motion.p>
         </div>
 
         {/* ── 7. Support & management block ── */}
