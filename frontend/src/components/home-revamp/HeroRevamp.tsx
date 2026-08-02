@@ -83,13 +83,13 @@ const heroCSS = `
   /* ── Headline — large serif ── */
   .hero-revamp-h1 {
     font-family: var(--font-display, 'Fraunces', Georgia, serif);
-    font-size: clamp(32px, 7vw, 88px);
+    font-size: clamp(30px, 5.2vw, 62px);
     font-weight: 700;
     letter-spacing: -0.02em;
     line-height: 1.05;
     color: #f7f0e2;
     margin: 0 0 4px 0;
-    white-space: nowrap;
+    white-space: normal;
   }
 
   /* ── Tagline with gold gradient ── */
@@ -316,7 +316,8 @@ export default function HeroRevamp() {
 
           <motion.h1 className="hero-revamp-h1" variants={fadeUpVariant}>
             Verified Himalayan Shilajit.<br />
-            Formulated by a doctor. Proven by a lab.
+            Formulated by a doctor.<br />
+            Proven by a lab.
           </motion.h1>
 
           <motion.p className="hero-revamp-tagline" variants={fadeUpVariant}>

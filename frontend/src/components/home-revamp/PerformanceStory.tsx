@@ -60,7 +60,7 @@ const PANELS: Panel[] = [
     ctaLabel: 'Discover RockResin',
     ctaHref: '/products/shodhit-shilajit-resin',
     imageSide: 'right',
-    media: { type: 'image', src: "https://media.3tattava.com/products/rockresin/vccvb+1.png", alt: '3Tattava RockResin — Classically Purified Shilajit resin canister, jar and raw resin', fit: 'cover', zoom: false },
+    media: { type: 'image', src: "https://media.3tattava.com/products/rockresin/vccvb+1.png", alt: '3Tattava RockResin — Classically Purified Shilajit resin canister, jar and raw resin', fit: 'cover', zoom: true },
   },
 ];
 

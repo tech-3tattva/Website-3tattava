@@ -595,7 +595,7 @@ function FinalBand() {
       <div style={{ maxWidth: 1120, margin: "0 auto", background: "linear-gradient(135deg,#c88a2e 0%,#e2ac4d 45%,#b8781c 100%)", borderRadius: 26, padding: "clamp(36px,5vw,64px) clamp(26px,5vw,64px)", overflow: "hidden", textAlign: "center" }}>
         <Reveal>
           <p style={{ fontFamily: F, fontVariationSettings: "'wght' 600", fontSize: T.eyebrow, letterSpacing: ".14em", textTransform: "uppercase", color: "rgba(60,36,18,.85)", margin: "0 0 8px" }}>Certified &amp; Lab-Tested</p>
-          <p style={{ fontFamily: F, fontVariationSettings: "'wght' 800", fontSize: "clamp(22px,3vw,34px)", color: CREAM, margin: "0 0 clamp(24px,3.5vw,40px)", letterSpacing: ".01em" }}>SHAHJEET STICKS</p>
+          <p style={{ fontFamily: F, fontVariationSettings: "'wght' 800", fontSize: "clamp(22px,3vw,34px)", color: CREAM, margin: "0 0 clamp(24px,3.5vw,40px)", letterSpacing: ".01em" }}>SHAHJEET STICKS<TmMark /></p>
         </Reveal>
         <Reveal delay={0.08} style={{ display: "flex", justifyContent: "center" }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
