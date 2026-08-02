@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useReducer, useCallback, useEffect, useRef } from "react";
 import type { ServerCart } from "@shared/types";
-import { api, USE_MOCK, validateCoupon } from "@/lib/api";
+import { api, USE_MOCK, validateCoupon, getWelcomeOffer } from "@/lib/api";
 import { useAuth } from "@/context/AuthContext";
 import { trackPixel } from "@/lib/fbpixel";
 import { trackGa } from "@/lib/gtag";
@@ -264,6 +264,32 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       },
     });
   }, [isLoggedIn, subtotal]);
+
+  // Auto-apply the per-user ₹200 founding welcome coupon: once a signed-in shopper
+  // has items and no coupon yet, fetch their code and apply it. applyCoupon()
+  // validates server-side, which enforces the global 200-redemption cap + single
+  // use — so if the founding offer is fully claimed or already spent, it throws and
+  // we simply leave the cart at full price (no discount, no error surfaced).
+  const welcomeTried = useRef(false);
+  useEffect(() => {
+    if (USE_MOCK || authLoading) return;
+    if (!isLoggedIn) {
+      welcomeTried.current = false;
+      return;
+    }
+    if (state.coupon || state.items.length === 0 || welcomeTried.current) return;
+    welcomeTried.current = true;
+    (async () => {
+      try {
+        const { offer } = await getWelcomeOffer();
+        if (offer && offer.code && !offer.used && !offer.expired) {
+          await applyCoupon(offer.code);
+        }
+      } catch {
+        /* founding cap reached / already used / expired — cart stays at full price */
+      }
+    })();
+  }, [isLoggedIn, authLoading, state.coupon, state.items.length, applyCoupon]);
 
   const clearCart = useCallback(async () => {
     if (USE_MOCK) {

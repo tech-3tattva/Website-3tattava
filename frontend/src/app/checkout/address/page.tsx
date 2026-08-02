@@ -123,7 +123,7 @@ function CheckoutField({
 export default function CheckoutAddressPage() {
   const router = useRouter();
   const { isLoggedIn, user, isLoading: authLoading } = useAuth();
-  const { subtotal, total, itemCount } = useCart();
+  const { subtotal, total, itemCount, discount } = useCart();
   const [savedAddresses, setSavedAddresses] = useState<Address[]>([]);
   const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
   const [saveSuccess, setSaveSuccess] = useState(false);
@@ -643,6 +643,12 @@ export default function CheckoutAddressPage() {
                   {shipping === 0 ? "Free" : formatPrice(shipping)}
                 </span>
               </div>
+              {discount > 0 && (
+                <div className="flex justify-between text-sm mb-2 text-primary-green">
+                  <span>Founding discount</span>
+                  <span>−{formatPrice(discount)}</span>
+                </div>
+              )}
               <div className="flex justify-between font-bold text-lg mt-4">
                 <span>Total</span>
                 <span>{formatPrice(total)}</span>

@@ -14,8 +14,21 @@ import { getAttribution } from "@/lib/attribution";
 
 declare global {
   interface Window {
-    Cashfree?: new (sessionId: string) => { redirect: () => void };
+    Cashfree?: (opts: { mode: "production" | "sandbox" }) => {
+      checkout: (opts: { paymentSessionId: string; redirectTarget?: string }) => void;
+    };
   }
+}
+
+function cashfreeMode(): "production" | "sandbox" {
+  const envMode = process.env.NEXT_PUBLIC_CASHFREE_MODE;
+  if (envMode === "production" || envMode === "prod") return "production";
+  // Fallback: go live on the production domain even if the Vercel build-time env
+  // var isn't set.
+  if (typeof window !== "undefined" && /(^|\.)3tattava\.com$/.test(window.location.hostname)) {
+    return "production";
+  }
+  return "sandbox";
 }
 
 function loadCashfree(): Promise<boolean> {
@@ -24,14 +37,11 @@ function loadCashfree(): Promise<boolean> {
     resolve(true);
     return promise;
   }
-  const isProd =
-    process.env.NEXT_PUBLIC_CASHFREE_MODE === "production" ||
-    process.env.NEXT_PUBLIC_CASHFREE_MODE === "prod" ||
-    // Fallback: always use the live SDK on the production domain even if the
-    // Vercel build-time env var isn't set.
-    (typeof window !== "undefined" && /(^|\.)3tattava\.com$/.test(window.location.hostname));
   const script = document.createElement("script");
-  script.src = `https://sdk.cashfree.com/js/ui/2.0.0/cashfree.${isProd ? "prod" : "sandbox"}.js`;
+  // Cashfree JS SDK v3 — the current hosted-checkout SDK. The old v2.0.0 UI SDK
+  // is incompatible with payment sessions created via the modern PG API version
+  // (that mismatch is what opened Cashfree's bare config page instead of checkout).
+  script.src = "https://sdk.cashfree.com/js/v3/cashfree.js";
   script.onload = () => resolve(true);
   script.onerror = () => resolve(false);
   document.body.appendChild(script);
@@ -48,7 +58,7 @@ type CreateCashfreeResponse = {
 export default function CheckoutPaymentPage() {
   const router = useRouter();
   const { isLoggedIn, isLoading: authLoading } = useAuth();
-  const { subtotal, total, items, coupon } = useCart();
+  const { subtotal, total, items, coupon, discount } = useCart();
 
   const [isPlacing, setIsPlacing] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -135,9 +145,9 @@ export default function CheckoutPaymentPage() {
         /* storage unavailable — Purchase simply won't fire client-side */
       }
 
-      // Order + session created and SDK is ready — redirect to Cashfree.
-      const cf = new window.Cashfree(order.paymentSessionId);
-      cf.redirect();
+      // Order + session created and SDK is ready — launch Cashfree hosted checkout.
+      const cashfree = window.Cashfree({ mode: cashfreeMode() });
+      cashfree.checkout({ paymentSessionId: order.paymentSessionId, redirectTarget: "_self" });
     } catch (err) {
       if (err instanceof ApiError && err.status === 503) {
         setError("Online payments are not available yet — please try again later.");
@@ -176,6 +186,9 @@ export default function CheckoutPaymentPage() {
           <div className="mb-6 p-4 bg-cream rounded">
             <p className="font-bold text-xl">{formatPrice(total)}</p>
             <p className="text-text-light text-sm">{items.length} item(s)</p>
+          {discount > 0 && (
+            <p className="text-primary-green text-sm mt-1">Founding discount applied: −{formatPrice(discount)}</p>
+          )}
             <p className="text-text-light text-sm mt-1">All prices are inclusive of applicable taxes (GST).</p>
           </div>
           <p className="text-text-medium text-sm mb-6">
