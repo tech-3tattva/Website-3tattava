@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import RockResinClient from './RockResinClient'
 import { ROCKRESIN_FAQS } from '@/data/faqs/rockresin'
 import { ProductSchema, FAQSchema, BreadcrumbSchema } from '@/components/seo/JsonLd'
+import { fetchAggregateRating } from '@/lib/reviews'
 
 export const metadata: Metadata = {
   title: 'RockResin™ — Himalayan Shilajit Resin (20g) | 3TATTAVA',
@@ -17,7 +18,10 @@ export const metadata: Metadata = {
   },
 }
 
-export default function RockResinPage() {
+export default async function RockResinPage() {
+  // Fetch real reviews at request time; only attach AggregateRating when
+  // real, approved reviews exist (brief §6.1 / PR6 — never fabricate).
+  const aggregate = await fetchAggregateRating('shodhit-shilajit-resin')
   return (
     <>
       <ProductSchema
@@ -30,6 +34,9 @@ export default function RockResinPage() {
           price: 1199,
           currency: 'INR',
           brand: '3TATTAVA',
+          ...(aggregate
+            ? { ratingValue: aggregate.ratingValue, reviewCount: aggregate.reviewCount }
+            : {}),
         }}
       />
       <BreadcrumbSchema

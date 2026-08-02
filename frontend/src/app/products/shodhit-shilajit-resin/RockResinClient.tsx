@@ -13,6 +13,7 @@ import ProductSwipeLink from "@/components/product/ProductSwipeLink";
 import { LEGAL } from "@/lib/legal";
 import TmMark from "@/components/ui/TmMark";
 import { useProductViewTracking } from "@/lib/useProductViewTracking";
+import ProductReviews, { PdpRatingBadge } from "@/components/product/ProductReviews";
 
 // ─── TOKENS ───────────────────────────────────────────────────────────────────
 const F = "var(--font-primary), system-ui, sans-serif";
@@ -193,6 +194,7 @@ function HeroSection() {
               <span style={{ fontFamily: F, fontSize: T.body, color: TAUPE, textDecoration: "line-through" }}>₹{bundle.mrp.toLocaleString("en-IN")}</span>
               <span style={{ fontFamily: F, fontVariationSettings: "'wght' 700", fontSize: 10, letterSpacing: ".1em", color: GOLD, border: `1px solid ${GOLD}`, padding: "3px 8px", borderRadius: 4 }}>SAVE {save}%</span>
             </div>
+            <PdpRatingBadge slug={PRODUCT.slug} style={{ marginBottom: 16 }} />
             <button type="button" onClick={handleAdd} style={{ width: "100%", maxWidth: 360, height: 48, padding: "0 26px", background: ESPRESSO, color: CREAM, border: "none", borderRadius: 999, fontFamily: F, fontVariationSettings: "'wght' 700", fontSize: 13, letterSpacing: ".08em", textTransform: "uppercase", cursor: "pointer" }}>
               {added ? "Added ✓" : "Begin Your Ritual"}
             </button>
@@ -716,6 +718,7 @@ export default function RockResinClient() {
       <CinematicSection />
       <BrandDivider />
       <MarqueeSection />
+      <ProductReviews slug={PRODUCT.slug} />
       <FaqSection />
       <CertBand />
     </div>

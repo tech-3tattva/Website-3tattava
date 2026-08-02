@@ -1,13 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import { Heart } from "lucide-react";
 import type { Product } from "@shared/types";
 import ProductGallery from "@/components/product/ProductGallery";
 import QuantityStepper from "@/components/product/QuantityStepper";
 import BreadcrumbNav from "@/components/ui/BreadcrumbNav";
-import StarRating from "@/components/ui/StarRating";
+import ProductReviews, { PdpRatingBadge } from "@/components/product/ProductReviews";
 import AccordionSection from "@/components/ui/AccordionSection";
 import ProductCard from "@/components/product/ProductCard";
 import Button from "@/components/ui/Button";
@@ -180,12 +179,7 @@ export default function ProductPageClient({
                 })}
               </div>
 
-              <div className="flex items-center gap-2 mb-5">
-                <StarRating value={product.rating} showValue />
-                <Link href="#reviews" className="text-text-light text-sm hover:underline">
-                  {product.reviewCount} Reviews
-                </Link>
-              </div>
+              <PdpRatingBadge slug={product.slug} style={{ marginBottom: 20 }} />
 
               <div className="text-3xl text-text-dark mb-2">
                 {formatPrice(product.price)}
@@ -336,26 +330,7 @@ export default function ProductPageClient({
         </div>
       </section>
 
-      <section id="reviews" className="py-12 premium-card p-6 md:p-8">
-        <h2 className="font-display text-3xl text-text-dark mb-6">
-          Customer Reviews
-        </h2>
-        <div className="flex flex-wrap gap-4 mb-6">
-          <span className="font-display text-6xl text-text-dark">{product.rating}</span>
-          <div>
-            <StarRating value={product.rating} size="md" />
-            <p className="text-text-light text-sm mt-1">
-              Based on {product.reviewCount} reviews
-            </p>
-          </div>
-          <button
-            type="button"
-            className="ml-auto px-6 py-2 rounded-full bg-text-dark text-white text-sm font-medium hover:bg-primary-green"
-          >
-            Write A Review
-          </button>
-        </div>
-      </section>
+      <ProductReviews slug={product.slug} />
 
       {/* Related */}
       {related.length > 0 && (

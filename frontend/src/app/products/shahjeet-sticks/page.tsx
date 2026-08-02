@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import ShahjeetClient from './ShahjeetClient'
 import { BreadcrumbSchema } from '@/components/seo/JsonLd'
+import { fetchAggregateRating } from '@/lib/reviews'
 
 export const metadata: Metadata = {
   title: 'Shahjeet™ — Honey Shilajit Sticks 30-Pack | Portable Single-Serve | Doctor Reviewed | 3TATTAVA',
@@ -94,7 +95,20 @@ const productSchema = {
   },
 }
 
-export default function ShahjeetSticksPage() {
+export default async function ShahjeetSticksPage() {
+  // Fetch real reviews at request time; attach AggregateRating only when
+  // real, approved reviews exist (brief §6.1 / PR6 — never fabricate).
+  const aggregate = await fetchAggregateRating('shahjeet-sticks')
+  const productSchemaWithRating = aggregate
+    ? {
+        ...productSchema,
+        aggregateRating: {
+          '@type': 'AggregateRating',
+          ratingValue: aggregate.ratingValue,
+          reviewCount: aggregate.reviewCount,
+        },
+      }
+    : productSchema
   return (
     <>
       <script
@@ -103,7 +117,7 @@ export default function ShahjeetSticksPage() {
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchemaWithRating) }}
       />
       <BreadcrumbSchema
         items={[

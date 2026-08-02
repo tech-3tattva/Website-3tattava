@@ -141,6 +141,10 @@ const orderSchema = new mongoose.Schema(
     giftBox: { type: Boolean, default: false },
     giftMessage: { type: String },
     wellnessClub: { type: Boolean, default: false },
+
+    // Post-purchase product-review request emails (see scripts/send-review-requests.js).
+    reviewEmail7Sent: { type: Boolean, default: false },
+    reviewEmail21Sent: { type: Boolean, default: false },
   },
   { timestamps: true }
 );
