@@ -167,6 +167,7 @@ function ProductCard({ sku }: { sku: Sku }) {
 
 function WtfContent() {
   const searchParams = useSearchParams();
+  const { itemCount, subtotal } = useCart();
   const [promoCode, setPromoCode] = useState("");
   const trackedRef = useRef(false);
 
@@ -215,7 +216,7 @@ function WtfContent() {
 
   return (
     <main style={{ background: CREAM, minHeight: "100vh" }}>
-      <div style={{ maxWidth: 880, margin: "0 auto", padding: "clamp(28px,6vw,56px) 20px 64px" }}>
+      <div style={{ maxWidth: 880, margin: "0 auto", padding: "clamp(28px,6vw,56px) 20px 96px" }}>
         {/* 1. Brand lock-up */}
         <header style={{ textAlign: "center", marginBottom: "clamp(24px,5vw,40px)" }}>
           <p
@@ -382,6 +383,34 @@ function WtfContent() {
           {DISCLAIMER}
         </p>
       </div>
+      {itemCount > 0 && (
+        <Link
+          href="/checkout/cart"
+          aria-label={`View cart and checkout, ${itemCount} item${itemCount > 1 ? "s" : ""}`}
+          style={{
+            position: "fixed",
+            left: 0,
+            right: 0,
+            bottom: 0,
+            zIndex: 60,
+            background: GOLD,
+            color: "#2a1c0d",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 14,
+            padding: "16px 20px",
+            fontFamily: F,
+            fontWeight: 800,
+            fontSize: 15,
+            textDecoration: "none",
+            boxShadow: "0 -8px 30px rgba(28,19,4,0.18)",
+          }}
+        >
+          <span>{itemCount} in cart · ₹{subtotal.toLocaleString("en-IN")}</span>
+          <span style={{ textTransform: "uppercase", letterSpacing: "0.1em" }}>Checkout →</span>
+        </Link>
+      )}
     </main>
   );
 }
