@@ -3,7 +3,7 @@ import { media } from "@/lib/media";
 
 import { useEffect, useState, useRef } from 'react'
 import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion'
-import StartRitualButton from "@/components/StartRitualButton";
+import Link from "next/link";
 import TmMark from "@/components/ui/TmMark";
 
 /* ─── Types ─── */
@@ -315,18 +315,18 @@ export default function HeroRevamp() {
           </motion.p>
 
           <motion.h1 className="hero-revamp-h1" variants={fadeUpVariant}>
-            Ancient Wisdom.<br />
-            Modern Vitality.
+            Verified Himalayan Shilajit.<br />
+            Formulated by a doctor. Proven by a lab.
           </motion.h1>
 
-          <motion.h2 className="hero-revamp-tagline" variants={fadeUpVariant}>
-            Balance. Build. Become.
-          </motion.h2>
+          <motion.p className="hero-revamp-tagline" variants={fadeUpVariant}>
+            Scan any jar, read its own lab report.
+          </motion.p>
 
           <motion.div className="hero-revamp-ctas" variants={fadeUpVariant}>
-            <StartRitualButton className="hero-revamp-btn-primary">
-              Start Your Ritual
-            </StartRitualButton>
+            <Link href="/products/shodhit-shilajit-resin" className="hero-revamp-btn-primary">
+              Shop RockResin — ₹1,199
+            </Link>
           </motion.div>
         </motion.div>
 
