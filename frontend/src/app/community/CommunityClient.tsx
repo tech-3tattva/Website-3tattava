@@ -194,6 +194,12 @@ function PillarCard({ pillar, idx }: { pillar:typeof PILLARS[0]; idx:number }) {
   const ref=useRef<HTMLDivElement>(null);
   const inView=useInView(ref,{once:true,margin:"-40px"});
 
+  // Touch devices can't hover, so the expanded detail (desc + examples) would be
+  // unreachable — reveal it by default there, mirroring the PDP @media(hover:none) pattern.
+  useEffect(() => {
+    if (window.matchMedia("(hover: none)").matches) setOpen(true);
+  }, []);
+
   return (
     <TiltCard radius={4} max={8}>
     <motion.div

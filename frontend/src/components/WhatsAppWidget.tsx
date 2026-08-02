@@ -4,24 +4,17 @@ import { useState, useEffect } from 'react';
 // Replace with your actual 3Tattava Announcement Channel invite link
 // Get it from: WhatsApp → 3Tattava community → Announcement → Invite via link
 const COMMUNITY_LINK = 'https://whatsapp.com/channel/0029VbCvQM9AzNc0iZDadt1c';
-const TOOLTIP_DELAY_MS = 5000;
-const TOOLTIP_HIDE_MS  = 12000;
 
 export default function WhatsAppWidget() {
-  const [showTooltip, setShowTooltip]   = useState(false);
   const [clicked, setClicked]           = useState(false);
   const [mounted, setMounted]           = useState(false);
 
   useEffect(() => {
     setMounted(true);
-    const showTimer = setTimeout(() => setShowTooltip(true), TOOLTIP_DELAY_MS);
-    const hideTimer = setTimeout(() => setShowTooltip(false), TOOLTIP_HIDE_MS);
-    return () => { clearTimeout(showTimer); clearTimeout(hideTimer); };
   }, []);
 
   const handleClick = () => {
     setClicked(true);
-    setShowTooltip(false);
     window.open(COMMUNITY_LINK, '_blank', 'noopener,noreferrer');
   };
 
@@ -39,60 +32,6 @@ export default function WhatsAppWidget() {
           flex-direction: column;
           align-items: flex-end;
           gap: 10px;
-        }
-
-        .wa-tooltip {
-          background: #1A1710;
-          border: 1px solid rgba(201,168,76,0.35);
-          border-radius: 10px 10px 2px 10px;
-          padding: 12px 16px;
-          width: 220px;
-          box-shadow: 0 8px 32px rgba(0,0,0,0.5);
-          animation: wa-tooltip-in 0.3s ease forwards;
-        }
-
-        @keyframes wa-tooltip-in {
-          from { opacity: 0; transform: translateY(8px) scale(0.97); }
-          to   { opacity: 1; transform: translateY(0) scale(1); }
-        }
-
-        .wa-tooltip-eyebrow {
-          font-family: var(--font-primary), system-ui, sans-serif;
-          font-size: 9px;
-          letter-spacing: 2.5px;
-          text-transform: uppercase;
-          color: #C9A84C;
-          font-weight: 500;
-          margin-bottom: 4px;
-        }
-
-        .wa-tooltip-text {
-          font-family: var(--font-primary), system-ui, sans-serif;
-          font-size: 15px;
-          font-weight: 400;
-          color: #E8E0D0;
-          line-height: 1.4;
-          margin-bottom: 8px;
-        }
-
-        .wa-tooltip-sub {
-          font-family: var(--font-primary), system-ui, sans-serif;
-          font-size: 11px;
-          color: #8A7F6A;
-          font-weight: 300;
-        }
-
-        .wa-tooltip-close {
-          position: absolute;
-          top: 8px;
-          right: 8px;
-          background: none;
-          border: none;
-          color: #8A7F6A;
-          cursor: pointer;
-          font-size: 14px;
-          padding: 2px;
-          line-height: 1;
         }
 
         .wa-btn {
@@ -166,30 +105,12 @@ export default function WhatsAppWidget() {
 
         @media (max-width: 480px) {
           .wa-wrap { bottom: 86px; right: 14px; }
-          .wa-tooltip { width: 190px; }
           .wa-btn { width: 48px; height: 48px; }
           .wa-btn::before, .wa-btn::after { width: 48px; height: 48px; }
         }
       `}</style>
 
       <div className="wa-wrap">
-        {showTooltip && (
-          <div className="wa-tooltip" style={{ position: 'relative' }}>
-            <button
-              className="wa-tooltip-close"
-              onClick={() => setShowTooltip(false)}
-              aria-label="Close"
-            >✕</button>
-            <div className="wa-tooltip-eyebrow">3TATTAVA Community</div>
-            <div className="wa-tooltip-text">
-              Join early — get launch pricing first
-            </div>
-            <div className="wa-tooltip-sub">
-              Questions? Chat with us on WhatsApp
-            </div>
-          </div>
-        )}
-
         <button
           className={`wa-btn ${clicked ? 'clicked' : ''}`}
           onClick={handleClick}

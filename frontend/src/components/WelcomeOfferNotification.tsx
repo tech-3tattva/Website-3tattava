@@ -38,6 +38,7 @@ export default function WelcomeOfferNotification() {
   const [offerStatus, setOfferStatus] = useState<OfferStatus>("loading");
   const [copied, setCopied] = useState(false);
   const trackedRef = useRef(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   // Fetch the signed-in user's welcome offer once auth resolves.
   useEffect(() => {
@@ -80,9 +81,18 @@ export default function WelcomeOfferNotification() {
     }
     const timer = window.setTimeout(() => {
       setMode(seen ? "pill" : "card");
-    }, seen ? 800 : 6000);
+    }, seen ? 800 : 20000);
     return () => window.clearTimeout(timer);
   }, [isHome]);
+
+  // Track mobile viewport so the notification never covers a sticky buy bar.
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+    const update = () => setIsMobile(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
 
   // Fire ViewContent once when a logged-in user with a live, unused code first sees the card.
   useEffect(() => {
@@ -296,7 +306,7 @@ export default function WelcomeOfferNotification() {
           style={{
             position: "fixed",
             right: 20,
-            bottom: 20,
+            bottom: isMobile ? 96 : 20,
             zIndex: 1040,
             width: 320,
             maxWidth: "calc(100vw - 40px)",
@@ -355,7 +365,7 @@ export default function WelcomeOfferNotification() {
           style={{
             position: "fixed",
             right: 20,
-            bottom: 20,
+            bottom: isMobile ? 96 : 20,
             zIndex: 1040,
             width: 52,
             height: 52,

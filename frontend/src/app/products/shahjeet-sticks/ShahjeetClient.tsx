@@ -158,6 +158,10 @@ function HeroSection() {
               600mg of classically purified Himalayan Ladakhi Shilajit blended with honey for a convenient daily ritual that fits wherever life takes you. Just squeeze and go.
             </p>
 
+            <p style={{ fontFamily: F, fontVariationSettings: "'wght' 700", fontSize: T.body, lineHeight: 1.5, color: ESPRESSO, background: "#f1e7d4", borderLeft: `3px solid ${GOLD}`, borderRadius: 10, padding: "10px 14px", margin: "0 0 clamp(20px,2.5vw,28px)", maxWidth: "40ch" }}>
+              600 mg purified Shilajit in an 8 g honey base. 30 sticks · 240 g net.
+            </p>
+
             <p style={{ ...eyebrow, marginBottom: 10 }}>Choose your ritual</p>
             <div role="radiogroup" aria-label="Ritual duration" style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 18 }}>
               {SHJ_BUNDLES.map((b, i) => {

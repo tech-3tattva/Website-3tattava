@@ -133,7 +133,7 @@ export default function ProductPageClient({
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8">
+    <div className="max-w-7xl mx-auto px-4 pt-8 pb-28 md:pb-8">
       <BreadcrumbNav
         items={[
           { label: "Home", href: "/" },
@@ -370,6 +370,29 @@ export default function ProductPageClient({
           </div>
         </section>
       )}
+      {/* Mobile sticky add-to-cart bar — hidden on md+, kept clear of other fixed widgets */}
+      <div
+        className="md:hidden fixed inset-x-0 bottom-0 z-[1100] flex items-center gap-3 border-t border-border bg-[#f7f0e2] px-4 py-3 shadow-[0_-8px_24px_rgba(68,42,27,0.18)]"
+        style={{ paddingBottom: "calc(0.75rem + env(safe-area-inset-bottom))" }}
+      >
+        <div className="leading-tight">
+          <span className="text-xl font-semibold text-text-dark">
+            {formatPrice(product.price)}
+          </span>
+          {product.mrp && product.mrp > product.price && (
+            <span className="ml-1.5 text-xs text-text-light line-through">
+              {formatPrice(product.mrp)}
+            </span>
+          )}
+        </div>
+        <button
+          type="button"
+          onClick={() => void handleAddToBag()}
+          className="ml-auto rounded-full bg-[#b75e40] px-6 py-3 text-sm font-medium uppercase tracking-wide text-white hover:bg-[#a05238]"
+        >
+          {added ? "Added ✓" : "Add to cart"}
+        </button>
+      </div>
     </div>
   );
 }
