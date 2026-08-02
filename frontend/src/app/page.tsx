@@ -3,6 +3,7 @@ import TrinityPosterSection from "@/components/home-revamp/TrinityPosterSection"
 import PerformanceStory from "@/components/home-revamp/PerformanceStory";
 import PhilosophyRevamp from "@/components/home-revamp/PhilosophyRevamp";
 import TrustRevamp from "@/components/home-revamp/TrustRevamp";
+import KanwarSevaSection from "@/components/home-revamp/KanwarSevaSection";
 import DrKashishSection from "@/components/home-revamp/DrKashishSection";
 import TestimonialVideo from "@/components/home-revamp/TestimonialVideo";
 import FAQRevamp from "@/components/home-revamp/FAQRevamp";
@@ -23,6 +24,7 @@ export default function HomePage() {
       <PerformanceStory />
       <PhilosophyRevamp />
       <TrustRevamp />
+      <KanwarSevaSection />
       <DrKashishSection />
       <TestimonialVideo />
       <WtfTeaser />
