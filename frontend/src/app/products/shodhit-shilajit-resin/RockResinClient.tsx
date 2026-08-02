@@ -213,7 +213,7 @@ function HeroSection() {
               <span style={{ display: "block", fontFamily: F, fontSize: 10, color: TAUPE, marginTop: 2 }}>per day</span>
             </div>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="https://media.3tattava.com/products/rockresin/1.png" alt="Classically purified Himalayan Shilajit resin jar, tub and spoon" style={{ width: "100%", maxWidth: 460, height: "auto", display: "block", filter: "drop-shadow(0 26px 50px rgba(68,42,27,.20))" }} />
+            <img src="https://media.3tattava.com/products/rockresin/1.png" alt="Classically purified Himalayan Shilajit resin jar, tub and spoon" width={4096} height={4096} style={{ width: "100%", maxWidth: 460, height: "auto", display: "block", filter: "drop-shadow(0 26px 50px rgba(68,42,27,.20))" }} />
           </motion.div>
         </div>
       </div>
@@ -242,7 +242,7 @@ function ReveredSection() {
         <Reveal delay={0.05}>
           <div style={{ display: "flex", justifyContent: "center" }} role="img" aria-label="Rasayanam — energy to your body at the core. Balyam — strength that builds within. Jeevnaay — longevity for the long run.">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={media("/rockresin/pillars.png")} alt="Rasayanam · Balyam · Jeevnaay" style={{ width: "100%", maxWidth: 840, height: "auto", display: "block" }} />
+            <img src={media("/rockresin/pillars.png")} alt="Rasayanam · Balyam · Jeevnaay" width={2511} height={233} style={{ width: "100%", maxWidth: 840, height: "auto", display: "block" }} />
           </div>
         </Reveal>
 
@@ -362,7 +362,7 @@ function CinematicSection() {
       <div className="rr-2col" style={{ maxWidth: 1120, margin: "0 auto", gap: "clamp(28px,4vw,60px)" }}>
         <Reveal style={{ display: "flex", justifyContent: "center" }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="https://media.3tattava.com/products/rockresin/3-Tattava+A%2B-05R.png" alt="RockResin jar on Himalayan rock — ≥70% fulvic acid, Eurofins & NABL tested, ≥80 trace minerals" style={{ width: "100%", maxWidth: 520, height: "auto", display: "block", borderRadius: 20, boxShadow: "0 22px 48px rgba(68,42,27,.22)" }} />
+          <img src="https://media.3tattava.com/products/rockresin/3-Tattava+A%2B-05R.png" alt="RockResin jar on Himalayan rock — ≥70% fulvic acid, Eurofins & NABL tested, ≥80 trace minerals" width={2160} height={2160} style={{ width: "100%", maxWidth: 520, height: "auto", display: "block", borderRadius: 20, boxShadow: "0 22px 48px rgba(68,42,27,.22)" }} />
         </Reveal>
         <Reveal delay={0.08}>
           <p style={{ ...eyebrow, marginBottom: 18 }}>Why RockResin</p>
@@ -384,7 +384,7 @@ function TriphalaSection() {
       <div className="rr-2col-rev" style={{ maxWidth: 1280, margin: "0 auto" }}>
         <Reveal className="rr-media" style={{ display: "flex", justifyContent: "center" }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={media("/rockresin/triphala.png")} alt="Triphala — Amalaki, Haritaki and Bibhitaki in wooden bowls" style={{ width: "100%", maxWidth: 620, height: "auto", display: "block" }} />
+          <img src={media("/rockresin/triphala.png")} alt="Triphala — Amalaki, Haritaki and Bibhitaki in wooden bowls" width={1400} height={996} style={{ width: "100%", maxWidth: 620, height: "auto", display: "block" }} />
         </Reveal>
         <Reveal delay={0.08}>
           <p style={{ ...eyebrow, color: GOLD, marginBottom: 12 }}>Classically Purified Through Triphala</p>
@@ -485,7 +485,7 @@ function SwirlRitualSection() {
         <div className="rr-2col" style={{ alignItems: "flex-start", gridTemplateColumns: "1.08fr 0.92fr" }}>
           <Reveal style={{ display: "flex", justifyContent: "center", marginTop: "clamp(-76px,-4.2vw,-30px)" }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={media("/rockresin/swirl-poster.png")} alt="The RockResin ritual" style={{ height: "clamp(400px,46vw,560px)", width: "auto", maxWidth: "100%", objectFit: "contain", display: "block", borderRadius: 20 }} />
+            <img src={media("/rockresin/swirl-poster.png")} alt="The RockResin ritual" width={3240} height={3240} style={{ height: "clamp(400px,46vw,560px)", width: "auto", maxWidth: "100%", objectFit: "contain", display: "block", borderRadius: 20 }} />
           </Reveal>
           <Reveal delay={0.1} style={{ display: "flex", justifyContent: "center" }}>
             <SwirlVideoPlayer />
@@ -577,7 +577,7 @@ function MarqueeSection() {
       <Row />
       <div style={{ display: "flex", justifyContent: "center", position: "relative", zIndex: 1 }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={media("/rockresin/product.png")} alt="Classically purified Himalayan Shilajit resin jar and spoon" style={{ width: "clamp(180px,24vw,320px)", height: "auto", display: "block" }} />
+        <img src={media("/rockresin/product.png")} alt="Classically purified Himalayan Shilajit resin jar and spoon" width={2400} height={3512} style={{ width: "clamp(180px,24vw,320px)", height: "auto", display: "block" }} />
       </div>
       <Row dim />
     </section>
@@ -630,7 +630,7 @@ function CertBand() {
         </Reveal>
         <Reveal delay={0.08} style={{ display: "flex", justifyContent: "center" }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={media("/rockresin/frame82.png")} alt="Sankalpa Siddhi Ayupharma quality marks — ISO 9001 & ISO 22000 quality systems, AYUSH-GMP manufacturing, US-FDA facility registration (not product approval), NABL-accredited third-party lab testing" style={{ width: "100%", maxWidth: 900, height: "auto", display: "block" }} />
+          <img src={media("/rockresin/frame82.png")} alt="Sankalpa Siddhi Ayupharma quality marks — ISO 9001 & ISO 22000 quality systems, AYUSH-GMP manufacturing, US-FDA facility registration (not product approval), NABL-accredited third-party lab testing" width={957} height={106} style={{ width: "100%", maxWidth: 900, height: "auto", display: "block" }} />
         </Reveal>
         <p style={{ fontFamily: F, fontSize: 12, lineHeight: 1.55, color: "rgba(247,240,226,.72)", maxWidth: 760, margin: "clamp(18px,2.5vw,26px) auto 0", textAlign: "center" }}>
           ISO 9001 &amp; ISO 22000 quality systems · AYUSH-GMP manufacturing · US-FDA facility registration (not product approval) · NABL-accredited third-party lab testing. These marks refer to facility registration and independent testing — not approval of the product by any authority.
@@ -685,7 +685,7 @@ function GenderRitualSection() {
         {ROCKRESIN_GENDER.map((g, i) => (
           <Reveal key={g.url} delay={i * 0.08} style={{ display: "flex", justifyContent: "center" }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={g.url} alt={g.alt} style={{ width: "100%", height: "auto", display: "block", borderRadius: 20, boxShadow: "0 20px 50px rgba(68,42,27,.14)" }} />
+            <img src={g.url} alt={g.alt} width={4320} height={4320} style={{ width: "100%", height: "auto", display: "block", borderRadius: 20, boxShadow: "0 20px 50px rgba(68,42,27,.14)" }} />
           </Reveal>
         ))}
       </div>
