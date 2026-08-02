@@ -8,6 +8,7 @@ import TestimonialVideo from "@/components/home-revamp/TestimonialVideo";
 import FAQRevamp from "@/components/home-revamp/FAQRevamp";
 import NewsletterRevamp from "@/components/home-revamp/NewsletterRevamp";
 import SocialSidebar from "@/components/home-revamp/SocialSidebar";
+import WtfTeaser from "@/components/home-revamp/WtfTeaser";
 import { WebsiteSchema, FAQSchema } from "@/components/seo/JsonLd";
 import { HOME_FAQS } from "@/data/faqs/home";
 
@@ -24,6 +25,7 @@ export default function HomePage() {
       <TrustRevamp />
       <DrKashishSection />
       <TestimonialVideo />
+      <WtfTeaser />
       <FAQRevamp />
       <NewsletterRevamp />
     </>
