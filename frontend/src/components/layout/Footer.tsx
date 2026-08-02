@@ -185,12 +185,12 @@ export default function Footer() {
           {TRUST_STRIP_ITEMS.map((item, i) => (
             <div
               key={item.text}
-              className={`text-[#442a1b] ${
+              className={`flex items-center justify-center text-center text-[#442a1b] w-full md:w-auto ${
                 i < TRUST_STRIP_ITEMS.length - 1
                   ? "md:border-r md:border-[#b7a392]/50"
                   : ""
               }`}
-              style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '0 16px' }}
+              style={{ gap: 8, padding: '4px 16px', maxWidth: '100%' }}
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
@@ -208,7 +208,6 @@ export default function Footer() {
                   letterSpacing: "0.14em",
                   textTransform: "uppercase",
                   fontWeight: 500,
-                  whiteSpace: "nowrap",
                 }}
               >
                 {item.text}

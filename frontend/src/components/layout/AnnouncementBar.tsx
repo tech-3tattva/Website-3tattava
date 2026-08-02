@@ -7,7 +7,7 @@ const STORAGE_KEY = "3tattava-announcement-dismissed";
 const PINCODE_KEY = "3tattava-pincode";
 
 const TICKER_MESSAGES = [
-  "Founding Waitlist Open · ₹200 Off Your First Order",
+  "₹200 Off Your First Order · First 200 Customers",
   "70%+ Fulvic Acid · NABL Third-Party Lab Tested",
   "Free Shipping Above ₹999",
   "Doctor-Led Performance Ayurveda · Dr. Kashish Gupta",

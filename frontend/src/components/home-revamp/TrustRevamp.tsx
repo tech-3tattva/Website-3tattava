@@ -132,6 +132,10 @@ export default function TrustRevamp() {
   const headingInView = useInView(sectionRef, { once: true, margin: '-80px' });
   const threadsRef = useRef<HTMLDivElement>(null);
   const threadsInView = useInView(threadsRef, { once: true, margin: '-40px' });
+  const ctaRef = useRef<HTMLDivElement>(null);
+  // CTA reveal must NOT depend on the threads (they are display:none on mobile,
+  // so their useInView never fires -> the button stayed invisible on phones).
+  const ctaInView = useInView(ctaRef, { once: true, margin: '-40px' });
 
   return (
     <section
@@ -246,9 +250,10 @@ export default function TrustRevamp() {
 
         {/* CTA */}
         <motion.div
+          ref={ctaRef}
           initial={{ opacity: 0, y: 16 }}
-          animate={threadsInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }}
-          transition={{ duration: 0.6, delay: 0.9, ease: 'easeOut' }}
+          animate={ctaInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }}
+          transition={{ duration: 0.6, delay: 0.15, ease: 'easeOut' }}
           style={{ textAlign: 'center' }}
         >
           <a
