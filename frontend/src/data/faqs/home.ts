@@ -7,7 +7,7 @@ export const HOME_FAQS: FAQItem[] = [
     id: 1,
     question: "What is Shilajit and how does it work?",
     answer:
-      "Shilajit is a mineral-rich resin found in the Himalayas at elevations above 16,000 ft. It contains 80+ trace minerals and over 60% fulvic acid, which enhances nutrient absorption at the cellular level.",
+      "Shilajit is a mineral-rich resin found in the Himalayas at elevations above 16,000 ft. It contains 80+ trace minerals and ≥70% fulvic acid, verified by NABL-accredited third-party testing.",
   },
   {
     id: 2,

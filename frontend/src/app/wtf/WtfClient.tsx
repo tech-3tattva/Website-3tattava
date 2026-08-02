@@ -54,11 +54,10 @@ const PRODUCTS: Sku[] = [
   },
 ];
 
-// RockResin shows a struck-through MRP; Shahjeet's MRP is unconfirmed so it is
-// never rendered as a strike-through (only the sell price is shown).
+// Both SKUs show a struck-through MRP (RockResin ₹1,399, Shahjeet ₹1,599).
 const SHOW_MRP: Record<string, boolean> = {
   "shodhit-shilajit-resin": true,
-  "shahjeet-sticks": false,
+  "shahjeet-sticks": true,
 };
 
 function ProductCard({ sku }: { sku: Sku }) {
