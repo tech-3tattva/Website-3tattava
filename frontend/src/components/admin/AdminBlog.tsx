@@ -32,7 +32,7 @@ const PILLARS = [
 const CREAM = "#f4eee0";
 const CARD = "#fffdf9";
 const BORDER = "#e2d8c2";
-const INK = "#3a2a1c";
+const INK = "#efe7d5";
 const MUTED = "#836f57";
 const GOLD = "#C8963E";
 const SERIF = "var(--font-cormorant,'Cormorant Garamond'),serif";
@@ -69,7 +69,7 @@ function publishBtnStyle(saving: boolean): React.CSSProperties {
   return {
     padding: "13px 34px",
     background: saving ? "#d9bd86" : GOLD,
-    color: "#2a1c0d",
+    color: "#f4eede",
     border: "none",
     borderRadius: 10,
     fontSize: 13,
@@ -302,7 +302,7 @@ export default function AdminBlog() {
                   href={`/education/${b.slug}`}
                   target="_blank"
                   rel="noreferrer"
-                  style={{ fontSize: 12, color: "#2a1c0d", background: "rgba(200,150,62,0.16)", textDecoration: "none", border: `1px solid rgba(200,150,62,0.4)`, padding: "8px 15px", borderRadius: 8, fontWeight: 600 }}
+                  style={{ fontSize: 12, color: "#f4eede", background: "rgba(200,150,62,0.16)", textDecoration: "none", border: `1px solid rgba(200,150,62,0.4)`, padding: "8px 15px", borderRadius: 8, fontWeight: 600 }}
                 >
                   View
                 </a>

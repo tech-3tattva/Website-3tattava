@@ -66,45 +66,45 @@ export default function AdminProducts({ readOnly = false }: { readOnly?: boolean
     <>
       <style>{`
         .ap-table { width: 100%; border-collapse: collapse; }
-        .ap-th { font-size: 10px; letter-spacing: 0.24em; text-transform: uppercase; color: rgba(245,240,235,0.3); padding: 10px 14px; text-align: left; border-bottom: 1px solid rgba(200,150,62,0.1); font-weight: 400; }
-        .ap-td { padding: 14px; border-bottom: 1px solid rgba(255,255,255,0.04); font-size: 13px; color: rgba(245,240,235,0.7); vertical-align: middle; }
+        .ap-th { font-size: 10px; letter-spacing: 0.24em; text-transform: uppercase; color: rgba(68,42,27,0.3); padding: 10px 14px; text-align: left; border-bottom: 1px solid rgba(200,150,62,0.1); font-weight: 400; }
+        .ap-td { padding: 14px; border-bottom: 1px solid rgba(68,42,27,0.04); font-size: 13px; color: rgba(68,42,27,0.7); vertical-align: middle; }
         .ap-tr:hover .ap-td { background: rgba(200,150,62,0.03); }
-        .ap-name { color: #F5F0EB; font-size: 14px; font-weight: 400; }
-        .ap-sku { font-size: 11px; color: rgba(245,240,235,0.3); font-family: monospace; }
-        .ap-badge-ok  { display:inline-block; padding: 2px 9px; font-size: 10px; border-radius: 2px; background: rgba(76,175,80,0.12); color: #81c784; }
-        .ap-badge-off { display:inline-block; padding: 2px 9px; font-size: 10px; border-radius: 2px; background: rgba(220,50,50,0.12); color: #ff7b7b; }
-        .ap-stock-ok  { display:inline-block; padding: 2px 9px; font-size: 11px; border-radius: 2px; background: rgba(76,175,80,0.1); color: #81c784; }
-        .ap-stock-low { display:inline-block; padding: 2px 9px; font-size: 11px; border-radius: 2px; background: rgba(255,152,0,0.12); color: #ffb74d; }
-        .ap-stock-out { display:inline-block; padding: 2px 9px; font-size: 11px; border-radius: 2px; background: rgba(220,50,50,0.12); color: #ff7b7b; }
-        .ap-edit-btn { background: transparent; border: 1px solid rgba(200,150,62,0.3); color: rgba(245,240,235,0.65); font-size: 11px; letter-spacing: 0.1em; padding: 6px 14px; cursor: pointer; transition: all 0.2s; border-radius: 2px; }
-        .ap-edit-btn:hover { border-color: rgba(200,150,62,0.7); color: #F5F0EB; }
+        .ap-name { color: #442a1b; font-size: 14px; font-weight: 400; }
+        .ap-sku { font-size: 11px; color: rgba(68,42,27,0.3); font-family: monospace; }
+        .ap-badge-ok  { display:inline-block; padding: 2px 9px; font-size: 10px; border-radius: 2px; background: rgba(76,175,80,0.12); color: #3f7a3a; }
+        .ap-badge-off { display:inline-block; padding: 2px 9px; font-size: 10px; border-radius: 2px; background: rgba(220,50,50,0.12); color: #c0392b; }
+        .ap-stock-ok  { display:inline-block; padding: 2px 9px; font-size: 11px; border-radius: 2px; background: rgba(76,175,80,0.1); color: #3f7a3a; }
+        .ap-stock-low { display:inline-block; padding: 2px 9px; font-size: 11px; border-radius: 2px; background: rgba(255,152,0,0.12); color: #c26a12; }
+        .ap-stock-out { display:inline-block; padding: 2px 9px; font-size: 11px; border-radius: 2px; background: rgba(220,50,50,0.12); color: #c0392b; }
+        .ap-edit-btn { background: transparent; border: 1px solid rgba(200,150,62,0.3); color: rgba(68,42,27,0.65); font-size: 11px; letter-spacing: 0.1em; padding: 6px 14px; cursor: pointer; transition: all 0.2s; border-radius: 2px; }
+        .ap-edit-btn:hover { border-color: rgba(200,150,62,0.7); color: #442a1b; }
         /* modal */
-        .ap-modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 10000; display: flex; align-items: center; justify-content: center; padding: 24px; }
-        .ap-modal { background: #1a1a1a; border: 1px solid rgba(200,150,62,0.2); width: 100%; max-width: 520px; max-height: 90vh; overflow-y: auto; padding: 36px; border-radius: 4px; }
-        .ap-modal-title { font-family: var(--font-cormorant,'Cormorant Garamond'),serif; font-size: 26px; font-weight: 600; color: #F5F0EB; margin: 0 0 28px; }
+        .ap-modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,0.35); z-index: 10000; display: flex; align-items: center; justify-content: center; padding: 24px; }
+        .ap-modal { background: #ffffff; border: 1px solid rgba(200,150,62,0.2); width: 100%; max-width: 520px; max-height: 90vh; overflow-y: auto; padding: 36px; border-radius: 4px; }
+        .ap-modal-title { font-family: var(--font-cormorant,'Cormorant Garamond'),serif; font-size: 26px; font-weight: 600; color: #442a1b; margin: 0 0 28px; }
         .ap-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
         .ap-form-full { grid-column: 1 / -1; }
         .ap-form-field { display: flex; flex-direction: column; gap: 5px; }
-        .ap-form-label { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(245,240,235,0.4); }
-        .ap-form-input, .ap-form-select { background: rgba(255,255,255,0.04); border: 1px solid rgba(200,150,62,0.18); color: #F5F0EB; font-family: var(--font-jost,'Jost'),sans-serif; font-size: 13px; font-weight: 300; padding: 10px 12px; outline: none; transition: border-color 0.2s; border-radius: 2px; }
+        .ap-form-label { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(68,42,27,0.4); }
+        .ap-form-input, .ap-form-select { background: rgba(68,42,27,0.04); border: 1px solid rgba(200,150,62,0.18); color: #442a1b; font-family: var(--font-jost,'Jost'),sans-serif; font-size: 13px; font-weight: 300; padding: 10px 12px; outline: none; transition: border-color 0.2s; border-radius: 2px; }
         .ap-form-input:focus, .ap-form-select:focus { border-color: rgba(200,150,62,0.5); }
-        .ap-form-select option { background: #1a1a1a; }
+        .ap-form-select option { background: #ffffff; }
         .ap-form-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 24px; }
-        .ap-save-btn { background: #C8963E; color: #1A1A1A; border: none; font-size: 11px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; padding: 12px 22px; cursor: pointer; transition: background 0.2s; border-radius: 2px; }
+        .ap-save-btn { background: #C8963E; color: #ffffff; border: none; font-size: 11px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; padding: 12px 22px; cursor: pointer; transition: background 0.2s; border-radius: 2px; }
         .ap-save-btn:hover { background: #b5852f; }
         .ap-save-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-        .ap-cancel-btn { background: transparent; border: 1px solid rgba(200,150,62,0.25); color: rgba(245,240,235,0.55); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; padding: 12px 22px; cursor: pointer; transition: all 0.2s; border-radius: 2px; }
-        .ap-cancel-btn:hover { border-color: rgba(200,150,62,0.6); color: rgba(245,240,235,0.9); }
-        .ap-msg-ok  { font-size: 12px; color: #81c784; padding: 8px 0; }
-        .ap-msg-err { font-size: 12px; color: #ff7b7b; padding: 8px 0; }
+        .ap-cancel-btn { background: transparent; border: 1px solid rgba(200,150,62,0.25); color: rgba(68,42,27,0.55); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; padding: 12px 22px; cursor: pointer; transition: all 0.2s; border-radius: 2px; }
+        .ap-cancel-btn:hover { border-color: rgba(200,150,62,0.6); color: rgba(68,42,27,0.9); }
+        .ap-msg-ok  { font-size: 12px; color: #3f7a3a; padding: 8px 0; }
+        .ap-msg-err { font-size: 12px; color: #c0392b; padding: 8px 0; }
       `}</style>
 
       {msg && <p className={msg.startsWith("✅") ? "ap-msg-ok" : "ap-msg-err"} style={{ marginBottom: 12 }}>{msg}</p>}
 
       {loading ? (
-        <p style={{ color: "rgba(245,240,235,0.3)", fontSize: 14 }}>Loading products...</p>
+        <p style={{ color: "rgba(68,42,27,0.3)", fontSize: 14 }}>Loading products...</p>
       ) : products.length === 0 ? (
-        <p style={{ color: "rgba(245,240,235,0.3)", fontSize: 14, textAlign: "center", padding: "48px 0" }}>
+        <p style={{ color: "rgba(68,42,27,0.3)", fontSize: 14, textAlign: "center", padding: "48px 0" }}>
           No products found.
         </p>
       ) : (

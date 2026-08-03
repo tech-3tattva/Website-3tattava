@@ -47,12 +47,12 @@ type Assessment = {
 
 const STAGE_COLORS: Record<string, { fg: string; bg: string; border: string }> = {
   Balance: { fg: "#C8963E", bg: "rgba(200,150,62,0.12)", border: "rgba(200,150,62,0.3)" },
-  Build:   { fg: "#4ade80", bg: "rgba(74,222,128,0.12)", border: "rgba(74,222,128,0.3)" },
-  Become:  { fg: "#a78bfa", bg: "rgba(167,139,250,0.14)", border: "rgba(167,139,250,0.35)" },
+  Build:   { fg: "#2e7d32", bg: "rgba(74,222,128,0.12)", border: "rgba(74,222,128,0.3)" },
+  Become:  { fg: "#7c3aed", bg: "rgba(167,139,250,0.14)", border: "rgba(167,139,250,0.35)" },
 };
 
 function StageBadge({ stage }: { stage: string }) {
-  const c = STAGE_COLORS[stage] ?? { fg: "rgba(245,240,235,0.6)", bg: "rgba(245,240,235,0.06)", border: "rgba(245,240,235,0.15)" };
+  const c = STAGE_COLORS[stage] ?? { fg: "rgba(68,42,27,0.6)", bg: "rgba(68,42,27,0.06)", border: "rgba(68,42,27,0.15)" };
   return (
     <span style={{
       fontSize: 10, fontWeight: 600, padding: "3px 9px", borderRadius: 2,
@@ -105,8 +105,8 @@ function Field({ label, value }: { label: string; value?: string }) {
   if (!value || !value.trim()) return null;
   return (
     <div>
-      <div style={{ fontSize: 10, letterSpacing: "0.08em", textTransform: "uppercase", color: "rgba(245,240,235,0.35)", marginBottom: 3 }}>{label}</div>
-      <div style={{ fontSize: 13, color: "#F5F0EB", whiteSpace: "pre-wrap" }}>{value}</div>
+      <div style={{ fontSize: 10, letterSpacing: "0.08em", textTransform: "uppercase", color: "rgba(68,42,27,0.35)", marginBottom: 3 }}>{label}</div>
+      <div style={{ fontSize: 13, color: "#442a1b", whiteSpace: "pre-wrap" }}>{value}</div>
     </div>
   );
 }
@@ -162,20 +162,20 @@ function DetailPanel({
 
   const numInputStyle: React.CSSProperties = {
     width: 46, padding: "5px 6px", textAlign: "center",
-    background: "rgba(245,240,235,0.04)", border: "1px solid rgba(200,150,62,0.2)",
-    borderRadius: 3, color: "#F5F0EB", fontSize: 13,
+    background: "rgba(68,42,27,0.04)", border: "1px solid rgba(200,150,62,0.2)",
+    borderRadius: 3, color: "#442a1b", fontSize: 13,
   };
   const textInputStyle: React.CSSProperties = {
     width: "100%", padding: "8px 10px",
-    background: "rgba(245,240,235,0.04)", border: "1px solid rgba(200,150,62,0.2)",
-    borderRadius: 3, color: "#F5F0EB", fontSize: 13, fontFamily: "inherit",
+    background: "rgba(68,42,27,0.04)", border: "1px solid rgba(200,150,62,0.2)",
+    borderRadius: 3, color: "#442a1b", fontSize: 13, fontFamily: "inherit",
   };
 
   return (
     <div
       onClick={onClose}
       style={{
-        position: "fixed", inset: 0, background: "rgba(0,0,0,0.72)",
+        position: "fixed", inset: 0, background: "rgba(0,0,0,0.3)",
         display: "flex", alignItems: "flex-start", justifyContent: "center",
         padding: "40px 16px", zIndex: 1000, overflowY: "auto",
       }}
@@ -183,11 +183,11 @@ function DetailPanel({
       <div
         onClick={e => e.stopPropagation()}
         style={{
-          width: "100%", maxWidth: 760, background: "#1a1611",
+          width: "100%", maxWidth: 760, background: "#faf6ee",
           border: "1px solid rgba(200,150,62,0.25)", borderRadius: 6,
           padding: "26px 28px 30px", position: "relative",
           maxHeight: "calc(100vh - 80px)", overflowY: "auto",
-          color: "#F5F0EB",
+          color: "#442a1b",
         }}
       >
         <button
@@ -195,18 +195,18 @@ function DetailPanel({
           aria-label="Close"
           style={{
             position: "absolute", top: 14, right: 16, background: "transparent",
-            border: "none", color: "rgba(245,240,235,0.5)", fontSize: 20,
+            border: "none", color: "rgba(68,42,27,0.5)", fontSize: 20,
             cursor: "pointer", lineHeight: 1,
           }}
         >✕</button>
 
         <div style={{ display: "flex", alignItems: "baseline", gap: 10, flexWrap: "wrap" }}>
-          <h3 style={{ fontSize: 18, color: "#F5F0EB", margin: 0 }}>{selected.name || "—"}</h3>
-          <span style={{ fontSize: 11, color: "rgba(245,240,235,0.4)" }}>
+          <h3 style={{ fontSize: 18, color: "#442a1b", margin: 0 }}>{selected.name || "—"}</h3>
+          <span style={{ fontSize: 11, color: "rgba(68,42,27,0.4)" }}>
             {selected.email}{selected.phone ? ` · ${selected.phone}` : ""}
           </span>
         </div>
-        <p style={{ fontSize: 11, color: "rgba(245,240,235,0.35)", margin: "4px 0 0" }}>
+        <p style={{ fontSize: 11, color: "rgba(68,42,27,0.35)", margin: "4px 0 0" }}>
           {selected.kind === "prakriti" ? "Prakriti Analysis" : "Performance Assessment"}
           {" · "}{new Date(selected.createdAt).toLocaleString("en-IN")}
         </p>
@@ -227,8 +227,8 @@ function DetailPanel({
                 <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                   {selected.answers!.map(ans => (
                     <div key={ans.id}>
-                      <div style={{ fontSize: 12, color: "rgba(245,240,235,0.55)" }}>{ans.question}</div>
-                      <div style={{ fontSize: 13, color: "#F5F0EB" }}>{ans.answer}</div>
+                      <div style={{ fontSize: 12, color: "rgba(68,42,27,0.55)" }}>{ans.question}</div>
+                      <div style={{ fontSize: 13, color: "#442a1b" }}>{ans.answer}</div>
                     </div>
                   ))}
                 </div>
@@ -262,12 +262,12 @@ function DetailPanel({
                 <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
                   {grouped.map(([section, items]) => (
                     <div key={section}>
-                      <div style={{ fontSize: 12, fontWeight: 600, color: "rgba(245,240,235,0.7)", marginBottom: 6 }}>{section}</div>
+                      <div style={{ fontSize: 12, fontWeight: 600, color: "rgba(68,42,27,0.7)", marginBottom: 6 }}>{section}</div>
                       <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
                         {items.map((a, i) => (
-                          <div key={`${a.key ?? section}-${i}`} style={{ display: "flex", justifyContent: "space-between", gap: 16, borderBottom: "1px solid rgba(245,240,235,0.05)", paddingBottom: 5 }}>
-                            <span style={{ fontSize: 12, color: "rgba(245,240,235,0.55)", flex: 1 }}>{a.question ?? a.key ?? "—"}</span>
-                            <span style={{ fontSize: 13, color: "#F5F0EB", flex: 1, textAlign: "right" }}>{a.answer || "—"}</span>
+                          <div key={`${a.key ?? section}-${i}`} style={{ display: "flex", justifyContent: "space-between", gap: 16, borderBottom: "1px solid rgba(68,42,27,0.05)", paddingBottom: 5 }}>
+                            <span style={{ fontSize: 12, color: "rgba(68,42,27,0.55)", flex: 1 }}>{a.question ?? a.key ?? "—"}</span>
+                            <span style={{ fontSize: 13, color: "#442a1b", flex: 1, textAlign: "right" }}>{a.answer || "—"}</span>
                           </div>
                         ))}
                       </div>
@@ -296,11 +296,11 @@ function DetailPanel({
               <>
                 <SectionHeading>Preliminary (auto)</SectionHeading>
                 <div style={{ display: "flex", gap: 18, flexWrap: "wrap", alignItems: "baseline" }}>
-                  <span style={{ fontSize: 13, color: "#F5F0EB" }}>Vata <b style={{ color: "#C8963E" }}>{pd.vata ?? 0}</b></span>
-                  <span style={{ fontSize: 13, color: "#F5F0EB" }}>Pitta <b style={{ color: "#C8963E" }}>{pd.pitta ?? 0}</b></span>
-                  <span style={{ fontSize: 13, color: "#F5F0EB" }}>Kapha <b style={{ color: "#C8963E" }}>{pd.kapha ?? 0}</b></span>
+                  <span style={{ fontSize: 13, color: "#442a1b" }}>Vata <b style={{ color: "#C8963E" }}>{pd.vata ?? 0}</b></span>
+                  <span style={{ fontSize: 13, color: "#442a1b" }}>Pitta <b style={{ color: "#C8963E" }}>{pd.pitta ?? 0}</b></span>
+                  <span style={{ fontSize: 13, color: "#442a1b" }}>Kapha <b style={{ color: "#C8963E" }}>{pd.kapha ?? 0}</b></span>
                   {pd.primary && (
-                    <span style={{ fontSize: 12, color: "rgba(245,240,235,0.5)" }}>Primary: <b style={{ color: "#F5F0EB", textTransform: "capitalize" }}>{pd.primary}</b></span>
+                    <span style={{ fontSize: 12, color: "rgba(68,42,27,0.5)" }}>Primary: <b style={{ color: "#442a1b", textTransform: "capitalize" }}>{pd.primary}</b></span>
                   )}
                 </div>
               </>
@@ -313,14 +313,14 @@ function DetailPanel({
                 <thead>
                   <tr style={{ borderBottom: "1px solid rgba(200,150,62,0.2)" }}>
                     {["Trait", "Vata", "Pitta", "Kapha"].map(h => (
-                      <th key={h} style={{ padding: "6px 12px", textAlign: "left", fontSize: 10, letterSpacing: "0.1em", color: "rgba(245,240,235,0.4)", textTransform: "uppercase" }}>{h}</th>
+                      <th key={h} style={{ padding: "6px 12px", textAlign: "left", fontSize: 10, letterSpacing: "0.1em", color: "rgba(68,42,27,0.4)", textTransform: "uppercase" }}>{h}</th>
                     ))}
                   </tr>
                 </thead>
                 <tbody>
                   {DOCTOR_SCORING_TRAITS.map(t => (
-                    <tr key={t.key} style={{ borderBottom: "1px solid rgba(245,240,235,0.05)" }}>
-                      <td style={{ padding: "8px 12px", color: "#F5F0EB" }}>{t.label}</td>
+                    <tr key={t.key} style={{ borderBottom: "1px solid rgba(68,42,27,0.05)" }}>
+                      <td style={{ padding: "8px 12px", color: "#442a1b" }}>{t.label}</td>
                       {DOSHAS.map(d => (
                         <td key={d} style={{ padding: "6px 12px" }}>
                           <input
@@ -340,7 +340,7 @@ function DetailPanel({
             </div>
 
             <div style={{ marginTop: 18 }}>
-              <div style={{ fontSize: 10, letterSpacing: "0.08em", textTransform: "uppercase", color: "rgba(245,240,235,0.35)", marginBottom: 5 }}>Analysis</div>
+              <div style={{ fontSize: 10, letterSpacing: "0.08em", textTransform: "uppercase", color: "rgba(68,42,27,0.35)", marginBottom: 5 }}>Analysis</div>
               <textarea
                 value={analysis}
                 onChange={e => { setAnalysis(e.target.value); setSaved(false); }}
@@ -351,7 +351,7 @@ function DetailPanel({
             </div>
 
             <div style={{ marginTop: 14 }}>
-              <div style={{ fontSize: 10, letterSpacing: "0.08em", textTransform: "uppercase", color: "rgba(245,240,235,0.35)", marginBottom: 5 }}>Dosha result</div>
+              <div style={{ fontSize: 10, letterSpacing: "0.08em", textTransform: "uppercase", color: "rgba(68,42,27,0.35)", marginBottom: 5 }}>Dosha result</div>
               <input
                 type="text"
                 value={doshaResult}
@@ -367,13 +367,13 @@ function DetailPanel({
                 disabled={saving}
                 style={{
                   padding: "9px 20px", background: saving ? "rgba(200,150,62,0.4)" : "#C8963E",
-                  border: "none", borderRadius: 3, color: "#1a1611", fontSize: 12,
+                  border: "none", borderRadius: 3, color: "#faf6ee", fontSize: 12,
                   fontWeight: 600, letterSpacing: "0.05em", textTransform: "uppercase",
                   cursor: saving ? "default" : "pointer",
                 }}
               >{saving ? "Saving…" : "Save Prakriti Scoring"}</button>
-              {saved && <span style={{ fontSize: 13, color: "#4ade80" }}>Saved ✓</span>}
-              {saveErr && <span style={{ fontSize: 13, color: "#f87171" }}>Could not save. Please try again.</span>}
+              {saved && <span style={{ fontSize: 13, color: "#2e7d32" }}>Saved ✓</span>}
+              {saveErr && <span style={{ fontSize: 13, color: "#c0392b" }}>Could not save. Please try again.</span>}
             </div>
           </>
         )}
@@ -408,22 +408,22 @@ export default function AdminAssessments() {
 
   return (
     <div>
-      <p style={{ fontSize: 12, color: "rgba(245,240,235,0.35)", marginBottom: 18 }}>
+      <p style={{ fontSize: 12, color: "rgba(68,42,27,0.35)", marginBottom: 18 }}>
         {total} total assessments submitted
       </p>
       {loading ? (
-        <p style={{ color: "rgba(245,240,235,0.3)", fontSize: 13 }}>Loading…</p>
+        <p style={{ color: "rgba(68,42,27,0.3)", fontSize: 13 }}>Loading…</p>
       ) : error ? (
-        <p style={{ color: "rgba(245,240,235,0.3)", fontSize: 13 }}>Could not load assessments. Please try again.</p>
+        <p style={{ color: "rgba(68,42,27,0.3)", fontSize: 13 }}>Could not load assessments. Please try again.</p>
       ) : assessments.length === 0 ? (
-        <p style={{ color: "rgba(245,240,235,0.3)", fontSize: 13 }}>No assessments yet. They appear once users complete a quiz.</p>
+        <p style={{ color: "rgba(68,42,27,0.3)", fontSize: 13 }}>No assessments yet. They appear once users complete a quiz.</p>
       ) : (
         <div style={{ overflowX: "auto" }}>
           <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
             <thead>
               <tr style={{ borderBottom: "1px solid rgba(200,150,62,0.15)" }}>
                 {["Name","Type","Email","Phone","Stage","Energy","Recovery","Recommended Ritual","Status","Date","Action"].map(h => (
-                  <th key={h} style={{ padding: "8px 12px", textAlign: "left", fontSize: 10, letterSpacing: "0.15em", color: "rgba(245,240,235,0.35)", textTransform: "uppercase", whiteSpace: "nowrap" }}>{h}</th>
+                  <th key={h} style={{ padding: "8px 12px", textAlign: "left", fontSize: 10, letterSpacing: "0.15em", color: "rgba(68,42,27,0.35)", textTransform: "uppercase", whiteSpace: "nowrap" }}>{h}</th>
                 ))}
               </tr>
             </thead>
@@ -432,22 +432,22 @@ export default function AdminAssessments() {
                 const isPrakriti = a.kind === "prakriti";
                 return (
                   <tr key={a.id} style={{ borderBottom: "1px solid rgba(200,150,62,0.06)" }}>
-                    <td style={{ padding: "10px 12px", color: "#F5F0EB" }}>{a.name}</td>
-                    <td style={{ padding: "10px 12px", color: "rgba(245,240,235,0.6)", fontSize: 12 }}>{isPrakriti ? "Prakriti" : "Performance"}</td>
-                    <td style={{ padding: "10px 12px", color: "rgba(245,240,235,0.6)" }}>{a.email}</td>
-                    <td style={{ padding: "10px 12px", color: "rgba(245,240,235,0.6)" }}>{a.phone}</td>
-                    <td style={{ padding: "10px 12px" }}>{a.stage ? <StageBadge stage={a.stage} /> : <span style={{ color: "rgba(245,240,235,0.3)" }}>—</span>}</td>
-                    <td style={{ padding: "10px 12px", color: "rgba(245,240,235,0.5)", fontSize: 12 }}>{a.energyScore ?? "—"}</td>
-                    <td style={{ padding: "10px 12px", color: "rgba(245,240,235,0.5)", fontSize: 12 }}>{a.recoveryScore ?? "—"}</td>
-                    <td style={{ padding: "10px 12px", color: "rgba(245,240,235,0.4)", fontSize: 12 }}>{a.ritual?.name ?? "—"}</td>
+                    <td style={{ padding: "10px 12px", color: "#442a1b" }}>{a.name}</td>
+                    <td style={{ padding: "10px 12px", color: "rgba(68,42,27,0.6)", fontSize: 12 }}>{isPrakriti ? "Prakriti" : "Performance"}</td>
+                    <td style={{ padding: "10px 12px", color: "rgba(68,42,27,0.6)" }}>{a.email}</td>
+                    <td style={{ padding: "10px 12px", color: "rgba(68,42,27,0.6)" }}>{a.phone}</td>
+                    <td style={{ padding: "10px 12px" }}>{a.stage ? <StageBadge stage={a.stage} /> : <span style={{ color: "rgba(68,42,27,0.3)" }}>—</span>}</td>
+                    <td style={{ padding: "10px 12px", color: "rgba(68,42,27,0.5)", fontSize: 12 }}>{a.energyScore ?? "—"}</td>
+                    <td style={{ padding: "10px 12px", color: "rgba(68,42,27,0.5)", fontSize: 12 }}>{a.recoveryScore ?? "—"}</td>
+                    <td style={{ padding: "10px 12px", color: "rgba(68,42,27,0.4)", fontSize: 12 }}>{a.ritual?.name ?? "—"}</td>
                     <td style={{ padding: "10px 12px", fontSize: 12 }}>
                       {isPrakriti
                         ? (a.doctorScoring?.filled
-                            ? <span style={{ color: "#4ade80", fontWeight: 600 }}>Scored ✓</span>
-                            : <span style={{ color: "rgba(245,240,235,0.4)" }}>Pending review</span>)
-                        : <span style={{ color: "rgba(245,240,235,0.3)" }}>—</span>}
+                            ? <span style={{ color: "#2e7d32", fontWeight: 600 }}>Scored ✓</span>
+                            : <span style={{ color: "rgba(68,42,27,0.4)" }}>Pending review</span>)
+                        : <span style={{ color: "rgba(68,42,27,0.3)" }}>—</span>}
                     </td>
-                    <td style={{ padding: "10px 12px", color: "rgba(245,240,235,0.35)", fontSize: 12, whiteSpace: "nowrap" }}>{new Date(a.createdAt).toLocaleDateString("en-IN")}</td>
+                    <td style={{ padding: "10px 12px", color: "rgba(68,42,27,0.35)", fontSize: 12, whiteSpace: "nowrap" }}>{new Date(a.createdAt).toLocaleDateString("en-IN")}</td>
                     <td style={{ padding: "10px 12px" }}>
                       <button
                         onClick={() => setSelected(a)}

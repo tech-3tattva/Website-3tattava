@@ -16,12 +16,12 @@ type Order = {
 const STATUSES: Order["status"][] = ["pending", "confirmed", "processing", "shipped", "delivered", "cancelled"];
 
 const STATUS_COLOR: Record<string, string> = {
-  pending: "#ffb74d",
-  confirmed: "#64b5f6",
-  processing: "#ce93d8",
-  shipped: "#4fc3f7",
-  delivered: "#81c784",
-  cancelled: "#ff7b7b",
+  pending: "#c26a12",
+  confirmed: "#1976d2",
+  processing: "#8e24aa",
+  shipped: "#0288d1",
+  delivered: "#3f7a3a",
+  cancelled: "#c0392b",
 };
 
 export default function AdminOrders() {
@@ -50,19 +50,19 @@ export default function AdminOrders() {
       <style>{`
         .ord-empty { text-align: center; padding: 72px 0; }
         .ord-empty-icon { font-size: 44px; margin-bottom: 12px; }
-        .ord-empty-title { font-family: var(--font-cormorant,'Cormorant Garamond'),serif; font-size: 22px; color: rgba(245,240,235,0.28); }
-        .ord-empty-sub { font-size: 13px; color: rgba(245,240,235,0.18); margin-top: 6px; font-weight: 300; }
+        .ord-empty-title { font-family: var(--font-cormorant,'Cormorant Garamond'),serif; font-size: 22px; color: rgba(68,42,27,0.28); }
+        .ord-empty-sub { font-size: 13px; color: rgba(68,42,27,0.18); margin-top: 6px; font-weight: 300; }
         .ord-table { width: 100%; border-collapse: collapse; }
-        .ord-th { font-size: 10px; letter-spacing: 0.24em; text-transform: uppercase; color: rgba(245,240,235,0.3); padding: 10px 14px; text-align: left; border-bottom: 1px solid rgba(200,150,62,0.1); font-weight: 400; }
-        .ord-td { padding: 14px; border-bottom: 1px solid rgba(255,255,255,0.04); font-size: 13px; color: rgba(245,240,235,0.7); vertical-align: middle; }
+        .ord-th { font-size: 10px; letter-spacing: 0.24em; text-transform: uppercase; color: rgba(68,42,27,0.3); padding: 10px 14px; text-align: left; border-bottom: 1px solid rgba(200,150,62,0.1); font-weight: 400; }
+        .ord-td { padding: 14px; border-bottom: 1px solid rgba(68,42,27,0.04); font-size: 13px; color: rgba(68,42,27,0.7); vertical-align: middle; }
         .ord-tr:hover .ord-td { background: rgba(200,150,62,0.02); }
-        .ord-id { font-family: monospace; font-size: 12px; color: rgba(245,240,235,0.45); }
-        .ord-num { font-size: 14px; color: #F5F0EB; font-weight: 400; }
+        .ord-id { font-family: monospace; font-size: 12px; color: rgba(68,42,27,0.45); }
+        .ord-num { font-size: 14px; color: #442a1b; font-weight: 400; }
         .ord-status-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; margin-right: 7px; vertical-align: middle; }
         .ord-select {
-          background: rgba(255,255,255,0.04);
+          background: rgba(68,42,27,0.04);
           border: 1px solid rgba(200,150,62,0.18);
-          color: #F5F0EB;
+          color: #442a1b;
           font-family: var(--font-jost,'Jost'),sans-serif;
           font-size: 12px;
           padding: 6px 10px;
@@ -72,11 +72,11 @@ export default function AdminOrders() {
           transition: border-color 0.2s;
         }
         .ord-select:focus { border-color: rgba(200,150,62,0.5); }
-        .ord-select option { background: #1a1a1a; }
+        .ord-select option { background: #ffffff; }
       `}</style>
 
       {loading ? (
-        <p style={{ color: "rgba(245,240,235,0.3)", fontSize: 14 }}>Loading orders...</p>
+        <p style={{ color: "rgba(68,42,27,0.3)", fontSize: 14 }}>Loading orders...</p>
       ) : orders.length === 0 ? (
         <div className="ord-empty">
           <div className="ord-empty-icon">◎</div>

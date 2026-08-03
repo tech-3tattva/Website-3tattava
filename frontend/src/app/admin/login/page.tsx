@@ -36,7 +36,7 @@ export default function AdminLoginPage() {
       <style>{`
         .al-page {
           min-height: 100vh;
-          background: #0f0f0f;
+          background: #f7f0e2;
           display: flex;
           align-items: center;
           justify-content: center;
@@ -68,7 +68,7 @@ export default function AdminLoginPage() {
           max-width: 420px;
           margin: 24px;
           padding: 52px 44px;
-          background: rgba(26,26,26,0.95);
+          background: rgba(68,42,27,0.98);
           border: 1px solid rgba(200,150,62,0.15);
           backdrop-filter: blur(20px);
           animation: alEnter 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
@@ -77,17 +77,17 @@ export default function AdminLoginPage() {
           from { opacity: 0; transform: translateY(20px); }
           to   { opacity: 1; transform: translateY(0); }
         }
-        .al-brand { font-family: var(--font-cormorant, 'Cormorant Garamond'), serif; font-size: 26px; font-weight: 700; color: #F5F0EB; letter-spacing: 0.06em; }
+        .al-brand { font-family: var(--font-cormorant, 'Cormorant Garamond'), serif; font-size: 26px; font-weight: 700; color: #442a1b; letter-spacing: 0.06em; }
         .al-sub { font-size: 10px; letter-spacing: 0.32em; color: #C8963E; text-transform: uppercase; margin-top: 2px; margin-bottom: 44px; }
-        .al-title { font-family: var(--font-cormorant, 'Cormorant Garamond'), serif; font-size: 30px; font-weight: 600; color: #F5F0EB; margin: 0 0 6px; }
-        .al-desc { font-size: 13px; color: rgba(245,240,235,0.38); margin: 0 0 32px; font-weight: 300; }
+        .al-title { font-family: var(--font-cormorant, 'Cormorant Garamond'), serif; font-size: 30px; font-weight: 600; color: #442a1b; margin: 0 0 6px; }
+        .al-desc { font-size: 13px; color: rgba(68,42,27,0.38); margin: 0 0 32px; font-weight: 300; }
         .al-field { margin-bottom: 18px; }
-        .al-label { display: block; font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: rgba(245,240,235,0.45); margin-bottom: 7px; }
+        .al-label { display: block; font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: rgba(68,42,27,0.45); margin-bottom: 7px; }
         .al-input {
           width: 100%;
-          background: rgba(255,255,255,0.04);
+          background: rgba(68,42,27,0.04);
           border: 1px solid rgba(200,150,62,0.2);
-          color: #F5F0EB;
+          color: #442a1b;
           font-family: var(--font-jost, 'Jost'), sans-serif;
           font-size: 14px;
           font-weight: 300;
@@ -98,11 +98,11 @@ export default function AdminLoginPage() {
           border-radius: 2px;
         }
         .al-input:focus { border-color: rgba(200,150,62,0.55); background: rgba(200,150,62,0.04); }
-        .al-input::placeholder { color: rgba(245,240,235,0.18); }
+        .al-input::placeholder { color: rgba(68,42,27,0.18); }
         .al-error {
           background: rgba(220,50,50,0.1);
           border: 1px solid rgba(220,50,50,0.3);
-          color: #ff7b7b;
+          color: #c0392b;
           font-size: 13px;
           padding: 11px 13px;
           margin-bottom: 18px;
@@ -112,7 +112,7 @@ export default function AdminLoginPage() {
         .al-btn {
           width: 100%;
           background: #C8963E;
-          color: #1A1A1A;
+          color: #ffffff;
           border: none;
           font-family: var(--font-jost, 'Jost'), sans-serif;
           font-size: 11px;
@@ -131,10 +131,10 @@ export default function AdminLoginPage() {
         }
         .al-btn:hover:not(:disabled) { background: #b5852f; transform: translateY(-1px); }
         .al-btn:disabled { opacity: 0.55; cursor: not-allowed; }
-        .al-spinner { width: 13px; height: 13px; border: 2px solid rgba(26,26,26,0.3); border-top-color: #1A1A1A; border-radius: 50%; animation: spin 0.65s linear infinite; }
+        .al-spinner { width: 13px; height: 13px; border: 2px solid rgba(0,0,0,0.06); border-top-color: #ffffff; border-radius: 50%; animation: spin 0.65s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
         .al-rule { height: 1px; background: rgba(200,150,62,0.1); margin: 32px 0 18px; }
-        .al-foot { font-size: 11px; color: rgba(245,240,235,0.18); text-align: center; letter-spacing: 0.04em; }
+        .al-foot { font-size: 11px; color: rgba(68,42,27,0.18); text-align: center; letter-spacing: 0.04em; }
       `}</style>
 
       <div className="al-page">

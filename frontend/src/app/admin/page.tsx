@@ -68,8 +68,8 @@ function AdminShipments() {
   }
 
   const statusColour: Record<string, string> = {
-    booked: "#C8963E", in_transit: "#60a5fa", delivered: "#4ade80",
-    cancelled: "#f87171", ndr: "#fb923c", rto: "#f87171",
+    booked: "#C8963E", in_transit: "#1d4ed8", delivered: "#2e7d32",
+    cancelled: "#c0392b", ndr: "#d97706", rto: "#c0392b",
   };
 
   return (
@@ -79,7 +79,7 @@ function AdminShipments() {
           <button key={m} onClick={() => setMode(m)} style={{
             padding: "6px 16px", fontSize: 12, letterSpacing: "0.1em",
             background: mode === m ? "#C8963E" : "rgba(200,150,62,0.08)",
-            color: mode === m ? "#0f0f0f" : "rgba(245,240,235,0.6)",
+            color: mode === m ? "#f7f0e2" : "rgba(68,42,27,0.6)",
             border: "1px solid rgba(200,150,62,0.2)", cursor: "pointer", borderRadius: 3,
             textTransform: "uppercase",
           }}>
@@ -87,34 +87,34 @@ function AdminShipments() {
           </button>
         ))}
       </div>
-      {msg && <p style={{ color: "#4ade80", fontSize: 13, marginBottom: 12 }}>{msg}</p>}
-      {loading ? <p style={{ color: "rgba(245,240,235,0.3)", fontSize: 13 }}>Loading…</p> : orders.length === 0 ? (
-        <p style={{ color: "rgba(245,240,235,0.3)", fontSize: 13 }}>
+      {msg && <p style={{ color: "#2e7d32", fontSize: 13, marginBottom: 12 }}>{msg}</p>}
+      {loading ? <p style={{ color: "rgba(68,42,27,0.3)", fontSize: 13 }}>Loading…</p> : orders.length === 0 ? (
+        <p style={{ color: "rgba(68,42,27,0.3)", fontSize: 13 }}>
           {mode === "pending" ? "No paid orders waiting for shipment booking." : "No records found."}
         </p>
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
           {orders.map(o => (
-            <div key={o.id} style={{ background: "#1a1a1a", border: "1px solid rgba(200,150,62,0.1)", borderRadius: 3, padding: "16px 20px" }}>
+            <div key={o.id} style={{ background: "#ffffff", border: "1px solid rgba(200,150,62,0.1)", borderRadius: 3, padding: "16px 20px" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 8 }}>
                 <div>
-                  <p style={{ fontSize: 14, fontWeight: 600, color: "#F5F0EB", marginBottom: 2 }}>{o.orderNumber}</p>
+                  <p style={{ fontSize: 14, fontWeight: 600, color: "#442a1b", marginBottom: 2 }}>{o.orderNumber}</p>
                   {o.shippingAddress && (
-                    <p style={{ fontSize: 12, color: "rgba(245,240,235,0.4)" }}>
+                    <p style={{ fontSize: 12, color: "rgba(68,42,27,0.4)" }}>
                       {o.shippingAddress.firstName} {o.shippingAddress.lastName} — {o.shippingAddress.city}, {o.shippingAddress.pincode}
                     </p>
                   )}
-                  <p style={{ fontSize: 11, color: "rgba(245,240,235,0.25)", marginTop: 2 }}>{new Date(o.createdAt).toLocaleDateString("en-IN")}</p>
+                  <p style={{ fontSize: 11, color: "rgba(68,42,27,0.25)", marginTop: 2 }}>{new Date(o.createdAt).toLocaleDateString("en-IN")}</p>
                 </div>
                 <div style={{ textAlign: "right" }}>
                   <p style={{ fontSize: 15, fontWeight: 700, color: "#C8963E" }}>₹{o.total.toLocaleString("en-IN")}</p>
                   {o.shipment?.awbNumber ? (
                     <div style={{ marginTop: 4 }}>
-                      <span style={{ fontSize: 11, background: statusColour[o.shipment.nimbusStatus ?? ""] || "#444", color: "#0f0f0f", padding: "2px 8px", borderRadius: 2, fontWeight: 600 }}>
+                      <span style={{ fontSize: 11, background: statusColour[o.shipment.nimbusStatus ?? ""] || "#444", color: "#f7f0e2", padding: "2px 8px", borderRadius: 2, fontWeight: 600 }}>
                         {o.shipment.nimbusStatus?.toUpperCase() ?? "BOOKED"}
                       </span>
-                      <p style={{ fontSize: 12, color: "rgba(245,240,235,0.5)", marginTop: 4 }}>AWB: {o.shipment.awbNumber}</p>
-                      <p style={{ fontSize: 11, color: "rgba(245,240,235,0.3)" }}>{o.shipment.courierName}</p>
+                      <p style={{ fontSize: 12, color: "rgba(68,42,27,0.5)", marginTop: 4 }}>AWB: {o.shipment.awbNumber}</p>
+                      <p style={{ fontSize: 11, color: "rgba(68,42,27,0.3)" }}>{o.shipment.courierName}</p>
                       {o.shipment.labelUrl && (
                         <a href={o.shipment.labelUrl} target="_blank" rel="noreferrer"
                           style={{ fontSize: 11, color: "#C8963E", textDecoration: "underline" }}>
@@ -125,7 +125,7 @@ function AdminShipments() {
                   ) : (
                     <button onClick={() => void bookShipment(o.id)} style={{
                       marginTop: 6, padding: "5px 12px", fontSize: 11, background: "#C8963E",
-                      color: "#0f0f0f", border: "none", cursor: "pointer", borderRadius: 2, fontWeight: 600,
+                      color: "#f7f0e2", border: "none", cursor: "pointer", borderRadius: 2, fontWeight: 600,
                     }}>
                       Book Shipment
                     </button>
@@ -171,33 +171,33 @@ function AdminLeads() {
 
   return (
     <div>
-      <p style={{ fontSize: 12, color: "rgba(245,240,235,0.35)", marginBottom: 18 }}>
+      <p style={{ fontSize: 12, color: "rgba(68,42,27,0.35)", marginBottom: 18 }}>
         {total} total leads captured from the homepage modal
       </p>
-      {loading ? <p style={{ color: "rgba(245,240,235,0.3)", fontSize: 13 }}>Loading…</p> : leads.length === 0 ? (
-        <p style={{ color: "rgba(245,240,235,0.3)", fontSize: 13 }}>No leads yet. The modal fires at 45s / 70% scroll.</p>
+      {loading ? <p style={{ color: "rgba(68,42,27,0.3)", fontSize: 13 }}>Loading…</p> : leads.length === 0 ? (
+        <p style={{ color: "rgba(68,42,27,0.3)", fontSize: 13 }}>No leads yet. The modal fires at 45s / 70% scroll.</p>
       ) : (
         <div style={{ overflowX: "auto" }}>
           <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
             <thead>
               <tr style={{ borderBottom: "1px solid rgba(200,150,62,0.15)" }}>
                 {["Name","Email","Phone","Interest","Source","Date","Status"].map(h => (
-                  <th key={h} style={{ padding: "8px 12px", textAlign: "left", fontSize: 10, letterSpacing: "0.15em", color: "rgba(245,240,235,0.35)", textTransform: "uppercase", whiteSpace: "nowrap" }}>{h}</th>
+                  <th key={h} style={{ padding: "8px 12px", textAlign: "left", fontSize: 10, letterSpacing: "0.15em", color: "rgba(68,42,27,0.35)", textTransform: "uppercase", whiteSpace: "nowrap" }}>{h}</th>
                 ))}
               </tr>
             </thead>
             <tbody>
               {leads.map(l => (
                 <tr key={l._id} style={{ borderBottom: "1px solid rgba(200,150,62,0.06)" }}>
-                  <td style={{ padding: "10px 12px", color: "#F5F0EB" }}>{l.name}</td>
-                  <td style={{ padding: "10px 12px", color: "rgba(245,240,235,0.6)" }}>{l.email}</td>
-                  <td style={{ padding: "10px 12px", color: "rgba(245,240,235,0.6)" }}>{l.phone}</td>
-                  <td style={{ padding: "10px 12px", color: "rgba(245,240,235,0.4)", fontSize: 12 }}>{l.interest}</td>
-                  <td style={{ padding: "10px 12px", color: "rgba(245,240,235,0.4)", fontSize: 12 }}>{l.source}</td>
-                  <td style={{ padding: "10px 12px", color: "rgba(245,240,235,0.35)", fontSize: 12, whiteSpace: "nowrap" }}>{new Date(l.createdAt).toLocaleDateString("en-IN")}</td>
+                  <td style={{ padding: "10px 12px", color: "#442a1b" }}>{l.name}</td>
+                  <td style={{ padding: "10px 12px", color: "rgba(68,42,27,0.6)" }}>{l.email}</td>
+                  <td style={{ padding: "10px 12px", color: "rgba(68,42,27,0.6)" }}>{l.phone}</td>
+                  <td style={{ padding: "10px 12px", color: "rgba(68,42,27,0.4)", fontSize: 12 }}>{l.interest}</td>
+                  <td style={{ padding: "10px 12px", color: "rgba(68,42,27,0.4)", fontSize: 12 }}>{l.source}</td>
+                  <td style={{ padding: "10px 12px", color: "rgba(68,42,27,0.35)", fontSize: 12, whiteSpace: "nowrap" }}>{new Date(l.createdAt).toLocaleDateString("en-IN")}</td>
                   <td style={{ padding: "10px 12px" }}>
                     {l.converted ? (
-                      <span style={{ fontSize: 11, color: "#4ade80", fontWeight: 600 }}>CONVERTED</span>
+                      <span style={{ fontSize: 11, color: "#2e7d32", fontWeight: 600 }}>CONVERTED</span>
                     ) : (
                       <button onClick={() => void markConverted(l._id)} style={{
                         fontSize: 10, padding: "3px 9px", background: "rgba(200,150,62,0.12)",
@@ -256,34 +256,34 @@ function AdminWaitlist() {
   return (
     <div>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 18, gap: 12, flexWrap: "wrap" }}>
-        <p style={{ fontSize: 12, color: "rgba(245,240,235,0.35)" }}>{total} total waitlist signups</p>
+        <p style={{ fontSize: 12, color: "rgba(68,42,27,0.35)" }}>{total} total waitlist signups</p>
         <button onClick={downloadExcel} disabled={entries.length === 0} style={{
           fontSize: 11, padding: "8px 16px", background: "rgba(200,150,62,0.12)", color: "#C8963E",
           border: "1px solid rgba(200,150,62,0.35)", cursor: entries.length ? "pointer" : "not-allowed",
           borderRadius: 3, letterSpacing: "0.08em", textTransform: "uppercase", opacity: entries.length ? 1 : 0.5,
         }}>↓ Download Excel</button>
       </div>
-      {loading ? <p style={{ color: "rgba(245,240,235,0.3)", fontSize: 13 }}>Loading…</p> : entries.length === 0 ? (
-        <p style={{ color: "rgba(245,240,235,0.3)", fontSize: 13 }}>No waitlist signups yet.</p>
+      {loading ? <p style={{ color: "rgba(68,42,27,0.3)", fontSize: 13 }}>Loading…</p> : entries.length === 0 ? (
+        <p style={{ color: "rgba(68,42,27,0.3)", fontSize: 13 }}>No waitlist signups yet.</p>
       ) : (
         <div style={{ overflowX: "auto" }}>
           <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
             <thead>
               <tr style={{ borderBottom: "1px solid rgba(200,150,62,0.15)" }}>
                 {["Name", "Email", "Phone", "Product", "Source", "Date"].map(h => (
-                  <th key={h} style={{ padding: "8px 12px", textAlign: "left", fontSize: 10, letterSpacing: "0.15em", color: "rgba(245,240,235,0.35)", textTransform: "uppercase", whiteSpace: "nowrap" }}>{h}</th>
+                  <th key={h} style={{ padding: "8px 12px", textAlign: "left", fontSize: 10, letterSpacing: "0.15em", color: "rgba(68,42,27,0.35)", textTransform: "uppercase", whiteSpace: "nowrap" }}>{h}</th>
                 ))}
               </tr>
             </thead>
             <tbody>
               {entries.map(e => (
                 <tr key={e._id} style={{ borderBottom: "1px solid rgba(200,150,62,0.06)" }}>
-                  <td style={{ padding: "10px 12px", color: "#F5F0EB" }}>{e.name}</td>
-                  <td style={{ padding: "10px 12px", color: "rgba(245,240,235,0.6)" }}>{e.email}</td>
-                  <td style={{ padding: "10px 12px", color: "rgba(245,240,235,0.6)" }}>{e.phone}</td>
-                  <td style={{ padding: "10px 12px", color: "rgba(245,240,235,0.5)", fontSize: 12 }}>{e.product}</td>
-                  <td style={{ padding: "10px 12px", color: "rgba(245,240,235,0.4)", fontSize: 12 }}>{e.source}</td>
-                  <td style={{ padding: "10px 12px", color: "rgba(245,240,235,0.35)", fontSize: 12, whiteSpace: "nowrap" }}>{new Date(e.createdAt).toLocaleString("en-IN")}</td>
+                  <td style={{ padding: "10px 12px", color: "#442a1b" }}>{e.name}</td>
+                  <td style={{ padding: "10px 12px", color: "rgba(68,42,27,0.6)" }}>{e.email}</td>
+                  <td style={{ padding: "10px 12px", color: "rgba(68,42,27,0.6)" }}>{e.phone}</td>
+                  <td style={{ padding: "10px 12px", color: "rgba(68,42,27,0.5)", fontSize: 12 }}>{e.product}</td>
+                  <td style={{ padding: "10px 12px", color: "rgba(68,42,27,0.4)", fontSize: 12 }}>{e.source}</td>
+                  <td style={{ padding: "10px 12px", color: "rgba(68,42,27,0.35)", fontSize: 12, whiteSpace: "nowrap" }}>{new Date(e.createdAt).toLocaleString("en-IN")}</td>
                 </tr>
               ))}
             </tbody>
@@ -324,7 +324,7 @@ function AdminUsers() {
 
   return (
     <div>
-      <p style={{ fontSize: 12, color: "rgba(245,240,235,0.35)", marginBottom: 14 }}>
+      <p style={{ fontSize: 12, color: "rgba(68,42,27,0.35)", marginBottom: 14 }}>
         {total} registered customers · {googleCount} via Google sign-in
       </p>
       <div style={{ display: "flex", gap: 8, marginBottom: 18 }}>
@@ -332,41 +332,41 @@ function AdminUsers() {
           <button key={f} onClick={() => setFilter(f)} style={{
             fontSize: 11, padding: "5px 12px", cursor: "pointer", borderRadius: 3, textTransform: "capitalize",
             background: filter === f ? "rgba(200,150,62,0.16)" : "transparent",
-            color: filter === f ? "#C8963E" : "rgba(245,240,235,0.5)",
+            color: filter === f ? "#C8963E" : "rgba(68,42,27,0.5)",
             border: "1px solid rgba(200,150,62,0.25)",
           }}>{f === "email" ? "Email/Password" : f}</button>
         ))}
       </div>
       {loading ? (
-        <p style={{ color: "rgba(245,240,235,0.3)", fontSize: 13 }}>Loading…</p>
+        <p style={{ color: "rgba(68,42,27,0.3)", fontSize: 13 }}>Loading…</p>
       ) : shown.length === 0 ? (
-        <p style={{ color: "rgba(245,240,235,0.3)", fontSize: 13 }}>No customers yet.</p>
+        <p style={{ color: "rgba(68,42,27,0.3)", fontSize: 13 }}>No customers yet.</p>
       ) : (
         <div style={{ overflowX: "auto" }}>
           <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
             <thead>
               <tr style={{ borderBottom: "1px solid rgba(200,150,62,0.15)" }}>
                 {["Name", "Email", "Phone", "Sign-in", "Role", "Verified", "Joined"].map((h) => (
-                  <th key={h} style={{ padding: "8px 12px", textAlign: "left", fontSize: 10, letterSpacing: "0.15em", color: "rgba(245,240,235,0.35)", textTransform: "uppercase", whiteSpace: "nowrap" }}>{h}</th>
+                  <th key={h} style={{ padding: "8px 12px", textAlign: "left", fontSize: 10, letterSpacing: "0.15em", color: "rgba(68,42,27,0.35)", textTransform: "uppercase", whiteSpace: "nowrap" }}>{h}</th>
                 ))}
               </tr>
             </thead>
             <tbody>
               {shown.map((u) => (
                 <tr key={u.id} style={{ borderBottom: "1px solid rgba(200,150,62,0.06)" }}>
-                  <td style={{ padding: "10px 12px", color: "#F5F0EB" }}>{u.name}</td>
-                  <td style={{ padding: "10px 12px", color: "rgba(245,240,235,0.6)" }}>{u.email}</td>
-                  <td style={{ padding: "10px 12px", color: "rgba(245,240,235,0.6)" }}>{u.phone || "—"}</td>
+                  <td style={{ padding: "10px 12px", color: "#442a1b" }}>{u.name}</td>
+                  <td style={{ padding: "10px 12px", color: "rgba(68,42,27,0.6)" }}>{u.email}</td>
+                  <td style={{ padding: "10px 12px", color: "rgba(68,42,27,0.6)" }}>{u.phone || "—"}</td>
                   <td style={{ padding: "10px 12px" }}>
                     <span style={{
                       fontSize: 10, padding: "3px 8px", borderRadius: 3, textTransform: "uppercase", letterSpacing: "0.08em",
                       background: u.authMethod === "google" ? "rgba(66,133,244,0.15)" : "rgba(200,150,62,0.12)",
-                      color: u.authMethod === "google" ? "#8ab4f8" : "#C8963E",
+                      color: u.authMethod === "google" ? "#1565c0" : "#C8963E",
                     }}>{u.authMethod}</span>
                   </td>
-                  <td style={{ padding: "10px 12px", color: "rgba(245,240,235,0.5)", fontSize: 12 }}>{u.role}</td>
-                  <td style={{ padding: "10px 12px", fontSize: 12, color: u.isVerified ? "#4ade80" : "rgba(245,240,235,0.3)" }}>{u.isVerified ? "Yes" : "No"}</td>
-                  <td style={{ padding: "10px 12px", color: "rgba(245,240,235,0.35)", fontSize: 12, whiteSpace: "nowrap" }}>{new Date(u.createdAt).toLocaleDateString("en-IN")}</td>
+                  <td style={{ padding: "10px 12px", color: "rgba(68,42,27,0.5)", fontSize: 12 }}>{u.role}</td>
+                  <td style={{ padding: "10px 12px", fontSize: 12, color: u.isVerified ? "#2e7d32" : "rgba(68,42,27,0.3)" }}>{u.isVerified ? "Yes" : "No"}</td>
+                  <td style={{ padding: "10px 12px", color: "rgba(68,42,27,0.35)", fontSize: 12, whiteSpace: "nowrap" }}>{new Date(u.createdAt).toLocaleDateString("en-IN")}</td>
                 </tr>
               ))}
             </tbody>
@@ -469,7 +469,7 @@ function AdminInfluencers() {
   }
 
   const rewardColour: Record<string, string> = {
-    none: "rgba(245,240,235,0.2)", pending: "#fb923c", earned: "#C8963E", fulfilled: "#4ade80",
+    none: "rgba(68,42,27,0.2)", pending: "#d97706", earned: "#C8963E", fulfilled: "#2e7d32",
   };
 
   const SUB = [
@@ -488,9 +488,9 @@ function AdminInfluencers() {
           { label: "Total Revenue (via codes)", value: `₹${totals.revenue.toLocaleString("en-IN")}` },
           { label: "Rewards Pending Payout", value: rewardQueueCount, alert: rewardQueueCount > 0 },
         ].map(s => (
-          <div key={s.label} style={{ background: "#1a1a1a", border: "1px solid rgba(200,150,62,0.1)", borderRadius: 3, padding: "14px 18px" }}>
-            <p style={{ fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(245,240,235,0.3)", marginBottom: 6 }}>{s.label}</p>
-            <p style={{ fontSize: 26, fontWeight: 700, color: s.alert ? "#fb923c" : "#C8963E" }}>{s.value}</p>
+          <div key={s.label} style={{ background: "#ffffff", border: "1px solid rgba(200,150,62,0.1)", borderRadius: 3, padding: "14px 18px" }}>
+            <p style={{ fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(68,42,27,0.3)", marginBottom: 6 }}>{s.label}</p>
+            <p style={{ fontSize: 26, fontWeight: 700, color: s.alert ? "#d97706" : "#C8963E" }}>{s.value}</p>
           </div>
         ))}
       </div>
@@ -501,22 +501,22 @@ function AdminInfluencers() {
           <button key={s.id} onClick={() => setSubTab(s.id)} style={{
             padding: "5px 14px", fontSize: 11, letterSpacing: "0.08em",
             background: subTab === s.id ? "rgba(200,150,62,0.15)" : "transparent",
-            color: subTab === s.id ? "#C8963E" : "rgba(245,240,235,0.4)",
+            color: subTab === s.id ? "#C8963E" : "rgba(68,42,27,0.4)",
             border: subTab === s.id ? "1px solid rgba(200,150,62,0.3)" : "1px solid transparent",
             cursor: "pointer", borderRadius: 2, textTransform: "uppercase",
           }}>{s.label}</button>
         ))}
         <button onClick={() => setShowForm(!showForm)} style={{
           marginLeft: "auto", padding: "5px 14px", fontSize: 11,
-          background: "#C8963E", color: "#0f0f0f", border: "none",
+          background: "#C8963E", color: "#f7f0e2", border: "none",
           cursor: "pointer", borderRadius: 2, fontWeight: 600, letterSpacing: "0.08em",
         }}>+ Add Influencer</button>
       </div>
 
       {/* Add influencer form */}
       {showForm && (
-        <div style={{ background: "#1a1a1a", border: "1px solid rgba(200,150,62,0.2)", borderRadius: 3, padding: 20, marginBottom: 20 }}>
-          <p style={{ fontSize: 13, fontWeight: 600, color: "#F5F0EB", marginBottom: 16 }}>New Influencer</p>
+        <div style={{ background: "#ffffff", border: "1px solid rgba(200,150,62,0.2)", borderRadius: 3, padding: 20, marginBottom: 20 }}>
+          <p style={{ fontSize: 13, fontWeight: 600, color: "#442a1b", marginBottom: 16 }}>New Influencer</p>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 10 }}>
             {[
               { key: "name", label: "Full Name" },
@@ -526,56 +526,56 @@ function AdminInfluencers() {
               { key: "goalRedemptions", label: "Goal Redemptions" },
             ].map(f => (
               <div key={f.key}>
-                <label style={{ display: "block", fontSize: 10, letterSpacing: "0.15em", color: "rgba(245,240,235,0.35)", marginBottom: 4, textTransform: "uppercase" }}>{f.label}</label>
+                <label style={{ display: "block", fontSize: 10, letterSpacing: "0.15em", color: "rgba(68,42,27,0.35)", marginBottom: 4, textTransform: "uppercase" }}>{f.label}</label>
                 <input value={form[f.key as keyof typeof form]} onChange={e => setForm(p => ({ ...p, [f.key]: e.target.value }))}
-                  style={{ width: "100%", background: "#141414", border: "1px solid rgba(200,150,62,0.2)", color: "#F5F0EB", padding: "7px 10px", fontSize: 13, borderRadius: 2 }} />
+                  style={{ width: "100%", background: "#ffffff", border: "1px solid rgba(200,150,62,0.2)", color: "#442a1b", padding: "7px 10px", fontSize: 13, borderRadius: 2 }} />
               </div>
             ))}
             <div>
-              <label style={{ display: "block", fontSize: 10, letterSpacing: "0.15em", color: "rgba(245,240,235,0.35)", marginBottom: 4, textTransform: "uppercase" }}>Tier</label>
+              <label style={{ display: "block", fontSize: 10, letterSpacing: "0.15em", color: "rgba(68,42,27,0.35)", marginBottom: 4, textTransform: "uppercase" }}>Tier</label>
               <select value={form.tier} onChange={e => setForm(p => ({ ...p, tier: e.target.value }))}
-                style={{ width: "100%", background: "#141414", border: "1px solid rgba(200,150,62,0.2)", color: "#F5F0EB", padding: "7px 10px", fontSize: 13, borderRadius: 2 }}>
+                style={{ width: "100%", background: "#ffffff", border: "1px solid rgba(200,150,62,0.2)", color: "#442a1b", padding: "7px 10px", fontSize: 13, borderRadius: 2 }}>
                 <option value="micro">Micro (20% off, owns children)</option>
                 <option value="nano">Nano (15% off, child of micro)</option>
               </select>
             </div>
           </div>
           <div style={{ marginTop: 14, display: "flex", gap: 10, alignItems: "center" }}>
-            <button onClick={() => void createInfluencer()} style={{ padding: "7px 20px", background: "#C8963E", color: "#0f0f0f", border: "none", cursor: "pointer", borderRadius: 2, fontWeight: 600, fontSize: 13 }}>Create</button>
-            <button onClick={() => setShowForm(false)} style={{ padding: "7px 16px", background: "transparent", color: "rgba(245,240,235,0.4)", border: "1px solid rgba(200,150,62,0.15)", cursor: "pointer", borderRadius: 2, fontSize: 13 }}>Cancel</button>
-            {formMsg && <p style={{ fontSize: 12, color: formMsg.includes("✓") ? "#4ade80" : "#f87171" }}>{formMsg}</p>}
+            <button onClick={() => void createInfluencer()} style={{ padding: "7px 20px", background: "#C8963E", color: "#f7f0e2", border: "none", cursor: "pointer", borderRadius: 2, fontWeight: 600, fontSize: 13 }}>Create</button>
+            <button onClick={() => setShowForm(false)} style={{ padding: "7px 16px", background: "transparent", color: "rgba(68,42,27,0.4)", border: "1px solid rgba(200,150,62,0.15)", cursor: "pointer", borderRadius: 2, fontSize: 13 }}>Cancel</button>
+            {formMsg && <p style={{ fontSize: 12, color: formMsg.includes("✓") ? "#2e7d32" : "#c0392b" }}>{formMsg}</p>}
           </div>
         </div>
       )}
 
-      {loading ? <p style={{ color: "rgba(245,240,235,0.3)", fontSize: 13 }}>Loading…</p> : (
+      {loading ? <p style={{ color: "rgba(68,42,27,0.3)", fontSize: 13 }}>Loading…</p> : (
         <>
           {/* Micro influencer cards */}
           {subTab === "micros" && (
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-              {micros.length === 0 ? <p style={{ color: "rgba(245,240,235,0.3)", fontSize: 13 }}>No influencers yet. Add one above.</p> : micros.map(m => (
-                <div key={m.id} style={{ background: "#1a1a1a", border: "1px solid rgba(200,150,62,0.1)", borderRadius: 3, padding: "16px 20px" }}>
+              {micros.length === 0 ? <p style={{ color: "rgba(68,42,27,0.3)", fontSize: 13 }}>No influencers yet. Add one above.</p> : micros.map(m => (
+                <div key={m.id} style={{ background: "#ffffff", border: "1px solid rgba(200,150,62,0.1)", borderRadius: 3, padding: "16px 20px" }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 8 }}>
                     <div>
-                      <p style={{ fontSize: 14, fontWeight: 600, color: "#F5F0EB" }}>{m.name}</p>
+                      <p style={{ fontSize: 14, fontWeight: 600, color: "#442a1b" }}>{m.name}</p>
                       <p style={{ fontSize: 12, color: "#C8963E", letterSpacing: "0.1em", marginTop: 2 }}>{m.code}</p>
                     </div>
                     <div style={{ display: "flex", gap: 20, alignItems: "center" }}>
                       <div style={{ textAlign: "center" }}>
-                        <p style={{ fontSize: 20, fontWeight: 700, color: "#F5F0EB" }}>{m.rollupRedemptions}</p>
-                        <p style={{ fontSize: 10, color: "rgba(245,240,235,0.3)", letterSpacing: "0.1em" }}>TOTAL ORDERS</p>
+                        <p style={{ fontSize: 20, fontWeight: 700, color: "#442a1b" }}>{m.rollupRedemptions}</p>
+                        <p style={{ fontSize: 10, color: "rgba(68,42,27,0.3)", letterSpacing: "0.1em" }}>TOTAL ORDERS</p>
                       </div>
                       <div style={{ textAlign: "center" }}>
                         <p style={{ fontSize: 20, fontWeight: 700, color: "#C8963E" }}>₹{m.rollupRevenue.toLocaleString("en-IN")}</p>
-                        <p style={{ fontSize: 10, color: "rgba(245,240,235,0.3)", letterSpacing: "0.1em" }}>REVENUE</p>
+                        <p style={{ fontSize: 10, color: "rgba(68,42,27,0.3)", letterSpacing: "0.1em" }}>REVENUE</p>
                       </div>
                       {m.goalPct !== null && (
                         <div style={{ textAlign: "center" }}>
-                          <p style={{ fontSize: 20, fontWeight: 700, color: m.goalPct >= 100 ? "#4ade80" : "#fb923c" }}>{m.goalPct}%</p>
-                          <p style={{ fontSize: 10, color: "rgba(245,240,235,0.3)", letterSpacing: "0.1em" }}>GOAL</p>
+                          <p style={{ fontSize: 20, fontWeight: 700, color: m.goalPct >= 100 ? "#2e7d32" : "#d97706" }}>{m.goalPct}%</p>
+                          <p style={{ fontSize: 10, color: "rgba(68,42,27,0.3)", letterSpacing: "0.1em" }}>GOAL</p>
                         </div>
                       )}
-                      <span style={{ fontSize: 11, padding: "3px 10px", background: rewardColour[m.rewardStatus] || "#444", color: "#0f0f0f", borderRadius: 2, fontWeight: 600, letterSpacing: "0.08em" }}>
+                      <span style={{ fontSize: 11, padding: "3px 10px", background: rewardColour[m.rewardStatus] || "#444", color: "#f7f0e2", borderRadius: 2, fontWeight: 600, letterSpacing: "0.08em" }}>
                         {m.rewardStatus.toUpperCase()}
                       </span>
                     </div>
@@ -592,7 +592,7 @@ function AdminInfluencers() {
                 <thead>
                   <tr style={{ borderBottom: "1px solid rgba(200,150,62,0.15)" }}>
                     {["Code","Type","Discount","Used","Max","Status"].map(h => (
-                      <th key={h} style={{ padding: "8px 12px", textAlign: "left", fontSize: 10, letterSpacing: "0.15em", color: "rgba(245,240,235,0.35)", textTransform: "uppercase" }}>{h}</th>
+                      <th key={h} style={{ padding: "8px 12px", textAlign: "left", fontSize: 10, letterSpacing: "0.15em", color: "rgba(68,42,27,0.35)", textTransform: "uppercase" }}>{h}</th>
                     ))}
                   </tr>
                 </thead>
@@ -600,12 +600,12 @@ function AdminInfluencers() {
                   {codes.map(c => (
                     <tr key={c.id} style={{ borderBottom: "1px solid rgba(200,150,62,0.06)" }}>
                       <td style={{ padding: "10px 12px", color: "#C8963E", fontWeight: 600, letterSpacing: "0.08em" }}>{c.code}</td>
-                      <td style={{ padding: "10px 12px", color: "rgba(245,240,235,0.5)", fontSize: 12 }}>{c.codeType}</td>
-                      <td style={{ padding: "10px 12px", color: "#F5F0EB" }}>{c.discountPercent}%</td>
-                      <td style={{ padding: "10px 12px", color: "#F5F0EB" }}>{c.usedCount}</td>
-                      <td style={{ padding: "10px 12px", color: "rgba(245,240,235,0.4)" }}>∞</td>
+                      <td style={{ padding: "10px 12px", color: "rgba(68,42,27,0.5)", fontSize: 12 }}>{c.codeType}</td>
+                      <td style={{ padding: "10px 12px", color: "#442a1b" }}>{c.discountPercent}%</td>
+                      <td style={{ padding: "10px 12px", color: "#442a1b" }}>{c.usedCount}</td>
+                      <td style={{ padding: "10px 12px", color: "rgba(68,42,27,0.4)" }}>∞</td>
                       <td style={{ padding: "10px 12px" }}>
-                        <span style={{ fontSize: 11, color: c.status === "active" ? "#4ade80" : "#f87171" }}>{c.status.toUpperCase()}</span>
+                        <span style={{ fontSize: 11, color: c.status === "active" ? "#2e7d32" : "#c0392b" }}>{c.status.toUpperCase()}</span>
                       </td>
                     </tr>
                   ))}
@@ -621,7 +621,7 @@ function AdminInfluencers() {
                 <thead>
                   <tr style={{ borderBottom: "1px solid rgba(200,150,62,0.15)" }}>
                     {["Code","Order","Net Amount","Discount","Status","Date"].map(h => (
-                      <th key={h} style={{ padding: "8px 12px", textAlign: "left", fontSize: 10, letterSpacing: "0.15em", color: "rgba(245,240,235,0.35)", textTransform: "uppercase" }}>{h}</th>
+                      <th key={h} style={{ padding: "8px 12px", textAlign: "left", fontSize: 10, letterSpacing: "0.15em", color: "rgba(68,42,27,0.35)", textTransform: "uppercase" }}>{h}</th>
                     ))}
                   </tr>
                 </thead>
@@ -629,13 +629,13 @@ function AdminInfluencers() {
                   {redemptions.map(r => (
                     <tr key={r._id} style={{ borderBottom: "1px solid rgba(200,150,62,0.06)" }}>
                       <td style={{ padding: "10px 12px", color: "#C8963E", fontWeight: 600 }}>{r.code}</td>
-                      <td style={{ padding: "10px 12px", color: "rgba(245,240,235,0.6)" }}>{r.orderNumber ?? "—"}</td>
-                      <td style={{ padding: "10px 12px", color: "#F5F0EB" }}>₹{r.netAmount.toLocaleString("en-IN")}</td>
-                      <td style={{ padding: "10px 12px", color: "rgba(245,240,235,0.5)" }}>{r.discountPercent}%</td>
+                      <td style={{ padding: "10px 12px", color: "rgba(68,42,27,0.6)" }}>{r.orderNumber ?? "—"}</td>
+                      <td style={{ padding: "10px 12px", color: "#442a1b" }}>₹{r.netAmount.toLocaleString("en-IN")}</td>
+                      <td style={{ padding: "10px 12px", color: "rgba(68,42,27,0.5)" }}>{r.discountPercent}%</td>
                       <td style={{ padding: "10px 12px" }}>
-                        <span style={{ fontSize: 11, color: r.status === "completed" ? "#4ade80" : "#f87171" }}>{r.status.toUpperCase()}</span>
+                        <span style={{ fontSize: 11, color: r.status === "completed" ? "#2e7d32" : "#c0392b" }}>{r.status.toUpperCase()}</span>
                       </td>
-                      <td style={{ padding: "10px 12px", color: "rgba(245,240,235,0.35)", fontSize: 12 }}>{new Date(r.createdAt).toLocaleDateString("en-IN")}</td>
+                      <td style={{ padding: "10px 12px", color: "rgba(68,42,27,0.35)", fontSize: 12 }}>{new Date(r.createdAt).toLocaleDateString("en-IN")}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -647,17 +647,17 @@ function AdminInfluencers() {
           {subTab === "rewards" && (
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
               {rewards.length === 0 ? (
-                <p style={{ color: "rgba(245,240,235,0.3)", fontSize: 13 }}>No rewards pending payout.</p>
+                <p style={{ color: "rgba(68,42,27,0.3)", fontSize: 13 }}>No rewards pending payout.</p>
               ) : rewards.map(r => (
-                <div key={r.id} style={{ background: "#1a1a1a", border: "1px solid rgba(200,150,62,0.2)", borderRadius: 3, padding: "16px 20px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 8 }}>
+                <div key={r.id} style={{ background: "#ffffff", border: "1px solid rgba(200,150,62,0.2)", borderRadius: 3, padding: "16px 20px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 8 }}>
                   <div>
-                    <p style={{ fontSize: 14, fontWeight: 600, color: "#F5F0EB" }}>{r.name}</p>
+                    <p style={{ fontSize: 14, fontWeight: 600, color: "#442a1b" }}>{r.name}</p>
                     <p style={{ fontSize: 12, color: "#C8963E", marginTop: 2 }}>Code: {r.promoCode} · Phone: {r.phone}</p>
-                    <p style={{ fontSize: 12, color: "rgba(245,240,235,0.4)", marginTop: 2 }}>{r.counters.rollupRedemptions} / {r.deal.goalRedemptions} orders reached</p>
-                    {r.deal.rewardNote && <p style={{ fontSize: 12, color: "#fb923c", marginTop: 2 }}>Reward: {r.deal.rewardNote}</p>}
+                    <p style={{ fontSize: 12, color: "rgba(68,42,27,0.4)", marginTop: 2 }}>{r.counters.rollupRedemptions} / {r.deal.goalRedemptions} orders reached</p>
+                    {r.deal.rewardNote && <p style={{ fontSize: 12, color: "#d97706", marginTop: 2 }}>Reward: {r.deal.rewardNote}</p>}
                   </div>
                   <button onClick={() => void fulfillReward(r.id)} style={{
-                    padding: "8px 18px", background: "#4ade80", color: "#0f0f0f",
+                    padding: "8px 18px", background: "#2e7d32", color: "#f7f0e2",
                     border: "none", cursor: "pointer", borderRadius: 2, fontWeight: 600, fontSize: 12,
                   }}>Mark Fulfilled</button>
                 </div>
@@ -698,7 +698,7 @@ export default function AdminDashboardPage() {
 
   if (!authChecked) {
     return (
-      <div style={{ minHeight: "100vh", background: "#0f0f0f", display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <div style={{ minHeight: "100vh", background: "#f7f0e2", display: "flex", alignItems: "center", justifyContent: "center" }}>
         <div style={{ width: 32, height: 32, border: "2px solid rgba(200,150,62,0.2)", borderTopColor: "#C8963E", borderRadius: "50%", animation: "spin 0.8s linear infinite" }} />
         <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
       </div>
@@ -746,39 +746,39 @@ export default function AdminDashboardPage() {
     <>
       <style>{`
         * { box-sizing: border-box; }
-        .ad-shell { display: flex; height: 100vh; background: #0f0f0f; color: #F5F0EB; font-family: var(--font-jost,'Jost'),sans-serif; }
-        .ad-sidebar { width: 228px; background: #141414; border-right: 1px solid rgba(200,150,62,0.1); display: flex; flex-direction: column; height: 100vh; padding: 28px 0; flex-shrink: 0; }
+        .ad-shell { display: flex; min-height: 100vh; background: #f7f0e2; color: #442a1b; font-family: var(--font-jost,'Jost'),sans-serif; }
+        .ad-sidebar { width: 228px; background: #ffffff; border-right: 1px solid rgba(200,150,62,0.18); display: flex; flex-direction: column; position: sticky; top: 0; height: 100vh; align-self: flex-start; padding: 28px 0; flex-shrink: 0; }
         .ad-logo { padding: 0 24px 28px; border-bottom: 1px solid rgba(200,150,62,0.08); }
-        .ad-logo-name { font-family: var(--font-cormorant,'Cormorant Garamond'),serif; font-size: 21px; font-weight: 700; color: #F5F0EB; letter-spacing: 0.05em; }
+        .ad-logo-name { font-family: var(--font-cormorant,'Cormorant Garamond'),serif; font-size: 21px; font-weight: 700; color: #442a1b; letter-spacing: 0.05em; }
         .ad-logo-sub { font-size: 9px; letter-spacing: 0.3em; color: #C8963E; text-transform: uppercase; margin-top: 2px; }
         .ad-nav { flex: 1; padding: 20px 10px; display: flex; flex-direction: column; gap: 3px; overflow-y: auto; }
-        .ad-nav-btn { display: flex; align-items: center; gap: 11px; padding: 10px 14px; border-radius: 3px; cursor: pointer; font-size: 13px; font-weight: 400; color: rgba(245,240,235,0.42); transition: all 0.18s; background: transparent; border: none; width: 100%; text-align: left; letter-spacing: 0.02em; }
-        .ad-nav-btn:hover { color: rgba(245,240,235,0.82); background: rgba(200,150,62,0.06); }
-        .ad-nav-btn.active { color: #F5F0EB; background: rgba(200,150,62,0.1); border-left: 2px solid #C8963E; }
+        .ad-nav-btn { display: flex; align-items: center; gap: 11px; padding: 10px 14px; border-radius: 3px; cursor: pointer; font-size: 13px; font-weight: 400; color: rgba(68,42,27,0.42); transition: all 0.18s; background: transparent; border: none; width: 100%; text-align: left; letter-spacing: 0.02em; }
+        .ad-nav-btn:hover { color: rgba(68,42,27,0.82); background: rgba(200,150,62,0.06); }
+        .ad-nav-btn.active { color: #442a1b; background: rgba(200,150,62,0.1); border-left: 2px solid #C8963E; }
         .ad-nav-icon { font-size: 15px; width: 18px; text-align: center; }
         .ad-nav-divider { height: 1px; background: rgba(200,150,62,0.08); margin: 8px 14px; }
         .ad-sidebar-foot { padding: 18px 10px; border-top: 1px solid rgba(200,150,62,0.08); }
-        .ad-logout { display: flex; align-items: center; gap: 9px; width: 100%; padding: 10px 14px; background: transparent; border: 1px solid rgba(200,150,62,0.14); color: rgba(245,240,235,0.38); font-family: var(--font-jost,'Jost'),sans-serif; font-size: 12px; letter-spacing: 0.08em; cursor: pointer; transition: all 0.18s; border-radius: 3px; }
-        .ad-logout:hover { border-color: rgba(200,150,62,0.4); color: rgba(245,240,235,0.75); }
-        .ad-main { flex: 1; padding: 36px 40px; min-width: 0; height: 100vh; overflow-y: auto; }
+        .ad-logout { display: flex; align-items: center; gap: 9px; width: 100%; padding: 10px 14px; background: transparent; border: 1px solid rgba(200,150,62,0.14); color: rgba(68,42,27,0.38); font-family: var(--font-jost,'Jost'),sans-serif; font-size: 12px; letter-spacing: 0.08em; cursor: pointer; transition: all 0.18s; border-radius: 3px; }
+        .ad-logout:hover { border-color: rgba(200,150,62,0.4); color: rgba(68,42,27,0.75); }
+        .ad-main { flex: 1; padding: 36px 40px; min-width: 0; }
         .ad-topbar { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 36px; }
-        .ad-page-title { font-family: var(--font-cormorant,'Cormorant Garamond'),serif; font-size: 34px; font-weight: 700; color: #F5F0EB; }
-        .ad-page-sub { font-size: 12px; color: rgba(245,240,235,0.32); margin-top: 3px; font-weight: 300; }
+        .ad-page-title { font-family: var(--font-cormorant,'Cormorant Garamond'),serif; font-size: 34px; font-weight: 700; color: #442a1b; }
+        .ad-page-sub { font-size: 12px; color: rgba(68,42,27,0.32); margin-top: 3px; font-weight: 300; }
         .ad-greeting { text-align: right; }
-        .ad-greeting-name { font-size: 13px; color: rgba(245,240,235,0.38); }
+        .ad-greeting-name { font-size: 13px; color: rgba(68,42,27,0.38); }
         .ad-greeting-name strong { color: #C8963E; font-weight: 500; }
-        .ad-greeting-date { font-size: 11px; color: rgba(245,240,235,0.2); margin-top: 2px; }
+        .ad-greeting-date { font-size: 11px; color: rgba(68,42,27,0.2); margin-top: 2px; }
         .ad-stats { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; margin-bottom: 36px; }
-        .ad-stat { background: #1a1a1a; border: 1px solid rgba(200,150,62,0.1); padding: 22px; position: relative; overflow: hidden; border-radius: 3px; animation: adStatIn 0.5s ease both; }
+        .ad-stat { background: #ffffff; border: 1px solid rgba(200,150,62,0.1); padding: 22px; position: relative; overflow: hidden; border-radius: 3px; animation: adStatIn 0.5s ease both; }
         .ad-stat:nth-child(1){animation-delay:0.04s} .ad-stat:nth-child(2){animation-delay:0.08s} .ad-stat:nth-child(3){animation-delay:0.12s} .ad-stat:nth-child(4){animation-delay:0.16s}
         @keyframes adStatIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
         .ad-stat::before { content:''; position:absolute; top:0;left:0;right:0; height:2px; background:linear-gradient(90deg,transparent,rgba(200,150,62,0.35),transparent); }
-        .ad-stat-label { font-size: 9px; letter-spacing: 0.26em; text-transform: uppercase; color: rgba(245,240,235,0.32); margin-bottom: 10px; }
-        .ad-stat-value { font-family: var(--font-cormorant,'Cormorant Garamond'),serif; font-size: 38px; font-weight: 700; color: #F5F0EB; line-height: 1; margin-bottom: 5px; }
+        .ad-stat-label { font-size: 9px; letter-spacing: 0.26em; text-transform: uppercase; color: rgba(68,42,27,0.32); margin-bottom: 10px; }
+        .ad-stat-value { font-family: var(--font-cormorant,'Cormorant Garamond'),serif; font-size: 38px; font-weight: 700; color: #442a1b; line-height: 1; margin-bottom: 5px; }
         .ad-stat-value.gold { color: #C8963E; }
-        .ad-stat-value.alert { color: #ff7b7b; }
-        .ad-stat-sub { font-size: 11px; color: rgba(245,240,235,0.25); font-weight: 300; }
-        .ad-section-title { font-family: var(--font-cormorant,'Cormorant Garamond'),serif; font-size: 22px; font-weight: 600; color: #F5F0EB; margin-bottom: 18px; }
+        .ad-stat-value.alert { color: #c0392b; }
+        .ad-stat-sub { font-size: 11px; color: rgba(68,42,27,0.25); font-weight: 300; }
+        .ad-section-title { font-family: var(--font-cormorant,'Cormorant Garamond'),serif; font-size: 22px; font-weight: 600; color: #442a1b; margin-bottom: 18px; }
         @media (max-width: 900px) {
           .ad-stats { grid-template-columns: repeat(2,1fr); }
           .ad-main { padding: 24px 20px; }

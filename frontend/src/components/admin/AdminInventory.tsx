@@ -44,23 +44,23 @@ export default function AdminInventory() {
     <>
       <style>{`
         .inv-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 18px; }
-        .inv-card { background: #1a1a1a; border: 1px solid rgba(200,150,62,0.1); padding: 26px; position: relative; border-radius: 4px; }
+        .inv-card { background: #ffffff; border: 1px solid rgba(200,150,62,0.1); padding: 26px; position: relative; border-radius: 4px; }
         .inv-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, rgba(200,150,62,0.3), transparent); }
-        .inv-name { font-family: var(--font-cormorant,'Cormorant Garamond'),serif; font-size: 19px; font-weight: 600; color: #F5F0EB; margin-bottom: 3px; }
-        .inv-sku { font-size: 11px; color: rgba(245,240,235,0.3); letter-spacing: 0.1em; margin-bottom: 18px; font-family: monospace; }
+        .inv-name { font-family: var(--font-cormorant,'Cormorant Garamond'),serif; font-size: 19px; font-weight: 600; color: #442a1b; margin-bottom: 3px; }
+        .inv-sku { font-size: 11px; color: rgba(68,42,27,0.3); letter-spacing: 0.1em; margin-bottom: 18px; font-family: monospace; }
         .inv-count { font-family: var(--font-cormorant,'Cormorant Garamond'),serif; font-size: 46px; font-weight: 700; line-height: 1; margin-bottom: 3px; }
-        .inv-count-ok  { color: #81c784; }
-        .inv-count-low { color: #ffb74d; }
-        .inv-count-out { color: #ff7b7b; }
-        .inv-count-label { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(245,240,235,0.28); margin-bottom: 18px; }
+        .inv-count-ok  { color: #3f7a3a; }
+        .inv-count-low { color: #c26a12; }
+        .inv-count-out { color: #c0392b; }
+        .inv-count-label { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(68,42,27,0.28); margin-bottom: 18px; }
         .inv-divider { height: 1px; background: rgba(200,150,62,0.08); margin: 16px 0; }
         .inv-quick { display: flex; gap: 7px; flex-wrap: wrap; margin-bottom: 12px; }
-        .inv-quick-btn { background: transparent; border: 1px solid rgba(200,150,62,0.18); color: rgba(245,240,235,0.5); font-family: var(--font-jost,'Jost'),sans-serif; font-size: 11px; padding: 5px 11px; cursor: pointer; transition: all 0.2s; border-radius: 2px; }
+        .inv-quick-btn { background: transparent; border: 1px solid rgba(200,150,62,0.18); color: rgba(68,42,27,0.5); font-family: var(--font-jost,'Jost'),sans-serif; font-size: 11px; padding: 5px 11px; cursor: pointer; transition: all 0.2s; border-radius: 2px; }
         .inv-quick-btn:hover { border-color: rgba(200,150,62,0.55); color: #C8963E; }
         .inv-row { display: flex; gap: 9px; align-items: center; }
-        .inv-input { flex: 1; background: rgba(255,255,255,0.04); border: 1px solid rgba(200,150,62,0.18); color: #F5F0EB; font-family: var(--font-jost,'Jost'),sans-serif; font-size: 15px; padding: 10px 12px; outline: none; transition: border-color 0.2s; border-radius: 2px; }
+        .inv-input { flex: 1; background: rgba(68,42,27,0.04); border: 1px solid rgba(200,150,62,0.18); color: #442a1b; font-family: var(--font-jost,'Jost'),sans-serif; font-size: 15px; padding: 10px 12px; outline: none; transition: border-color 0.2s; border-radius: 2px; }
         .inv-input:focus { border-color: rgba(200,150,62,0.5); }
-        .inv-btn { background: #C8963E; color: #1A1A1A; border: none; font-family: var(--font-jost,'Jost'),sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; padding: 10px 18px; cursor: pointer; transition: background 0.2s; white-space: nowrap; border-radius: 2px; }
+        .inv-btn { background: #C8963E; color: #ffffff; border: none; font-family: var(--font-jost,'Jost'),sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; padding: 10px 18px; cursor: pointer; transition: background 0.2s; white-space: nowrap; border-radius: 2px; }
         .inv-btn:hover { background: #b5852f; }
         .inv-btn:disabled { opacity: 0.5; cursor: not-allowed; }
         .inv-msg { font-size: 11px; height: 16px; margin-top: 7px; }
@@ -112,7 +112,7 @@ export default function AdminInventory() {
                   {saving === id ? "..." : "Update"}
                 </button>
               </div>
-              <p className="inv-msg" style={{ color: msgs[id]?.startsWith("✅") ? "#81c784" : "#ff7b7b" }}>
+              <p className="inv-msg" style={{ color: msgs[id]?.startsWith("✅") ? "#3f7a3a" : "#c0392b" }}>
                 {msgs[id] || ""}
               </p>
             </div>
