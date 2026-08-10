@@ -68,7 +68,7 @@ export default function AdminLoginPage() {
           max-width: 420px;
           margin: 24px;
           padding: 52px 44px;
-          background: rgba(68,42,27,0.98);
+          background: rgba(255,255,255,0.98);
           border: 1px solid rgba(200,150,62,0.15);
           backdrop-filter: blur(20px);
           animation: alEnter 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
@@ -77,7 +77,7 @@ export default function AdminLoginPage() {
           from { opacity: 0; transform: translateY(20px); }
           to   { opacity: 1; transform: translateY(0); }
         }
-        .al-brand { font-family: var(--font-cormorant, 'Cormorant Garamond'), serif; font-size: 26px; font-weight: 700; color: #442a1b; letter-spacing: 0.06em; }
+        .al-brand { font-family: var(--font-cormorant, 'Cormorant Garamond'), serif; font-size: 26px; font-weight: 700; color: #442a1b; letter-spacing: 0.06em; text-shadow: none; }
         .al-sub { font-size: 10px; letter-spacing: 0.32em; color: #C8963E; text-transform: uppercase; margin-top: 2px; margin-bottom: 44px; }
         .al-title { font-family: var(--font-cormorant, 'Cormorant Garamond'), serif; font-size: 30px; font-weight: 600; color: #442a1b; margin: 0 0 6px; }
         .al-desc { font-size: 13px; color: rgba(68,42,27,0.38); margin: 0 0 32px; font-weight: 300; }
@@ -113,7 +113,7 @@ export default function AdminLoginPage() {
           width: 100%;
           background: #C8963E;
           color: #ffffff;
-          border: none;
+          color: #442a1b;
           font-family: var(--font-jost, 'Jost'), sans-serif;
           font-size: 11px;
           font-weight: 600;

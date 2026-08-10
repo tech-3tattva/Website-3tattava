@@ -22,6 +22,49 @@ function JsonLdScript({ data }: { data: unknown }) {
   );
 }
 
+/** Standalone Person schema for Dr. Kashish Gupta — the E-E-A-T anchor.
+ *  Uses a stable @id so OrganizationSchema.founder and ProductSchema.reviewedBy
+ *  can reference him without duplicating the full entity. This is the #1 fix
+ *  from the AI visibility scorecard: LLMs need an explicit, referenceable expert
+ *  entity to cite the brand in "doctor-formulated shilajit" queries. */
+const FOUNDER_ID = `${BRAND.url}/#founder`;
+
+export function PersonSchema() {
+  const data = {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "@id": FOUNDER_ID,
+    name: BRAND.founderName,
+    jobTitle: "Founder & Formulating Ayurveda Doctor",
+    description:
+      "Qualified Ayurveda Doctor (BAMS) and founder of 3TATTAVA. Formulates all products using classical Ayurvedic texts and modern quality standards. Graduate of CBPACS, New Delhi (Govt. of NCT of Delhi); former consultant, NCISM, Ministry of Ayush.",
+    url: `${BRAND.url}/about`,
+    sameAs: [
+      "https://www.instagram.com/3tattava",
+      "https://www.linkedin.com/company/3tattava",
+    ],
+    worksFor: { "@type": "Organization", "@id": `${BRAND.url}/#org`, name: BRAND.name },
+    alumniOf: {
+      "@type": "EducationalOrganization",
+      name: "CBPACS, University of Delhi (Government of NCT of Delhi)",
+    },
+    hasCredential: {
+      "@type": "EducationalOccupationalCredential",
+      credentialCategory: "degree",
+      name: "Bachelor of Ayurvedic Medicine and Surgery (BAMS)",
+    },
+    knowsAbout: [
+      "Ayurveda",
+      "Shilajit",
+      "Triphala Shodhana",
+      "Himalayan Shilajit Purification",
+      "Ayurvedic Formulation",
+      "Fulvic Acid",
+    ],
+  };
+  return <JsonLdScript data={data} />;
+}
+
 /** Organization + MedicalBusiness (because the brand is founded by a BAMS doctor). */
 export function OrganizationSchema() {
   const data = {
@@ -37,9 +80,9 @@ export function OrganizationSchema() {
     foundingDate: "2026",
     founder: {
       "@type": "Person",
+      "@id": FOUNDER_ID,
       name: `${BRAND.founderName}, ${BRAND.founderCredentials}`,
       jobTitle: "Founder & Chief Ayurveda Doctor",
-      description: "Qualified Ayurveda Doctor (BAMS), founder of 3TATTAVA.",
     },
     address: {
       "@type": "PostalAddress",
@@ -125,6 +168,9 @@ export function ProductSchema({ product }: { product: ProductLike }) {
       reviewCount: product.reviewCount,
     };
   }
+
+  // AI visibility: link the product to its formulating doctor
+  data.reviewedBy = { "@type": "Person", "@id": FOUNDER_ID };
 
   return <JsonLdScript data={data} />;
 }

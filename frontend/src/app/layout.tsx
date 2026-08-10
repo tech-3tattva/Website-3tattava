@@ -9,7 +9,7 @@ import IntroSplash from "@/components/layout/IntroSplash";
 import CartDrawer from "@/components/cart/CartDrawer";
 import Providers from "@/components/providers/Providers";
 import ScrollProgress from "@/components/motion/ScrollProgress";
-import { OrganizationSchema } from "@/components/seo/JsonLd";
+import { OrganizationSchema, PersonSchema } from "@/components/seo/JsonLd";
 import ChatWidget from "@/components/chat/ChatWidget";
 import WhatsAppWidget from "@/components/WhatsAppWidget";
 import LeadCaptureModal from "@/components/LeadCaptureModal";
@@ -110,6 +110,7 @@ export default function RootLayout({
       <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
       <body className="antialiased min-h-screen min-w-0 flex flex-col overflow-x-clip" suppressHydrationWarning>
         <OrganizationSchema />
+        <PersonSchema />
         <GoogleAnalytics />
         <MetaPixel />
         <Providers>
