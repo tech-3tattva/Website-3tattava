@@ -69,7 +69,7 @@ const SHJ_CSS = `
 }
 @media(prefers-reduced-motion:reduce){.shj-marquee,.shj-vscroll{animation:none;}}
 .shj-mountain{position:absolute;left:0;width:100%;height:auto;z-index:0;opacity:0.5;pointer-events:none;bottom:0;}
-@media(max-width:860px){.shj-mountain{bottom:auto;top:clamp(60px,14vw,180px);}}
+@media(max-width:860px){.shj-mountain{bottom:auto;top:clamp(320px,48vw,520px);}}
 .ft-tip{position:relative;border-radius:999px;}
 .ft-tip:focus{outline:none;}
 .ft-tip:focus-visible{box-shadow:0 0 0 2px #cd872a;}

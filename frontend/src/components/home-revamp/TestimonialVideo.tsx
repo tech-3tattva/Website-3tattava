@@ -20,22 +20,23 @@ const TESTIMONIAL_VIDEOS = [
    and opens full-size (with sound) when clicked. */
 function TestimonialReel({ src, onExpand }: { src: string; onExpand: () => void }) {
   const ref = useRef<HTMLVideoElement>(null);
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const inView = useInView(wrapRef, { margin: "-10%" });
   const [playing, setPlaying] = useState(false);
 
-  // Force the first frame to render so the tile is never a blank dark box.
-  const showFirstFrame = useCallback(() => {
-    const v = ref.current;
-    if (v && v.paused && v.currentTime < 0.05) {
-      try { v.currentTime = 0.1; } catch {}
-    }
-  }, []);
-
-  const play = useCallback(() => {
+  // Auto-play muted when the reel scrolls into view (works on mobile + desktop).
+  // Pause when it leaves. Desktop hover still works as an extra trigger.
+  useEffect(() => {
     const v = ref.current;
     if (!v) return;
-    v.muted = true;
-    v.play().then(() => setPlaying(true)).catch(() => {});
-  }, []);
+    if (inView) {
+      v.muted = true;
+      v.play().then(() => setPlaying(true)).catch(() => {});
+    } else {
+      v.pause();
+      setPlaying(false);
+    }
+  }, [inView]);
 
   const pause = useCallback(() => {
     const v = ref.current;
@@ -46,8 +47,7 @@ function TestimonialReel({ src, onExpand }: { src: string; onExpand: () => void 
 
   return (
     <div
-      onMouseEnter={play}
-      onMouseLeave={pause}
+      ref={wrapRef}
       onClick={onExpand}
       role="button"
       tabIndex={0}
@@ -68,14 +68,13 @@ function TestimonialReel({ src, onExpand }: { src: string; onExpand: () => void 
         muted
         loop
         playsInline
-        preload="metadata"
-        onLoadedData={showFirstFrame}
+        preload="auto"
         style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", borderRadius: "inherit" }}
       >
         <source src={src} type="video/mp4" />
       </video>
 
-      {/* Pause control — shown only while playing; no play button (hover starts it) */}
+      {/* Pause control */}
       {playing && (
         <button
           type="button"

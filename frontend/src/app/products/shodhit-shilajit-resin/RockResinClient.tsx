@@ -82,7 +82,7 @@ const RR_CSS = `
 }
 @media(max-width:768px){.rr-mobilebar{display:flex;}}
 .rr-mountain{position:absolute;left:0;width:100%;height:auto;z-index:0;opacity:0.5;pointer-events:none;bottom:clamp(10px,1.6vw,28px);}
-@media(max-width:860px){.rr-mountain{bottom:auto;top:clamp(60px,14vw,180px);}}
+@media(max-width:860px){.rr-mountain{bottom:auto;top:clamp(320px,48vw,520px);}}
 .rr-journey{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(16px,2vw,28px);align-items:start;}
 .rr-jcard{background:#fff;border:1px solid rgba(68,42,27,.10);border-radius:20px;padding:clamp(24px,3vw,34px);box-shadow:0 6px 18px rgba(68,42,27,.05);transition:transform .4s ease,box-shadow .4s ease;}
 .rr-jcard:hover{transform:translateY(-6px);box-shadow:0 24px 54px rgba(68,42,27,.17);}
