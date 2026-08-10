@@ -6,6 +6,7 @@ import TrustRevamp from "@/components/home-revamp/TrustRevamp";
 import EventsTeaser from "@/components/home-revamp/EventsTeaser";
 import DrKashishSection from "@/components/home-revamp/DrKashishSection";
 import TestimonialVideo from "@/components/home-revamp/TestimonialVideo";
+import ReviewMarquee from "@/components/home-revamp/ReviewMarquee";
 import FAQRevamp from "@/components/home-revamp/FAQRevamp";
 import NewsletterRevamp from "@/components/home-revamp/NewsletterRevamp";
 import SocialSidebar from "@/components/home-revamp/SocialSidebar";
@@ -27,6 +28,7 @@ export default function HomePage() {
       <EventsTeaser />
       <DrKashishSection />
       <TestimonialVideo />
+      <ReviewMarquee />
       <WtfTeaser />
       <FAQRevamp />
       <NewsletterRevamp />

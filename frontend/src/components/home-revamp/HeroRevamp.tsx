@@ -218,7 +218,6 @@ const fadeUpVariant = {
 
 export default function HeroRevamp() {
   const [particles, setParticles] = useState<Particle[]>([])
-  const [isMobile, setIsMobile] = useState(false)
   const heroRef = useRef<HTMLElement>(null)
   const reduce = useReducedMotion()
 
@@ -230,9 +229,6 @@ export default function HeroRevamp() {
 
   /* Generate particles client-side */
   useEffect(() => {
-    const mobile = window.matchMedia('(max-width: 640px)').matches
-    setIsMobile(mobile)
-
     setParticles(
       Array.from({ length: 7 }, (_, i) => ({
         id: i,
@@ -253,30 +249,21 @@ export default function HeroRevamp() {
       <style dangerouslySetInnerHTML={{ __html: heroCSS }} />
 
       <section className="hero-revamp" aria-label="Hero" ref={heroRef}>
-        {/* Background: video on desktop, image on mobile */}
-        {!isMobile ? (
-          <video
-            className="hero-revamp-video"
-            autoPlay
-            muted
-            loop
-            playsInline
-            poster={media("/hero/himalaya-bg.png")}
-            aria-hidden="true"
-          >
-            <source src={media("/videos/shahjeet-reveal.mp4")} type="video/mp4" />
-          </video>
-        ) : (
-          /* eslint-disable-next-line @next/next/no-img-element */
-          <img
-            className="hero-revamp-poster"
-            src={media("/hero/himalaya-bg.png")}
-            alt=""
-            fetchPriority="high"
-            decoding="async"
-            aria-hidden="true"
-          />
-        )}
+        {/* Background video — autoplays muted on desktop AND mobile. The poster
+            image renders instantly and remains the fallback if playback is blocked
+            (iOS Low Power Mode, slow network). */}
+        <video
+          className="hero-revamp-video"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+          poster={media("/hero/himalaya-bg.png")}
+          aria-hidden="true"
+        >
+          <source src={media("/videos/shahjeet-reveal.mp4")} type="video/mp4" />
+        </video>
 
         {/* Dark gradient overlay */}
         <div className="hero-revamp-overlay" aria-hidden="true" />

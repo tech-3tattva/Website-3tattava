@@ -163,7 +163,7 @@ export default function ProductsPage() {
 
       {/* Products grid */}
       <section id="collection" style={{ background: "#f7f0e2", padding: "clamp(48px,6vw,80px) 24px" }}>
-        <div style={{ maxWidth: "900px", margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(320px,1fr))", gap: "28px" }}>
+        <div style={{ maxWidth: "900px", margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(320px,100%),1fr))", gap: "28px" }}>
           {PRODUCTS.map((p) => (
             <ProductCard key={p.slug} p={p} />
           ))}

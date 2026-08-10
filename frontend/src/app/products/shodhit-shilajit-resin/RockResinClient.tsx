@@ -14,6 +14,7 @@ import { LEGAL } from "@/lib/legal";
 import TmMark from "@/components/ui/TmMark";
 import { useProductViewTracking } from "@/lib/useProductViewTracking";
 import ProductReviews, { PdpRatingBadge } from "@/components/product/ProductReviews";
+import PdpSocialProof from "@/components/product/PdpSocialProof";
 
 // ─── TOKENS ───────────────────────────────────────────────────────────────────
 const F = "var(--font-primary), system-ui, sans-serif";
@@ -80,6 +81,8 @@ const RR_CSS = `
   .rr-cmp-hint{display:block;}
 }
 @media(max-width:768px){.rr-mobilebar{display:flex;}}
+.rr-mountain{position:absolute;left:0;width:100%;height:auto;z-index:0;opacity:0.5;pointer-events:none;bottom:clamp(10px,1.6vw,28px);}
+@media(max-width:860px){.rr-mountain{bottom:auto;top:clamp(60px,14vw,180px);}}
 .rr-journey{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(16px,2vw,28px);align-items:start;}
 .rr-jcard{background:#fff;border:1px solid rgba(68,42,27,.10);border-radius:20px;padding:clamp(24px,3vw,34px);box-shadow:0 6px 18px rgba(68,42,27,.05);transition:transform .4s ease,box-shadow .4s ease;}
 .rr-jcard:hover{transform:translateY(-6px);box-shadow:0 24px 54px rgba(68,42,27,.17);}
@@ -155,7 +158,7 @@ function HeroSection() {
   return (
     <section style={{ background: "linear-gradient(180deg,#f7f0e2 0%,#f3ecdb 45%,#eae0cd 100%)", position: "relative", overflow: "hidden" }}>
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src="/hero/hero-mountain-full.png?v=1" alt="" aria-hidden style={{ position: "absolute", left: 0, bottom: "clamp(10px,1.6vw,28px)", width: "100%", height: "auto", zIndex: 0, opacity: 0.5, pointerEvents: "none" }} />
+      <img src="/hero/hero-mountain-full.png?v=1" alt="" aria-hidden className="rr-mountain" />
       <div style={{ maxWidth: 1180, margin: "0 auto", padding: "clamp(118px,13vh,158px) 24px clamp(8px,1.2vh,18px)", position: "relative", zIndex: 1 }}>
         <motion.p initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, ease: EASE }}
           style={{ ...eyebrow, textAlign: "center", color: GOLD, marginBottom: 14 }}>
@@ -166,8 +169,9 @@ function HeroSection() {
           ONE RESIN. COMPLETE VITALITY.
         </motion.h1>
         <FeatureIcons />
+        <PdpSocialProof />
 
-        <div className="rr-2col" style={{ position: "relative", alignItems: "end" }}>
+        <div className="rr-2col-rev" style={{ position: "relative", alignItems: "end" }}>
           <Reveal style={{ position: "relative", zIndex: 1, marginBottom: "clamp(56px,8vw,110px)" }}>
             <p style={{ ...eyebrow, marginBottom: 12 }}>Dip. Hook. Swirl.</p>
             <p style={{ fontFamily: F, fontVariationSettings: "'wght' 700", fontSize: T.bodyLg, lineHeight: 1.42, color: ESPRESSO, maxWidth: "34ch", textTransform: "uppercase", margin: "0 0 clamp(20px,2.5vw,26px)" }}>

@@ -152,10 +152,12 @@ export default function TestimonialVideo() {
   return (
     <section
       ref={sectionRef}
+      id="testimonials"
       style={{
         background: "linear-gradient(180deg, #fbf5e9 0%, #f7f0e2 100%)",
         padding: "clamp(60px, 8vw, 120px) clamp(20px, 5vw, 80px)",
         overflow: "hidden",
+        scrollMarginTop: "90px",
       }}
     >
       <div style={{ maxWidth: 720, margin: "0 auto", textAlign: "center" }}>

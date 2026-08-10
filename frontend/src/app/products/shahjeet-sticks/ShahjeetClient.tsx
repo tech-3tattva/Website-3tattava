@@ -16,6 +16,7 @@ import { LEGAL } from "@/lib/legal";
 import TmMark from "@/components/ui/TmMark";
 import { useProductViewTracking } from "@/lib/useProductViewTracking";
 import ProductReviews, { PdpRatingBadge } from "@/components/product/ProductReviews";
+import PdpSocialProof from "@/components/product/PdpSocialProof";
 
 // ─── TOKENS ───────────────────────────────────────────────────────────────────
 const F = "var(--font-primary), system-ui, sans-serif";
@@ -67,6 +68,8 @@ const SHJ_CSS = `
   .shj-cmp{grid-template-columns:1.4fr .8fr .8fr;}
 }
 @media(prefers-reduced-motion:reduce){.shj-marquee,.shj-vscroll{animation:none;}}
+.shj-mountain{position:absolute;left:0;width:100%;height:auto;z-index:0;opacity:0.5;pointer-events:none;bottom:0;}
+@media(max-width:860px){.shj-mountain{bottom:auto;top:clamp(60px,14vw,180px);}}
 .ft-tip{position:relative;border-radius:999px;}
 .ft-tip:focus{outline:none;}
 .ft-tip:focus-visible{box-shadow:0 0 0 2px #cd872a;}
@@ -139,7 +142,7 @@ function HeroSection() {
     <section style={{ background: "linear-gradient(180deg,#f7f0e2 0%,#f3ecdb 45%,#eae0cd 100%)", position: "relative", overflow: "hidden" }}>
       {/* Full-width mountain backdrop — the whole range is visible behind the hero */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={media("/shahjeet/mountain.png")} alt="" aria-hidden style={{ position: "absolute", left: 0, bottom: 0, width: "100%", height: "auto", zIndex: 0, opacity: 0.5, pointerEvents: "none" }} />
+      <img src={media("/shahjeet/mountain.png")} alt="" aria-hidden className="shj-mountain" />
       <div style={{ maxWidth: 1180, margin: "0 auto", padding: "clamp(118px,13vh,158px) 24px clamp(8px,1.2vh,18px)", position: "relative", zIndex: 1 }}>
         <motion.p initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, ease: EASE }}
           style={{ ...eyebrow, textAlign: "center", color: GOLD, marginBottom: 16 }}>
@@ -150,8 +153,9 @@ function HeroSection() {
           PERFORMANCE IN<br />YOUR POCKET
         </motion.h1>
         <FeatureIcons />
+        <PdpSocialProof />
 
-        <div className="shj-2col" style={{ position: "relative", alignItems: "end" }}>
+        <div className="shj-2col-rev" style={{ position: "relative", alignItems: "end" }}>
 
           <Reveal style={{ position: "relative", zIndex: 1, marginBottom: "clamp(56px,8vw,110px)" }}>
             <p style={{ ...eyebrow, marginBottom: 12 }}>No spoon. No mess. No excuses.</p>
