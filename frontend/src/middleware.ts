@@ -26,8 +26,60 @@ const REDIRECTS: Record<string, string> = {
   "/lab-report": "/lab-reports",
 };
 
+// ── WTF Gyms QR redirect layer ──────────────────────────────────────────────
+// 28 physical standees in WTF gyms across Delhi NCR. Each QR points to
+// /g/<slug> which 302-redirects to /find-us with gym-specific UTM tags.
+// Uses 302 (not 301) so the destination can change without stale browser caches.
+// Slugs are FINAL — changing one after printing kills that gym's standee.
+const QR_REDIRECTS: Record<string, string> = {
+  "noida-sec16":          "wtf_noida_sec16",
+  "noida-sec22":          "wtf_noida_sec22",
+  "noida-sec70":          "wtf_noida_sec70",
+  "indirapuram":          "wtf_indirapuram_nyaykhand3",
+  "new-ashok-nagar":      "wtf_new_ashok_nagar",
+  "najafgarh":            "wtf_najafgarh",
+  "noida-sec122":         "wtf_noida_sec122",
+  "noida-sec116":         "wtf_noida_sec116",
+  "noida-sec121":         "wtf_noida_sec121_parthala",
+  "shalimar-garden":      "wtf_ghaziabad_shalimar_garden",
+  "noida-west-sec1":      "wtf_noida_west_sec1",
+  "raj-nagar":            "wtf_ghaziabad_raj_nagar",
+  "dwarka-sec10":         "wtf_dwarka_sec10",
+  "rohini-sec24":         "wtf_rohini_sec24",
+  "rohini-sec23":         "wtf_rohini_sec23",
+  "dwarka-sec17":         "wtf_dwarka_sec17",
+  "nehru-nagar":          "wtf_ghaziabad_nehru_nagar",
+  "shakti-khand":         "wtf_ghaziabad_shakti_khand",
+  "mayur-vihar-3":        "wtf_mayur_vihar_ph3",
+  "janakpuri":            "wtf_janakpuri",
+  "ace-city":             "wtf_bisrakh_ace_city_sec1",
+  "greenfield-faridabad": "wtf_faridabad_greenfield",
+  "shahdara":             "wtf_shahdara",
+  "punjabi-bagh":         "wtf_punjabi_bagh",
+  "gurugram-sec4":        "wtf_gurugram_sec4",
+  "gurugram-sec7":        "wtf_gurugram_sec7",
+  "govindpuram":          "wtf_ghaziabad_govindpuram",
+  "raj-nagar-ext":        "wtf_ghaziabad_raj_nagar_ext",
+};
+
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
+
+  // ── QR gym redirects: /g/<slug> → /find-us?utm_… (302) ──
+  if (pathname.startsWith("/g/")) {
+    const slug = pathname.slice(3); // strip "/g/"
+    const campaign = QR_REDIRECTS[slug];
+    if (campaign) {
+      const dest = req.nextUrl.clone();
+      dest.pathname = "/find-us";
+      dest.searchParams.set("utm_source", "qr_code");
+      dest.searchParams.set("utm_medium", "offline");
+      dest.searchParams.set("utm_campaign", campaign);
+      return NextResponse.redirect(dest, 302);
+    }
+    // Unknown /g/ slug → 404 (falls through to Next.js not-found)
+    return NextResponse.next();
+  }
 
   const redirectTo = REDIRECTS[pathname];
   if (redirectTo) {
