@@ -1,14 +1,12 @@
 import type { Metadata } from "next";
-import FindUsLaunchingSoon from "./FindUsLaunchingSoon";
-// Experience-center finder is pre-launch. To restore the live WTF finder at launch:
-//   import FindUsClient from "./FindUsClient";  and return <FindUsClient />.
+import FindUsClient from "./FindUsClient";
 
 export const metadata: Metadata = {
-  title: "Find Us | 3TATTAVA — Experience Centers Launching Soon",
+  title: "Find Us | 3TATTAVA — Experience Centers & WTF Gyms",
   description:
-    "3TATTAVA offline experience centers are launching soon. Join the founding waitlist to be the first to know when centers open near you.",
+    "Find 3TATTAVA experience centers and WTF gym partner locations near you. 28 centers across Delhi NCR — search by city or pincode.",
 };
 
 export default function FindUsPage() {
-  return <FindUsLaunchingSoon />;
+  return <FindUsClient />;
 }
