@@ -65,13 +65,15 @@ const QR_REDIRECTS: Record<string, string> = {
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
-  // ── QR gym redirects: /g/<slug> → /wtf-gym?utm_… (302) ──
+  // ── QR gym redirects: /g/<slug> → /find-us?utm_… (302) ──
+  // When the WTF collab landing page (/wtf-gym) is ready with assets,
+  // change "/find-us" below to "/wtf-gym" — one-line switch, no reprint.
   if (pathname.startsWith("/g/")) {
     const slug = pathname.slice(3); // strip "/g/"
     const campaign = QR_REDIRECTS[slug];
     if (campaign) {
       const dest = req.nextUrl.clone();
-      dest.pathname = "/wtf-gym";
+      dest.pathname = "/find-us";
       dest.searchParams.set("utm_source", "qr_code");
       dest.searchParams.set("utm_medium", "offline");
       dest.searchParams.set("utm_campaign", campaign);
