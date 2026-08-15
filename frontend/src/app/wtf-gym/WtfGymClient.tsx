@@ -1,9 +1,8 @@
 'use client';
 
+import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
-import { motion, useReducedMotion } from 'framer-motion';
-import { media } from '@/lib/media';
+import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion';
 
 const F = "var(--font-primary), system-ui, sans-serif";
 const EASE = [0.16, 1, 0.3, 1] as const;
@@ -15,209 +14,265 @@ const ESPRESSO = '#442a1b';
 const GOLD = '#C8963E';
 const FOREST = '#1e3a2f';
 
-/* ─── Asset URLs ───
-   REPLACE these with the real WTF × 3Tattava collab assets once provided.
-   Hero video/image, gym footage, product shots at the gym, etc. */
-const HERO_VIDEO = media("/videos/shahjeet-reveal.mp4"); // placeholder — replace with WTF collab hero video
-const HERO_POSTER = media("/hero/himalaya-bg.png"); // placeholder — replace with WTF collab hero image
+/* ─── Assets ─── */
+const S3 = 'https://3tattava-media-prod.s3.ap-south-1.amazonaws.com/banners/Landing_Page';
+const HERO_IMAGE = `${S3}/6X3+LAUNCH+POSTER.png`;
+const HERO_VIDEO = `${S3}/3tattava-x-WTF.mp4`;
 
-/* Gallery images — replace with real collab photos (product in gym, standees, athletes) */
-const GALLERY = [
-  { src: "https://media.3tattava.com/products/rockresin/1.png", alt: "RockResin at WTF Gym" },
-  { src: "https://media.3tattava.com/products/tgftcf%201.png", alt: "Shahjeet Sticks at WTF Gym" },
-  { src: "https://media.3tattava.com/products/Boxess%20copy%201.png", alt: "3Tattava Bundle Pack" },
+const ROCKRESIN_ASSETS = [
+  `${S3}/RockResins_3tattava_WTF/RockResin+Standee+Designs-01.png`,
+  `${S3}/RockResins_3tattava_WTF/RockResin+Standee+Designs-02.png`,
+  `${S3}/RockResins_3tattava_WTF/RockResin+Standee+Designs-03.png`,
+  `${S3}/RockResins_3tattava_WTF/RockResin+Standee+Designs-04.png`,
 ];
 
-/* Collab videos — replace with real gym/athlete testimonial videos */
-const VIDEOS: string[] = [
-  // Add MP4 URLs here: media("/wtf-gym/athlete-testimonial-1.mp4"), etc.
+const SHAHJEET_ASSETS = [
+  `${S3}/Shahjeet_3tattava_WTF/Shahjeet+Standee+Designs-01.png`,
+  `${S3}/Shahjeet_3tattava_WTF/Shahjeet+Standee+Designs-02.png`,
+  `${S3}/Shahjeet_3tattava_WTF/Shahjeet+Standee+Designs-03.png`,
+  `${S3}/Shahjeet_3tattava_WTF/Shahjeet+Standee+Designs-04.png`,
 ];
 
+/* ─── CSS ─── */
 const CSS = `
-  .wg-page { background: ${CREAM}; min-height: 100vh; font-family: ${F}; color: ${INK}; }
+  .wg{background:${CREAM};min-height:100vh;font-family:${F};color:${INK};overflow-x:hidden;}
 
   /* Hero */
-  .wg-hero { position: relative; width: 100%; min-height: 80vh; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-  .wg-hero-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; }
-  .wg-hero-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(28,19,4,0.35), rgba(28,19,4,0.82)); z-index: 1; }
-  .wg-hero-content { position: relative; z-index: 2; text-align: center; padding: clamp(80px,12vw,140px) 24px clamp(48px,8vw,80px); max-width: 800px; }
-  .wg-hero-eyebrow { font-size: clamp(10px,1.4vw,13px); font-weight: 700; letter-spacing: 0.3em; text-transform: uppercase; color: ${GOLD}; margin-bottom: 18px; }
-  .wg-hero-title { font-variation-settings: 'wght' 800; font-size: clamp(32px,7vw,64px); line-height: 1.06; letter-spacing: -0.02em; color: #f7f0e2; margin: 0 0 18px; }
-  .wg-hero-sub { font-size: clamp(15px,2vw,20px); line-height: 1.55; color: rgba(247,240,226,0.82); font-weight: 300; margin: 0 auto; max-width: 540px; }
-  .wg-hero-collab { display: inline-flex; align-items: center; gap: 14px; margin-bottom: 28px; }
-  .wg-hero-x { font-size: 20px; color: ${GOLD}; font-weight: 300; }
+  .wg-hero{position:relative;width:100%;height:100vh;min-height:600px;overflow:hidden;background:${INK};}
+  .wg-hero-slide{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:opacity .8s ease;}
+  .wg-hero-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(28,19,4,0.10) 0%,rgba(28,19,4,0.55) 70%,rgba(28,19,4,0.88) 100%);z-index:1;pointer-events:none;}
+  .wg-hero-bottom{position:absolute;bottom:0;left:0;right:0;z-index:2;padding:0 24px clamp(36px,6vw,64px);text-align:center;}
+  .wg-hero-collab{font-size:clamp(11px,1.6vw,14px);font-weight:700;letter-spacing:.32em;text-transform:uppercase;color:${GOLD};margin-bottom:12px;}
+  .wg-hero-title{font-variation-settings:'wght' 800;font-size:clamp(28px,6.5vw,58px);line-height:1.06;letter-spacing:-.02em;color:#f7f0e2;margin:0 0 14px;}
+  .wg-hero-sub{font-size:clamp(14px,2vw,18px);line-height:1.55;color:rgba(247,240,226,.78);font-weight:300;max-width:520px;margin:0 auto;}
+  .wg-hero-sound{position:absolute;bottom:clamp(16px,3vw,28px);right:clamp(16px,3vw,28px);z-index:3;width:44px;height:44px;border-radius:50%;border:1.5px solid rgba(247,240,226,.5);background:rgba(28,19,4,.5);color:#f7f0e2;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;}
 
-  /* About section */
-  .wg-about { padding: clamp(56px,8vw,96px) 24px; text-align: center; }
-  .wg-about-inner { max-width: 720px; margin: 0 auto; }
-  .wg-section-eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 0.28em; text-transform: uppercase; color: ${GOLD}; margin-bottom: 14px; }
-  .wg-section-title { font-variation-settings: 'wght' 800; font-size: clamp(24px,4.5vw,40px); letter-spacing: -0.01em; color: ${ESPRESSO}; margin: 0 0 18px; line-height: 1.12; }
-  .wg-section-body { font-size: clamp(15px,1.8vw,17px); line-height: 1.7; color: rgba(68,42,27,0.78); font-weight: 300; margin: 0; }
+  /* Section shared */
+  .wg-sec{padding:clamp(56px,8vw,96px) 24px;text-align:center;}
+  .wg-eyebrow{font-size:11px;font-weight:700;letter-spacing:.28em;text-transform:uppercase;color:${GOLD};margin-bottom:14px;}
+  .wg-h2{font-variation-settings:'wght' 800;font-size:clamp(24px,4.5vw,40px);letter-spacing:-.01em;color:${ESPRESSO};margin:0 0 18px;line-height:1.12;}
+  .wg-body{font-size:clamp(15px,1.8vw,17px);line-height:1.7;color:rgba(68,42,27,.78);font-weight:300;max-width:660px;margin:0 auto;}
 
-  /* Gallery */
-  .wg-gallery { padding: 0 24px clamp(56px,8vw,96px); }
-  .wg-gallery-grid { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(280px,100%), 1fr)); gap: 20px; }
-  .wg-gallery-card { border-radius: 18px; overflow: hidden; background: ${ESPRESSO}; aspect-ratio: 1/1; display: flex; align-items: center; justify-content: center; padding: 28px; }
-  .wg-gallery-card img { width: 100%; height: 100%; object-fit: contain; display: block; }
+  /* Parallax gallery */
+  .wg-gallery{padding:clamp(32px,5vw,64px) 0;overflow:hidden;}
+  .wg-gallery-row{display:flex;gap:clamp(14px,2vw,24px);will-change:transform;}
+  .wg-gallery-card{flex:0 0 auto;width:clamp(260px,42vw,380px);border-radius:18px;overflow:hidden;box-shadow:0 16px 44px rgba(68,42,27,.14);}
+  .wg-gallery-card img{width:100%;height:auto;display:block;}
 
-  /* Videos */
-  .wg-videos { padding: 0 24px clamp(56px,8vw,96px); }
-  .wg-videos-grid { max-width: 800px; margin: 0 auto; display: grid; gap: 20px; }
-  .wg-vid { width: 100%; border-radius: 18px; aspect-ratio: 16/9; background: ${ESPRESSO}; }
+  /* Trust */
+  .wg-trust{padding:clamp(32px,5vw,52px) 24px;background:${FOREST};text-align:center;}
+  .wg-trust-pills{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;max-width:800px;margin:0 auto;}
+  .wg-trust-pill{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:${GOLD};border:1px solid rgba(200,150,62,.35);padding:8px 18px;border-radius:999px;}
 
-  /* Trust strip */
-  .wg-trust { padding: clamp(32px,5vw,52px) 24px; background: ${FOREST}; text-align: center; }
-  .wg-trust-pills { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; max-width: 800px; margin: 0 auto; }
-  .wg-trust-pill { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: ${GOLD}; border: 1px solid rgba(200,150,62,0.35); padding: 8px 18px; border-radius: 999px; }
-
-  /* CTA section */
-  .wg-cta { padding: clamp(56px,8vw,96px) 24px; text-align: center; background: ${CREAM}; }
-  .wg-cta-grid { max-width: 900px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(260px,100%), 1fr)); gap: 18px; }
-  .wg-cta-card { display: flex; flex-direction: column; align-items: center; padding: clamp(28px,4vw,42px) 24px; background: #fff; border: 1px solid rgba(200,150,62,0.22); border-radius: 18px; box-shadow: 0 10px 30px rgba(68,42,27,0.06); text-decoration: none; color: inherit; transition: transform 0.3s ease, box-shadow 0.3s ease; }
-  .wg-cta-card:hover { transform: translateY(-5px); box-shadow: 0 20px 50px rgba(68,42,27,0.14); }
-  .wg-cta-icon { font-size: 36px; margin-bottom: 16px; }
-  .wg-cta-name { font-variation-settings: 'wght' 800; font-size: clamp(18px,2.5vw,22px); color: ${ESPRESSO}; margin: 0 0 8px; }
-  .wg-cta-desc { font-size: 14px; color: rgba(68,42,27,0.6); font-weight: 300; line-height: 1.5; margin: 0 0 20px; }
-  .wg-cta-btn { font-size: 12px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: ${CREAM}; background: ${ESPRESSO}; padding: 13px 28px; border-radius: 999px; margin-top: auto; }
-  .wg-cta-card:nth-child(3) .wg-cta-btn { background: ${GOLD}; color: ${INK}; }
+  /* CTAs */
+  .wg-cta{padding:clamp(56px,8vw,96px) 24px;text-align:center;background:${CREAM};}
+  .wg-cta-grid{max-width:900px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(260px,100%),1fr));gap:18px;}
+  .wg-cta-card{display:flex;flex-direction:column;align-items:center;padding:clamp(28px,4vw,42px) 24px;background:#fff;border:1px solid rgba(200,150,62,.22);border-radius:18px;box-shadow:0 10px 30px rgba(68,42,27,.06);text-decoration:none;color:inherit;transition:transform .3s ease,box-shadow .3s ease;}
+  .wg-cta-card:hover{transform:translateY(-5px);box-shadow:0 20px 50px rgba(68,42,27,.14);}
+  .wg-cta-icon{font-size:36px;margin-bottom:16px;}
+  .wg-cta-name{font-variation-settings:'wght' 800;font-size:clamp(18px,2.5vw,22px);color:${ESPRESSO};margin:0 0 8px;}
+  .wg-cta-desc{font-size:14px;color:rgba(68,42,27,.6);font-weight:300;line-height:1.5;margin:0 0 20px;}
+  .wg-cta-btn{font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:${CREAM};background:${ESPRESSO};padding:13px 28px;border-radius:999px;margin-top:auto;}
+  .wg-cta-card:nth-child(3) .wg-cta-btn{background:${GOLD};color:${INK};}
 
   /* Footer */
-  .wg-footer { padding: 28px 24px; text-align: center; border-top: 1px solid rgba(200,150,62,0.18); }
-  .wg-footer-text { font-size: 12px; color: rgba(68,42,27,0.4); }
-  .wg-footer-text a { color: ${GOLD}; text-decoration: none; }
-  .wg-footer-text a:hover { text-decoration: underline; }
+  .wg-foot{padding:28px 24px;text-align:center;border-top:1px solid rgba(200,150,62,.18);}
+  .wg-foot p{font-size:12px;color:rgba(68,42,27,.4);margin:0;}
+  .wg-foot a{color:${GOLD};text-decoration:none;}
+  .wg-foot a:hover{text-decoration:underline;}
 
-  @media (prefers-reduced-motion: reduce) { .wg-hero-video { display: none; } }
+  @media(prefers-reduced-motion:reduce){.wg-gallery-row{animation:none !important;}}
 `;
 
+/* ─── Parallax row: images scroll horizontally as user scrolls vertically ─── */
+function ParallaxRow({ images, direction = 'left' }: { images: string[]; direction?: 'left' | 'right' }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] });
+  const x = useTransform(scrollYProgress, [0, 1], direction === 'left' ? ['8%', '-18%'] : ['-18%', '8%']);
+  return (
+    <div ref={ref} style={{ overflow: 'hidden', padding: 'clamp(8px,1.5vw,16px) 0' }}>
+      <motion.div className="wg-gallery-row" style={{ x }}>
+        {/* duplicate for visual continuity */}
+        {[...images, ...images].map((src, i) => (
+          <motion.div
+            key={`${src}-${i}`}
+            className="wg-gallery-card"
+            initial={{ opacity: 0, scale: 0.92 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true, margin: '-5%' }}
+            transition={{ duration: 0.6, delay: (i % images.length) * 0.08, ease: EASE }}
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={src} alt="3Tattava × WTF Gyms collaboration" loading="lazy" />
+          </motion.div>
+        ))}
+      </motion.div>
+    </div>
+  );
+}
+
+/* ─── Hero: image for 3s → slide left → video autoplays with sound ─── */
+function Hero() {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [phase, setPhase] = useState<'image' | 'video'>('image');
+  const [muted, setMuted] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setPhase('video');
+      const v = videoRef.current;
+      if (v) {
+        v.currentTime = 0;
+        v.muted = false;
+        setMuted(false);
+        v.play().catch(() => {
+          // autoplay with sound blocked — fallback to muted
+          v.muted = true;
+          setMuted(true);
+          v.play().catch(() => {});
+        });
+      }
+    }, 3000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const toggleMute = () => {
+    const v = videoRef.current;
+    if (!v) return;
+    v.muted = !v.muted;
+    setMuted(v.muted);
+  };
+
+  return (
+    <section className="wg-hero">
+      {/* Launch poster — visible first 3s, then slides left */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={HERO_IMAGE}
+        alt="3Tattava × WTF Gyms Launch"
+        className="wg-hero-slide"
+        style={{
+          opacity: phase === 'image' ? 1 : 0,
+          transform: phase === 'image' ? 'translateX(0)' : 'translateX(-100%)',
+          transition: 'opacity .8s ease, transform .8s ease',
+        }}
+      />
+
+      {/* Video — fades in after 3s */}
+      <video
+        ref={videoRef}
+        className="wg-hero-slide"
+        loop
+        playsInline
+        preload="auto"
+        muted
+        style={{ opacity: phase === 'video' ? 1 : 0 }}
+      >
+        <source src={HERO_VIDEO} type="video/mp4" />
+      </video>
+
+      <div className="wg-hero-overlay" />
+
+      {/* Sound toggle */}
+      {phase === 'video' && (
+        <button className="wg-hero-sound" onClick={toggleMute} aria-label={muted ? 'Unmute' : 'Mute'}>
+          {muted ? '🔇' : '🔊'}
+        </button>
+      )}
+
+      <div className="wg-hero-bottom">
+        <motion.p
+          className="wg-hero-collab"
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.3, ease: EASE }}
+        >
+          3Tattava × WTF Gyms
+        </motion.p>
+        <motion.h1
+          className="wg-hero-title"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.5, ease: EASE }}
+        >
+          Performance Ayurveda<br />Meets Fitness
+        </motion.h1>
+        <motion.p
+          className="wg-hero-sub"
+          initial={{ opacity: 0, y: 14 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.7, ease: EASE }}
+        >
+          Doctor-formulated Himalayan Shilajit — now at your WTF gym.
+          Fuel your ritual. Elevate your training.
+        </motion.p>
+      </div>
+    </section>
+  );
+}
+
+/* ─── Page ─── */
 const TRUST_PILLS = [
-  "NABL Lab-Tested",
-  "AYUSH-GMP Certified",
-  "Doctor Formulated",
-  "≥70% Fulvic Acid",
-  "Himalayan Sourced",
-  "Available at 28 WTF Gyms",
+  'NABL Lab-Tested', 'AYUSH-GMP Certified', 'Doctor Formulated',
+  '≥70% Fulvic Acid', 'Himalayan Sourced', 'Available at 28 WTF Gyms',
 ];
 
 const CTAS = [
-  {
-    icon: "🍯",
-    name: "Shahjeet Sticks",
-    desc: "600mg Shilajit in honey. Tear, squeeze, perform — the perfect gym companion.",
-    href: "/products/shahjeet-sticks",
-    label: "Shop Shahjeet →",
-  },
-  {
-    icon: "🏔️",
-    name: "RockResin",
-    desc: "Pure Himalayan Shilajit resin. The original daily ritual for serious athletes.",
-    href: "/products/shodhit-shilajit-resin",
-    label: "Shop RockResin →",
-  },
-  {
-    icon: "📍",
-    name: "Find a Center",
-    desc: "Explore 3Tattava experience centers and WTF gym locations near you.",
-    href: "/find-us",
-    label: "Explore Locations →",
-  },
+  { icon: '🍯', name: 'Shahjeet Sticks', desc: '600mg Shilajit in honey. Tear, squeeze, perform — the perfect gym companion. No spoon, no mess.', href: '/products/shahjeet-sticks', label: 'Shop Shahjeet →' },
+  { icon: '🏔️', name: 'RockResin', desc: 'Pure Himalayan Shilajit resin. The original daily ritual for athletes who take recovery seriously.', href: '/products/shodhit-shilajit-resin', label: 'Shop RockResin →' },
+  { icon: '📍', name: 'Experience Centers', desc: 'Explore 3Tattava experience centers and WTF gym locations near you.', href: '/find-us', label: 'Explore Locations →' },
 ];
 
-export default function WtfGymClient() {
-  const reduce = useReducedMotion();
-  const fade = (delay = 0) => ({
-    initial: { opacity: 0, y: 24 },
-    whileInView: { opacity: 1, y: 0 },
-    viewport: { once: true },
-    transition: { duration: 0.7, delay, ease: EASE },
-  });
+const fade = (delay = 0) => ({
+  initial: { opacity: 0, y: 24 } as const,
+  whileInView: { opacity: 1, y: 0 } as const,
+  viewport: { once: true } as const,
+  transition: { duration: 0.7, delay, ease: EASE },
+});
 
+export default function WtfGymClient() {
   return (
-    <div className="wg-page">
+    <div className="wg">
       <style dangerouslySetInnerHTML={{ __html: CSS }} />
 
-      {/* ── Hero ── */}
-      <section className="wg-hero">
-        <video
-          className="wg-hero-video"
-          autoPlay muted loop playsInline preload="auto"
-          poster={HERO_POSTER}
-          aria-hidden="true"
-        >
-          <source src={HERO_VIDEO} type="video/mp4" />
-        </video>
-        <div className="wg-hero-overlay" aria-hidden="true" />
-        <div className="wg-hero-content">
-          <motion.div className="wg-hero-collab" {...fade()}>
-            <Image src="/logos/3tattava-wordmark.png" alt="3Tattava" width={160} height={40} style={{ height: 32, width: 'auto' }} />
-            <span className="wg-hero-x">×</span>
-            <span style={{ fontFamily: F, fontVariationSettings: "'wght' 800", fontSize: 'clamp(18px,3vw,26px)', color: '#f7f0e2', letterSpacing: '0.04em' }}>
-              WTF GYMS
-            </span>
-          </motion.div>
-          <motion.p className="wg-hero-eyebrow" {...fade(0.1)}>Exclusive Gym Partnership</motion.p>
-          <motion.h1 className="wg-hero-title" {...fade(0.15)}>
-            Performance Ayurveda<br />Meets Fitness
-          </motion.h1>
-          <motion.p className="wg-hero-sub" {...fade(0.2)}>
-            Doctor-formulated Himalayan Shilajit — now available at your WTF gym. 
-            Fuel your ritual. Elevate your training.
-          </motion.p>
-        </div>
-      </section>
+      {/* ── Hero: poster (3s) → slides left → video autoplays with audio ── */}
+      <Hero />
 
-      {/* ── About the collab ── */}
-      <section className="wg-about">
-        <div className="wg-about-inner">
-          <motion.p className="wg-section-eyebrow" {...fade()}>The Partnership</motion.p>
-          <motion.h2 className="wg-section-title" {...fade(0.08)}>
-            Why WTF × 3Tattava
+      {/* ── Why this matters for gym-goers ── */}
+      <section className="wg-sec">
+        <div style={{ maxWidth: 720, margin: '0 auto' }}>
+          <motion.p className="wg-eyebrow" {...fade()}>Built for the Gym</motion.p>
+          <motion.h2 className="wg-h2" {...fade(0.08)}>
+            Why Shilajit Belongs in Your Gym Bag
           </motion.h2>
-          <motion.p className="wg-section-body" {...fade(0.14)}>
-            3Tattava brings Performance Ayurveda to where it matters most — your gym. 
-            NABL lab-tested, doctor-formulated Shilajit products available exclusively 
-            at 28 WTF gym locations across Delhi NCR. No spoon. No mess. Just 
-            performance — the way Ayurveda was meant to be.
+          <motion.p className="wg-body" {...fade(0.14)}>
+            Whether you&apos;re lifting, doing HIIT, or recovering between sessions — your body
+            burns through minerals faster than most diets can replenish. Shilajit is a natural
+            mineral-rich Rasayana used for over 3,000 years to support energy, recovery, and
+            daily resilience. 3Tattava brings it to WTF Gyms in two formats: a 10-second honey
+            stick and a classic resin jar — both NABL lab-tested, doctor-formulated, and ready
+            for your routine.
           </motion.p>
         </div>
       </section>
 
-      {/* ── Product gallery (replace images with real collab assets) ── */}
+      {/* ── RockResin parallax gallery ── */}
       <section className="wg-gallery">
-        <div className="wg-gallery-grid">
-          {GALLERY.map((img, i) => (
-            <motion.div key={img.alt} className="wg-gallery-card" {...fade(i * 0.08)}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={img.src} alt={img.alt} />
-            </motion.div>
-          ))}
+        <div style={{ maxWidth: 720, margin: '0 auto clamp(22px,3vw,36px)', textAlign: 'center', padding: '0 24px' }}>
+          <motion.p className="wg-eyebrow" {...fade()}>RockResin™ × WTF</motion.p>
+          <motion.h2 className="wg-h2" {...fade(0.08)}>The Resin Ritual</motion.h2>
         </div>
+        <ParallaxRow images={ROCKRESIN_ASSETS} direction="left" />
       </section>
 
-      {/* ── Collab videos (shows only if VIDEO URLs are provided) ── */}
-      {VIDEOS.length > 0 && (
-        <section className="wg-videos">
-          <div className="wg-about-inner" style={{ marginBottom: 'clamp(28px,4vw,44px)' }}>
-            <motion.p className="wg-section-eyebrow" {...fade()}>See It In Action</motion.p>
-            <motion.h2 className="wg-section-title" {...fade(0.08)}>From the Gym Floor</motion.h2>
-          </div>
-          <div className="wg-videos-grid">
-            {VIDEOS.map((src, i) => (
-              <motion.video
-                key={src}
-                className="wg-vid"
-                controls
-                playsInline
-                preload="metadata"
-                muted
-                {...fade(i * 0.1)}
-              >
-                <source src={src} type="video/mp4" />
-              </motion.video>
-            ))}
-          </div>
-        </section>
-      )}
+      {/* ── Shahjeet parallax gallery ── */}
+      <section className="wg-gallery">
+        <div style={{ maxWidth: 720, margin: '0 auto clamp(22px,3vw,36px)', textAlign: 'center', padding: '0 24px' }}>
+          <motion.p className="wg-eyebrow" {...fade()}>Shahjeet™ × WTF</motion.p>
+          <motion.h2 className="wg-h2" {...fade(0.08)}>Tear. Squeeze. Perform.</motion.h2>
+        </div>
+        <ParallaxRow images={SHAHJEET_ASSETS} direction="right" />
+      </section>
 
       {/* ── Trust strip ── */}
       <section className="wg-trust">
@@ -230,9 +285,9 @@ export default function WtfGymClient() {
 
       {/* ── 3 CTA buttons ── */}
       <section className="wg-cta">
-        <div className="wg-about-inner" style={{ marginBottom: 'clamp(28px,4vw,44px)' }}>
-          <motion.p className="wg-section-eyebrow" {...fade()}>Start Your Ritual</motion.p>
-          <motion.h2 className="wg-section-title" {...fade(0.08)}>Choose Your Path</motion.h2>
+        <div style={{ maxWidth: 720, margin: '0 auto clamp(28px,4vw,44px)' }}>
+          <motion.p className="wg-eyebrow" {...fade()}>Start Your Ritual</motion.p>
+          <motion.h2 className="wg-h2" {...fade(0.08)}>Choose Your Path</motion.h2>
         </div>
         <div className="wg-cta-grid">
           {CTAS.map((c, i) => (
@@ -249,10 +304,8 @@ export default function WtfGymClient() {
       </section>
 
       {/* ── Footer ── */}
-      <footer className="wg-footer">
-        <p className="wg-footer-text">
-          3TATTAVA × WTF Gyms · <a href="https://www.3tattava.com">3tattava.com</a> · Performance Ayurveda for Modern Humans
-        </p>
+      <footer className="wg-foot">
+        <p>3TATTAVA × WTF Gyms · <a href="https://www.3tattava.com">3tattava.com</a> · Performance Ayurveda for Modern Humans</p>
       </footer>
     </div>
   );
