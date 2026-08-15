@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
-import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion';
+import { motion, useScroll, useTransform } from 'framer-motion';
 
 const F = "var(--font-primary), system-ui, sans-serif";
 const EASE = [0.16, 1, 0.3, 1] as const;
