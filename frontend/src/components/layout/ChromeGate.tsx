@@ -7,7 +7,7 @@ import { usePathname } from "next/navigation";
  * conversion/landing routes so paid-traffic pages have zero distractions and a
  * single call-to-action. Everything else renders the full chrome as normal.
  */
-const CHROME_FREE_ROUTES = ["/waitlist", "/wtf", "/admin"];
+const CHROME_FREE_ROUTES = ["/waitlist", "/wtf", "/admin", "/wtf-gym"];
 
 export default function ChromeGate({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
