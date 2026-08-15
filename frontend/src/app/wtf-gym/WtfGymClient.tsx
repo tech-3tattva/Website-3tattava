@@ -37,47 +37,49 @@ const SHAHJEET_ASSETS = [
 const CSS = `
   .wg{background:${CREAM};min-height:100vh;font-family:${F};color:${INK};overflow-x:hidden;}
 
-  /* Hero */
-  .wg-hero{position:relative;width:100%;height:100vh;min-height:600px;overflow:hidden;background:${INK};}
-  .wg-hero-slide{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:opacity .8s ease;}
-  .wg-hero-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(28,19,4,0.10) 0%,rgba(28,19,4,0.55) 70%,rgba(28,19,4,0.88) 100%);z-index:1;pointer-events:none;}
-  .wg-hero-bottom{position:absolute;bottom:0;left:0;right:0;z-index:2;padding:0 24px clamp(36px,6vw,64px);text-align:center;}
+  /* Hero — contain the poster so it isn't blown up */
+  .wg-hero{position:relative;width:100%;height:100vh;min-height:500px;overflow:hidden;background:${INK};display:flex;align-items:center;justify-content:center;}
+  .wg-hero-slide{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:center;transition:opacity .8s ease;background:${INK};}
+  .wg-hero-slide-cover{object-fit:cover;}
+  .wg-hero-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(28,19,4,0.05) 0%,rgba(28,19,4,0.45) 60%,rgba(28,19,4,0.92) 100%);z-index:1;pointer-events:none;}
+  .wg-hero-bottom{position:absolute;bottom:0;left:0;right:0;z-index:2;padding:0 24px clamp(28px,5vw,56px);text-align:center;}
   .wg-hero-collab{font-size:clamp(11px,1.6vw,14px);font-weight:700;letter-spacing:.32em;text-transform:uppercase;color:${GOLD};margin-bottom:12px;}
-  .wg-hero-title{font-variation-settings:'wght' 800;font-size:clamp(28px,6.5vw,58px);line-height:1.06;letter-spacing:-.02em;color:#f7f0e2;margin:0 0 14px;}
-  .wg-hero-sub{font-size:clamp(14px,2vw,18px);line-height:1.55;color:rgba(247,240,226,.78);font-weight:300;max-width:520px;margin:0 auto;}
-  .wg-hero-sound{position:absolute;bottom:clamp(16px,3vw,28px);right:clamp(16px,3vw,28px);z-index:3;width:44px;height:44px;border-radius:50%;border:1.5px solid rgba(247,240,226,.5);background:rgba(28,19,4,.5);color:#f7f0e2;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;}
+  .wg-hero-title{font-variation-settings:'wght' 800;font-size:clamp(26px,5.5vw,52px);line-height:1.08;letter-spacing:-.02em;color:#f7f0e2;margin:0 0 12px;}
+  .wg-hero-sub{font-size:clamp(13px,1.8vw,17px);line-height:1.55;color:rgba(247,240,226,.78);font-weight:300;max-width:480px;margin:0 auto;}
+  .wg-hero-sound{position:absolute;bottom:clamp(16px,3vw,28px);right:clamp(16px,3vw,28px);z-index:3;width:44px;height:44px;border-radius:50%;border:1.5px solid rgba(247,240,226,.5);background:rgba(28,19,4,.5);color:#f7f0e2;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;-webkit-tap-highlight-color:transparent;}
 
   /* Section shared */
-  .wg-sec{padding:clamp(56px,8vw,96px) 24px;text-align:center;}
+  .wg-sec{padding:clamp(48px,7vw,88px) 24px;text-align:center;}
   .wg-eyebrow{font-size:11px;font-weight:700;letter-spacing:.28em;text-transform:uppercase;color:${GOLD};margin-bottom:14px;}
-  .wg-h2{font-variation-settings:'wght' 800;font-size:clamp(24px,4.5vw,40px);letter-spacing:-.01em;color:${ESPRESSO};margin:0 0 18px;line-height:1.12;}
-  .wg-body{font-size:clamp(15px,1.8vw,17px);line-height:1.7;color:rgba(68,42,27,.78);font-weight:300;max-width:660px;margin:0 auto;}
+  .wg-h2{font-variation-settings:'wght' 800;font-size:clamp(22px,4vw,38px);letter-spacing:-.01em;color:${ESPRESSO};margin:0 0 16px;line-height:1.14;}
+  .wg-body{font-size:clamp(14px,1.7vw,16px);line-height:1.7;color:rgba(68,42,27,.78);font-weight:300;max-width:620px;margin:0 auto;}
 
-  /* Parallax gallery */
-  .wg-gallery{padding:clamp(32px,5vw,64px) 0;overflow:hidden;}
-  .wg-gallery-row{display:flex;gap:clamp(14px,2vw,24px);will-change:transform;}
-  .wg-gallery-card{flex:0 0 auto;width:clamp(260px,42vw,380px);border-radius:18px;overflow:hidden;box-shadow:0 16px 44px rgba(68,42,27,.14);}
+  /* Parallax gallery — responsive card sizing */
+  .wg-gallery{padding:clamp(24px,4vw,56px) 0;overflow:hidden;}
+  .wg-gallery-row{display:flex;gap:clamp(12px,2vw,20px);will-change:transform;padding:8px 0;}
+  .wg-gallery-card{flex:0 0 auto;width:clamp(220px,65vw,360px);border-radius:16px;overflow:hidden;box-shadow:0 12px 36px rgba(68,42,27,.12);}
   .wg-gallery-card img{width:100%;height:auto;display:block;}
+  @media(min-width:768px){.wg-gallery-card{width:clamp(280px,30vw,380px);}}
 
   /* Trust */
-  .wg-trust{padding:clamp(32px,5vw,52px) 24px;background:${FOREST};text-align:center;}
-  .wg-trust-pills{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;max-width:800px;margin:0 auto;}
-  .wg-trust-pill{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:${GOLD};border:1px solid rgba(200,150,62,.35);padding:8px 18px;border-radius:999px;}
+  .wg-trust{padding:clamp(28px,4vw,48px) 24px;background:${FOREST};text-align:center;}
+  .wg-trust-pills{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;max-width:800px;margin:0 auto;}
+  .wg-trust-pill{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:${GOLD};border:1px solid rgba(200,150,62,.35);padding:7px 16px;border-radius:999px;}
 
   /* CTAs */
-  .wg-cta{padding:clamp(56px,8vw,96px) 24px;text-align:center;background:${CREAM};}
-  .wg-cta-grid{max-width:900px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(260px,100%),1fr));gap:18px;}
-  .wg-cta-card{display:flex;flex-direction:column;align-items:center;padding:clamp(28px,4vw,42px) 24px;background:#fff;border:1px solid rgba(200,150,62,.22);border-radius:18px;box-shadow:0 10px 30px rgba(68,42,27,.06);text-decoration:none;color:inherit;transition:transform .3s ease,box-shadow .3s ease;}
-  .wg-cta-card:hover{transform:translateY(-5px);box-shadow:0 20px 50px rgba(68,42,27,.14);}
-  .wg-cta-icon{font-size:36px;margin-bottom:16px;}
-  .wg-cta-name{font-variation-settings:'wght' 800;font-size:clamp(18px,2.5vw,22px);color:${ESPRESSO};margin:0 0 8px;}
-  .wg-cta-desc{font-size:14px;color:rgba(68,42,27,.6);font-weight:300;line-height:1.5;margin:0 0 20px;}
-  .wg-cta-btn{font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:${CREAM};background:${ESPRESSO};padding:13px 28px;border-radius:999px;margin-top:auto;}
+  .wg-cta{padding:clamp(48px,7vw,88px) 24px;text-align:center;background:${CREAM};}
+  .wg-cta-grid{max-width:900px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(240px,100%),1fr));gap:16px;}
+  .wg-cta-card{display:flex;flex-direction:column;align-items:center;padding:clamp(24px,3.5vw,38px) 20px;background:#fff;border:1px solid rgba(200,150,62,.22);border-radius:16px;box-shadow:0 8px 26px rgba(68,42,27,.06);text-decoration:none;color:inherit;transition:transform .3s ease,box-shadow .3s ease;}
+  .wg-cta-card:hover{transform:translateY(-4px);box-shadow:0 18px 44px rgba(68,42,27,.13);}
+  .wg-cta-icon{font-size:32px;margin-bottom:14px;}
+  .wg-cta-name{font-variation-settings:'wght' 800;font-size:clamp(17px,2.2vw,21px);color:${ESPRESSO};margin:0 0 6px;}
+  .wg-cta-desc{font-size:13px;color:rgba(68,42,27,.6);font-weight:300;line-height:1.5;margin:0 0 18px;}
+  .wg-cta-btn{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:${CREAM};background:${ESPRESSO};padding:12px 26px;border-radius:999px;margin-top:auto;}
   .wg-cta-card:nth-child(3) .wg-cta-btn{background:${GOLD};color:${INK};}
 
   /* Footer */
-  .wg-foot{padding:28px 24px;text-align:center;border-top:1px solid rgba(200,150,62,.18);}
-  .wg-foot p{font-size:12px;color:rgba(68,42,27,.4);margin:0;}
+  .wg-foot{padding:24px 20px;text-align:center;border-top:1px solid rgba(200,150,62,.18);}
+  .wg-foot p{font-size:11px;color:rgba(68,42,27,.4);margin:0;}
   .wg-foot a{color:${GOLD};text-decoration:none;}
   .wg-foot a:hover{text-decoration:underline;}
 
@@ -118,20 +120,22 @@ function Hero() {
   const [muted, setMuted] = useState(true);
 
   useEffect(() => {
+    const v = videoRef.current;
+    if (!v) return;
+    // Start loading the video immediately so it's ready after 3s
+    v.load();
+
     const timer = setTimeout(() => {
       setPhase('video');
-      const v = videoRef.current;
-      if (v) {
-        v.currentTime = 0;
-        v.muted = false;
-        setMuted(false);
-        v.play().catch(() => {
-          // autoplay with sound blocked — fallback to muted
-          v.muted = true;
-          setMuted(true);
-          v.play().catch(() => {});
-        });
-      }
+      v.currentTime = 0;
+      // Try unmuted first, fallback to muted (browser autoplay policy)
+      v.muted = false;
+      setMuted(false);
+      v.play().catch(() => {
+        v.muted = true;
+        setMuted(true);
+        v.play().catch(() => {});
+      });
     }, 3000);
     return () => clearTimeout(timer);
   }, []);
@@ -145,7 +149,7 @@ function Hero() {
 
   return (
     <section className="wg-hero">
-      {/* Launch poster — visible first 3s, then slides left */}
+      {/* Launch poster — visible first 3s, uses object-fit:contain so it isn't blown up */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={HERO_IMAGE}
@@ -158,10 +162,10 @@ function Hero() {
         }}
       />
 
-      {/* Video — fades in after 3s */}
+      {/* Video — fades in after 3s, uses object-fit:cover for cinematic fill */}
       <video
         ref={videoRef}
-        className="wg-hero-slide"
+        className="wg-hero-slide wg-hero-slide-cover"
         loop
         playsInline
         preload="auto"
