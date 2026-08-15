@@ -37,10 +37,10 @@ const SHAHJEET_ASSETS = [
 const CSS = `
   .wg{background:${CREAM};min-height:100vh;font-family:${F};color:${INK};overflow-x:hidden;}
 
-  /* Hero — contain the poster so it isn't blown up */
-  .wg-hero{position:relative;width:100%;height:100vh;min-height:500px;overflow:hidden;background:${INK};display:flex;align-items:center;justify-content:center;}
-  .wg-hero-slide{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:center;transition:opacity .8s ease;background:${INK};}
-  .wg-hero-slide-cover{object-fit:cover;}
+  /* Hero — adapts to viewport: mobile gets a shorter hero so the landscape poster
+     fills cleanly via cover; desktop uses full viewport height */
+  .wg-hero{position:relative;width:100%;height:56vw;min-height:320px;max-height:100vh;overflow:hidden;background:${INK};display:flex;align-items:center;justify-content:center;}
+  .wg-hero-slide{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;transition:opacity .8s ease;background:${INK};}
   .wg-hero-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(28,19,4,0.05) 0%,rgba(28,19,4,0.45) 60%,rgba(28,19,4,0.92) 100%);z-index:1;pointer-events:none;}
   .wg-hero-bottom{position:absolute;bottom:0;left:0;right:0;z-index:2;padding:0 24px clamp(28px,5vw,56px);text-align:center;}
   .wg-hero-collab{font-size:clamp(11px,1.6vw,14px);font-weight:700;letter-spacing:.32em;text-transform:uppercase;color:${GOLD};margin-bottom:12px;}
@@ -83,6 +83,7 @@ const CSS = `
   .wg-foot a{color:${GOLD};text-decoration:none;}
   .wg-foot a:hover{text-decoration:underline;}
 
+  @media(min-width:768px){.wg-hero{height:100vh;min-height:500px;}}
   @media(prefers-reduced-motion:reduce){.wg-gallery-row{animation:none !important;}}
 `;
 
@@ -165,7 +166,7 @@ function Hero() {
       {/* Video — fades in after 3s, uses object-fit:cover for cinematic fill */}
       <video
         ref={videoRef}
-        className="wg-hero-slide wg-hero-slide-cover"
+        className="wg-hero-slide"
         loop
         playsInline
         preload="auto"
