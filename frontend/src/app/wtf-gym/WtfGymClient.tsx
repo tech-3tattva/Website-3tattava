@@ -14,23 +14,23 @@ const ESPRESSO = '#442a1b';
 const GOLD = '#C8963E';
 const FOREST = '#1e3a2f';
 
-/* ─── Assets ─── */
-const S3 = 'https://3tattava-media-prod.s3.ap-south-1.amazonaws.com/banners/Landing_Page';
-const HERO_IMAGE = `${S3}/6X3+LAUNCH+POSTER.png`;
-const HERO_VIDEO = `${S3}/3tattava-x-WTF.mp4`;
+/* ─── Assets (served via CloudFront — S3 bucket is private) ─── */
+const CDN = 'https://media.3tattava.com/banners/Landing_Page';
+const HERO_IMAGE = `${CDN}/6X3+LAUNCH+POSTER.png`;
+const HERO_VIDEO = `${CDN}/3tattava-x-WTF.mp4`;
 
 const ROCKRESIN_ASSETS = [
-  `${S3}/RockResins_3tattava_WTF/RockResin+Standee+Designs-01.png`,
-  `${S3}/RockResins_3tattava_WTF/RockResin+Standee+Designs-02.png`,
-  `${S3}/RockResins_3tattava_WTF/RockResin+Standee+Designs-03.png`,
-  `${S3}/RockResins_3tattava_WTF/RockResin+Standee+Designs-04.png`,
+  `${CDN}/RockResins_3tattava_WTF/RockResin+Standee+Designs-01.png`,
+  `${CDN}/RockResins_3tattava_WTF/RockResin+Standee+Designs-02.png`,
+  `${CDN}/RockResins_3tattava_WTF/RockResin+Standee+Designs-03.png`,
+  `${CDN}/RockResins_3tattava_WTF/RockResin+Standee+Designs-04.png`,
 ];
 
 const SHAHJEET_ASSETS = [
-  `${S3}/Shahjeet_3tattava_WTF/Shahjeet+Standee+Designs-01.png`,
-  `${S3}/Shahjeet_3tattava_WTF/Shahjeet+Standee+Designs-02.png`,
-  `${S3}/Shahjeet_3tattava_WTF/Shahjeet+Standee+Designs-03.png`,
-  `${S3}/Shahjeet_3tattava_WTF/Shahjeet+Standee+Designs-04.png`,
+  `${CDN}/Shahjeet_3tattava_WTF/Shahjeet+Standee+Designs-01.png`,
+  `${CDN}/Shahjeet_3tattava_WTF/Shahjeet+Standee+Designs-02.png`,
+  `${CDN}/Shahjeet_3tattava_WTF/Shahjeet+Standee+Designs-03.png`,
+  `${CDN}/Shahjeet_3tattava_WTF/Shahjeet+Standee+Designs-04.png`,
 ];
 
 /* ─── CSS ─── */
