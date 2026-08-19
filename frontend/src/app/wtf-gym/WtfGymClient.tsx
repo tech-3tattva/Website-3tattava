@@ -7,7 +7,6 @@ import { motion } from 'framer-motion';
 const CDN = 'https://media.3tattava.com';
 const HERO_POSTER = `${CDN}/banners/Landing_Page/6X3+LAUNCH+POSTER.png`;
 const HERO_VIDEO = `${CDN}/banners/Landing_Page/3tattava-x-WTF.mp4`;
-const PRODUCT_HERO = `${CDN}/products/Boxess%20copy%201.png`;
 const ROCKRESIN_IMG = `${CDN}/products/rockresin/1.png`;
 const SHAHJEET_IMG = `${CDN}/products/tgftcf%201.png`;
 
@@ -20,7 +19,6 @@ const SURFACE = '#161616';
 const CARD = '#1a1a1a';
 const BORDER = 'rgba(255,255,255,0.08)';
 const GOLD = '#C8963E';
-const CREAM = '#f7f0e2';
 const MUTED = 'rgba(255,255,255,0.5)';
 const DIM = 'rgba(255,255,255,0.35)';
 
