@@ -15,7 +15,6 @@ const EASE = [0.16, 1, 0.3, 1] as const;
 
 /* Dark + Cream alternating palette */
 const DARK = '#0c0c0c';
-const SURFACE = '#161616';
 const CARD_DARK = '#1a1a1a';
 const CREAM = '#f7f0e2';
 const CREAM_DEEP = '#efe4cf';
