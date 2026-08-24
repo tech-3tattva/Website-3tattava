@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
+import { Plus_Jakarta_Sans } from "next/font/google";
 
 /* ─── Assets ─── */
 const CDN = 'https://media.3tattava.com';
@@ -13,7 +14,8 @@ const HERO_VIDEO = `${CDN}/banners/Landing_Page/3tattava-x-WTF.mp4`;
 const ROCKRESIN_IMG = `${CDN}/products/rockresin/1.png`;
 const SHAHJEET_IMG = `${CDN}/products/tgftcf%201.png`;
 
-const F = "var(--font-primary), system-ui, sans-serif";
+const jakarta = Plus_Jakarta_Sans({ subsets: ["latin"], style: ["normal", "italic"], display: "swap", variable: "--font-jakarta" });
+const F = "var(--font-jakarta), system-ui, sans-serif";
 const EASE = [0.16, 1, 0.3, 1] as const;
 
 /* Dark + Cream alternating palette */
@@ -103,7 +105,8 @@ function FaqItem({ faq, idx }: { faq: typeof FAQS[0]; idx: number }) {
 const CSS = `
 *{box-sizing:border-box;}
 .wg{font-family:${F};min-height:100vh;overflow-x:hidden;}
-.wg a{color:inherit;text-decoration:none;}
+.wg a{text-decoration:none;}
+.wg a:not(.wg-btn){color:inherit;}
 
 /* Top bar */
 .wg-topbar{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;align-items:center;padding:14px clamp(16px,4vw,32px);background:rgba(12,12,12,0.85);backdrop-filter:blur(14px);border-bottom:1px solid ${BORDER_D};}
@@ -220,6 +223,7 @@ const CSS = `
 /* Footer — dark */
 .wg-foot{background:${DARK};padding:32px 24px;text-align:center;border-top:1px solid ${BORDER_D};color:#fff;}
 .wg-foot-logos{display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:20px;}
+.wg-foot-logos img{height:30px;width:auto;}
 .wg-foot-links{display:flex;flex-wrap:wrap;justify-content:center;gap:16px;margin-bottom:20px;}
 .wg-foot-links a{font-size:12px;color:${DIM_D};transition:color .2s;}
 .wg-foot-links a:hover{color:${GOLD};}
@@ -237,7 +241,7 @@ const CSS = `
 
 export default function WtfGymClient() {
   return (
-    <div className="wg">
+    <div className={`wg ${jakarta.variable}`}>
       <style dangerouslySetInnerHTML={{ __html: CSS }} />
 
       {/* ═══ TOP BAR — WTF × 3TATTAVA logo ═══ */}
@@ -245,13 +249,14 @@ export default function WtfGymClient() {
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src="/logos/wordmark-cream.png" alt="3Tattava" />
         <span className="wg-topbar-x">×</span>
-        <span className="wg-topbar-wtf">WTF</span>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/logos/wtf-gyms-cream.png" alt="WTF Gyms" />
       </div>
 
       {/* ═══ 1. HERO — dark ═══ */}
       <section className="wg-hero" id="top">
         <motion.p className="wg-hero-eyebrow" {...fade()}>WTF Member Access</motion.p>
-        <motion.h1 className="wg-hero-h1" {...fade(0.1)}>Train hard. <em>Recover ancient.</em></motion.h1>
+        <motion.h1 className="wg-hero-h1" {...fade(0.1)}>Train Hard. <em>Recover Ancient.</em></motion.h1>
         <motion.p className="wg-hero-sub" {...fade(0.18)}>
           Doctor-formulated, lab-verified Performance Ayurveda—now on WTF gym floors. Built for the ritual after the reps.
         </motion.p>
@@ -287,7 +292,7 @@ export default function WtfGymClient() {
       <section className="wg-products-sec" id="products">
         <div style={{ textAlign: 'center', maxWidth: 700, margin: '0 auto' }}>
           <motion.p className="wg-eyebrow-d" {...fade()}>The Performance Ayurveda Drop</motion.p>
-          <motion.h2 className="wg-h2-d" {...fade(0.06)}>One source. <em>Two rituals.</em></motion.h2>
+          <motion.h2 className="wg-h2-d" {...fade(0.06)}>One Source. <em>Two Rituals.</em></motion.h2>
           <motion.p className="wg-body-d" {...fade(0.12)}>Choose the format you&apos;ll actually stay consistent with. Both are classically purified and verified with modern testing.</motion.p>
         </div>
         <div className="wg-products">
@@ -379,7 +384,7 @@ export default function WtfGymClient() {
       <section className="wg-faq-sec">
         <div style={{ textAlign: 'center', maxWidth: 700, margin: '0 auto' }}>
           <motion.p className="wg-eyebrow-d" {...fade()}>Know Before You Start</motion.p>
-          <motion.h2 className="wg-h2-d" {...fade(0.06)}>Questions, <em>answered.</em></motion.h2>
+          <motion.h2 className="wg-h2-d" {...fade(0.06)}>Questions, <em>Answered.</em></motion.h2>
           <motion.p className="wg-body-d" {...fade(0.12)}>Still unsure? Ask your physician or contact 3Tattava support.</motion.p>
         </div>
         <div className="wg-faq">{FAQS.map((faq, i) => <FaqItem key={i} faq={faq} idx={i} />)}</div>
@@ -398,9 +403,11 @@ export default function WtfGymClient() {
       {/* ═══ 9. FOOTER — dark ═══ */}
       <footer className="wg-foot">
         <div className="wg-foot-logos">
-          <span style={{ fontVariationSettings: "'wght' 800", fontSize: 16, letterSpacing: '.04em' }}>WTF GYMS</span>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/logos/wtf-gyms-cream.png" alt="WTF Gyms" />
           <span style={{ color: DIM_D }}>×</span>
-          <span style={{ fontVariationSettings: "'wght' 800", fontSize: 16, letterSpacing: '.04em' }}>3TATTAVA</span>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/logos/wordmark-cream.png" alt="3Tattava" />
         </div>
         <div className="wg-foot-links">
           <a href="https://www.3tattava.com/lab-reports">Lab reports</a>
