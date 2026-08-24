@@ -30,6 +30,24 @@ const productSchema = new mongoose.Schema(
     price: { type: Number, required: true }, // RUPEES (not paise)
     mrp: { type: Number },
 
+    // GST classification, used to build the tax breakup on an invoice.
+    //
+    // Default is HSN 30049011 at 12%: heading 3004 covers Ayurvedic medicaments
+    // in retail packs, and the Telangana AAR (Incnut Lifestyle Retail,
+    // TSAAR 46/2022) held that products made under an AYUSH licence and used
+    // for cure -- rather than cosmetic "care" -- are medicaments at 12%. These
+    // products are sold as Ayurvedic proprietary medicines under a valid
+    // Ayurveda manufacturing licence, which is that test.
+    //
+    // Editable per product precisely because it is a tax position, not a
+    // constant: a reclassification must be a field change, never a code change.
+    hsnCode: { type: String, default: "30049011", trim: true },
+    gstRatePercent: { type: Number, default: 12, min: 0, max: 28 },
+    // Prices are shown to customers as "inclusive of all taxes", so tax is
+    // back-calculated out of `price` rather than added on top. Flip this only
+    // if the storefront copy changes too.
+    priceIncludesGst: { type: Boolean, default: true },
+
     images: { type: [String], default: [] }, // string[] URLs
 
     rating: { type: Number, default: 0 },
