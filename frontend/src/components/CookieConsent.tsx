@@ -1,12 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import Link from "next/link";
 
 const STORAGE_KEY = "3t_cookie_consent";
 
 export default function CookieConsent() {
   const [visible, setVisible] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
     try {
@@ -25,7 +27,9 @@ export default function CookieConsent() {
     setVisible(false);
   };
 
-  if (!visible) return null;
+  // The admin portal is a private tool, not public marketing surface — the
+  // banner there just covers the dashboard data.
+  if (!visible || pathname?.startsWith("/admin")) return null;
 
   return (
     <div

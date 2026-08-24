@@ -121,7 +121,10 @@ function getRangeStart(period) {
 async function revenueFor(period) {
   const start = getRangeStart(period);
   const rows = await Order.aggregate([
-    { $match: { createdAt: { $gte: start }, status: { $ne: "cancelled" } } },
+    // Revenue means money actually captured by the gateway. Counting every
+    // non-cancelled order (including `pending` ones that were abandoned at
+    // checkout) overstated takings on the dashboard.
+    { $match: { createdAt: { $gte: start }, status: { $ne: "cancelled" }, "payment.status": "captured" } },
     { $group: { _id: null, total: { $sum: "$total" } } },
   ]);
   return rows[0]?.total || 0;
@@ -848,23 +851,90 @@ router.get("/users", async (req, res, next) => {
   try {
     const page = Math.max(1, Number(req.query.page) || 1);
     const limit = Math.min(500, Number(req.query.limit) || 200);
-    const [rows, total] = await Promise.all([
+    const [rows, total, orderAgg] = await Promise.all([
       User.find().sort({ createdAt: -1 }).skip((page - 1) * limit).limit(limit).lean().exec(),
       User.countDocuments(),
+      Order.aggregate([
+        { $match: { user: { $ne: null } } },
+        {
+          $group: {
+            _id: "$user",
+            orderCount: { $sum: 1 },
+            paidOrders: { $sum: { $cond: [{ $eq: ["$payment.status", "captured"] }, 1, 0] } },
+            totalSpent: { $sum: { $cond: [{ $eq: ["$payment.status", "captured"] }, "$total", 0] } },
+            lastOrderAt: { $max: "$createdAt" },
+          },
+        },
+      ]),
     ]);
-    const users = rows.map((u) => ({
-      id: u._id.toString(),
-      name: u.name,
-      email: u.email,
-      phone: u.phone || "",
-      role: u.role,
-      authMethod: u.googleId ? "google" : u.passwordHash ? "email" : "otp",
-      isVerified: !!u.isVerified,
-      wellnessPoints: u.wellnessPoints || 0,
-      lastLogin: u.lastLogin || null,
-      createdAt: u.createdAt,
-    }));
-    return res.json({ users, total, page, limit });
+    const spendByUser = new Map(orderAgg.map((o) => [o._id.toString(), o]));
+    const users = rows.map((u) => {
+      const agg = spendByUser.get(u._id.toString());
+      return {
+        id: u._id.toString(),
+        name: u.name,
+        email: u.email,
+        phone: u.phone || "",
+        role: u.role,
+        authMethod: u.googleId ? "google" : u.passwordHash ? "email" : "otp",
+        isVerified: !!u.isVerified,
+        wellnessPoints: u.wellnessPoints || 0,
+        lastLogin: u.lastLogin || null,
+        createdAt: u.createdAt,
+        orderCount: agg ? agg.orderCount : 0,
+        paidOrders: agg ? agg.paidOrders : 0,
+        totalSpent: agg ? Math.round(agg.totalSpent) : 0,
+        lastOrderAt: agg ? agg.lastOrderAt : null,
+      };
+    });
+    // Global summary (independent of pagination)
+    const purchasers = orderAgg.filter((o) => o.paidOrders > 0).length;
+    const totalRevenue = Math.round(orderAgg.reduce((s, o) => s + (o.totalSpent || 0), 0));
+    return res.json({ users, total, page, limit, summary: { registered: total, purchasers, totalRevenue } });
+  } catch (err) {
+    return next(err);
+  }
+});
+
+// GET /api/admin/users/:id — full profile + order history for the customer detail card
+router.get("/users/:id", async (req, res, next) => {
+  try {
+    if (!mongoose.isValidObjectId(req.params.id)) throw new ApiError(400, "Invalid user id");
+    const user = await User.findById(req.params.id).lean().exec();
+    if (!user) throw new ApiError(404, "User not found");
+    const orders = await Order.find({ user: user._id }).sort({ createdAt: -1 }).lean().exec();
+    const paid = orders.filter((o) => o.payment && o.payment.status === "captured");
+    const totalSpent = Math.round(paid.reduce((s, o) => s + (o.total || 0), 0));
+    return res.json({
+      user: {
+        id: user._id.toString(),
+        name: user.name,
+        email: user.email,
+        phone: user.phone || "",
+        role: user.role,
+        authMethod: user.googleId ? "google" : user.passwordHash ? "email" : "otp",
+        isVerified: !!user.isVerified,
+        wellnessPoints: user.wellnessPoints || 0,
+        lastLogin: user.lastLogin || null,
+        createdAt: user.createdAt,
+      },
+      orders: orders.map((o) => ({
+        id: o._id.toString(),
+        orderNumber: o.orderNumber,
+        date: o.createdAt,
+        status: o.status,
+        paymentStatus: (o.payment && o.payment.status) || "pending",
+        paymentMethod: (o.payment && o.payment.method) || "",
+        total: o.total,
+        items: (o.items || []).map((it) => ({
+          name: it.name,
+          quantity: it.quantity,
+          price: it.price,
+          subtotal: it.subtotal,
+        })),
+      })),
+      summary: { orderCount: orders.length, paidOrders: paid.length, totalSpent },
+    });
   } catch (err) {
     return next(err);
   }

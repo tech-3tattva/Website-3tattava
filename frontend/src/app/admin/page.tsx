@@ -6,6 +6,8 @@ import { adminApi } from "@/lib/api";
 import AdminProducts from "@/components/admin/AdminProducts";
 import AdminInventory from "@/components/admin/AdminInventory";
 import AdminOrders from "@/components/admin/AdminOrders";
+import AdminCustomers from "@/components/admin/AdminCustomers";
+import AdminOverview from "@/components/admin/AdminOverview";
 import AdminBlog from "@/components/admin/AdminBlog";
 import AdminAssessments from "@/components/admin/AdminAssessments";
 
@@ -284,89 +286,6 @@ function AdminWaitlist() {
                   <td style={{ padding: "10px 12px", color: "rgba(68,42,27,0.5)", fontSize: 12 }}>{e.product}</td>
                   <td style={{ padding: "10px 12px", color: "rgba(68,42,27,0.4)", fontSize: 12 }}>{e.source}</td>
                   <td style={{ padding: "10px 12px", color: "rgba(68,42,27,0.35)", fontSize: 12, whiteSpace: "nowrap" }}>{new Date(e.createdAt).toLocaleString("en-IN")}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
-    </div>
-  );
-}
-
-// ─────────────────────────────────────────────
-// CUSTOMERS / USERS PANEL
-// ─────────────────────────────────────────────
-type AdminUser = {
-  id: string; name: string; email: string; phone: string;
-  role: string; authMethod: "google" | "email" | "otp";
-  isVerified: boolean; wellnessPoints: number; lastLogin: string | null; createdAt: string;
-};
-
-function AdminUsers() {
-  const [users, setUsers] = useState<AdminUser[]>([]);
-  const [total, setTotal] = useState(0);
-  const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState<"all" | "google" | "email">("all");
-
-  async function load() {
-    setLoading(true);
-    try {
-      const d = await adminApi.get<{ users: AdminUser[]; total: number }>("/admin/users");
-      setUsers(d.users); setTotal(d.total);
-    } catch { setUsers([]); }
-    setLoading(false);
-  }
-  useEffect(() => { void load(); }, []);
-
-  const shown = users.filter((u) => (filter === "all" ? true : u.authMethod === filter));
-  const googleCount = users.filter((u) => u.authMethod === "google").length;
-
-  return (
-    <div>
-      <p style={{ fontSize: 12, color: "rgba(68,42,27,0.35)", marginBottom: 14 }}>
-        {total} registered customers · {googleCount} via Google sign-in
-      </p>
-      <div style={{ display: "flex", gap: 8, marginBottom: 18 }}>
-        {(["all", "google", "email"] as const).map((f) => (
-          <button key={f} onClick={() => setFilter(f)} style={{
-            fontSize: 11, padding: "5px 12px", cursor: "pointer", borderRadius: 3, textTransform: "capitalize",
-            background: filter === f ? "rgba(200,150,62,0.16)" : "transparent",
-            color: filter === f ? "#C8963E" : "rgba(68,42,27,0.5)",
-            border: "1px solid rgba(200,150,62,0.25)",
-          }}>{f === "email" ? "Email/Password" : f}</button>
-        ))}
-      </div>
-      {loading ? (
-        <p style={{ color: "rgba(68,42,27,0.3)", fontSize: 13 }}>Loading…</p>
-      ) : shown.length === 0 ? (
-        <p style={{ color: "rgba(68,42,27,0.3)", fontSize: 13 }}>No customers yet.</p>
-      ) : (
-        <div style={{ overflowX: "auto" }}>
-          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
-            <thead>
-              <tr style={{ borderBottom: "1px solid rgba(200,150,62,0.15)" }}>
-                {["Name", "Email", "Phone", "Sign-in", "Role", "Verified", "Joined"].map((h) => (
-                  <th key={h} style={{ padding: "8px 12px", textAlign: "left", fontSize: 10, letterSpacing: "0.15em", color: "rgba(68,42,27,0.35)", textTransform: "uppercase", whiteSpace: "nowrap" }}>{h}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {shown.map((u) => (
-                <tr key={u.id} style={{ borderBottom: "1px solid rgba(200,150,62,0.06)" }}>
-                  <td style={{ padding: "10px 12px", color: "#442a1b" }}>{u.name}</td>
-                  <td style={{ padding: "10px 12px", color: "rgba(68,42,27,0.6)" }}>{u.email}</td>
-                  <td style={{ padding: "10px 12px", color: "rgba(68,42,27,0.6)" }}>{u.phone || "—"}</td>
-                  <td style={{ padding: "10px 12px" }}>
-                    <span style={{
-                      fontSize: 10, padding: "3px 8px", borderRadius: 3, textTransform: "uppercase", letterSpacing: "0.08em",
-                      background: u.authMethod === "google" ? "rgba(66,133,244,0.15)" : "rgba(200,150,62,0.12)",
-                      color: u.authMethod === "google" ? "#1565c0" : "#C8963E",
-                    }}>{u.authMethod}</span>
-                  </td>
-                  <td style={{ padding: "10px 12px", color: "rgba(68,42,27,0.5)", fontSize: 12 }}>{u.role}</td>
-                  <td style={{ padding: "10px 12px", fontSize: 12, color: u.isVerified ? "#2e7d32" : "rgba(68,42,27,0.3)" }}>{u.isVerified ? "Yes" : "No"}</td>
-                  <td style={{ padding: "10px 12px", color: "rgba(68,42,27,0.35)", fontSize: 12, whiteSpace: "nowrap" }}>{new Date(u.createdAt).toLocaleDateString("en-IN")}</td>
                 </tr>
               ))}
             </tbody>
@@ -676,6 +595,7 @@ function AdminInfluencers() {
 export default function AdminDashboardPage() {
   const router = useRouter();
   const [tab, setTab] = useState<Tab>("overview");
+  const [navOpen, setNavOpen] = useState(false);
   const [stats, setStats] = useState<Stats | null>(null);
   const [adminName, setAdminName] = useState("Admin");
   const [authChecked, setAuthChecked] = useState(false);
@@ -750,9 +670,9 @@ export default function AdminDashboardPage() {
         .ad-sidebar { width: 228px; background: #ffffff; border-right: 1px solid rgba(200,150,62,0.18); display: flex; flex-direction: column; position: sticky; top: 0; height: 100vh; align-self: flex-start; padding: 28px 0; flex-shrink: 0; }
         .ad-logo { padding: 0 24px 28px; border-bottom: 1px solid rgba(200,150,62,0.08); }
         .ad-logo-name { font-family: var(--font-cormorant,'Cormorant Garamond'),serif; font-size: 21px; font-weight: 700; color: #442a1b; letter-spacing: 0.05em; }
-        .ad-logo-sub { font-size: 9px; letter-spacing: 0.3em; color: #C8963E; text-transform: uppercase; margin-top: 2px; }
+        .ad-logo-sub { font-size: 10.5px; letter-spacing: 0.22em; color: #a8761c; text-transform: uppercase; margin-top: 2px; }
         .ad-nav { flex: 1; padding: 20px 10px; display: flex; flex-direction: column; gap: 3px; overflow-y: auto; }
-        .ad-nav-btn { display: flex; align-items: center; gap: 11px; padding: 10px 14px; border-radius: 3px; cursor: pointer; font-size: 13px; font-weight: 400; color: rgba(68,42,27,0.42); transition: all 0.18s; background: transparent; border: none; width: 100%; text-align: left; letter-spacing: 0.02em; }
+        .ad-nav-btn { display: flex; align-items: center; gap: 11px; padding: 11px 14px; border-radius: 3px; cursor: pointer; font-size: 13.5px; font-weight: 400; color: rgba(68,42,27,0.68); transition: all 0.18s; background: transparent; border: none; width: 100%; text-align: left; letter-spacing: 0.02em; }
         .ad-nav-btn:hover { color: rgba(68,42,27,0.82); background: rgba(200,150,62,0.06); }
         .ad-nav-btn.active { color: #442a1b; background: rgba(200,150,62,0.1); border-left: 2px solid #C8963E; }
         .ad-nav-icon { font-size: 15px; width: 18px; text-align: center; }
@@ -763,31 +683,54 @@ export default function AdminDashboardPage() {
         .ad-main { flex: 1; padding: 36px 40px; min-width: 0; }
         .ad-topbar { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 36px; }
         .ad-page-title { font-family: var(--font-cormorant,'Cormorant Garamond'),serif; font-size: 34px; font-weight: 700; color: #442a1b; }
-        .ad-page-sub { font-size: 12px; color: rgba(68,42,27,0.32); margin-top: 3px; font-weight: 300; }
+        .ad-page-sub { font-size: 13px; color: rgba(68,42,27,0.55); margin-top: 3px; font-weight: 400; }
         .ad-greeting { text-align: right; }
         .ad-greeting-name { font-size: 13px; color: rgba(68,42,27,0.38); }
         .ad-greeting-name strong { color: #C8963E; font-weight: 500; }
-        .ad-greeting-date { font-size: 11px; color: rgba(68,42,27,0.2); margin-top: 2px; }
+        .ad-greeting-date { font-size: 12px; color: rgba(68,42,27,0.5); margin-top: 2px; }
         .ad-stats { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; margin-bottom: 36px; }
         .ad-stat { background: #ffffff; border: 1px solid rgba(200,150,62,0.1); padding: 22px; position: relative; overflow: hidden; border-radius: 3px; animation: adStatIn 0.5s ease both; }
         .ad-stat:nth-child(1){animation-delay:0.04s} .ad-stat:nth-child(2){animation-delay:0.08s} .ad-stat:nth-child(3){animation-delay:0.12s} .ad-stat:nth-child(4){animation-delay:0.16s}
         @keyframes adStatIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
         .ad-stat::before { content:''; position:absolute; top:0;left:0;right:0; height:2px; background:linear-gradient(90deg,transparent,rgba(200,150,62,0.35),transparent); }
-        .ad-stat-label { font-size: 9px; letter-spacing: 0.26em; text-transform: uppercase; color: rgba(68,42,27,0.32); margin-bottom: 10px; }
+        .ad-stat-label { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(68,42,27,0.55); margin-bottom: 9px; }
         .ad-stat-value { font-family: var(--font-cormorant,'Cormorant Garamond'),serif; font-size: 38px; font-weight: 700; color: #442a1b; line-height: 1; margin-bottom: 5px; }
-        .ad-stat-value.gold { color: #C8963E; }
+        .ad-stat-value.gold { color: #b8801f; }
         .ad-stat-value.alert { color: #c0392b; }
-        .ad-stat-sub { font-size: 11px; color: rgba(68,42,27,0.25); font-weight: 300; }
+        .ad-stat-sub { font-size: 12.5px; color: rgba(68,42,27,0.55); font-weight: 400; }
+
+        /* Mobile navigation bar + drawer backdrop (hidden on desktop) */
+        .ad-mobilebar { display: none; align-items: center; gap: 12px; position: sticky; top: 0; z-index: 60;
+          background: #fff; border-bottom: 1px solid rgba(200,150,62,0.22); padding: 11px 14px; }
+        .ad-burger { width: 44px; height: 44px; flex-shrink: 0; font-size: 20px; cursor: pointer; color: #442a1b;
+          background: #fff; border: 1px solid rgba(200,150,62,0.35); border-radius: 7px; line-height: 1; }
+        .ad-mobilebar-title { font-size: 15.5px; font-weight: 700; color: #442a1b; margin: 0; }
+        .ad-backdrop { position: fixed; inset: 0; background: rgba(28,19,4,0.45); z-index: 65; }
         .ad-section-title { font-family: var(--font-cormorant,'Cormorant Garamond'),serif; font-size: 22px; font-weight: 600; color: #442a1b; margin-bottom: 18px; }
         @media (max-width: 900px) {
           .ad-stats { grid-template-columns: repeat(2,1fr); }
-          .ad-main { padding: 24px 20px; }
-          .ad-sidebar { display: none; }
+          .ad-main { padding: 22px 16px; }
+          /* Sidebar becomes a slide-in drawer instead of disappearing entirely. */
+          .ad-sidebar { position: fixed; top: 0; left: 0; bottom: 0; height: 100vh; z-index: 70;
+            transform: translateX(-100%); transition: transform 0.25s ease; box-shadow: 6px 0 34px rgba(0,0,0,0.22); }
+          .ad-sidebar.open { transform: translateX(0); }
+          .ad-mobilebar { display: flex; }
+          .ad-topbar { flex-direction: column; align-items: flex-start; gap: 8px; }
+          .ad-stat-value { font-size: 32px; }
         }
       `}</style>
 
+      {/* Mobile-only bar: the sidebar is a fixed drawer under 900px, so without
+          this the founder has no way to switch panels on a phone. */}
+      <div className="ad-mobilebar">
+        <button className="ad-burger" onClick={() => setNavOpen(true)} aria-label="Open navigation menu">☰</button>
+        <p className="ad-mobilebar-title">{PAGE_TITLE[tab]}</p>
+      </div>
+
+      {navOpen && <div className="ad-backdrop" onClick={() => setNavOpen(false)} />}
+
       <div className="ad-shell">
-        <aside className="ad-sidebar">
+        <aside className={`ad-sidebar${navOpen ? " open" : ""}`}>
           <div className="ad-logo">
             <div className="ad-logo-name">3TATTAVA</div>
             <div className="ad-logo-sub">Operations Center</div>
@@ -795,13 +738,13 @@ export default function AdminDashboardPage() {
 
           <nav className="ad-nav">
             {NAV.slice(0, 4).map((n) => (
-              <button key={n.id} className={`ad-nav-btn${tab === n.id ? " active" : ""}`} onClick={() => setTab(n.id)}>
+              <button key={n.id} className={`ad-nav-btn${tab === n.id ? " active" : ""}`} onClick={() => { setTab(n.id); setNavOpen(false); }}>
                 <span className="ad-nav-icon">{n.icon}</span>{n.label}
               </button>
             ))}
             <div className="ad-nav-divider" />
             {NAV.slice(4).map((n) => (
-              <button key={n.id} className={`ad-nav-btn${tab === n.id ? " active" : ""}`} onClick={() => setTab(n.id)}>
+              <button key={n.id} className={`ad-nav-btn${tab === n.id ? " active" : ""}`} onClick={() => { setTab(n.id); setNavOpen(false); }}>
                 <span className="ad-nav-icon">{n.icon}</span>{n.label}
               </button>
             ))}
@@ -830,31 +773,8 @@ export default function AdminDashboardPage() {
 
           {tab === "overview" && (
             <>
-              <div className="ad-stats">
-                <div className="ad-stat">
-                  <p className="ad-stat-label">Revenue Today</p>
-                  <p className="ad-stat-value gold">₹{stats?.revenue.today.toLocaleString("en-IN") ?? "—"}</p>
-                  <p className="ad-stat-sub">All non-cancelled orders</p>
-                </div>
-                <div className="ad-stat">
-                  <p className="ad-stat-label">Revenue This Month</p>
-                  <p className="ad-stat-value gold">₹{stats?.revenue.month.toLocaleString("en-IN") ?? "—"}</p>
-                  <p className="ad-stat-sub">MTD</p>
-                </div>
-                <div className="ad-stat">
-                  <p className="ad-stat-label">Total Orders</p>
-                  <p className="ad-stat-value">{stats?.orders.total ?? "—"}</p>
-                  <p className="ad-stat-sub">{stats?.orders.pending ?? 0} pending</p>
-                </div>
-                <div className="ad-stat">
-                  <p className="ad-stat-label">Low Stock SKUs</p>
-                  <p className={`ad-stat-value${(stats?.inventory.lowStockProducts ?? 0) > 0 ? " alert" : ""}`}>
-                    {stats?.inventory.lowStockProducts ?? "—"}
-                  </p>
-                  <p className="ad-stat-sub">Below threshold</p>
-                </div>
-              </div>
-              <p className="ad-section-title">Product Overview</p>
+              <AdminOverview stats={stats} onOpenTab={setTab} />
+              <p className="ad-section-title" style={{ marginTop: 30 }}>Product overview</p>
               <AdminProducts readOnly />
             </>
           )}
@@ -867,7 +787,7 @@ export default function AdminDashboardPage() {
           {tab === "waitlist"    && <AdminWaitlist />}
           {tab === "assessments" && <AdminAssessments />}
           {tab === "influencers" && <AdminInfluencers />}
-          {tab === "users"       && <AdminUsers />}
+          {tab === "users"       && <AdminCustomers />}
           {tab === "blog"        && <AdminBlog />}
         </main>
       </div>

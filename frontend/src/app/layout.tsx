@@ -131,6 +131,8 @@ export default function RootLayout({
             <LeadCaptureModal />
             <PurchaseNudge />
           </ChromeGate>
+          {/* Outside ChromeGate: consent must still appear on chrome-free public
+              landing pages (/wtf, /wtf-gym, /waitlist). It self-hides on /admin. */}
           <CookieConsent />
           <ChromeGate>
             <WelcomeOfferNotification />
