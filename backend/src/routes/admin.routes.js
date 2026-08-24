@@ -998,13 +998,45 @@ router.get("/users", async (req, res, next) => {
       User.find().sort({ createdAt: -1 }).skip((page - 1) * limit).limit(limit).lean().exec(),
       User.countDocuments(),
       Order.aggregate([
+        // Samples carry no money and pre-launch tests are not sales, so neither
+        // may contribute to a customer's spend. Order counts still include them
+        // so the panel reflects everything actually shipped to that person.
         { $match: { user: { $ne: null } } },
         {
           $group: {
             _id: "$user",
             orderCount: { $sum: 1 },
-            paidOrders: { $sum: { $cond: [{ $eq: ["$payment.status", "captured"] }, 1, 0] } },
-            totalSpent: { $sum: { $cond: [{ $eq: ["$payment.status", "captured"] }, "$total", 0] } },
+            sampleOrders: { $sum: { $cond: [{ $eq: ["$isSample", true] }, 1, 0] } },
+            paidOrders: {
+              $sum: {
+                $cond: [
+                  {
+                    $and: [
+                      { $eq: ["$payment.status", "captured"] },
+                      { $ne: ["$isSample", true] },
+                      { $ne: ["$isTest", true] },
+                    ],
+                  },
+                  1,
+                  0,
+                ],
+              },
+            },
+            totalSpent: {
+              $sum: {
+                $cond: [
+                  {
+                    $and: [
+                      { $eq: ["$payment.status", "captured"] },
+                      { $ne: ["$isSample", true] },
+                      { $ne: ["$isTest", true] },
+                    ],
+                  },
+                  "$total",
+                  0,
+                ],
+              },
+            },
             lastOrderAt: { $max: "$createdAt" },
           },
         },
@@ -1046,7 +1078,11 @@ router.get("/users/:id", async (req, res, next) => {
     const user = await User.findById(req.params.id).lean().exec();
     if (!user) throw new ApiError(404, "User not found");
     const orders = await Order.find({ user: user._id }).sort({ createdAt: -1 }).lean().exec();
-    const paid = orders.filter((o) => o.payment && o.payment.status === "captured");
+    // Only genuine sales count toward spend — samples are free and pre-launch
+    // tests were not customer purchases.
+    const paid = orders.filter(
+      (o) => o.payment && o.payment.status === "captured" && !o.isSample && !o.isTest
+    );
     const totalSpent = Math.round(paid.reduce((s, o) => s + (o.total || 0), 0));
     return res.json({
       user: {

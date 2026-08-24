@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { adminApi as api } from "@/lib/api";
+import { useScrollLock } from "@/hooks/useScrollLock";
 
 type AdminUser = {
   id: string;
@@ -63,6 +64,8 @@ export default function AdminCustomers() {
     setLoading(false);
   }, []);
   useEffect(() => { void load(); }, [load]);
+
+  useScrollLock(!!detail || detailLoading);
 
   async function openDetail(id: string) {
     setDetailLoading(true);
@@ -140,8 +143,9 @@ export default function AdminCustomers() {
         .cus-spent { font-weight: 600; color: #2e7d32; white-space: nowrap; }
         .cus-empty { text-align: center; padding: 56px 0; color: rgba(68,42,27,0.45); font-size: 14px; }
 
-        .cus-modal-wrap { position: fixed; inset: 0; background: rgba(28,19,4,0.5); z-index: 1000; display: flex; align-items: flex-start; justify-content: center; padding: 32px 14px; overflow-y: auto; }
-        .cus-modal { background: #fdfaf3; border: 1px solid rgba(200,150,62,0.3); border-radius: 10px; width: 100%; max-width: 700px; padding: 22px; box-shadow: 0 24px 60px rgba(0,0,0,0.28); }
+        .cus-modal-wrap { position: fixed; inset: 0; background: rgba(28,19,4,0.5); z-index: 1000; display: flex; align-items: flex-start; justify-content: center; padding: 20px 14px; overflow-y: auto; overscroll-behavior: contain; }
+        /* Scroll inside the card, and stop the gesture reaching the dashboard. */
+        .cus-modal { background: #fdfaf3; border: 1px solid rgba(200,150,62,0.3); border-radius: 10px; width: 100%; max-width: 700px; padding: 22px; box-shadow: 0 24px 60px rgba(0,0,0,0.28); max-height: calc(100vh - 40px); overflow-y: auto; overscroll-behavior: contain; }
         .cus-x { border: none; background: transparent; font-size: 26px; line-height: 1; color: rgba(68,42,27,0.45); cursor: pointer; padding: 0 4px; }
         .cus-sec { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(68,42,27,0.5); margin: 18px 0 8px; font-weight: 600; }
         .cus-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; }

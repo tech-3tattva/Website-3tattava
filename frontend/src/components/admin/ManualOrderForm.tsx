@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { adminApi as api } from "@/lib/api";
+import { useScrollLock } from "@/hooks/useScrollLock";
 
 type CatalogueProduct = { id?: string; _id?: string; name: string; price: number; stockQuantity?: number };
 type Line = { productId: string; quantity: number };
@@ -42,6 +43,8 @@ export default function ManualOrderForm({ onClose, onCreated }: { onClose: () =>
       .then((d) => setProducts(d.products || []))
       .catch(() => setProducts([]));
   }, []);
+
+  useScrollLock(true);
 
   const isSample = paymentMode === "sample";
   const priceOf = (id: string) => {
@@ -110,8 +113,13 @@ export default function ManualOrderForm({ onClose, onCreated }: { onClose: () =>
   return (
     <div className="mo-wrap" onClick={onClose}>
       <style>{`
-        .mo-wrap { position: fixed; inset: 0; background: rgba(28,19,4,0.5); z-index: 1100; display: flex; align-items: flex-start; justify-content: center; padding: 28px 14px; overflow-y: auto; }
-        .mo-modal { background: #fdfaf3; border: 1px solid rgba(200,150,62,0.3); border-radius: 10px; width: 100%; max-width: 680px; padding: 22px; box-shadow: 0 24px 60px rgba(0,0,0,0.28); }
+        /* overscroll-behavior stops the scroll continuing into the dashboard
+           behind once the overlay hits its end. */
+        .mo-wrap { position: fixed; inset: 0; background: rgba(28,19,4,0.5); z-index: 1100; display: flex; align-items: flex-start; justify-content: center; padding: 20px 14px; overflow-y: auto; overscroll-behavior: contain; }
+        /* Cap the height and scroll the body, so the action buttons stay on
+           screen no matter how many product lines are added. */
+        .mo-modal { background: #fdfaf3; border: 1px solid rgba(200,150,62,0.3); border-radius: 10px; width: 100%; max-width: 680px; box-shadow: 0 24px 60px rgba(0,0,0,0.28); display: flex; flex-direction: column; max-height: calc(100vh - 40px); }
+        .mo-scroll { overflow-y: auto; overscroll-behavior: contain; padding: 22px 22px 4px; flex: 1 1 auto; }
         .mo-h { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 4px; }
         .mo-title { font-size: 19px; font-weight: 700; color: #442a1b; margin: 0; }
         .mo-sub { font-size: 13px; color: rgba(68,42,27,0.6); margin: 2px 0 16px; }
@@ -128,7 +136,8 @@ export default function ManualOrderForm({ onClose, onCreated }: { onClose: () =>
         .mo-tot { background: #fff; border: 1px solid rgba(200,150,62,0.16); border-radius: 6px; padding: 11px 14px; margin-top: 12px; }
         .mo-tot-row { display: flex; justify-content: space-between; font-size: 13.5px; padding: 4px 0; color: rgba(68,42,27,0.8); }
         .mo-tot-row.big { font-size: 16px; font-weight: 700; color: #442a1b; border-top: 1px solid rgba(68,42,27,0.08); margin-top: 5px; padding-top: 8px; }
-        .mo-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 18px; flex-wrap: wrap; }
+        /* Sits outside the scroll area so Cancel/Create are always reachable. */
+        .mo-actions { display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap; flex-shrink: 0; padding: 14px 22px; border-top: 1px solid rgba(200,150,62,0.18); background: #fdfaf3; border-radius: 0 0 10px 10px; }
         .mo-btn { padding: 12px 22px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; border: none; }
         .mo-btn.primary { background: linear-gradient(135deg,#C8963E,#b8801f); color: #1c1304; }
         .mo-btn.ghost { background: #fff; border: 1px solid rgba(200,150,62,0.35); color: #442a1b; }
@@ -140,7 +149,7 @@ export default function ManualOrderForm({ onClose, onCreated }: { onClose: () =>
       `}</style>
 
       <div className="mo-modal" onClick={(e) => e.stopPropagation()}>
-        <div className="mo-h">
+        <div className="mo-h" style={{ padding: "20px 22px 0" }}>
           <div>
             <h3 className="mo-title">Record an offline order</h3>
             <p className="mo-sub">Phone, WhatsApp, in-person or doctor sampling. Keeps it in the order book and out of the courier panel.</p>
@@ -150,12 +159,14 @@ export default function ManualOrderForm({ onClose, onCreated }: { onClose: () =>
 
         {done ? (
           <>
-            <div className="mo-ok">
-              Order <strong>{done.orderNumber}</strong> created · total ₹{done.total.toLocaleString("en-IN")}
+            <div className="mo-scroll">
+              <div className="mo-ok">
+                Order <strong>{done.orderNumber}</strong> created · total ₹{done.total.toLocaleString("en-IN")}
+              </div>
+              <p className="mo-sec">Shipping</p>
+              <p className="mo-note">Push this order to NimbusPost to get an AWB. Status then syncs back automatically.</p>
+              {shipMsg && <div className="mo-ok" style={{ marginTop: 10 }}>{shipMsg}</div>}
             </div>
-            <p className="mo-sec">Shipping</p>
-            <p className="mo-note">Push this order to NimbusPost to get an AWB. Status then syncs back automatically.</p>
-            {shipMsg && <div className="mo-ok" style={{ marginTop: 10 }}>{shipMsg}</div>}
             <div className="mo-actions">
               <button className="mo-btn ghost" onClick={onClose}>Done</button>
               <button className="mo-btn primary" onClick={createShipment} disabled={!!shipMsg}>Create shipment →</button>
@@ -163,6 +174,7 @@ export default function ManualOrderForm({ onClose, onCreated }: { onClose: () =>
           </>
         ) : (
           <>
+            <div className="mo-scroll">
             <p className="mo-sec">Products</p>
             {lines.map((l, i) => (
               <div className="mo-line" key={i}>
@@ -231,6 +243,7 @@ export default function ManualOrderForm({ onClose, onCreated }: { onClose: () =>
             </div>
 
             {error && <div className="mo-err">{error}</div>}
+            </div>
 
             <div className="mo-actions">
               <button className="mo-btn ghost" onClick={onClose} disabled={busy}>Cancel</button>

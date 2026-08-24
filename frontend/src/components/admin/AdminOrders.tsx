@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { adminApi as api } from "@/lib/api";
+import { useScrollLock } from "@/hooks/useScrollLock";
 import ManualOrderForm from "@/components/admin/ManualOrderForm";
 
 type OrderItem = {
@@ -129,6 +130,10 @@ export default function AdminOrders() {
 
   useEffect(() => { void load(); }, [load]);
 
+  // ManualOrderForm locks scrolling itself, so only the detail card is handled
+  // here — locking twice leaves the page stuck when the inner one unmounts.
+  useScrollLock(!!selected);
+
   const updateStatus = async (id: string, status: OrderStatus) => {
     setUpdating(id);
     try {
@@ -204,8 +209,9 @@ export default function AdminOrders() {
         .ord-pager button:disabled { opacity: 0.4; cursor: not-allowed; }
 
         /* ── Detail modal ── */
-        .ord-modal-wrap { position: fixed; inset: 0; background: rgba(28,19,4,0.5); z-index: 1000; display: flex; align-items: flex-start; justify-content: center; padding: 32px 14px; overflow-y: auto; }
-        .ord-modal { background: #fdfaf3; border: 1px solid rgba(200,150,62,0.3); border-radius: 10px; width: 100%; max-width: 720px; padding: 22px; box-shadow: 0 24px 60px rgba(0,0,0,0.28); }
+        .ord-modal-wrap { position: fixed; inset: 0; background: rgba(28,19,4,0.5); z-index: 1000; display: flex; align-items: flex-start; justify-content: center; padding: 20px 14px; overflow-y: auto; overscroll-behavior: contain; }
+        /* Scroll inside the card, and stop the gesture reaching the dashboard. */
+        .ord-modal { background: #fdfaf3; border: 1px solid rgba(200,150,62,0.3); border-radius: 10px; width: 100%; max-width: 720px; padding: 22px; box-shadow: 0 24px 60px rgba(0,0,0,0.28); max-height: calc(100vh - 40px); overflow-y: auto; overscroll-behavior: contain; }
         .ord-modal-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 16px; }
         .ord-modal-title { font-size: 20px; font-weight: 700; color: #442a1b; margin: 0; }
         .ord-x { border: none; background: transparent; font-size: 26px; line-height: 1; color: rgba(68,42,27,0.45); cursor: pointer; padding: 0 4px; }
