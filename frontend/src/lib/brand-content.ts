@@ -18,6 +18,21 @@ export const BRAND = {
   domain: "3tattava.com",
   url: "https://www.3tattava.com",
   email: "support@3tattava.com",
+  // Must point at a file that actually ships in /public: structured data that
+  // references a missing logo is a dead entity signal to search engines.
+  logoPath: "/logos/logo-main.png",
+  // Must match the Google Business Profile exactly, character for character.
+  // Inconsistent name/address/phone across sources is what stops Google
+  // trusting a business is real.
+  phone: "+91-95601-49956",
+  address: {
+    street: "690A/1, Kabool Nagar",
+    locality: "Shahdara",
+    region: "Delhi",
+    city: "New Delhi",
+    postalCode: "110032",
+    country: "IN",
+  },
   founderName: "Dr. Kashish Gupta",
   founderCredentials: "BAMS",
 } as const;

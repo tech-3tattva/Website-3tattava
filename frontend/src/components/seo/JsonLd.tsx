@@ -73,7 +73,10 @@ export function OrganizationSchema() {
     name: BRAND.name,
     alternateName: "3TATTAVA Ayurveda",
     url: BRAND.url,
-    logo: `${BRAND.url}/logo.png`,
+    // /logo.png does not exist and returned 404, so Google was told to fetch a
+    // logo it could never load. Point at a file that is actually shipped.
+    logo: `${BRAND.url}${BRAND.logoPath}`,
+    legalName: "SankalpaSiddhi Ayupharma Pvt. Ltd.",
     email: BRAND.email,
     description:
       "India's first Performance Ayurveda brand. Pure Himalayan Shilajit Resin & Honey Sticks. Lab-tested, doctor-formulated by Dr. Kashish Gupta, BAMS.",
@@ -84,10 +87,17 @@ export function OrganizationSchema() {
       name: `${BRAND.founderName}, ${BRAND.founderCredentials}`,
       jobTitle: "Founder & Chief Ayurveda Doctor",
     },
+    // Mirrors the Google Business Profile exactly so the two corroborate each
+    // other rather than reading as two different businesses.
     address: {
       "@type": "PostalAddress",
-      addressCountry: "IN",
+      streetAddress: BRAND.address.street,
+      addressLocality: BRAND.address.locality,
+      addressRegion: BRAND.address.region,
+      postalCode: BRAND.address.postalCode,
+      addressCountry: BRAND.address.country,
     },
+    telephone: BRAND.phone,
     sameAs: [
       "https://www.instagram.com/3tattava",
       "https://www.facebook.com/3tattava",
@@ -95,6 +105,7 @@ export function OrganizationSchema() {
     contactPoint: {
       "@type": "ContactPoint",
       contactType: "customer support",
+      telephone: BRAND.phone,
       email: BRAND.email,
       availableLanguage: ["en", "hi"],
     },
@@ -226,7 +237,7 @@ export function ArticleSchema({ article }: { article: ArticleLike }) {
     publisher: {
       "@type": "Organization",
       name: BRAND.name,
-      logo: { "@type": "ImageObject", url: `${BRAND.url}/logo.png` },
+      logo: { "@type": "ImageObject", url: `${BRAND.url}${BRAND.logoPath}` },
     },
     mainEntityOfPage: `${BRAND.url}/education/${article.slug}`,
     about: "Ayurveda, Shilajit, Performance Ayurveda",
