@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { adminApi as api } from "@/lib/api";
+import ManualOrderForm from "@/components/admin/ManualOrderForm";
 
 type OrderItem = {
   name: string;
@@ -109,6 +110,7 @@ export default function AdminOrders() {
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState<string | null>(null);
   const [selected, setSelected] = useState<Order | null>(null);
+  const [showManual, setShowManual] = useState(false);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -240,6 +242,26 @@ export default function AdminOrders() {
         <div className="ord-card"><p className="ord-card-l">Units sold</p><p className="ord-card-v">{summary.units}</p></div>
         <div className="ord-card"><p className="ord-card-l">Needs action</p><p className="ord-card-v">{summary.needsAction}</p></div>
       </div>
+
+      <div style={{ marginBottom: 14 }}>
+        <button
+          onClick={() => setShowManual(true)}
+          style={{
+            padding: "11px 20px", borderRadius: 6, border: "none", cursor: "pointer",
+            background: "linear-gradient(135deg,#C8963E,#b8801f)", color: "#1c1304",
+            fontSize: 13, fontWeight: 600, fontFamily: "inherit",
+          }}
+        >
+          + Record offline order
+        </button>
+        <span style={{ fontSize: 12.5, color: "rgba(68,42,27,0.55)", marginLeft: 12 }}>
+          Phone, WhatsApp, in-person or doctor sampling — never key these into the courier panel.
+        </span>
+      </div>
+
+      {showManual && (
+        <ManualOrderForm onClose={() => setShowManual(false)} onCreated={load} />
+      )}
 
       {/* Search + status filter */}
       <div className="ord-toolbar">

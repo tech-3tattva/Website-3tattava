@@ -282,6 +282,139 @@ router.get("/orders", async (req, res, next) => {
   }
 });
 
+/**
+ * POST /api/admin/orders/manual
+ *
+ * Records an order taken outside the website (phone, WhatsApp, in person, or
+ * doctor sampling) so it lives in the same order book as web checkouts. Before
+ * this existed, staff keyed such orders straight into the courier panel and
+ * they never appeared in reporting at all.
+ *
+ * Line prices are read from the catalogue, never from the request body, so an
+ * offline order cannot invent revenue. Sample orders are forced to zero.
+ */
+const MANUAL_PAYMENT_MODES = ["upi_direct", "bank_transfer", "cash", "card_machine", "cod", "sample"];
+
+router.post("/orders/manual", async (req, res, next) => {
+  try {
+    const schema = z.object({
+      items: z
+        .array(z.object({ productId: z.string().min(1), quantity: z.number().int().positive() }))
+        .min(1),
+      shippingAddress: z.object({
+        title: z.enum(["Mr.", "Mrs.", "Ms.", "Dr."]).optional(),
+        firstName: z.string().min(1),
+        lastName: z.string().min(1).default("-"),
+        email: z.string().email().optional(),
+        phone: z.string().min(10),
+        line1: z.string().min(1),
+        line2: z.string().optional(),
+        city: z.string().min(1),
+        state: z.string().min(1),
+        pincode: z.string().min(6),
+        country: z.string().min(1).optional(),
+      }),
+      paymentMode: z.enum(MANUAL_PAYMENT_MODES),
+      paid: z.boolean().default(false),
+      shippingFee: z.number().nonnegative().default(0),
+      discountAmount: z.number().nonnegative().default(0),
+      note: z.string().max(500).optional(),
+    });
+    const body = schema.parse(req.body);
+    const isSample = body.paymentMode === "sample";
+
+    // Resolve every line against the catalogue so name/price/slug are trustworthy.
+    const items = [];
+    for (const line of body.items) {
+      const product = mongoose.isValidObjectId(line.productId)
+        ? await Product.findById(line.productId).lean().exec()
+        : await Product.findOne({ $or: [{ sku: line.productId }, { slug: line.productId }] }).lean().exec();
+      if (!product) throw new ApiError(400, `Product not found: ${line.productId}`);
+      const price = isSample ? 0 : Number(product.price) || 0;
+      items.push({
+        product: product._id,
+        productId: product._id.toString(),
+        name: product.name,
+        image: (product.images && product.images[0]) || "/placeholder.svg",
+        slug: product.slug,
+        price,
+        mrp: Number(product.mrp) || price,
+        quantity: line.quantity,
+        subtotal: price * line.quantity,
+      });
+    }
+
+    const subtotal = items.reduce((s, i) => s + i.subtotal, 0);
+    const shippingFee = isSample ? 0 : body.shippingFee;
+    const discountAmount = isSample ? 0 : Math.min(body.discountAmount, subtotal);
+    const total = Math.max(0, subtotal + shippingFee - discountAmount);
+
+    // A sample is "settled" by definition; otherwise trust the paid flag.
+    const captured = isSample || body.paid;
+    const now = new Date();
+    const adminEmail = req.user?.email || "admin";
+    // Offline buyers (doctors, walk-ins) often give a phone number only, but the
+    // Order schema requires an address email. Synthesise an obviously-internal
+    // placeholder rather than making staff invent a real-looking address —
+    // mirrors the existing @otp.3tattava.local convention used for phone signups.
+    const contactEmail =
+      body.shippingAddress.email ||
+      `p${body.shippingAddress.phone.replace(/\D/g, "")}@offline.3tattava.local`;
+
+    const order = await Order.create({
+      orderNumber: `3T-${Date.now()}`,
+      user: null,
+      guestEmail: body.shippingAddress.email || undefined,
+      items,
+      shippingAddress: { country: "India", ...body.shippingAddress, email: contactEmail },
+      subtotal,
+      shippingFee,
+      gstAmount: 0,
+      discountAmount,
+      total,
+      status: "confirmed",
+      statusHistory: [{ status: "confirmed", updatedBy: adminEmail, timestamp: now }],
+      payment: {
+        provider: "offline",
+        method: body.paymentMode,
+        status: captured ? "captured" : "pending",
+        capturedAt: captured ? now : undefined,
+      },
+      source: "offline-admin",
+      isSample,
+      createdByAdmin: adminEmail,
+      adminNote: body.note,
+    });
+
+    // Mirror the web checkout: decrement stock and leave an inventory trail.
+    for (const item of items) {
+      const updated = await Product.findOneAndUpdate(
+        { _id: item.product, stockQuantity: { $gte: item.quantity } },
+        { $inc: { stockQuantity: -item.quantity } },
+        { new: true }
+      ).exec();
+      if (!updated) continue; // insufficient stock: order still stands, flagged by the log gap
+      await InventoryLog.create({
+        product: item.product,
+        changeType: "sale",
+        quantityBefore: updated.stockQuantity + item.quantity,
+        quantityChange: -item.quantity,
+        quantityAfter: updated.stockQuantity,
+        reason: `Offline order ${order.orderNumber} (${body.paymentMode}) by ${adminEmail}`,
+        orderId: order._id,
+        adminId: mongoose.isValidObjectId(req.user?.id) ? req.user.id : undefined,
+      });
+    }
+
+    return res.status(201).json(order.toJSON());
+  } catch (err) {
+    if (err instanceof z.ZodError) {
+      return next(new ApiError(400, err.issues[0]?.message || "Invalid order payload"));
+    }
+    return next(err);
+  }
+});
+
 router.put("/orders/:id/status", async (req, res, next) => {
   try {
     const bodySchema = z.object({

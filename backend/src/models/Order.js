@@ -145,6 +145,23 @@ const orderSchema = new mongoose.Schema(
     // Post-purchase product-review request emails (see scripts/send-review-requests.js).
     reviewEmail7Sent: { type: Boolean, default: false },
     reviewEmail21Sent: { type: Boolean, default: false },
+
+    // Where the order came from. "website" is a normal customer checkout;
+    // "offline-admin" is a phone/WhatsApp/in-person order keyed in by staff;
+    // "nimbuspost-import" is a historical record back-filled from the courier
+    // panel. Keeping this explicit is what stops manual orders disappearing
+    // from reporting the way the pre-launch ones did.
+    source: {
+      type: String,
+      enum: ["website", "offline-admin", "nimbuspost-import"],
+      default: "website",
+      index: true,
+    },
+    // Doctor/influencer seeding: shipped at zero value, must never count as revenue.
+    isSample: { type: Boolean, default: false },
+    // Admin email that created an offline order (the website has no other audit trail).
+    createdByAdmin: { type: String },
+    adminNote: { type: String },
   },
   { timestamps: true }
 );
