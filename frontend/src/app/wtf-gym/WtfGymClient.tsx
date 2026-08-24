@@ -5,7 +5,10 @@ import { motion } from 'framer-motion';
 
 /* ─── Assets ─── */
 const CDN = 'https://media.3tattava.com';
-const HERO_POSTER = `${CDN}/banners/Landing_Page/6X3+LAUNCH+POSTER.png`;
+/* 1800px WebP (~134 KB). The original 6X3 LAUNCH POSTER.png is a 7200x14400
+   print file weighing ~50 MB — it was being downloaded in full by every QR
+   visitor on mobile data before this. */
+const HERO_POSTER = `${CDN}/banners/Landing_Page/wtf-launch-poster-1800.webp`;
 const HERO_VIDEO = `${CDN}/banners/Landing_Page/3tattava-x-WTF.mp4`;
 const ROCKRESIN_IMG = `${CDN}/products/rockresin/1.png`;
 const SHAHJEET_IMG = `${CDN}/products/tgftcf%201.png`;
