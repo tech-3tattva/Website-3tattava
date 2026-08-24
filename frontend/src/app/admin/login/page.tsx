@@ -42,7 +42,7 @@ export default function AdminLoginPage() {
           justify-content: center;
           position: relative;
           overflow: hidden;
-          font-family: var(--font-jost, 'Jost'), sans-serif;
+          font-family: var(--font-primary), sans-serif;
         }
         .al-bg {
           position: absolute;
@@ -77,9 +77,9 @@ export default function AdminLoginPage() {
           from { opacity: 0; transform: translateY(20px); }
           to   { opacity: 1; transform: translateY(0); }
         }
-        .al-brand { font-family: var(--font-cormorant, 'Cormorant Garamond'), serif; font-size: 26px; font-weight: 700; color: #442a1b; letter-spacing: 0.06em; text-shadow: none; }
+        .al-brand { font-family: var(--font-primary), serif; font-size: 26px; font-weight: 700; color: #442a1b; letter-spacing: 0.06em; text-shadow: none; }
         .al-sub { font-size: 10px; letter-spacing: 0.32em; color: #C8963E; text-transform: uppercase; margin-top: 2px; margin-bottom: 44px; }
-        .al-title { font-family: var(--font-cormorant, 'Cormorant Garamond'), serif; font-size: 30px; font-weight: 600; color: #442a1b; margin: 0 0 6px; }
+        .al-title { font-family: var(--font-primary), serif; font-size: 30px; font-weight: 600; color: #442a1b; margin: 0 0 6px; }
         .al-desc { font-size: 13px; color: rgba(68,42,27,0.38); margin: 0 0 32px; font-weight: 300; }
         .al-field { margin-bottom: 18px; }
         .al-label { display: block; font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: rgba(68,42,27,0.45); margin-bottom: 7px; }
@@ -88,7 +88,7 @@ export default function AdminLoginPage() {
           background: rgba(68,42,27,0.04);
           border: 1px solid rgba(200,150,62,0.2);
           color: #442a1b;
-          font-family: var(--font-jost, 'Jost'), sans-serif;
+          font-family: var(--font-primary), sans-serif;
           font-size: 14px;
           font-weight: 300;
           padding: 13px 15px;
@@ -114,7 +114,7 @@ export default function AdminLoginPage() {
           background: #C8963E;
           color: #ffffff;
           color: #442a1b;
-          font-family: var(--font-jost, 'Jost'), sans-serif;
+          font-family: var(--font-primary), sans-serif;
           font-size: 11px;
           font-weight: 600;
           letter-spacing: 0.22em;

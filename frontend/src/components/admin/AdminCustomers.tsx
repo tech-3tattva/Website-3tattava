@@ -3,8 +3,12 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { adminApi as api } from "@/lib/api";
 import { useScrollLock } from "@/hooks/useScrollLock";
+import { useSortable } from "@/hooks/useSortable";
+import { useFeedback } from "@/components/admin/AdminToast";
+import { datedFilename, downloadCsv, toCsv } from "@/lib/csv";
 
-type AdminUser = {
+/** Profile fields, as returned by both the list and the detail endpoint. */
+type CustomerProfile = {
   id: string;
   name: string;
   email: string;
@@ -15,10 +19,17 @@ type AdminUser = {
   wellnessPoints: number;
   lastLogin: string | null;
   createdAt: string;
+};
+
+type AdminUser = CustomerProfile & {
   orderCount: number;
   paidOrders: number;
+  sampleOrders: number;
   totalSpent: number;
+  firstOrderAt: string | null;
   lastOrderAt: string | null;
+  /** Orders matched to this account by contact details rather than owned outright. */
+  linkedGuestOrders: number;
 };
 
 type UserOrderItem = { name: string; quantity: number; price: number; subtotal: number };
@@ -30,18 +41,66 @@ type UserOrder = {
   paymentStatus: string;
   paymentMethod: string;
   total: number;
+  /** Matched to this customer by email or phone instead of owned outright. */
+  linkedGuest: boolean;
   items: UserOrderItem[];
 };
 type UserDetail = {
-  user: AdminUser;
+  user: CustomerProfile;
   orders: UserOrder[];
-  summary: { orderCount: number; paidOrders: number; totalSpent: number };
+  summary: { orderCount: number; paidOrders: number; totalSpent: number; linkedGuestOrders: number };
 };
 type UsersSummary = { registered: number; purchasers: number; totalRevenue: number };
 
 const inr = (n?: number) => `₹${(n ?? 0).toLocaleString("en-IN")}`;
 const dayMonth = (d?: string | null) =>
   d ? new Date(d).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "2-digit" }) : "—";
+
+/** Spreadsheet-sortable date. `dayMonth` is for reading, this is for exporting. */
+const isoDay = (d?: string | null) => (d ? new Date(d).toISOString().slice(0, 10) : "");
+
+// Declared at module level because `useSortable` memoises on this identity.
+const SORT_ACCESSORS: Record<string, (u: AdminUser) => string | number | null | undefined> = {
+  name: (u) => u.name || u.email,
+  orders: (u) => u.orderCount,
+  paid: (u) => u.paidOrders,
+  spent: (u) => u.totalSpent,
+  lastOrder: (u) => (u.lastOrderAt ? new Date(u.lastOrderAt).getTime() : null),
+  joined: (u) => new Date(u.createdAt).getTime(),
+};
+
+/** `desc`/`asc` name each direction for the phone's sort control. */
+const COLUMNS: Array<{ label: string; key?: string; desc?: string; asc?: string }> = [
+  { label: "Customer", key: "name", desc: "Z to A", asc: "A to Z" },
+  { label: "Phone" },
+  { label: "Sign-in" },
+  { label: "Orders", key: "orders", desc: "most first", asc: "fewest first" },
+  { label: "Paid", key: "paid", desc: "most first", asc: "fewest first" },
+  { label: "Spent", key: "spent", desc: "highest first", asc: "lowest first" },
+  { label: "Last order", key: "lastOrder", desc: "newest first", asc: "oldest first" },
+  { label: "Joined", key: "joined", desc: "newest first", asc: "oldest first" },
+  { label: "" },
+];
+
+const CSV_COLUMNS: Array<{ header: string; value: (u: AdminUser) => unknown }> = [
+  { header: "Name", value: (u) => u.name },
+  { header: "Email", value: (u) => u.email },
+  { header: "Phone", value: (u) => u.phone },
+  { header: "Sign-in method", value: (u) => u.authMethod },
+  { header: "Role", value: (u) => u.role },
+  { header: "Verified", value: (u) => (u.isVerified ? "Yes" : "No") },
+  { header: "Order count", value: (u) => u.orderCount },
+  // Kept beside the count it is folded into, so the spreadsheet cannot present
+  // guest-matched orders as account purchases.
+  { header: "Guest-matched orders", value: (u) => u.linkedGuestOrders },
+  { header: "Paid orders", value: (u) => u.paidOrders },
+  { header: "Sample orders", value: (u) => u.sampleOrders },
+  { header: "Total spent", value: (u) => u.totalSpent },
+  { header: "First order", value: (u) => isoDay(u.firstOrderAt) },
+  { header: "Last order", value: (u) => isoDay(u.lastOrderAt) },
+  { header: "Joined", value: (u) => isoDay(u.createdAt) },
+  { header: "Wellness points", value: (u) => u.wellnessPoints },
+];
 
 export default function AdminCustomers() {
   const [users, setUsers] = useState<AdminUser[]>([]);
@@ -52,6 +111,7 @@ export default function AdminCustomers() {
   const [query, setQuery] = useState("");
   const [detail, setDetail] = useState<UserDetail | null>(null);
   const [detailLoading, setDetailLoading] = useState(false);
+  const { toast } = useFeedback();
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -60,9 +120,12 @@ export default function AdminCustomers() {
       setUsers(d.users || []);
       setTotal(d.total ?? 0);
       setSummary(d.summary ?? null);
-    } catch { setUsers([]); }
+    } catch {
+      setUsers([]);
+      toast("error", "Could not load customers. Check the connection and try again.");
+    }
     setLoading(false);
-  }, []);
+  }, [toast]);
   useEffect(() => { void load(); }, [load]);
 
   useScrollLock(!!detail || detailLoading);
@@ -72,7 +135,10 @@ export default function AdminCustomers() {
     setDetail(null);
     try {
       setDetail(await api.get<UserDetail>(`/admin/users/${id}`));
-    } catch { setDetail(null); }
+    } catch {
+      setDetail(null);
+      toast("error", "Could not open this customer's history.");
+    }
     setDetailLoading(false);
   }
 
@@ -86,6 +152,40 @@ export default function AdminCustomers() {
       return [u.name, u.email, u.phone].filter(Boolean).join(" ").toLowerCase().includes(q);
     });
   }, [users, filter, query]);
+
+  // Sorting runs on the narrowed set, so the arrows order what is on screen.
+  const { sorted, sort, toggle, headerProps } = useSortable(shown, SORT_ACCESSORS);
+
+  /**
+   * Drives the header's own sort state from a "key:dir" value, so the phone
+   * control and the desktop arrows are never two copies of the same idea.
+   * `toggle` walks descending -> ascending -> off, and its updates compose, so
+   * replaying that cycle lands on any exact direction.
+   */
+  const applySort = useCallback(
+    (value: string) => {
+      if (!value) {
+        if (sort) for (let i = sort.dir === "desc" ? 2 : 1; i > 0; i -= 1) toggle(sort.key);
+        return;
+      }
+      const [key, dir] = value.split(":");
+      const same = sort && sort.key === key;
+      let clicks: number;
+      if (dir === "desc") clicks = same ? (sort.dir === "desc" ? 0 : 2) : 1;
+      else clicks = same ? (sort.dir === "asc" ? 0 : 1) : 2;
+      for (let i = 0; i < clicks; i += 1) toggle(key);
+    },
+    [sort, toggle],
+  );
+
+  const exportCsv = useCallback(() => {
+    if (sorted.length === 0) {
+      toast("info", "Nothing to export with this filter.");
+      return;
+    }
+    downloadCsv(datedFilename("customers"), toCsv(sorted, CSV_COLUMNS));
+    toast("ok", `Exported ${sorted.length.toLocaleString("en-IN")} customer${sorted.length === 1 ? "" : "s"}.`);
+  }, [sorted, toast]);
 
   /** Per-customer buying insights derived from their order history. */
   const insights = useMemo(() => {
@@ -132,6 +232,11 @@ export default function AdminCustomers() {
         .cus-chip { font-size: 12px; padding: 8px 13px; border-radius: 4px; cursor: pointer; background: transparent; color: rgba(68,42,27,0.7); border: 1px solid rgba(200,150,62,0.28); font-family: inherit; }
         .cus-chip.on { background: rgba(200,150,62,0.16); color: #8a5a10; border-color: rgba(200,150,62,0.5); font-weight: 600; }
 
+        /* Desktop sorts from the table header; only the card layout shows this. */
+        .cus-sortbar { display: none; }
+        .cus-sortbar-l { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(68,42,27,0.5); flex-shrink: 0; }
+        .cus-sortbar .ad-input { flex: 1 1 auto; min-width: 0; }
+
         .cus-table { width: 100%; border-collapse: collapse; }
         .cus-th { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(68,42,27,0.55); padding: 10px 14px; text-align: left; border-bottom: 1px solid rgba(200,150,62,0.18); font-weight: 500; white-space: nowrap; }
         .cus-td { padding: 13px 14px; border-bottom: 1px solid rgba(68,42,27,0.06); font-size: 13.5px; color: rgba(68,42,27,0.82); }
@@ -159,6 +264,7 @@ export default function AdminCustomers() {
 
         @media (max-width: 900px) {
           .cus-table thead { display: none; }
+          .cus-sortbar { display: flex; gap: 10px; align-items: center; margin: -4px 0 14px; }
           .cus-table, .cus-table tbody, .cus-table tr { display: block; width: 100%; }
           .cus-tr { background: #fff; border: 1px solid rgba(200,150,62,0.2); border-radius: 8px; margin-bottom: 12px; padding: 6px 4px; }
           .cus-table td.cus-td { width: 100%; display: flex; justify-content: space-between; gap: 16px; align-items: baseline; text-align: right; padding: 10px 12px; }
@@ -188,23 +294,50 @@ export default function AdminCustomers() {
         {([["all", "All"], ["buyers", "Has purchased"], ["google", "Google"], ["email", "Email/Password"]] as const).map(([k, label]) => (
           <button key={k} className={`cus-chip${filter === k ? " on" : ""}`} onClick={() => setFilter(k)}>{label}</button>
         ))}
+        <button className="ad-btn ad-btn-sm" onClick={exportCsv} disabled={loading}>Export CSV</button>
+      </div>
+
+      {/* The card layout hides the table header, so the phone gets its own
+          handle on the very same sort state. */}
+      <div className="cus-sortbar">
+        <label className="cus-sortbar-l" htmlFor="cus-sort">Sort by</label>
+        <select
+          id="cus-sort"
+          className="ad-input"
+          value={sort ? `${sort.key}:${sort.dir}` : ""}
+          onChange={(e) => applySort(e.target.value)}
+        >
+          <option value="">Default order</option>
+          {COLUMNS.filter((c) => c.key).flatMap((c) => [
+            <option key={`${c.key}:desc`} value={`${c.key}:desc`}>{c.label} — {c.desc}</option>,
+            <option key={`${c.key}:asc`} value={`${c.key}:asc`}>{c.label} — {c.asc}</option>,
+          ])}
+        </select>
       </div>
 
       {loading ? (
         <p style={{ color: "rgba(68,42,27,0.45)", fontSize: 14 }}>Loading customers…</p>
-      ) : shown.length === 0 ? (
+      ) : sorted.length === 0 ? (
         <p className="cus-empty">No customers match this filter.</p>
       ) : (
         <table className="cus-table">
           <thead>
             <tr>
-              {["Customer", "Phone", "Sign-in", "Orders", "Spent", "Last order", "Joined", ""].map((h) => (
-                <th key={h} className="cus-th">{h}</th>
-              ))}
+              {COLUMNS.map((c) => {
+                if (!c.key) return <th key="actions" className="cus-th">{c.label}</th>;
+                const hp = headerProps(c.key);
+                return (
+                  <th key={c.label} className="cus-th">
+                    <button className="ad-sort" aria-sort={hp["aria-sort"]} onClick={hp.onClick}>
+                      {c.label} <span className="ad-sort-arrow">{hp.arrow}</span>
+                    </button>
+                  </th>
+                );
+              })}
             </tr>
           </thead>
           <tbody>
-            {shown.map((u) => (
+            {sorted.map((u) => (
               <tr
                 key={u.id}
                 className="cus-tr"
@@ -226,7 +359,21 @@ export default function AdminCustomers() {
                     color: u.authMethod === "google" ? "#1565c0" : "#8a5a10",
                   }}>{u.authMethod}</span>
                 </td>
-                <td className="cus-td" data-label="Orders">{u.orderCount}{u.paidOrders ? ` (${u.paidOrders} paid)` : ""}</td>
+                <td className="cus-td" data-label="Orders">
+                  {u.orderCount}
+                  {u.linkedGuestOrders > 0 && (
+                    <span
+                      className="ad-badge ad-badge-mute"
+                      style={{ marginLeft: 6 }}
+                      title="Guest checkouts matched to this account by email or phone"
+                    >
+                      +{u.linkedGuestOrders} guest
+                    </span>
+                  )}
+                </td>
+                <td className="cus-td" data-label="Paid">
+                  {u.paidOrders ? u.paidOrders : <span style={{ color: "rgba(68,42,27,0.35)" }}>—</span>}
+                </td>
                 <td className="cus-td" data-label="Spent">
                   {u.totalSpent ? <span className="cus-spent">{inr(u.totalSpent)}</span> : <span style={{ color: "rgba(68,42,27,0.35)" }}>—</span>}
                 </td>
@@ -258,7 +405,7 @@ export default function AdminCustomers() {
                 <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
                   <div className="cus-stat" style={{ background: "rgba(200,150,62,0.1)" }}>
                     <p className="cus-k">Total purchases</p>
-                    <p style={{ fontSize: 18, fontWeight: 700, color: "#442a1b" }}>{detail.summary.orderCount}{detail.summary.paidOrders ? ` · ${detail.summary.paidOrders} paid` : ""}</p>
+                    <p style={{ fontSize: 18, fontWeight: 700, color: "#442a1b" }}>{detail.summary.orderCount}{detail.summary.paidOrders ? ` · ${detail.summary.paidOrders} paid` : ""}{detail.summary.linkedGuestOrders ? ` · ${detail.summary.linkedGuestOrders} guest` : ""}</p>
                   </div>
                   <div className="cus-stat" style={{ background: "rgba(46,125,50,0.1)" }}>
                     <p className="cus-k">Total spent</p>
@@ -302,6 +449,13 @@ export default function AdminCustomers() {
                 </div>
 
                 <p className="cus-sec">Order history</p>
+                {detail.summary.linkedGuestOrders > 0 && (
+                  <p style={{ fontSize: 12.5, color: "rgba(68,42,27,0.55)", marginBottom: 8 }}>
+                    {detail.summary.linkedGuestOrders === 1
+                      ? "One order below was a guest checkout matched to this customer by email or phone — it was not placed from this account."
+                      : `${detail.summary.linkedGuestOrders} of the orders below were guest checkouts matched to this customer by email or phone, not placed from this account.`}
+                  </p>
+                )}
                 {detail.orders.length === 0 ? (
                   <p style={{ fontSize: 13.5, color: "rgba(68,42,27,0.45)" }}>No orders placed yet.</p>
                 ) : (
@@ -319,6 +473,9 @@ export default function AdminCustomers() {
                             background: o.paymentStatus === "captured" ? "rgba(46,125,50,0.12)" : "rgba(68,42,27,0.08)",
                             color: o.paymentStatus === "captured" ? "#2e7d32" : "rgba(68,42,27,0.55)",
                           }}>{o.paymentStatus === "captured" ? "Paid" : "Unpaid"}</span>
+                          {o.linkedGuest && (
+                            <span className="ad-badge ad-badge-mute" title="Matched by email or phone, not placed from this account">guest</span>
+                          )}
                         </div>
                         {o.items.map((it, i) => (
                           <div key={i} style={{ display: "flex", justifyContent: "space-between", fontSize: 12.5, color: "rgba(68,42,27,0.75)", padding: "2px 0" }}>

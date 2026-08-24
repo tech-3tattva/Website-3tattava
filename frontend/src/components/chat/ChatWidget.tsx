@@ -349,7 +349,7 @@ export default function ChatWidget() {
           background: #C8963E;
           color: #1A1A1A;
           border: none;
-          font-family: var(--font-jost,'Jost'),sans-serif;
+          font-family: var(--font-primary), system-ui, sans-serif;
           font-size: 11px;
           font-weight: 600;
           letter-spacing: .08em;

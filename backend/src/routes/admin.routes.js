@@ -140,8 +140,82 @@ async function revenueFor(period) {
   return rows[0]?.total || 0;
 }
 
+// Accepts `YYYY-MM-DD` (snapped to the local day so a founder picking "today"
+// gets the whole day) as well as a full ISO timestamp.
+function parseBoundary(raw, endOfDay) {
+  const value = String(raw).trim();
+  if (!value) return null;
+  const dateOnly = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+  if (dateOnly) {
+    const [, y, m, d] = dateOnly.map(Number);
+    const at = endOfDay
+      ? new Date(y, m - 1, d, 23, 59, 59, 999)
+      : new Date(y, m - 1, d, 0, 0, 0, 0);
+    // Reject rolled-over dates such as 2026-02-31.
+    if (at.getFullYear() !== y || at.getMonth() !== m - 1 || at.getDate() !== d) return null;
+    return at;
+  }
+  const ms = Date.parse(value);
+  return Number.isNaN(ms) ? null : new Date(ms);
+}
+
+// Same revenue rule as revenueFor(), over an arbitrary window: captured money
+// only, no cancellations, no doctor samples and no pre-launch gateway tests.
+async function totalsForWindow(from, to) {
+  const match = {
+    status: { $ne: "cancelled" },
+    "payment.status": "captured",
+    isSample: { $ne: true },
+    isTest: { $ne: true },
+  };
+  if (from || to) {
+    match.createdAt = {};
+    if (from) match.createdAt.$gte = from;
+    if (to) match.createdAt.$lte = to;
+  }
+  const rows = await Order.aggregate([
+    { $match: match },
+    {
+      $group: {
+        _id: null,
+        revenue: { $sum: "$total" },
+        orders: { $sum: 1 },
+        units: { $sum: { $sum: "$items.quantity" } },
+      },
+    },
+  ]);
+  return {
+    revenue: Math.round(rows[0]?.revenue || 0),
+    orders: rows[0]?.orders || 0,
+    units: rows[0]?.units || 0,
+  };
+}
+
 router.get("/dashboard", async (req, res, next) => {
   try {
+    // Optional window on top of the fixed today/month/year buckets. Both bounds
+    // are optional individually so "all time up to today" needs no fake start.
+    const { from: fromRaw, to: toRaw } = req.query;
+    let windowFrom = null;
+    let windowTo = null;
+    if (fromRaw !== undefined || toRaw !== undefined) {
+      if (fromRaw !== undefined && String(fromRaw).trim() !== "") {
+        windowFrom = parseBoundary(fromRaw, false);
+        if (!windowFrom) throw new ApiError(400, "`from` must be a YYYY-MM-DD or ISO date");
+      }
+      if (toRaw !== undefined && String(toRaw).trim() !== "") {
+        windowTo = parseBoundary(toRaw, true);
+        if (!windowTo) throw new ApiError(400, "`to` must be a YYYY-MM-DD or ISO date");
+      }
+      if (windowFrom && windowTo && windowFrom > windowTo) {
+        throw new ApiError(400, "`from` must not be later than `to`");
+      }
+      if (!windowFrom && !windowTo) {
+        throw new ApiError(400, "`from` or `to` must carry a date");
+      }
+    }
+    const rangeRequested = Boolean(windowFrom || windowTo);
+
     const [
       today,
       month,
@@ -155,6 +229,7 @@ router.get("/dashboard", async (req, res, next) => {
       totalFeatured,
       topProducts,
       ordersByStatus,
+      rangeTotals,
     ] = await Promise.all([
       revenueFor("today"),
       revenueFor("month"),
@@ -231,6 +306,7 @@ router.get("/dashboard", async (req, res, next) => {
         { $limit: 10 },
       ]),
       Order.aggregate([{ $group: { _id: "$status", count: { $sum: 1 } } }]),
+      rangeRequested ? totalsForWindow(windowFrom, windowTo) : null,
     ]);
 
     const inventoryValue = Math.round(inventoryValueAgg[0]?.total || 0);
@@ -254,6 +330,13 @@ router.get("/dashboard", async (req, res, next) => {
       topProducts: topProductsOut,
       ordersByStatus: ordersByStatusMap,
       customers: { newThisMonth: newCustomers },
+      range: rangeRequested
+        ? {
+            from: windowFrom ? windowFrom.toISOString() : null,
+            to: windowTo ? windowTo.toISOString() : null,
+            ...rangeTotals,
+          }
+        : null,
     });
   } catch (err) {
     return next(err);
@@ -454,6 +537,164 @@ router.put("/orders/:id/status", async (req, res, next) => {
     if (parsed.trackingNumber !== undefined) order.tracking.trackingNumber = parsed.trackingNumber;
     if (parsed.trackingUrl !== undefined) order.tracking.trackingUrl = parsed.trackingUrl;
     if (parsed.estimatedDelivery !== undefined) order.tracking.estimatedDelivery = parsed.estimatedDelivery;
+
+    await order.save();
+    return res.json(order);
+  } catch (err) {
+    return next(err);
+  }
+});
+
+/**
+ * PATCH /api/admin/orders/:id
+ *
+ * Corrects an order after the fact. Until now the only mutation was the status
+ * dropdown, so a wrong pincode or a mis-keyed quantity meant cancelling and
+ * re-recording the order, which broke the audit trail and double-counted stock.
+ *
+ * Rules that keep the books honest:
+ *  - line prices are re-read from the catalogue, never taken from the body, so
+ *    an edit cannot invent or discount revenue;
+ *  - stock is reconciled by the delta only, and every change writes an
+ *    InventoryLog row naming the admin who made it;
+ *  - delivered and cancelled orders are frozen. Editing a shipped order would
+ *    desync the courier's manifest from ours.
+ */
+router.patch("/orders/:id", async (req, res, next) => {
+  try {
+    const schema = z.object({
+      shippingAddress: z
+        .object({
+          title: z.enum(["Mr.", "Mrs.", "Ms.", "Dr."]).optional(),
+          firstName: z.string().min(1).optional(),
+          lastName: z.string().min(1).optional(),
+          email: z.string().email().optional(),
+          phone: z.string().min(10).optional(),
+          line1: z.string().min(1).optional(),
+          line2: z.string().optional(),
+          city: z.string().min(1).optional(),
+          state: z.string().min(1).optional(),
+          pincode: z.string().min(6).optional(),
+          country: z.string().optional(),
+        })
+        .optional(),
+      items: z
+        .array(z.object({ productId: z.string().min(1), quantity: z.number().int().positive() }))
+        .min(1)
+        .optional(),
+      adminNote: z.string().max(2000).optional(),
+    });
+
+    const body = schema.parse(req.body ?? {});
+    if (!body.shippingAddress && !body.items && body.adminNote === undefined) {
+      throw new ApiError(400, "Nothing to update");
+    }
+
+    const order = await Order.findById(req.params.id).exec();
+    if (!order) throw new ApiError(404, "Order not found");
+
+    const frozen = ["delivered", "cancelled"];
+    if (frozen.includes(order.status)) {
+      throw new ApiError(
+        409,
+        `A ${order.status} order cannot be edited. Its stock and courier record are already settled.`
+      );
+    }
+
+    const adminEmail = req.user?.email || "admin";
+    const changes = [];
+
+    if (body.shippingAddress) {
+      for (const [key, value] of Object.entries(body.shippingAddress)) {
+        const before = order.shippingAddress?.[key];
+        if (value !== undefined && String(before ?? "") !== String(value)) {
+          changes.push(`${key}: "${before ?? ""}" -> "${value}"`);
+          order.shippingAddress[key] = value;
+        }
+      }
+    }
+
+    if (body.items) {
+      // Re-price from the catalogue and reconcile stock by the delta so an edit
+      // never double-decrements or silently loses units.
+      const ids = body.items.map((line) => line.productId);
+      const products = await Product.find({ _id: { $in: ids } }).exec();
+      const byId = new Map(products.map((p) => [p._id.toString(), p]));
+      if (byId.size !== new Set(ids).size) throw new ApiError(404, "Product not found");
+
+      const previous = new Map(
+        order.items.map((line) => [String(line.productId), line.quantity])
+      );
+
+      const rebuilt = body.items.map((line) => {
+        const product = byId.get(line.productId);
+        const unit = order.isSample ? 0 : product.price;
+        return {
+          productId: product._id.toString(),
+          product: product._id,
+          name: product.name,
+          slug: product.slug,
+          image: product.images?.[0] || "",
+          price: unit,
+          quantity: line.quantity,
+          mrp: product.mrp,
+          subtotal: unit * line.quantity,
+        };
+      });
+
+      const subtotal = rebuilt.reduce((sum, line) => sum + line.subtotal, 0);
+      changes.push(
+        `items: ${order.items.map((l) => `${l.name} x${l.quantity}`).join(", ")} -> ${rebuilt
+          .map((l) => `${l.name} x${l.quantity}`)
+          .join(", ")}`
+      );
+
+      order.items = rebuilt;
+      order.subtotal = subtotal;
+      // discountAmount, not discount: the latter is the coupon's percent value.
+      order.total = subtotal + (order.shippingFee || 0) - (order.discountAmount || 0);
+
+      const touched = new Set([...previous.keys(), ...rebuilt.map((l) => String(l.product))]);
+      for (const productId of touched) {
+        const was = previous.get(productId) || 0;
+        const now = rebuilt.find((l) => String(l.product) === productId)?.quantity || 0;
+        const delta = now - was;
+        if (delta === 0) continue;
+        // Ordering more units takes them out of stock, hence the negated delta.
+        const updated = await Product.findOneAndUpdate(
+          { _id: productId },
+          { $inc: { stockQuantity: -delta } },
+          { new: true }
+        ).exec();
+        if (!updated) continue;
+        await InventoryLog.create({
+          product: productId,
+          changeType: "adjustment",
+          quantityBefore: updated.stockQuantity + delta,
+          quantityChange: -delta,
+          quantityAfter: updated.stockQuantity,
+          reason: `Order ${order.orderNumber} edited by ${adminEmail}`,
+          orderId: order._id,
+          adminId: mongoose.isValidObjectId(req.user?.id) ? req.user.id : undefined,
+        });
+      }
+    }
+
+    if (body.adminNote !== undefined) order.adminNote = body.adminNote;
+
+    if (changes.length) {
+      // Keep the correction visible next to the status history rather than
+      // overwriting the record silently.
+      order.statusHistory = [
+        ...(order.statusHistory || []),
+        {
+          status: order.status,
+          timestamp: new Date(),
+          updatedBy: adminEmail,
+          note: `Edited — ${changes.join("; ")}`,
+        },
+      ];
+    }
 
     await order.save();
     return res.json(order);
@@ -989,62 +1230,163 @@ router.get("/inventory/logs", async (req, res, next) => {
 // CUSTOMERS / USERS PANEL
 // ==========================================================================
 
+// Samples carry no money and pre-launch tests are not sales, so neither may
+// contribute to a customer's spend. Order counts still include them so the
+// panel reflects everything actually shipped to that person.
+const REAL_SALE_COND = {
+  $and: [
+    { $eq: ["$payment.status", "captured"] },
+    { $ne: ["$isSample", true] },
+    { $ne: ["$isTest", true] },
+  ],
+};
+
+const CUSTOMER_ORDER_STATS = {
+  orderCount: { $sum: 1 },
+  sampleOrders: { $sum: { $cond: [{ $eq: ["$isSample", true] }, 1, 0] } },
+  paidOrders: { $sum: { $cond: [REAL_SALE_COND, 1, 0] } },
+  totalSpent: { $sum: { $cond: [REAL_SALE_COND, "$total", 0] } },
+  firstOrderAt: { $min: "$createdAt" },
+  lastOrderAt: { $max: "$createdAt" },
+};
+
+function emailMatchKey(value) {
+  return String(value || "").trim().toLowerCase();
+}
+
+/** Subscriber part of a phone number, or "" when it isn't a full 10-digit one.
+ *  Checkout stores phones as "9876543210", "+919876543210" or "098765 43210",
+ *  so only the last ten digits are comparable between an order and an account. */
+function phoneMatchKey(value) {
+  const digits = String(value || "").replace(/\D/g, "");
+  return digits.length >= 10 ? digits.slice(-10) : "";
+}
+
+function earlierDate(a, b) {
+  if (!a) return b || null;
+  if (!b) return a;
+  return new Date(a) <= new Date(b) ? a : b;
+}
+
+function laterDate(a, b) {
+  if (!a) return b || null;
+  if (!b) return a;
+  return new Date(a) >= new Date(b) ? a : b;
+}
+
+/**
+ * Guest checkouts and offline orders keep the buyer's contact details on the
+ * order but carry no `user` reference, so one human shows up twice: as a
+ * registered account with no purchases, and as an unattributed order. These
+ * groups are the raw material for stitching the two halves back together.
+ */
+function guestOrderContactGroups() {
+  return Order.aggregate([
+    // `user: null` also covers documents where the field was never set.
+    {
+      $match: {
+        user: null,
+        $or: [
+          { "shippingAddress.email": { $type: "string", $ne: "" } },
+          { "shippingAddress.phone": { $type: "string", $ne: "" } },
+        ],
+      },
+    },
+    {
+      // Grouped in the database so the payload scales with distinct guest
+      // contacts rather than with every guest order ever placed.
+      $group: Object.assign({ _id: {
+        email: { $toLower: { $ifNull: ["$shippingAddress.email", ""] } },
+        phone: { $ifNull: ["$shippingAddress.phone", ""] },
+      }, orderIds: { $push: "$_id" } }, CUSTOMER_ORDER_STATS),
+    },
+  ]).exec();
+}
+
+/**
+ * Attributes guest contact groups to registered accounts, keyed by user id.
+ *
+ * Deliberately conservative: an exact lowercased email or a full ten-digit
+ * phone, never a name. Email wins when both could point somewhere, and a
+ * contact shared by two accounts is left unlinked rather than guessed at.
+ * `contacts` must be every account, not one page of them, so the same guest
+ * order can never be credited to two different customers.
+ */
+function linkGuestGroupsToUsers(contacts, groups) {
+  const byEmail = new Map();
+  const byPhone = new Map();
+  for (const c of contacts) {
+    const id = c._id.toString();
+    const email = emailMatchKey(c.email);
+    if (email) byEmail.set(email, byEmail.has(email) ? null : id);
+    const phone = phoneMatchKey(c.phone);
+    if (phone) byPhone.set(phone, byPhone.has(phone) ? null : id);
+  }
+
+  const linked = new Map();
+  for (const g of groups) {
+    const email = emailMatchKey(g._id && g._id.email);
+    const phone = phoneMatchKey(g._id && g._id.phone);
+    let userId = null;
+    if (email && byEmail.has(email)) userId = byEmail.get(email);
+    else if (phone) userId = byPhone.get(phone) || null;
+    if (!userId) continue;
+
+    const cur = linked.get(userId) || {
+      orderCount: 0,
+      paidOrders: 0,
+      sampleOrders: 0,
+      totalSpent: 0,
+      firstOrderAt: null,
+      lastOrderAt: null,
+      orderIds: [],
+    };
+    cur.orderCount += g.orderCount;
+    cur.paidOrders += g.paidOrders;
+    cur.sampleOrders += g.sampleOrders;
+    cur.totalSpent += g.totalSpent;
+    cur.firstOrderAt = earlierDate(cur.firstOrderAt, g.firstOrderAt);
+    cur.lastOrderAt = laterDate(cur.lastOrderAt, g.lastOrderAt);
+    for (const id of g.orderIds) cur.orderIds.push(id);
+    linked.set(userId, cur);
+  }
+  return linked;
+}
+
+/** Owned and guest-matched orders read as one customer history. */
+function mergedCustomerStats(owned, linked) {
+  return {
+    orderCount: (owned ? owned.orderCount : 0) + (linked ? linked.orderCount : 0),
+    paidOrders: (owned ? owned.paidOrders : 0) + (linked ? linked.paidOrders : 0),
+    sampleOrders: (owned ? owned.sampleOrders : 0) + (linked ? linked.sampleOrders : 0),
+    totalSpent: Math.round((owned ? owned.totalSpent : 0) + (linked ? linked.totalSpent : 0)),
+    firstOrderAt: earlierDate(owned && owned.firstOrderAt, linked && linked.firstOrderAt),
+    lastOrderAt: laterDate(owned && owned.lastOrderAt, linked && linked.lastOrderAt),
+    linkedGuestOrders: linked ? linked.orderCount : 0,
+  };
+}
+
 // GET /api/admin/users — all registered users, including Google sign-ins
 router.get("/users", async (req, res, next) => {
   try {
     const page = Math.max(1, Number(req.query.page) || 1);
     const limit = Math.min(500, Number(req.query.limit) || 200);
-    const [rows, total, orderAgg] = await Promise.all([
+    const [rows, total, orderAgg, contacts, guestGroups] = await Promise.all([
       User.find().sort({ createdAt: -1 }).skip((page - 1) * limit).limit(limit).lean().exec(),
       User.countDocuments(),
       Order.aggregate([
-        // Samples carry no money and pre-launch tests are not sales, so neither
-        // may contribute to a customer's spend. Order counts still include them
-        // so the panel reflects everything actually shipped to that person.
         { $match: { user: { $ne: null } } },
-        {
-          $group: {
-            _id: "$user",
-            orderCount: { $sum: 1 },
-            sampleOrders: { $sum: { $cond: [{ $eq: ["$isSample", true] }, 1, 0] } },
-            paidOrders: {
-              $sum: {
-                $cond: [
-                  {
-                    $and: [
-                      { $eq: ["$payment.status", "captured"] },
-                      { $ne: ["$isSample", true] },
-                      { $ne: ["$isTest", true] },
-                    ],
-                  },
-                  1,
-                  0,
-                ],
-              },
-            },
-            totalSpent: {
-              $sum: {
-                $cond: [
-                  {
-                    $and: [
-                      { $eq: ["$payment.status", "captured"] },
-                      { $ne: ["$isSample", true] },
-                      { $ne: ["$isTest", true] },
-                    ],
-                  },
-                  "$total",
-                  0,
-                ],
-              },
-            },
-            lastOrderAt: { $max: "$createdAt" },
-          },
-        },
+        { $group: Object.assign({ _id: "$user" }, CUSTOMER_ORDER_STATS) },
       ]),
+      User.find({}, { email: 1, phone: 1 }).lean().exec(),
+      guestOrderContactGroups(),
     ]);
-    const spendByUser = new Map(orderAgg.map((o) => [o._id.toString(), o]));
+    const ownedByUser = new Map(orderAgg.map((o) => [o._id.toString(), o]));
+    const linkedByUser = linkGuestGroupsToUsers(contacts, guestGroups);
+    const statsFor = (id) => mergedCustomerStats(ownedByUser.get(id), linkedByUser.get(id));
+
     const users = rows.map((u) => {
-      const agg = spendByUser.get(u._id.toString());
+      const stats = statsFor(u._id.toString());
       return {
         id: u._id.toString(),
         name: u.name,
@@ -1056,15 +1398,24 @@ router.get("/users", async (req, res, next) => {
         wellnessPoints: u.wellnessPoints || 0,
         lastLogin: u.lastLogin || null,
         createdAt: u.createdAt,
-        orderCount: agg ? agg.orderCount : 0,
-        paidOrders: agg ? agg.paidOrders : 0,
-        totalSpent: agg ? Math.round(agg.totalSpent) : 0,
-        lastOrderAt: agg ? agg.lastOrderAt : null,
+        orderCount: stats.orderCount,
+        paidOrders: stats.paidOrders,
+        sampleOrders: stats.sampleOrders,
+        totalSpent: stats.totalSpent,
+        firstOrderAt: stats.firstOrderAt || null,
+        lastOrderAt: stats.lastOrderAt || null,
+        linkedGuestOrders: stats.linkedGuestOrders,
       };
     });
+
     // Global summary (independent of pagination)
-    const purchasers = orderAgg.filter((o) => o.paidOrders > 0).length;
-    const totalRevenue = Math.round(orderAgg.reduce((s, o) => s + (o.totalSpent || 0), 0));
+    let purchasers = 0;
+    let totalRevenue = 0;
+    for (const id of new Set([...ownedByUser.keys(), ...linkedByUser.keys()])) {
+      const stats = statsFor(id);
+      if (stats.paidOrders > 0) purchasers += 1;
+      totalRevenue += stats.totalSpent;
+    }
     return res.json({ users, total, page, limit, summary: { registered: total, purchasers, totalRevenue } });
   } catch (err) {
     return next(err);
@@ -1077,7 +1428,21 @@ router.get("/users/:id", async (req, res, next) => {
     if (!mongoose.isValidObjectId(req.params.id)) throw new ApiError(400, "Invalid user id");
     const user = await User.findById(req.params.id).lean().exec();
     if (!user) throw new ApiError(404, "User not found");
-    const orders = await Order.find({ user: user._id }).sort({ createdAt: -1 }).lean().exec();
+
+    // Same linking rule as the list, evaluated against every account, so the
+    // detail card and the row it was opened from can never disagree.
+    const [contacts, guestGroups] = await Promise.all([
+      User.find({}, { email: 1, phone: 1 }).lean().exec(),
+      guestOrderContactGroups(),
+    ]);
+    const linked = linkGuestGroupsToUsers(contacts, guestGroups).get(user._id.toString());
+    const orders = await Order.find({
+      $or: [{ user: user._id }, { _id: { $in: linked ? linked.orderIds : [] } }],
+    })
+      .sort({ createdAt: -1 })
+      .lean()
+      .exec();
+
     // Only genuine sales count toward spend — samples are free and pre-launch
     // tests were not customer purchases.
     const paid = orders.filter(
@@ -1105,6 +1470,9 @@ router.get("/users/:id", async (req, res, next) => {
         paymentStatus: (o.payment && o.payment.status) || "pending",
         paymentMethod: (o.payment && o.payment.method) || "",
         total: o.total,
+        // Matched on contact details rather than owned outright, so the card can
+        // say so instead of quietly presenting it as an account purchase.
+        linkedGuest: !o.user,
         items: (o.items || []).map((it) => ({
           name: it.name,
           quantity: it.quantity,
@@ -1112,7 +1480,12 @@ router.get("/users/:id", async (req, res, next) => {
           subtotal: it.subtotal,
         })),
       })),
-      summary: { orderCount: orders.length, paidOrders: paid.length, totalSpent },
+      summary: {
+        orderCount: orders.length,
+        paidOrders: paid.length,
+        totalSpent,
+        linkedGuestOrders: orders.filter((o) => !o.user).length,
+      },
     });
   } catch (err) {
     return next(err);

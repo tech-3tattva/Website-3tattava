@@ -9,11 +9,7 @@ import type { NextRequest } from "next/server";
  * genuine 404 (app/not-found.tsx) is returned instead of a soft-200 coming-soon
  * page. Static files, /_next and /api are excluded via the matcher below.
  */
-const GATED_ROUTES = new Set<string>([
-  "/dosha-quiz",
-  "/gifting",
-  "/community",
-]);
+import { GATED_ROUTES } from "@/lib/gated-routes";
 
 // Product detail pages are now LIVE (un-gated). Left empty so PDPs render directly;
 // re-add a slug here to hide it behind the /products page again if ever needed.

@@ -408,15 +408,31 @@ export default function AdminAssessments() {
 
   return (
     <div>
-      <p style={{ fontSize: 12, color: "rgba(68,42,27,0.35)", marginBottom: 18 }}>
+      <p className="ad-eyebrow" style={{ marginBottom: 18 }}>
         {total} total assessments submitted
       </p>
       {loading ? (
-        <p style={{ color: "rgba(68,42,27,0.3)", fontSize: 13 }}>Loading…</p>
+        <p className="ad-sub">Loading…</p>
       ) : error ? (
-        <p style={{ color: "rgba(68,42,27,0.3)", fontSize: 13 }}>Could not load assessments. Please try again.</p>
+        <div className="ad-empty">
+          <div className="ad-empty-mark" aria-hidden>!</div>
+          <p className="ad-empty-title">Could not load assessments</p>
+          <p className="ad-empty-hint">
+            The request to the API failed. Check that the backend is reachable, then reload.
+          </p>
+        </div>
       ) : assessments.length === 0 ? (
-        <p style={{ color: "rgba(68,42,27,0.3)", fontSize: 13 }}>No assessments yet. They appear once users complete a quiz.</p>
+        <div className="ad-empty">
+          <div className="ad-empty-mark" aria-hidden>◎</div>
+          <p className="ad-empty-title">No assessments yet</p>
+          <p className="ad-empty-hint">
+            Assessments are created when a signed-in customer completes the dosha
+            quiz. The quiz page is built but currently held behind the
+            coming-soon gate, so none can arrive yet — remove{" "}
+            <code className="ad-mono">/dosha-quiz</code> from the gated list in{" "}
+            <code className="ad-mono">src/lib/gated-routes.ts</code> to open it.
+          </p>
+        </div>
       ) : (
         <div style={{ overflowX: "auto" }}>
           <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>

@@ -35,7 +35,7 @@ const BORDER = "#e2d8c2";
 const INK = "#efe7d5";
 const MUTED = "#836f57";
 const GOLD = "#C8963E";
-const SERIF = "var(--font-cormorant,'Cormorant Garamond'),serif";
+const SERIF = "var(--font-primary),serif";
 
 const field: React.CSSProperties = {
   width: "100%",

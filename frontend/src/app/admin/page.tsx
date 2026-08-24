@@ -3,6 +3,8 @@
 import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { adminApi } from "@/lib/api";
+import { useAdminSession } from "@/hooks/useAdminSession";
+import { useFeedback } from "@/components/admin/AdminToast";
 import AdminProducts from "@/components/admin/AdminProducts";
 import AdminInventory from "@/components/admin/AdminInventory";
 import AdminOrders from "@/components/admin/AdminOrders";
@@ -151,6 +153,7 @@ type Lead = {
 };
 
 function AdminLeads() {
+  const { toast } = useFeedback();
   const [leads, setLeads] = useState<Lead[]>([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -160,7 +163,10 @@ function AdminLeads() {
     try {
       const d = await adminApi.get<{ leads: Lead[]; total: number }>("/admin/leads");
       setLeads(d.leads); setTotal(d.total);
-    } catch { setLeads([]); }
+    } catch (e) {
+      setLeads([]);
+      toast("error", e instanceof Error ? e.message : "Could not load leads");
+    }
     setLoading(false);
   }
 
@@ -172,15 +178,44 @@ function AdminLeads() {
   }
 
   return (
-    <div>
-      <p style={{ fontSize: 12, color: "rgba(68,42,27,0.35)", marginBottom: 18 }}>
-        {total} total leads captured from the homepage modal
+    <>
+      <style>{`
+        .lead-tr { border-bottom: 1px solid rgba(200,150,62,0.06); }
+        .lead-convert {
+          font-family: inherit; font-size: 10px; padding: 3px 9px; border-radius: 2px;
+          background: rgba(200,150,62,0.12); color: #C8963E;
+          border: 1px solid rgba(200,150,62,0.3); cursor: pointer;
+        }
+
+        /* ── Mobile: table becomes stacked cards, same treatment as Orders/Customers ── */
+        @media (max-width: 900px) {
+          .lead-table thead { display: none; }
+          .lead-table, .lead-table tbody, .lead-table tr { display: block; width: 100%; }
+          .lead-tr { background: var(--ad-surface); border: 1px solid var(--ad-hairline); border-radius: var(--ad-r); margin-bottom: 12px; padding: 6px 4px; }
+          /* anywhere-wrap so a long email breaks inside the card instead of pushing past the viewport */
+          .lead-table td.lead-td { width: 100%; display: flex; justify-content: space-between; gap: 16px; align-items: baseline; text-align: right; border-bottom: 1px solid rgba(68,42,27,0.05); overflow-wrap: anywhere; }
+          .lead-table td.lead-td:last-child { border-bottom: none; }
+          .lead-table td.lead-td::before { content: attr(data-label); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(68,42,27,0.55); text-align: left; flex-shrink: 0; min-width: 68px; }
+          .lead-convert { min-height: 32px; font-size: 11px; padding: 6px 12px; border-radius: 4px; }
+        }
+      `}</style>
+
+      <p className="ad-sub" style={{ marginBottom: 18 }}>
+        {total} total {total === 1 ? "lead" : "leads"} captured from the homepage modal
       </p>
-      {loading ? <p style={{ color: "rgba(68,42,27,0.3)", fontSize: 13 }}>Loading…</p> : leads.length === 0 ? (
-        <p style={{ color: "rgba(68,42,27,0.3)", fontSize: 13 }}>No leads yet. The modal fires at 45s / 70% scroll.</p>
+      {loading ? <p className="ad-sub">Loading…</p> : leads.length === 0 ? (
+        <div className="ad-empty">
+          <div className="ad-empty-mark">◑</div>
+          <p className="ad-empty-title">No leads captured yet</p>
+          <p className="ad-empty-hint">
+            Leads land here from the homepage LeadCaptureModal (it fires at 45s or 70% scroll) and from
+            the WhatsApp/n8n enquiry flow. Nothing has come in yet — the table fills itself, there is
+            nothing to add by hand.
+          </p>
+        </div>
       ) : (
         <div style={{ overflowX: "auto" }}>
-          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
+          <table className="lead-table" style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
             <thead>
               <tr style={{ borderBottom: "1px solid rgba(200,150,62,0.15)" }}>
                 {["Name","Email","Phone","Interest","Source","Date","Status"].map(h => (
@@ -190,21 +225,18 @@ function AdminLeads() {
             </thead>
             <tbody>
               {leads.map(l => (
-                <tr key={l._id} style={{ borderBottom: "1px solid rgba(200,150,62,0.06)" }}>
-                  <td style={{ padding: "10px 12px", color: "#442a1b" }}>{l.name}</td>
-                  <td style={{ padding: "10px 12px", color: "rgba(68,42,27,0.6)" }}>{l.email}</td>
-                  <td style={{ padding: "10px 12px", color: "rgba(68,42,27,0.6)" }}>{l.phone}</td>
-                  <td style={{ padding: "10px 12px", color: "rgba(68,42,27,0.4)", fontSize: 12 }}>{l.interest}</td>
-                  <td style={{ padding: "10px 12px", color: "rgba(68,42,27,0.4)", fontSize: 12 }}>{l.source}</td>
-                  <td style={{ padding: "10px 12px", color: "rgba(68,42,27,0.35)", fontSize: 12, whiteSpace: "nowrap" }}>{new Date(l.createdAt).toLocaleDateString("en-IN")}</td>
-                  <td style={{ padding: "10px 12px" }}>
+                <tr key={l._id} className="lead-tr">
+                  <td className="lead-td" data-label="Name" style={{ padding: "10px 12px", color: "#442a1b" }}>{l.name}</td>
+                  <td className="lead-td" data-label="Email" style={{ padding: "10px 12px", color: "rgba(68,42,27,0.6)" }}>{l.email}</td>
+                  <td className="lead-td" data-label="Phone" style={{ padding: "10px 12px", color: "rgba(68,42,27,0.6)" }}>{l.phone}</td>
+                  <td className="lead-td" data-label="Interest" style={{ padding: "10px 12px", color: "rgba(68,42,27,0.4)", fontSize: 12 }}>{l.interest}</td>
+                  <td className="lead-td" data-label="Source" style={{ padding: "10px 12px", color: "rgba(68,42,27,0.4)", fontSize: 12 }}>{l.source}</td>
+                  <td className="lead-td" data-label="Date" style={{ padding: "10px 12px", color: "rgba(68,42,27,0.35)", fontSize: 12, whiteSpace: "nowrap" }}>{new Date(l.createdAt).toLocaleDateString("en-IN")}</td>
+                  <td className="lead-td" data-label="Status" style={{ padding: "10px 12px" }}>
                     {l.converted ? (
                       <span style={{ fontSize: 11, color: "#2e7d32", fontWeight: 600 }}>CONVERTED</span>
                     ) : (
-                      <button onClick={() => void markConverted(l._id)} style={{
-                        fontSize: 10, padding: "3px 9px", background: "rgba(200,150,62,0.12)",
-                        color: "#C8963E", border: "1px solid rgba(200,150,62,0.3)", cursor: "pointer", borderRadius: 2,
-                      }}>Mark Converted</button>
+                      <button className="lead-convert" onClick={() => void markConverted(l._id)}>Mark Converted</button>
                     )}
                   </td>
                 </tr>
@@ -213,7 +245,7 @@ function AdminLeads() {
           </table>
         </div>
       )}
-    </div>
+    </>
   );
 }
 
@@ -226,6 +258,7 @@ type WaitlistEntry = {
 };
 
 function AdminWaitlist() {
+  const { toast } = useFeedback();
   const [entries, setEntries] = useState<WaitlistEntry[]>([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -235,7 +268,10 @@ function AdminWaitlist() {
     try {
       const d = await adminApi.get<{ waitlist: WaitlistEntry[]; total: number }>("/admin/waitlist");
       setEntries(d.waitlist); setTotal(d.total);
-    } catch { setEntries([]); }
+    } catch (e) {
+      setEntries([]);
+      toast("error", e instanceof Error ? e.message : "Could not load the waitlist");
+    }
     setLoading(false);
   }
 
@@ -256,20 +292,46 @@ function AdminWaitlist() {
   }
 
   return (
-    <div>
+    <>
+      <style>{`
+        .wtl-tr { border-bottom: 1px solid rgba(200,150,62,0.06); }
+        .wtl-download {
+          font-family: inherit; font-size: 11px; padding: 8px 16px; border-radius: 3px;
+          background: rgba(200,150,62,0.12); color: #C8963E;
+          border: 1px solid rgba(200,150,62,0.35);
+          letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer;
+        }
+        .wtl-download:disabled { cursor: not-allowed; opacity: 0.5; }
+
+        /* ── Mobile: table becomes stacked cards, same treatment as Orders/Customers ── */
+        @media (max-width: 900px) {
+          .wtl-table thead { display: none; }
+          .wtl-table, .wtl-table tbody, .wtl-table tr { display: block; width: 100%; }
+          .wtl-tr { background: var(--ad-surface); border: 1px solid var(--ad-hairline); border-radius: var(--ad-r); margin-bottom: 12px; padding: 6px 4px; }
+          /* anywhere-wrap so a long email breaks inside the card instead of pushing past the viewport */
+          .wtl-table td.wtl-td { width: 100%; display: flex; justify-content: space-between; gap: 16px; align-items: baseline; text-align: right; border-bottom: 1px solid rgba(68,42,27,0.05); overflow-wrap: anywhere; }
+          .wtl-table td.wtl-td:last-child { border-bottom: none; }
+          .wtl-table td.wtl-td::before { content: attr(data-label); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(68,42,27,0.55); text-align: left; flex-shrink: 0; min-width: 68px; }
+          .wtl-download { min-height: 36px; }
+        }
+      `}</style>
+
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 18, gap: 12, flexWrap: "wrap" }}>
-        <p style={{ fontSize: 12, color: "rgba(68,42,27,0.35)" }}>{total} total waitlist signups</p>
-        <button onClick={downloadExcel} disabled={entries.length === 0} style={{
-          fontSize: 11, padding: "8px 16px", background: "rgba(200,150,62,0.12)", color: "#C8963E",
-          border: "1px solid rgba(200,150,62,0.35)", cursor: entries.length ? "pointer" : "not-allowed",
-          borderRadius: 3, letterSpacing: "0.08em", textTransform: "uppercase", opacity: entries.length ? 1 : 0.5,
-        }}>↓ Download Excel</button>
+        <p className="ad-sub">{total} total waitlist {total === 1 ? "signup" : "signups"}</p>
+        <button className="wtl-download" onClick={downloadExcel} disabled={entries.length === 0}>↓ Download Excel</button>
       </div>
-      {loading ? <p style={{ color: "rgba(68,42,27,0.3)", fontSize: 13 }}>Loading…</p> : entries.length === 0 ? (
-        <p style={{ color: "rgba(68,42,27,0.3)", fontSize: 13 }}>No waitlist signups yet.</p>
+      {loading ? <p className="ad-sub">Loading…</p> : entries.length === 0 ? (
+        <div className="ad-empty">
+          <div className="ad-empty-mark">◕</div>
+          <p className="ad-empty-title">No waitlist signups yet</p>
+          <p className="ad-empty-hint">
+            Entries arrive from the product waitlist form on an out-of-stock or pre-launch product page.
+            An empty list means nobody has signed up yet, not that the feed is broken.
+          </p>
+        </div>
       ) : (
         <div style={{ overflowX: "auto" }}>
-          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
+          <table className="wtl-table" style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
             <thead>
               <tr style={{ borderBottom: "1px solid rgba(200,150,62,0.15)" }}>
                 {["Name", "Email", "Phone", "Product", "Source", "Date"].map(h => (
@@ -279,20 +341,20 @@ function AdminWaitlist() {
             </thead>
             <tbody>
               {entries.map(e => (
-                <tr key={e._id} style={{ borderBottom: "1px solid rgba(200,150,62,0.06)" }}>
-                  <td style={{ padding: "10px 12px", color: "#442a1b" }}>{e.name}</td>
-                  <td style={{ padding: "10px 12px", color: "rgba(68,42,27,0.6)" }}>{e.email}</td>
-                  <td style={{ padding: "10px 12px", color: "rgba(68,42,27,0.6)" }}>{e.phone}</td>
-                  <td style={{ padding: "10px 12px", color: "rgba(68,42,27,0.5)", fontSize: 12 }}>{e.product}</td>
-                  <td style={{ padding: "10px 12px", color: "rgba(68,42,27,0.4)", fontSize: 12 }}>{e.source}</td>
-                  <td style={{ padding: "10px 12px", color: "rgba(68,42,27,0.35)", fontSize: 12, whiteSpace: "nowrap" }}>{new Date(e.createdAt).toLocaleString("en-IN")}</td>
+                <tr key={e._id} className="wtl-tr">
+                  <td className="wtl-td" data-label="Name" style={{ padding: "10px 12px", color: "#442a1b" }}>{e.name}</td>
+                  <td className="wtl-td" data-label="Email" style={{ padding: "10px 12px", color: "rgba(68,42,27,0.6)" }}>{e.email}</td>
+                  <td className="wtl-td" data-label="Phone" style={{ padding: "10px 12px", color: "rgba(68,42,27,0.6)" }}>{e.phone}</td>
+                  <td className="wtl-td" data-label="Product" style={{ padding: "10px 12px", color: "rgba(68,42,27,0.5)", fontSize: 12 }}>{e.product}</td>
+                  <td className="wtl-td" data-label="Source" style={{ padding: "10px 12px", color: "rgba(68,42,27,0.4)", fontSize: 12 }}>{e.source}</td>
+                  <td className="wtl-td" data-label="Date" style={{ padding: "10px 12px", color: "rgba(68,42,27,0.35)", fontSize: 12, whiteSpace: "nowrap" }}>{new Date(e.createdAt).toLocaleString("en-IN")}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
       )}
-    </div>
+    </>
   );
 }
 
@@ -599,6 +661,8 @@ export default function AdminDashboardPage() {
   const [stats, setStats] = useState<Stats | null>(null);
   const [adminName, setAdminName] = useState("Admin");
   const [authChecked, setAuthChecked] = useState(false);
+  const [expiryDismissed, setExpiryDismissed] = useState(false);
+  const session = useAdminSession();
 
   useEffect(() => {
     const name = localStorage.getItem("adminName");
@@ -609,6 +673,12 @@ export default function AdminDashboardPage() {
       .catch(() => router.replace("/admin/login"))
       .finally(() => setAuthChecked(true));
   }, [router]);
+
+  // Same exit as the auth gate above: an expired token means every request from
+  // here on 401s, so there is nothing left to show.
+  useEffect(() => {
+    if (session.expired) router.replace("/admin/login");
+  }, [session.expired, router]);
 
   const handleLogout = async () => {
     try { await adminApi.post("/auth/admin/auth/logout", {}); } catch {}
@@ -666,49 +736,45 @@ export default function AdminDashboardPage() {
     <>
       <style>{`
         * { box-sizing: border-box; }
-        .ad-shell { display: flex; min-height: 100vh; background: #f7f0e2; color: #442a1b; font-family: var(--font-jost,'Jost'),sans-serif; }
-        .ad-sidebar { width: 228px; background: #ffffff; border-right: 1px solid rgba(200,150,62,0.18); display: flex; flex-direction: column; position: sticky; top: 0; height: 100vh; align-self: flex-start; padding: 28px 0; flex-shrink: 0; }
-        .ad-logo { padding: 0 24px 28px; border-bottom: 1px solid rgba(200,150,62,0.08); }
-        .ad-logo-name { font-family: var(--font-cormorant,'Cormorant Garamond'),serif; font-size: 21px; font-weight: 700; color: #442a1b; letter-spacing: 0.05em; }
-        .ad-logo-sub { font-size: 10.5px; letter-spacing: 0.22em; color: #a8761c; text-transform: uppercase; margin-top: 2px; }
+        .ad-shell { display: flex; min-height: 100vh; background: var(--ad-bg); }
+        .ad-sidebar { width: 228px; background: var(--ad-surface); border-right: 1px solid var(--ad-hairline); display: flex; flex-direction: column; position: sticky; top: 0; height: 100vh; align-self: flex-start; padding: 28px 0; flex-shrink: 0; }
+        .ad-logo { padding: 0 24px 26px; border-bottom: 1px solid var(--ad-hairline); }
+        .ad-logo-name { font-size: 20px; font-weight: 700; letter-spacing: 0.06em; color: var(--ad-ink); }
+        .ad-logo-sub { font-size: 10px; letter-spacing: 0.22em; color: var(--ad-warn); text-transform: uppercase; margin-top: 3px; }
         .ad-nav { flex: 1; padding: 20px 10px; display: flex; flex-direction: column; gap: 3px; overflow-y: auto; }
-        .ad-nav-btn { display: flex; align-items: center; gap: 11px; padding: 11px 14px; border-radius: 3px; cursor: pointer; font-size: 13.5px; font-weight: 400; color: rgba(68,42,27,0.68); transition: all 0.18s; background: transparent; border: none; width: 100%; text-align: left; letter-spacing: 0.02em; }
-        .ad-nav-btn:hover { color: rgba(68,42,27,0.82); background: rgba(200,150,62,0.06); }
-        .ad-nav-btn.active { color: #442a1b; background: rgba(200,150,62,0.1); border-left: 2px solid #C8963E; }
+        .ad-nav-btn { display: flex; align-items: center; gap: 11px; width: 100%; padding: 11px 14px; border: none; border-radius: var(--ad-r-sm); background: transparent; font: inherit; font-size: 13.5px; color: var(--ad-ink-2); text-align: left; cursor: pointer; transition: background 0.18s ease, color 0.18s ease; }
+        .ad-nav-btn:hover { color: var(--ad-ink); background: rgba(200,150,62,0.07); }
+        .ad-nav-btn.active { color: var(--ad-ink); background: var(--ad-warn-bg); font-weight: 650; box-shadow: inset 2px 0 0 var(--ad-gold); }
         .ad-nav-icon { font-size: 15px; width: 18px; text-align: center; }
-        .ad-nav-divider { height: 1px; background: rgba(200,150,62,0.08); margin: 8px 14px; }
-        .ad-sidebar-foot { padding: 18px 10px; border-top: 1px solid rgba(200,150,62,0.08); }
-        .ad-logout { display: flex; align-items: center; gap: 9px; width: 100%; padding: 10px 14px; background: transparent; border: 1px solid rgba(200,150,62,0.14); color: rgba(68,42,27,0.38); font-family: var(--font-jost,'Jost'),sans-serif; font-size: 12px; letter-spacing: 0.08em; cursor: pointer; transition: all 0.18s; border-radius: 3px; }
-        .ad-logout:hover { border-color: rgba(200,150,62,0.4); color: rgba(68,42,27,0.75); }
+        .ad-nav-divider { height: 1px; background: var(--ad-hairline); margin: 8px 14px; }
+        .ad-sidebar-foot { padding: 18px 10px; border-top: 1px solid var(--ad-hairline); }
+        .ad-logout { display: flex; align-items: center; gap: 9px; width: 100%; padding: 10px 14px; background: transparent; border: 1px solid var(--ad-hairline); border-radius: var(--ad-r-sm); font: inherit; font-size: 12px; letter-spacing: 0.08em; color: var(--ad-ink-3); cursor: pointer; transition: border-color 0.18s ease, color 0.18s ease; }
+        .ad-logout:hover { border-color: var(--ad-gold); color: var(--ad-ink); }
         .ad-main { flex: 1; padding: 36px 40px; min-width: 0; }
-        .ad-topbar { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 36px; }
-        .ad-page-title { font-family: var(--font-cormorant,'Cormorant Garamond'),serif; font-size: 34px; font-weight: 700; color: #442a1b; }
-        .ad-page-sub { font-size: 13px; color: rgba(68,42,27,0.55); margin-top: 3px; font-weight: 400; }
+        .ad-topbar { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 30px; }
         .ad-greeting { text-align: right; }
-        .ad-greeting-name { font-size: 13px; color: rgba(68,42,27,0.38); }
-        .ad-greeting-name strong { color: #C8963E; font-weight: 500; }
-        .ad-greeting-date { font-size: 12px; color: rgba(68,42,27,0.5); margin-top: 2px; }
-        .ad-stats { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; margin-bottom: 36px; }
-        .ad-stat { background: #ffffff; border: 1px solid rgba(200,150,62,0.1); padding: 22px; position: relative; overflow: hidden; border-radius: 3px; animation: adStatIn 0.5s ease both; }
-        .ad-stat:nth-child(1){animation-delay:0.04s} .ad-stat:nth-child(2){animation-delay:0.08s} .ad-stat:nth-child(3){animation-delay:0.12s} .ad-stat:nth-child(4){animation-delay:0.16s}
-        @keyframes adStatIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
-        .ad-stat::before { content:''; position:absolute; top:0;left:0;right:0; height:2px; background:linear-gradient(90deg,transparent,rgba(200,150,62,0.35),transparent); }
-        .ad-stat-label { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(68,42,27,0.55); margin-bottom: 9px; }
-        .ad-stat-value { font-family: var(--font-cormorant,'Cormorant Garamond'),serif; font-size: 38px; font-weight: 700; color: #442a1b; line-height: 1; margin-bottom: 5px; }
-        .ad-stat-value.gold { color: #b8801f; }
-        .ad-stat-value.alert { color: #c0392b; }
-        .ad-stat-sub { font-size: 12.5px; color: rgba(68,42,27,0.55); font-weight: 400; }
+        .ad-greeting-name { font-size: 13px; color: var(--ad-ink-3); margin: 0; }
+        .ad-greeting-name strong { color: var(--ad-warn); font-weight: 650; }
+        .ad-greeting-date { font-size: 12px; color: var(--ad-ink-3); margin: 2px 0 0; }
+
+        /* Session warning: the admin token lives 8h and staff used to be bounced
+           mid-task, losing whatever was half-typed into a form. */
+        .ad-expiry { display: flex; align-items: center; gap: 12px; padding: 12px 16px; margin-bottom: 22px;
+          background: var(--ad-warn-bg); border-color: var(--ad-gold-soft); border-left: 3px solid var(--ad-warn); }
+        .ad-expiry-text { flex: 1 1 auto; font-size: 13px; line-height: 1.5; color: var(--ad-ink); margin: 0; }
+        .ad-expiry-text strong { color: var(--ad-warn); }
+        .ad-expiry-dismiss { flex-shrink: 0; width: 30px; height: 30px; padding: 0; font: inherit; font-size: 15px; line-height: 1;
+          background: transparent; border: 1px solid var(--ad-gold-soft); border-radius: var(--ad-r-sm); color: var(--ad-ink-2); cursor: pointer; }
+        .ad-expiry-dismiss:hover { color: var(--ad-ink); border-color: var(--ad-gold); }
 
         /* Mobile navigation bar + drawer backdrop (hidden on desktop) */
         .ad-mobilebar { display: none; align-items: center; gap: 12px; position: sticky; top: 0; z-index: 60;
-          background: #fff; border-bottom: 1px solid rgba(200,150,62,0.22); padding: 11px 14px; }
-        .ad-burger { width: 44px; height: 44px; flex-shrink: 0; font-size: 20px; cursor: pointer; color: #442a1b;
-          background: #fff; border: 1px solid rgba(200,150,62,0.35); border-radius: 7px; line-height: 1; }
-        .ad-mobilebar-title { font-size: 15.5px; font-weight: 700; color: #442a1b; margin: 0; }
+          background: var(--ad-surface); border-bottom: 1px solid var(--ad-hairline); padding: 11px 14px; }
+        .ad-burger { width: 44px; height: 44px; flex-shrink: 0; font-size: 20px; cursor: pointer; color: var(--ad-ink);
+          background: var(--ad-surface); border: 1px solid var(--ad-gold-soft); border-radius: var(--ad-r-sm); line-height: 1; }
+        .ad-mobilebar-title { font-size: 15.5px; font-weight: 700; color: var(--ad-ink); margin: 0; }
         .ad-backdrop { position: fixed; inset: 0; background: rgba(28,19,4,0.45); z-index: 65; }
-        .ad-section-title { font-family: var(--font-cormorant,'Cormorant Garamond'),serif; font-size: 22px; font-weight: 600; color: #442a1b; margin-bottom: 18px; }
         @media (max-width: 900px) {
-          .ad-stats { grid-template-columns: repeat(2,1fr); }
           .ad-main { padding: 22px 16px; }
           /* Sidebar becomes a slide-in drawer instead of disappearing entirely. */
           .ad-sidebar { position: fixed; top: 0; left: 0; bottom: 0; height: 100vh; z-index: 70;
@@ -716,7 +782,7 @@ export default function AdminDashboardPage() {
           .ad-sidebar.open { transform: translateX(0); }
           .ad-mobilebar { display: flex; }
           .ad-topbar { flex-direction: column; align-items: flex-start; gap: 8px; }
-          .ad-stat-value { font-size: 32px; }
+          .ad-greeting { text-align: left; }
         }
       `}</style>
 
@@ -760,8 +826,8 @@ export default function AdminDashboardPage() {
         <main className="ad-main">
           <div className="ad-topbar">
             <div>
-              <h1 className="ad-page-title">{PAGE_TITLE[tab]}</h1>
-              <p className="ad-page-sub">{PAGE_SUB[tab]}</p>
+              <h1 className="ad-h1">{PAGE_TITLE[tab]}</h1>
+              <p className="ad-sub" style={{ marginTop: 3 }}>{PAGE_SUB[tab]}</p>
             </div>
             <div className="ad-greeting">
               <p className="ad-greeting-name">Welcome, <strong>{adminName}</strong></p>
@@ -771,10 +837,20 @@ export default function AdminDashboardPage() {
             </div>
           </div>
 
+          {session.expiringSoon && !expiryDismissed && (
+            <div className="ad-card ad-expiry" role="status">
+              <p className="ad-expiry-text">
+                Your admin session ends in <strong>{session.minutesRemaining} min</strong>. Save anything
+                you are part-way through now — sign out and back in to start a fresh 8-hour session.
+              </p>
+              <button className="ad-expiry-dismiss" onClick={() => setExpiryDismissed(true)} aria-label="Dismiss session warning">×</button>
+            </div>
+          )}
+
           {tab === "overview" && (
             <>
               <AdminOverview stats={stats} onOpenTab={setTab} />
-              <p className="ad-section-title" style={{ marginTop: 30 }}>Product overview</p>
+              <p className="ad-h2" style={{ marginTop: 30, marginBottom: 16 }}>Product overview</p>
               <AdminProducts readOnly />
             </>
           )}

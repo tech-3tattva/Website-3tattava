@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { EDUCATION_ARTICLES } from "@/lib/education-content";
 import { BLOG_ARTICLES } from "@/data/education/blog-articles.generated";
+import { GATED_ROUTES } from "@/lib/gated-routes";
 
 const SITE_URL = "https://www.3tattava.com";
 
@@ -35,14 +36,16 @@ const STATIC_ROUTES: Array<{
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
 
-  const staticEntries: MetadataRoute.Sitemap = STATIC_ROUTES.map(
-    ({ path, priority, changeFrequency }) => ({
-      url: `${SITE_URL}${path}`,
-      lastModified: now,
-      changeFrequency,
-      priority,
-    }),
-  );
+  // Gated routes serve a `noindex` coming-soon page, so advertising them here
+  // would ask Google to index a page that refuses it.
+  const staticEntries: MetadataRoute.Sitemap = STATIC_ROUTES.filter(
+    ({ path }) => !GATED_ROUTES.has(path),
+  ).map(({ path, priority, changeFrequency }) => ({
+    url: `${SITE_URL}${path}`,
+    lastModified: now,
+    changeFrequency,
+    priority,
+  }));
 
   // Real education articles (slugs must match app/education/[slug]).
   const educationEntries: MetadataRoute.Sitemap = EDUCATION_ARTICLES.map((article) => ({

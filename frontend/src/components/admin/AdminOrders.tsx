@@ -3,9 +3,14 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { adminApi as api } from "@/lib/api";
 import { useScrollLock } from "@/hooks/useScrollLock";
+import { useSortable, type SortDir } from "@/hooks/useSortable";
+import { useFeedback } from "@/components/admin/AdminToast";
+import { toCsv, downloadCsv, datedFilename } from "@/lib/csv";
 import ManualOrderForm from "@/components/admin/ManualOrderForm";
+import OrderEditForm from "@/components/admin/OrderEditForm";
 
 type OrderItem = {
+  productId?: string;
   name: string;
   quantity: number;
   price: number;
@@ -63,6 +68,10 @@ type Order = {
   };
   tracking?: { courierName?: string; trackingNumber?: string; trackingUrl?: string };
   statusHistory?: StatusEvent[];
+  source?: string;
+  isSample?: boolean;
+  isTest?: boolean;
+  adminNote?: string;
 };
 
 const STATUSES: OrderStatus[] = ["pending", "confirmed", "processing", "shipped", "delivered", "cancelled"];
@@ -101,6 +110,94 @@ function totalUnits(o: Order): number {
   return (o.items || []).reduce((s, i) => s + (i.quantity || 0), 0);
 }
 
+/** Sample seeding and pre-launch tests are never sales, so they have to be
+ *  separable from the real order book. */
+type OrderKind = "real" | "sample" | "test";
+
+function matchesKind(o: Order, kind: OrderKind): boolean {
+  if (kind === "sample") return !!o.isSample;
+  if (kind === "test") return !!o.isTest;
+  return !o.isSample && !o.isTest;
+}
+
+const KIND_CHIPS: Array<{ key: "" | OrderKind; label: string }> = [
+  { key: "", label: "All" },
+  { key: "real", label: "Real sales" },
+  { key: "sample", label: "Samples" },
+  { key: "test", label: "Tests" },
+];
+
+/**
+ * Sample (doctor/trainer seeding) and pre-launch test orders make up most of the
+ * order book; unmarked they read as real sales, because only a ₹0 total sets
+ * them apart.
+ */
+function KindBadge({ order }: { order: Order }) {
+  if (order.isSample) return <span className="ad-badge ad-badge-mute ord-kind">SAMPLE</span>;
+  if (order.isTest) return <span className="ad-badge ad-badge-warn ord-kind">TEST</span>;
+  return null;
+}
+
+/** Module-level so the sort hook's memo dependency stays referentially stable. */
+const ORDER_SORT: Record<string, (o: Order) => string | number | null | undefined> = {
+  orderNumber: (o) => o.orderNumber,
+  customer: (o) => customerName(o),
+  total: (o) => o.total ?? 0,
+  createdAt: (o) => new Date(o.createdAt).getTime(),
+  status: (o) => o.status,
+};
+
+const ORDER_CSV_COLUMNS: Array<{ header: string; value: (o: Order) => unknown }> = [
+  { header: "Order number", value: (o) => o.orderNumber },
+  { header: "Date", value: (o) => new Date(o.createdAt).toISOString() },
+  { header: "Customer", value: (o) => customerName(o) },
+  { header: "Email", value: (o) => o.shippingAddress?.email || o.guestEmail || "" },
+  { header: "Phone", value: (o) => o.shippingAddress?.phone || "" },
+  { header: "City", value: (o) => o.shippingAddress?.city || "" },
+  { header: "Items", value: (o) => (o.items || []).map((i) => `${i.name} x ${i.quantity}`).join("; ") },
+  { header: "Subtotal", value: (o) => o.subtotal ?? "" },
+  { header: "Shipping", value: (o) => o.shippingFee ?? "" },
+  { header: "Total", value: (o) => o.total ?? 0 },
+  { header: "Payment status", value: (o) => o.payment?.status || "" },
+  { header: "Payment method", value: (o) => o.payment?.method || "" },
+  { header: "Order status", value: (o) => o.status },
+  { header: "Source", value: (o) => o.source || "" },
+  { header: "Sample", value: (o) => (o.isSample ? "yes" : "no") },
+  { header: "Test", value: (o) => (o.isTest ? "yes" : "no") },
+  { header: "AWB", value: (o) => o.shipment?.awbNumber || o.tracking?.trackingNumber || "" },
+  { header: "Courier", value: (o) => o.shipment?.courierName || o.tracking?.courierName || "" },
+];
+
+type HeaderProps = { "aria-sort": "ascending" | "descending" | "none"; onClick: () => void; arrow: string };
+
+/** A plain function rather than a component, so headers are not remounted on
+ *  every keystroke in the search box. */
+function sortTh(label: string, hp: HeaderProps) {
+  return (
+    <th className="ord-th">
+      <button className="ad-sort" aria-sort={hp["aria-sort"]} onClick={hp.onClick}>
+        {label} <span className="ad-sort-arrow">{hp.arrow}</span>
+      </button>
+    </th>
+  );
+}
+
+/** Phones get no table header to click, so the same sort keys are offered as a
+ *  picker with the direction spelled out. Values are `<sort key>:<direction>`. */
+const SORT_OPTIONS: Array<{ value: string; label: string }> = [
+  { value: "", label: "Newest first (default)" },
+  { value: "createdAt:desc", label: "Date, newest first" },
+  { value: "createdAt:asc", label: "Date, oldest first" },
+  { value: "total:desc", label: "Total, high to low" },
+  { value: "total:asc", label: "Total, low to high" },
+  { value: "customer:asc", label: "Customer, A–Z" },
+  { value: "customer:desc", label: "Customer, Z–A" },
+  { value: "orderNumber:desc", label: "Order no., high to low" },
+  { value: "orderNumber:asc", label: "Order no., low to high" },
+  { value: "status:asc", label: "Status, A–Z" },
+  { value: "status:desc", label: "Status, Z–A" },
+];
+
 export default function AdminOrders() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [total, setTotal] = useState(0);
@@ -112,6 +209,9 @@ export default function AdminOrders() {
   const [updating, setUpdating] = useState<string | null>(null);
   const [selected, setSelected] = useState<Order | null>(null);
   const [showManual, setShowManual] = useState(false);
+  const [editing, setEditing] = useState<Order | null>(null);
+  const [kindFilter, setKindFilter] = useState<"" | OrderKind>("");
+  const { toast, confirm } = useFeedback();
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -134,21 +234,52 @@ export default function AdminOrders() {
   // here — locking twice leaves the page stuck when the inner one unmounts.
   useScrollLock(!!selected);
 
+  const applyStatus = useCallback((id: string, status: OrderStatus) => {
+    setOrders((prev) => prev.map((o) => (o.id === id ? { ...o, status } : o)));
+    setSelected((s) => (s && s.id === id ? { ...s, status } : s));
+  }, []);
+
   const updateStatus = async (id: string, status: OrderStatus) => {
+    const order = orders.find((o) => o.id === id) ?? (selected?.id === id ? selected : undefined);
+    const label = order?.orderNumber || "This order";
+    const previous = order?.status;
+
+    // Locked before awaiting confirmation: the re-render puts the dropdown back
+    // on the stored status, so declining leaves no stale choice on screen, and a
+    // second change cannot race the first.
     setUpdating(id);
     try {
+      if (status === "cancelled") {
+        const ok = await confirm({
+          title: `Cancel order ${label}?`,
+          body: "Cancelling is not reversible from this panel — the order would have to be recorded again by hand.",
+          confirmLabel: "Cancel this order",
+          danger: true,
+        });
+        if (!ok) return;
+      }
+
+      // Applied up front so the dropdown and the status column agree while the
+      // write is in flight, then rolled back if the server refuses it.
+      applyStatus(id, status);
       const updated = await api.put<Order>(`/admin/orders/${id}/status`, { status });
-      setOrders((prev) => prev.map((o) => (o.id === id ? { ...o, status: updated.status } : o)));
-      setSelected((s) => (s && s.id === id ? { ...s, status: updated.status } : s));
-    } catch { /* keep previous status on failure */ }
-    finally { setUpdating(null); }
+      applyStatus(id, updated.status);
+      toast("ok", `${label} is now ${updated.status}.`);
+    } catch (e) {
+      if (previous) applyStatus(id, previous);
+      toast("error", `${label} could not be updated: ${e instanceof Error ? e.message : "the change was not saved."}`);
+    } finally {
+      setUpdating(null);
+    }
   };
 
-  /** Client-side search across order number, customer name/email/phone and product names. */
+  /** Client-side search across order number, customer name/email/phone and
+   *  product names, narrowed first by the sample/test split. */
   const shown = useMemo(() => {
+    const base = kindFilter ? orders.filter((o) => matchesKind(o, kindFilter)) : orders;
     const q = query.trim().toLowerCase();
-    if (!q) return orders;
-    return orders.filter((o) => {
+    if (!q) return base;
+    return base.filter((o) => {
       const hay = [
         o.orderNumber,
         customerName(o),
@@ -159,15 +290,54 @@ export default function AdminOrders() {
       ].filter(Boolean).join(" ").toLowerCase();
       return hay.includes(q);
     });
-  }, [orders, query]);
+  }, [orders, query, kindFilter]);
+
+  const { sorted, sort, toggle, headerProps } = useSortable(shown, ORDER_SORT);
+
+  /**
+   * Drives the one sort state the headers use. The hook exposes a cycling
+   * toggle rather than a setter, so the picker replays toggles until the state
+   * matches the chosen option — switching back to a wide screen then shows the
+   * matching header arrow instead of a second, disagreeing control.
+   */
+  const selectSort = (value: string) => {
+    if (!value) {
+      if (!sort) return;
+      toggle(sort.key);
+      if (sort.dir === "desc") toggle(sort.key); // desc -> asc -> unsorted
+      return;
+    }
+    const [key, dir] = value.split(":") as [string, SortDir];
+    if (sort?.key === key && sort.dir === dir) return;
+    if (sort?.key !== key) {
+      toggle(key); // a fresh key always lands on desc
+      if (dir === "asc") toggle(key);
+      return;
+    }
+    toggle(key); // desc -> asc
+    if (dir === "desc") toggle(key); // asc -> unsorted -> desc
+  };
 
   const summary = useMemo(() => {
     const paid = orders.filter((o) => o.payment?.status === "captured");
-    const revenue = paid.reduce((s, o) => s + (o.total || 0), 0);
+    // Seeded samples and pre-launch tests are not sales, and a cancelled order
+    // is not money kept — neither may reach the revenue figure.
+    const revenue = paid
+      .filter((o) => !o.isSample && !o.isTest && o.status !== "cancelled")
+      .reduce((s, o) => s + (o.total || 0), 0);
     const units = orders.reduce((s, o) => s + totalUnits(o), 0);
     const needsAction = orders.filter((o) => o.status === "pending" || o.status === "confirmed").length;
     return { paidCount: paid.length, revenue, units, needsAction };
   }, [orders]);
+
+  const exportCsv = () => {
+    if (!sorted.length) {
+      toast("info", "There is nothing to export with the current filters.");
+      return;
+    }
+    downloadCsv(datedFilename("orders"), toCsv(sorted, ORDER_CSV_COLUMNS));
+    toast("ok", `Exported ${sorted.length} order${sorted.length === 1 ? "" : "s"}.`);
+  };
 
   return (
     <>
@@ -182,6 +352,12 @@ export default function AdminOrders() {
         .ord-search:focus { border-color: #C8963E; }
         .ord-chip { font-size: 12px; padding: 8px 13px; border-radius: 4px; cursor: pointer; background: transparent; color: rgba(68,42,27,0.7); border: 1px solid rgba(200,150,62,0.28); text-transform: capitalize; font-family: inherit; }
         .ord-chip.on { background: rgba(200,150,62,0.16); color: #8a5a10; border-color: rgba(200,150,62,0.5); font-weight: 600; }
+        .ord-chip-label { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(68,42,27,0.45); margin-left: 6px; }
+        .ord-kind { margin-left: 7px; vertical-align: middle; }
+        /* Header clicks are the desktop affordance; the picker only exists where
+           the header row is hidden, so the two never compete. */
+        .ord-sortbar { display: none; }
+        .ord-sortbar-l { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(68,42,27,0.45); flex-shrink: 0; }
 
         .ord-table { width: 100%; border-collapse: collapse; }
         .ord-th { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(68,42,27,0.55); padding: 10px 14px; text-align: left; border-bottom: 1px solid rgba(200,150,62,0.18); font-weight: 500; white-space: nowrap; }
@@ -236,6 +412,11 @@ export default function AdminOrders() {
           .ord-table td.ord-td:last-child { border-bottom: none; }
           .ord-table td.ord-td::before { content: attr(data-label); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(68,42,27,0.55); text-align: left; flex-shrink: 0; min-width: 68px; }
           .ord-items { text-align: right; }
+          /* On a phone the chips wrap; a full-width label stops "Type" being
+             stranded at the end of the status row, away from its own chips. */
+          .ord-chip-label { flex-basis: 100%; margin-left: 0; }
+          .ord-sortbar { display: flex; align-items: center; gap: 10px; margin: -4px 0 16px; }
+          .ord-sortbar select { flex: 1 1 auto; min-width: 0; }
           .ord-modal { padding: 16px; }
         }
       `}</style>
@@ -244,7 +425,7 @@ export default function AdminOrders() {
       <div className="ord-cards">
         <div className="ord-card"><p className="ord-card-l">Total orders</p><p className="ord-card-v">{total}</p></div>
         <div className="ord-card"><p className="ord-card-l">Paid orders</p><p className="ord-card-v">{summary.paidCount}</p></div>
-        <div className="ord-card"><p className="ord-card-l">Revenue (paid)</p><p className="ord-card-v">{inr(summary.revenue)}</p></div>
+        <div className="ord-card"><p className="ord-card-l">Revenue (real sales)</p><p className="ord-card-v">{inr(summary.revenue)}</p></div>
         <div className="ord-card"><p className="ord-card-l">Units sold</p><p className="ord-card-v">{summary.units}</p></div>
         <div className="ord-card"><p className="ord-card-l">Needs action</p><p className="ord-card-v">{summary.needsAction}</p></div>
       </div>
@@ -269,7 +450,30 @@ export default function AdminOrders() {
         <ManualOrderForm onClose={() => setShowManual(false)} onCreated={load} />
       )}
 
-      {/* Search + status filter */}
+      {editing && (
+        <OrderEditForm
+          order={{
+            id: editing.id,
+            orderNumber: editing.orderNumber,
+            status: editing.status,
+            shippingAddress: editing.shippingAddress,
+            items: (editing.items ?? []).map((i) => ({
+              productId: i.productId ?? "",
+              name: i.name,
+              quantity: i.quantity,
+            })),
+            adminNote: editing.adminNote,
+          }}
+          onClose={() => setEditing(null)}
+          onSaved={() => {
+            // The card behind the form still holds the old values.
+            setSelected(null);
+            void load();
+          }}
+        />
+      )}
+
+      {/* Search + status/type filters + export */}
       <div className="ord-toolbar">
         <input
           className="ord-search"
@@ -278,36 +482,62 @@ export default function AdminOrders() {
           onChange={(e) => setQuery(e.target.value)}
           aria-label="Search orders"
         />
+        <button className="ad-btn ad-btn-sm" onClick={exportCsv}>Export CSV</button>
         <button className={`ord-chip${statusFilter === "" ? " on" : ""}`} onClick={() => { setStatusFilter(""); setPage(1); }}>All</button>
         {STATUSES.map((s) => (
           <button key={s} className={`ord-chip${statusFilter === s ? " on" : ""}`} onClick={() => { setStatusFilter(s); setPage(1); }}>{s}</button>
         ))}
+        <span className="ord-chip-label">Type</span>
+        {KIND_CHIPS.map((c) => (
+          <button
+            key={c.key || "all"}
+            className={`ord-chip${kindFilter === c.key ? " on" : ""}`}
+            onClick={() => { setKindFilter(c.key); setPage(1); }}
+          >
+            {c.label}
+          </button>
+        ))}
+      </div>
+
+      {/* Phone-only: the stacked cards have no header row to click. */}
+      <div className="ord-sortbar">
+        <label className="ord-sortbar-l" htmlFor="ord-sort-by">Sort by</label>
+        <select
+          id="ord-sort-by"
+          className="ad-input"
+          value={sort ? `${sort.key}:${sort.dir}` : ""}
+          onChange={(e) => selectSort(e.target.value)}
+        >
+          {SORT_OPTIONS.map((o) => (
+            <option key={o.value || "default"} value={o.value}>{o.label}</option>
+          ))}
+        </select>
       </div>
 
       {loading ? (
         <p style={{ color: "rgba(68,42,27,0.45)", fontSize: 14 }}>Loading orders…</p>
       ) : shown.length === 0 ? (
         <div className="ord-empty">
-          <p className="ord-empty-title">{query || statusFilter ? "No orders match this filter" : "No orders yet"}</p>
-          <p className="ord-empty-sub">{query || statusFilter ? "Try clearing the search or status filter." : "Orders will appear here once customers start buying."}</p>
+          <p className="ord-empty-title">{query || statusFilter || kindFilter ? "No orders match this filter" : "No orders yet"}</p>
+          <p className="ord-empty-sub">{query || statusFilter || kindFilter ? "Try clearing the search, status or type filter." : "Orders will appear here once customers start buying."}</p>
         </div>
       ) : (
         <>
           <table className="ord-table">
             <thead>
               <tr>
-                <th className="ord-th">Order</th>
-                <th className="ord-th">Customer</th>
+                {sortTh("Order", headerProps("orderNumber"))}
+                {sortTh("Customer", headerProps("customer"))}
                 <th className="ord-th">Products</th>
-                <th className="ord-th">Total</th>
+                {sortTh("Total", headerProps("total"))}
                 <th className="ord-th">Payment</th>
-                <th className="ord-th">Date</th>
-                <th className="ord-th">Status</th>
+                {sortTh("Date", headerProps("createdAt"))}
+                {sortTh("Status", headerProps("status"))}
                 <th className="ord-th">Update</th>
               </tr>
             </thead>
             <tbody>
-              {shown.map((o) => (
+              {sorted.map((o) => (
                 <tr
                   key={o.id}
                   className="ord-tr"
@@ -319,6 +549,7 @@ export default function AdminOrders() {
                   <td className="ord-td" data-label="Order">
                     <span>
                       <span className="ord-num">{o.orderNumber}</span>
+                      <KindBadge order={o} />
                       <br /><span className="ord-sub">{totalUnits(o)} item{totalUnits(o) === 1 ? "" : "s"}</span>
                     </span>
                   </td>
@@ -380,9 +611,24 @@ export default function AdminOrders() {
                   <span className="ord-badge" style={{ background: "rgba(200,150,62,0.14)", color: "#8a5a10" }}>Order: <span style={{ textTransform: "capitalize" }}>{selected.status}</span></span>
                   <span className={`ord-badge ${selected.payment?.status === "captured" ? "ord-badge-paid" : "ord-badge-unpaid"}`}>{PAYMENT_LABEL[selected.payment?.status ?? ""] ?? "Payment: unpaid"}</span>
                   {selected.payment?.method && <span className="ord-badge ord-badge-unpaid">{selected.payment.method}</span>}
+                  <KindBadge order={selected} />
                 </div>
               </div>
-              <button className="ord-x" onClick={() => setSelected(null)} aria-label="Close">×</button>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
+                <button
+                  className="ad-btn ad-btn-sm"
+                  onClick={() => setEditing(selected)}
+                  disabled={selected.status === "delivered" || selected.status === "cancelled"}
+                  title={
+                    selected.status === "delivered" || selected.status === "cancelled"
+                      ? `A ${selected.status} order cannot be edited — its stock and courier record are settled.`
+                      : "Correct the address or quantities"
+                  }
+                >
+                  Edit
+                </button>
+                <button className="ord-x" onClick={() => setSelected(null)} aria-label="Close">×</button>
+              </div>
             </div>
 
             <p className="ord-sec">Customer</p>

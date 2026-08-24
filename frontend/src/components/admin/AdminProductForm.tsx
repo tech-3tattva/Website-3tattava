@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import type { Category, Product } from "@shared/types";
 import { api } from "@/lib/api";
+import { useFeedback } from "@/components/admin/AdminToast";
 
 const BADGES = ["", "Best Seller", "New", "20% Off"] as const;
 const DOSHAS = ["Vata", "Pitta", "Kapha"] as const;
@@ -12,6 +13,7 @@ type Props = { productId?: string };
 
 export default function AdminProductForm({ productId }: Props) {
   const router = useRouter();
+  const { toast, confirm } = useFeedback();
   const isEdit = Boolean(productId);
 
   const [categories, setCategories] = useState<Category[]>([]);
@@ -33,6 +35,9 @@ export default function AdminProductForm({ productId }: Props) {
   const [badge, setBadge] = useState<string>("");
   const [dosha, setDosha] = useState<string[]>([]);
   const [isActive, setIsActive] = useState(true);
+  // Saved storefront state of the loaded product, so unticking "Active" can be
+  // confirmed before it pulls the product off the shop.
+  const [wasActive, setWasActive] = useState(false);
   const [isFeatured, setIsFeatured] = useState(false);
   const [isGiftable, setIsGiftable] = useState(false);
   const [existingImages, setExistingImages] = useState<string[]>([]);
@@ -75,6 +80,7 @@ export default function AdminProductForm({ productId }: Props) {
         setBadge(p.badge ?? "");
         setDosha(p.dosha ?? []);
         setIsActive(p.isActive);
+        setWasActive(p.isActive);
         setIsFeatured(Boolean(p.isFeatured));
         setIsGiftable(Boolean((p as unknown as { isGiftable?: boolean }).isGiftable));
         setExistingImages(p.images ?? []);
@@ -134,8 +140,18 @@ export default function AdminProductForm({ productId }: Props) {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+
+    if (isEdit && wasActive && !isActive) {
+      const ok = await confirm({
+        title: `Hide ${name.trim() || "this product"} from the store?`,
+        body: "Saving with “Active on website” unticked takes it off the shop until you tick it again.",
+        confirmLabel: "Hide product",
+        danger: true,
+      });
+      if (!ok) return;
+    }
+
     setSaving(true);
-    setError(null);
     try {
       if (!category.trim() || !categoryLabel.trim()) {
         throw new Error("Category and category label are required");
@@ -147,9 +163,16 @@ export default function AdminProductForm({ productId }: Props) {
       } else {
         await api.upload("/admin/products", fd, false);
       }
+      toast(
+        "ok",
+        `${name.trim()} ${isEdit ? "saved" : "created"} — ${isActive ? "live on site" : "hidden from the store"}`,
+      );
       router.push("/admin/inventory");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Save failed");
+      toast(
+        "error",
+        `Could not save ${name.trim() || "product"}: ${err instanceof Error ? err.message : "the API rejected the change"}`,
+      );
     } finally {
       setSaving(false);
     }
@@ -173,7 +196,7 @@ export default function AdminProductForm({ productId }: Props) {
             required
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="w-full px-3 py-2 border border-border rounded-lg"
+            className="ad-input w-full"
           />
         </div>
         <div>
@@ -184,7 +207,7 @@ export default function AdminProductForm({ productId }: Props) {
             value={slug}
             onChange={(e) => setSlug(e.target.value)}
             placeholder="e.g. kumkumadi-serum"
-            className="w-full px-3 py-2 border border-border rounded-lg"
+            className="ad-input w-full"
           />
         </div>
         <div className="grid sm:grid-cols-2 gap-4">
@@ -194,7 +217,7 @@ export default function AdminProductForm({ productId }: Props) {
               required
               value={category}
               onChange={(e) => setCategory(e.target.value)}
-              className="w-full px-3 py-2 border border-border rounded-lg bg-white"
+              className="ad-input w-full"
             >
               <option value="">Select…</option>
               {categories.map((c) => (
@@ -211,7 +234,7 @@ export default function AdminProductForm({ productId }: Props) {
               value={categoryLabel}
               onChange={(e) => setCategoryLabel(e.target.value)}
               placeholder="e.g. FACE SERUM"
-              className="w-full px-3 py-2 border border-border rounded-lg"
+              className="ad-input w-full"
             />
           </div>
         </div>
@@ -220,7 +243,7 @@ export default function AdminProductForm({ productId }: Props) {
           <input
             value={sku}
             onChange={(e) => setSku(e.target.value)}
-            className="w-full px-3 py-2 border border-border rounded-lg"
+            className="ad-input w-full"
           />
         </div>
       </section>
@@ -237,7 +260,7 @@ export default function AdminProductForm({ productId }: Props) {
               step={1}
               value={price}
               onChange={(e) => setPrice(e.target.value)}
-              className="w-full px-3 py-2 border border-border rounded-lg"
+              className="ad-input w-full"
             />
           </div>
           <div>
@@ -248,7 +271,7 @@ export default function AdminProductForm({ productId }: Props) {
               step={1}
               value={mrp}
               onChange={(e) => setMrp(e.target.value)}
-              className="w-full px-3 py-2 border border-border rounded-lg"
+              className="ad-input w-full"
             />
           </div>
         </div>
@@ -261,7 +284,7 @@ export default function AdminProductForm({ productId }: Props) {
           <input
             value={shortDescription}
             onChange={(e) => setShortDescription(e.target.value)}
-            className="w-full px-3 py-2 border border-border rounded-lg"
+            className="ad-input w-full"
           />
         </div>
         <div>
@@ -270,7 +293,7 @@ export default function AdminProductForm({ productId }: Props) {
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             rows={5}
-            className="w-full px-3 py-2 border border-border rounded-lg"
+            className="ad-input w-full"
           />
         </div>
       </section>
@@ -306,7 +329,7 @@ export default function AdminProductForm({ productId }: Props) {
               min={0}
               value={stockQuantity}
               onChange={(e) => setStockQuantity(e.target.value)}
-              className="w-full px-3 py-2 border border-border rounded-lg"
+              className="ad-input w-full"
             />
           </div>
           <div>
@@ -316,7 +339,7 @@ export default function AdminProductForm({ productId }: Props) {
               min={0}
               value={lowStockThreshold}
               onChange={(e) => setLowStockThreshold(e.target.value)}
-              className="w-full px-3 py-2 border border-border rounded-lg"
+              className="ad-input w-full"
             />
           </div>
         </div>
@@ -339,7 +362,7 @@ export default function AdminProductForm({ productId }: Props) {
           <select
             value={badge}
             onChange={(e) => setBadge(e.target.value)}
-            className="w-full max-w-xs px-3 py-2 border border-border rounded-lg bg-white"
+            className="ad-input w-full max-w-xs"
           >
             {BADGES.map((b) => (
               <option key={b || "none"} value={b}>
@@ -369,14 +392,14 @@ export default function AdminProductForm({ productId }: Props) {
         <button
           type="submit"
           disabled={saving}
-          className="rounded-full bg-primary-green text-white px-8 py-3 text-sm font-semibold hover:bg-secondary-green disabled:opacity-50"
+          className="ad-btn ad-btn-primary"
         >
           {saving ? "Saving…" : isEdit ? "Save changes" : "Create product"}
         </button>
         <button
           type="button"
           onClick={() => router.push("/admin/inventory")}
-          className="rounded-full border border-border px-8 py-3 text-sm font-medium"
+          className="ad-btn"
         >
           Cancel
         </button>
