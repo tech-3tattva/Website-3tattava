@@ -124,7 +124,17 @@ async function revenueFor(period) {
     // Revenue means money actually captured by the gateway. Counting every
     // non-cancelled order (including `pending` ones that were abandoned at
     // checkout) overstated takings on the dashboard.
-    { $match: { createdAt: { $gte: start }, status: { $ne: "cancelled" }, "payment.status": "captured" } },
+    {
+      $match: {
+        createdAt: { $gte: start },
+        status: { $ne: "cancelled" },
+        "payment.status": "captured",
+        // Doctor sampling carries no money, and pre-launch gateway tests are not
+        // sales — counting either overstates what the business actually earned.
+        isSample: { $ne: true },
+        isTest: { $ne: true },
+      },
+    },
     { $group: { _id: null, total: { $sum: "$total" } } },
   ]);
   return rows[0]?.total || 0;

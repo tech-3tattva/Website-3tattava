@@ -159,6 +159,10 @@ const orderSchema = new mongoose.Schema(
     },
     // Doctor/influencer seeding: shipped at zero value, must never count as revenue.
     isSample: { type: Boolean, default: false },
+    // Real money moved (so the accountant still needs the record) but it was a
+    // gateway/flow test, not a customer sale. Everything before the 29 Jul 2026
+    // launch falls here. Excluded from revenue reporting alongside samples.
+    isTest: { type: Boolean, default: false },
     // Admin email that created an offline order (the website has no other audit trail).
     createdByAdmin: { type: String },
     adminNote: { type: String },
