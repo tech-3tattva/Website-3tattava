@@ -32,17 +32,22 @@ const productSchema = new mongoose.Schema(
 
     // GST classification, used to build the tax breakup on an invoice.
     //
-    // Default is HSN 30049011 at 12%: heading 3004 covers Ayurvedic medicaments
-    // in retail packs, and the Telangana AAR (Incnut Lifestyle Retail,
-    // TSAAR 46/2022) held that products made under an AYUSH licence and used
-    // for cure -- rather than cosmetic "care" -- are medicaments at 12%. These
-    // products are sold as Ayurvedic proprietary medicines under a valid
-    // Ayurveda manufacturing licence, which is that test.
+    // 5% is the rate the business actually operates on, confirmed by the owner
+    // and corroborated by the books: every sales voucher in Tally reproduces
+    // exactly at 5% over a round taxable value (3,750 / 1,045 / 949 / 137,800),
+    // and the ledgers are literally named "CGST OUTPUT @2.5%",
+    // "SGST OUTPUT@2.5%" and "IGST OUTPUT@5%".
+    //
+    // Worth knowing: HSN heading 3004 (Ayurvedic medicaments) is ordinarily
+    // taxed at 12%, so a 3004 code paired with 5% is an unusual combination
+    // that the GST portal may query when GSTR-1 is filed. The rate is the
+    // owner's confirmed position; the HSN below should be checked against the
+    // stock item in Tally so the two agree on the return.
     //
     // Editable per product precisely because it is a tax position, not a
     // constant: a reclassification must be a field change, never a code change.
     hsnCode: { type: String, default: "30049011", trim: true },
-    gstRatePercent: { type: Number, default: 12, min: 0, max: 28 },
+    gstRatePercent: { type: Number, default: 5, min: 0, max: 28 },
     // Prices are shown to customers as "inclusive of all taxes", so tax is
     // back-calculated out of `price` rather than added on top. Flip this only
     // if the storefront copy changes too.
