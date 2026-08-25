@@ -24,6 +24,7 @@
  */
 
 const gst = require("./gst");
+const series = require("./invoiceSeries");
 
 const COMPANY_NAME = "Sankalpasiddhi Ayupharma Pvt Ltd";
 
@@ -54,23 +55,6 @@ function xmlEscape(value) {
   return String(value ?? "").replace(/[&<>"']/g, (c) =>
     ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&apos;" }[c]),
   );
-}
-
-/**
- * Parses "3T/2026-27/043" and yields the next number in the same series.
- *
- * The series already exists in Tally, so the website must continue it rather
- * than start its own. Two independent series inside one financial year is a
- * duplicate-numbering defect under GST, not a cosmetic problem.
- */
-function parseSeries(lastVoucherNumber) {
-  const match = /^(.*?)(\d+)$/.exec(String(lastVoucherNumber).trim());
-  if (!match) throw new Error(`Cannot read a trailing number from "${lastVoucherNumber}"`);
-  return { prefix: match[1], width: match[2].length, last: parseInt(match[2], 10) };
-}
-
-function formatSeries({ prefix, width, last }, offset) {
-  return `${prefix}${String(last + offset).padStart(width, "0")}`;
 }
 
 /**
@@ -137,27 +121,39 @@ function renderLedgerMaster(name) {
 /**
  * Builds the complete import file for a batch of invoices.
  *
- * `invoices` are the objects produced by lib/invoice.js. `lastVoucherNumber` is
- * the highest number already issued in Tally, read off the Sales register --
- * numbering continues from there so the series stays unbroken.
+ * `invoices` are the objects produced by lib/invoice.js, each already carrying
+ * the invoice number it was issued under.
+ *
+ * The number is NOT allocated here, for two reasons. First, the customer is
+ * given their invoice the moment they pay, so the number has to exist then --
+ * not weeks later when someone exports to Tally. Second, the owner keys B2B
+ * deals straight into Tally, which consumes the next number in his own series
+ * as he does; anything allocated at export time would collide with whatever he
+ * entered in the meantime. The website therefore runs its own series
+ * (lib/invoiceSeries.js), which Rule 46(b) expressly permits, and this export
+ * only carries that number across.
  *
  * Free samples are booked against the existing SAMPLES debtor at their real
  * zero value: they move stock but earn nothing, and inflating them into revenue
  * is exactly the error that made the website report 6,198 when 1,100 had been
  * received.
  */
-function buildTallyXml({ invoices, lastVoucherNumber, companyName = COMPANY_NAME }) {
-  const series = parseSeries(lastVoucherNumber);
-
-  const assigned = invoices.map((invoice, index) => ({
-    invoice,
-    voucherNumber: formatSeries(series, index + 1),
-    partyLedger: invoice.isSample
-      ? LEDGERS.samples
-      : invoice.buyer.name && invoice.buyer.name !== "—"
-        ? invoice.buyer.name
-        : LEDGERS.samples,
-  }));
+function buildTallyXml({ invoices, companyName = COMPANY_NAME }) {
+  const assigned = invoices.map((invoice) => {
+    if (!invoice.invoiceNumber) {
+      throw new Error(`Order ${invoice.orderNumber} has no invoice number; it cannot be exported`);
+    }
+    series.assertValid(invoice.invoiceNumber);
+    return {
+      invoice,
+      voucherNumber: invoice.invoiceNumber,
+      partyLedger: invoice.isSample
+        ? LEDGERS.samples
+        : invoice.buyer.name && invoice.buyer.name !== "—"
+          ? invoice.buyer.name
+          : LEDGERS.samples,
+    };
+  });
 
   // Masters first: a voucher naming a ledger that does not yet exist is
   // rejected, and Tally processes the file top to bottom.
@@ -231,8 +227,6 @@ module.exports = {
   LEDGERS,
   DEBTOR_GROUP,
   tallyDate,
-  parseSeries,
-  formatSeries,
   buildEntries,
   renderEntry,
   renderLedgerMaster,
