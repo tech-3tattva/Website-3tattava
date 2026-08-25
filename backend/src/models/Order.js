@@ -206,6 +206,17 @@ const orderSchema = new mongoose.Schema(
       },
     },
 
+    // ── Customer confirmation email ───────────────────────────────────────
+    // Set when the single "order confirmed + tax invoice" email has gone out.
+    //
+    // Needed because a captured payment is announced twice: the browser calls
+    // verify-cashfree when the customer is redirected back, and Cashfree also
+    // POSTs the webhook. Both used to send their own confirmation from
+    // different templates, so whichever arrived second produced a duplicate.
+    // Claimed atomically, so a webhook retry cannot send a second copy.
+    confirmationSentAt: { type: Date },
+    confirmationMessageId: { type: String },
+
     // ── Tally hand-off ────────────────────────────────────────────────────
     // Set when the order has been included in a downloaded Tally file. Without
     // this an export would re-send orders already in the books and double-count

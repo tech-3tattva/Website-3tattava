@@ -21,6 +21,7 @@ const series = require("./invoiceSeries");
 const invoiceLib = require("./invoice");
 const tally = require("./tally");
 const gst = require("./gst");
+const mailer = require("./mailer");
 
 /** Only a captured payment earns an invoice. Samples are documented separately
  *  (nil value) because they move stock without being a sale. */
@@ -105,7 +106,26 @@ async function issueInvoice(orderId) {
   order.gstAmount = built.totals.totalTax;
 
   await order.save();
-  return { order, invoiceNumber: number, created: true, invoice: built };
+  // Email the customer, but never let a mail failure lose the invoice: the
+  // document is already saved and legally issued at this point. A bounced
+  // address is a follow-up, not a reason to fail the request.
+  let mail = null;
+  const to = order.shippingAddress?.email || order.guestEmail;
+  if (to && !order.isSample && !/@offline\.3tattava\.local$/i.test(to)) {
+    try {
+      mail = await mailer.sendInvoiceEmail({
+        to,
+        invoice: built,
+        html: invoiceLib.renderInvoiceHtml(built),
+      });
+    } catch (err) {
+      mail = { error: err.message };
+    }
+  } else {
+    mail = { skipped: order.isSample ? "sample order" : "no real email address" };
+  }
+
+  return { order, invoiceNumber: number, created: true, invoice: built, mail };
 }
 
 /** Rebuilds the printable invoice from an order that already has one. */
@@ -251,6 +271,71 @@ async function gstSummary({ from, to }) {
   };
 }
 
+/**
+ * Everything that must happen exactly once when a payment is captured.
+ *
+ * Called from BOTH announcements of the same event: the browser hitting
+ * verify-cashfree on redirect, and Cashfree's webhook. Previously each sent its
+ * own confirmation from a different template, so whichever arrived second
+ * produced a duplicate email -- the browser path checked whether payment was
+ * already captured, the webhook did not.
+ *
+ * The send is claimed atomically before it goes out: findOneAndUpdate only
+ * matches an order with no confirmationSentAt, so of two concurrent callers
+ * exactly one wins. On a genuine send failure the claim is released so a
+ * webhook retry can try again -- losing a customer's invoice is worse than a
+ * rare duplicate.
+ */
+async function onPaymentCaptured(orderId) {
+  const result = { invoice: null, email: null };
+
+  // Issue first: the invoice must exist before it can be attached, and
+  // issueInvoice is itself idempotent.
+  try {
+    const issued = await issueInvoice(orderId);
+    result.invoice = { number: issued.invoiceNumber, created: issued.created };
+  } catch (err) {
+    // A missing invoice must not stop the customer being told they paid.
+    result.invoice = { error: err.message };
+  }
+
+  const claimed = await Order.findOneAndUpdate(
+    { _id: orderId, confirmationSentAt: { $exists: false } },
+    { $set: { confirmationSentAt: new Date() } },
+    { new: true },
+  ).exec();
+
+  if (!claimed) {
+    result.email = { skipped: "confirmation already sent" };
+    return result;
+  }
+
+  const to = claimed.shippingAddress?.email || claimed.guestEmail;
+  if (!to || /@offline\.3tattava\.local$/i.test(to)) {
+    result.email = { skipped: "no real email address" };
+    return result;
+  }
+
+  try {
+    const built = claimed.invoice?.number ? await renderExisting(claimed) : null;
+    const sent = await mailer.sendOrderConfirmation({
+      to,
+      order: claimed,
+      invoice: built,
+      invoiceHtml: built ? invoiceLib.renderInvoiceHtml(built) : null,
+    });
+    await Order.updateOne({ _id: orderId }, { $set: { confirmationMessageId: sent.messageId || null } }).exec();
+    result.email = sent;
+  } catch (err) {
+    // Release the claim so a webhook retry can send it.
+    await Order.updateOne({ _id: orderId }, { $unset: { confirmationSentAt: "" } }).exec();
+    console.error(`[invoice-email] ${claimed.orderNumber} failed, claim released:`, err.message);
+    result.email = { error: err.message };
+  }
+
+  return result;
+}
+
 module.exports = {
   isInvoiceable,
   issueInvoice,
@@ -258,4 +343,5 @@ module.exports = {
   pendingForTally,
   buildTallyBatch,
   gstSummary,
+  onPaymentCaptured,
 };

@@ -9,7 +9,7 @@ const InventoryLog = require("../models/InventoryLog");
 const { verifyToken } = require("../middleware/auth");
 const { ApiError } = require("../middleware/errorHandler");
 const { z } = require("zod");
-const { SESClient, SendEmailCommand } = require("@aws-sdk/client-ses");
+const invoicing = require("../lib/invoicing");
 const cashfree = require("../lib/cashfree");
 const metaCapi = require("../lib/metaCapi");
 const { markWelcomeCouponUsed, evaluateWelcome } = require("../utils/welcomeCoupon");
@@ -60,47 +60,6 @@ async function assertWelcomeCouponEligible(couponInput, userId, subtotal) {
   }
 }
 
-async function trySendOrderConfirmationEmail({ toEmail, orderNumber, total }) {
-  const hasSes =
-    process.env.AWS_ACCESS_KEY_ID &&
-    process.env.AWS_SECRET_ACCESS_KEY &&
-    process.env.AWS_REGION &&
-    process.env.AWS_SES_FROM_EMAIL;
-
-  if (!hasSes) {
-    return { sent: false, reason: "SES not configured (missing AWS_* env vars)" };
-  }
-
-  try {
-    const client = new SESClient({
-      region: process.env.AWS_REGION,
-      credentials: {
-        accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-      },
-    });
-
-    const subject = `Your order ${orderNumber} is confirmed`;
-    const text = `Hi,\n\nThank you for your order from 3Tattva Ayurveda & Wellness.\n\nOrder ID: ${orderNumber}\nTotal: ₹${total}\n\nYou can track your order from the website.\n\nThanks!`;
-
-    await client.send(
-      new SendEmailCommand({
-        Source: process.env.AWS_SES_FROM_EMAIL,
-        Destination: { ToAddresses: [toEmail] },
-        Message: {
-          Subject: { Data: subject },
-          Body: {
-            Text: { Data: text },
-          },
-        },
-      })
-    );
-
-    return { sent: true };
-  } catch (err) {
-    return { sent: false, reason: err instanceof Error ? err.message : "Failed to send email" };
-  }
-}
 
 router.get("/", verifyToken, async (req, res, next) => {
   try {
@@ -336,12 +295,15 @@ router.post("/verify-cashfree", async (req, res, next) => {
       });
     } catch (e) { console.error("[meta-capi] purchase event failed:", e.message); }
 
-    const emailResult = await trySendOrderConfirmationEmail({
-      toEmail: order.shippingAddress.email, orderNumber: order.orderNumber, total: order.total,
-    });
-    const orderJson = order.toJSON();
-    orderJson.emailSent = emailResult.sent;
-    if (!emailResult.sent) orderJson.emailError = emailResult.reason;
+    // Shared with the Cashfree webhook, which announces the same captured
+    // payment. Whichever arrives first issues the invoice and sends the one
+    // confirmation; the other is a no-op.
+    const done = await invoicing.onPaymentCaptured(order._id);
+    const fresh = await Order.findById(order._id).exec();
+    const orderJson = (fresh || order).toJSON();
+    orderJson.invoiceNumber = done.invoice?.number ?? null;
+    orderJson.emailSent = !!done.email?.messageId;
+    if (done.email?.error) orderJson.emailError = done.email.error;
     return res.json(orderJson);
   } catch (err) {
     if (err instanceof z.ZodError) return next(new ApiError(400, err.issues[0]?.message || "Invalid verification payload"));

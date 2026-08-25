@@ -27,7 +27,7 @@ const Redemption = require("../models/Redemption");
 const Product = require("../models/Product");
 const InventoryLog = require("../models/InventoryLog");
 const nimbus = require("../lib/nimbus");
-const { SESClient, SendEmailCommand } = require("@aws-sdk/client-ses");
+const invoicing = require("../lib/invoicing");
 
 const router = express.Router();
 
@@ -51,56 +51,6 @@ function verifyCashfreeSignature(rawBody, timestamp, receivedSig) {
   }
 }
 
-// --------------------------------------------------------------------------
-// Email helper (same pattern as order.routes.js)
-// --------------------------------------------------------------------------
-async function sendOrderEmail({ toEmail, orderNumber, total }) {
-  const hasSes =
-    process.env.AWS_ACCESS_KEY_ID &&
-    process.env.AWS_SECRET_ACCESS_KEY &&
-    process.env.AWS_REGION &&
-    process.env.AWS_SES_FROM_EMAIL;
-
-  if (!hasSes) return;
-
-  try {
-    const client = new SESClient({
-      region: process.env.AWS_REGION,
-      credentials: {
-        accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-      },
-    });
-
-    await client.send(
-      new SendEmailCommand({
-        Source: process.env.AWS_SES_FROM_EMAIL,
-        Destination: { ToAddresses: [toEmail] },
-        Message: {
-          Subject: { Data: `Your order ${orderNumber} is confirmed — 3TATTAVA` },
-          Body: {
-            Html: {
-              Data: `
-                <div style="font-family:sans-serif;max-width:500px;margin:0 auto">
-                  <h2 style="color:#1c1304">Order Confirmed ✓</h2>
-                  <p>Thank you for your order from <strong>3TATTAVA Performance Ayurveda</strong>.</p>
-                  <p><strong>Order ID:</strong> ${orderNumber}</p>
-                  <p><strong>Total Paid:</strong> ₹${total}</p>
-                  <p>You'll receive a tracking number once your shipment is booked.</p>
-                  <p style="margin-top:24px;color:#888;font-size:12px">
-                    3TATTAVA · support@3tattava.com · +91 95601 49956
-                  </p>
-                </div>
-              `,
-            },
-          },
-        },
-      })
-    );
-  } catch (err) {
-    console.error("[webhook] SES email failed:", err.message);
-  }
-}
 
 // --------------------------------------------------------------------------
 // n8n WhatsApp notification helper
@@ -242,13 +192,17 @@ async function handlePaymentCaptured(event, eventId) {
       }
     } catch (e) { console.error("[welcome] redeem (webhook) failed:", e.message); }
 
-    // Send order confirmation email
-    if (order.guestEmail || order.shippingAddress?.email) {
-      await sendOrderEmail({
-        toEmail: order.guestEmail || order.shippingAddress.email,
-        orderNumber: order.orderNumber,
-        total: netAmountRupees,
-      });
+    // Issue the tax invoice and send the single confirmation email. Shared with
+    // verify-cashfree because both announce the same captured payment; the send
+    // is claimed atomically so only one of them delivers it.
+    try {
+      const done = await invoicing.onPaymentCaptured(order._id);
+      console.log(
+        `[webhook] ${order.orderNumber} invoice=${done.invoice?.number || done.invoice?.error || "-"} ` +
+          `email=${done.email?.messageId || done.email?.skipped || done.email?.error || "-"}`
+      );
+    } catch (e) {
+      console.error("[webhook] invoice/email step failed:", e.message);
     }
 
     // Auto-create the order in NimbusPost (ops assigns courier + AWB in the
