@@ -166,6 +166,53 @@ const orderSchema = new mongoose.Schema(
     // Admin email that created an offline order (the website has no other audit trail).
     createdByAdmin: { type: String },
     adminNote: { type: String },
+
+    // ── Tax invoice ───────────────────────────────────────────────────────
+    // Issued once, when payment is captured. The figures are stored rather
+    // than recomputed on read: an invoice is a legal document, so it must keep
+    // showing what it showed when it was issued even if a product's rate or
+    // price changes afterwards.
+    invoice: {
+      // Website's own series (3TW/26-27/NNNN), separate from the series typed
+      // by hand in Tally, so B2B entry can never collide with it.
+      // Index declared once at the bottom as unique+sparse. Adding
+      // `index: true` here too creates a second, non-unique index with the
+      // same auto-generated name, and syncIndexes then refuses both.
+      number: { type: String },
+      issuedAt: { type: Date },
+      placeOfSupply: { type: String },
+      supplyType: { type: String, enum: ["intra", "inter"] },
+      taxableValue: { type: Number },
+      cgst: { type: Number },
+      sgst: { type: Number },
+      igst: { type: Number },
+      totalTax: { type: Number },
+      // Snapshot of rate and HSN per line at the moment of issue.
+      lines: {
+        type: [
+          {
+            _id: false,
+            name: String,
+            hsnCode: String,
+            ratePercent: Number,
+            quantity: Number,
+            taxableValue: Number,
+            cgst: Number,
+            sgst: Number,
+            igst: Number,
+          },
+        ],
+        default: undefined,
+      },
+    },
+
+    // ── Tally hand-off ────────────────────────────────────────────────────
+    // Set when the order has been included in a downloaded Tally file. Without
+    // this an export would re-send orders already in the books and double-count
+    // revenue -- the historical orders were keyed in by hand, so several are
+    // already there.
+    tallyExportedAt: { type: Date },
+    tallyBatchId: { type: String, index: true },
   },
   { timestamps: true }
 );
@@ -181,6 +228,12 @@ orderSchema.set("toJSON", {
 
 orderSchema.index({ orderNumber: 1, createdAt: -1 });
 orderSchema.index({ status: 1, createdAt: -1 });
+// Two invoices sharing a number is a GST defect, so the database refuses it
+// rather than trusting application code. Sparse: most orders (unpaid, abandoned)
+// never get an invoice, and a unique index would otherwise collide on null.
+orderSchema.index({ "invoice.number": 1 }, { unique: true, sparse: true });
+// Drives the "not yet exported" query that builds each Tally batch.
+orderSchema.index({ tallyExportedAt: 1, "invoice.issuedAt": 1 });
 
 module.exports = mongoose.model("Order", orderSchema);
 

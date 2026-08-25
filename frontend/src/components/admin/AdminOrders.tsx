@@ -8,6 +8,7 @@ import { useFeedback } from "@/components/admin/AdminToast";
 import { toCsv, downloadCsv, datedFilename } from "@/lib/csv";
 import ManualOrderForm from "@/components/admin/ManualOrderForm";
 import OrderEditForm from "@/components/admin/OrderEditForm";
+import TallyExportPanel from "@/components/admin/TallyExportPanel";
 
 type OrderItem = {
   productId?: string;
@@ -210,6 +211,7 @@ export default function AdminOrders() {
   const [selected, setSelected] = useState<Order | null>(null);
   const [showManual, setShowManual] = useState(false);
   const [editing, setEditing] = useState<Order | null>(null);
+  const [showTally, setShowTally] = useState(false);
   const [kindFilter, setKindFilter] = useState<"" | OrderKind>("");
   const { toast, confirm } = useFeedback();
 
@@ -450,6 +452,8 @@ export default function AdminOrders() {
         <ManualOrderForm onClose={() => setShowManual(false)} onCreated={load} />
       )}
 
+      {showTally && <TallyExportPanel onClose={() => { setShowTally(false); void load(); }} />}
+
       {editing && (
         <OrderEditForm
           order={{
@@ -483,6 +487,7 @@ export default function AdminOrders() {
           aria-label="Search orders"
         />
         <button className="ad-btn ad-btn-sm" onClick={exportCsv}>Export CSV</button>
+        <button className="ad-btn ad-btn-sm" onClick={() => setShowTally(true)}>Send to Tally</button>
         <button className={`ord-chip${statusFilter === "" ? " on" : ""}`} onClick={() => { setStatusFilter(""); setPage(1); }}>All</button>
         {STATUSES.map((s) => (
           <button key={s} className={`ord-chip${statusFilter === s ? " on" : ""}`} onClick={() => { setStatusFilter(s); setPage(1); }}>{s}</button>

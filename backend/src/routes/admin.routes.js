@@ -17,6 +17,8 @@ const NewsletterSub = require("../models/NewsletterSub");
 const Booking = require("../models/Booking");
 const Blog = require("../models/Blog");
 const Assessment = require("../models/Assessment");
+const invoicing = require("../lib/invoicing");
+const invoiceLib = require("../lib/invoice");
 // Lead model is registered by leads.routes.js at startup — access lazily
 function getLead() { return mongoose.models.Lead || null; }
 function getWaitlist() { return mongoose.models.Waitlist || null; }
@@ -698,6 +700,115 @@ router.patch("/orders/:id", async (req, res, next) => {
 
     await order.save();
     return res.json(order);
+  } catch (err) {
+    return next(err);
+  }
+});
+
+/* ── Invoicing and the Tally hand-off ───────────────────────────────────── */
+
+/**
+ * POST /api/admin/orders/:id/invoice
+ *
+ * Issues the tax invoice for an order, or returns the existing one. Idempotent
+ * on purpose: an invoice number is never reissued, so pressing the button twice
+ * cannot produce two documents for one sale.
+ */
+router.post("/orders/:id/invoice", async (req, res, next) => {
+  try {
+    const result = await invoicing.issueInvoice(req.params.id);
+    return res.status(result.created ? 201 : 200).json({
+      invoiceNumber: result.invoiceNumber,
+      created: result.created,
+      invoice: result.order.invoice,
+    });
+  } catch (err) {
+    if (/not invoiceable|not found/i.test(err.message)) throw new ApiError(400, err.message);
+    return next(err);
+  }
+});
+
+/**
+ * GET /api/admin/orders/:id/invoice.html
+ *
+ * The printable invoice. HTML rather than a generated PDF: it prints to PDF
+ * identically from any browser and needs no binary dependency on the server.
+ */
+router.get("/orders/:id/invoice.html", async (req, res, next) => {
+  try {
+    const order = await Order.findById(req.params.id).exec();
+    if (!order) throw new ApiError(404, "Order not found");
+    if (!order.invoice?.number) throw new ApiError(400, "No invoice has been issued for this order yet");
+    const built = await invoicing.renderExisting(order);
+    res.type("html");
+    return res.send(invoiceLib.renderInvoiceHtml(built));
+  } catch (err) {
+    return next(err);
+  }
+});
+
+/**
+ * GET /api/admin/tally/pending
+ *
+ * What the next export would contain. Read-only, so the owner can look before
+ * committing anything.
+ */
+router.get("/tally/pending", async (req, res, next) => {
+  try {
+    const orders = await invoicing.pendingForTally({ from: req.query.from, to: req.query.to });
+    return res.json({
+      count: orders.length,
+      orders: orders.map((o) => ({
+        id: o._id.toString(),
+        orderNumber: o.orderNumber,
+        invoiceNumber: o.invoice.number,
+        issuedAt: o.invoice.issuedAt,
+        customer: [o.shippingAddress?.firstName, o.shippingAddress?.lastName].filter(Boolean).join(" "),
+        placeOfSupply: o.invoice.placeOfSupply,
+        supplyType: o.invoice.supplyType,
+        total: o.total,
+        isSample: !!o.isSample,
+      })),
+    });
+  } catch (err) {
+    return next(err);
+  }
+});
+
+/**
+ * GET /api/admin/tally/export.xml
+ *
+ * Downloads the import file. `commit=true` marks the orders as handed over so a
+ * later export cannot send them again -- several historical orders were keyed
+ * into Tally by hand, and re-sending would double-count revenue.
+ *
+ * Marking happens only after the XML has been built.
+ */
+router.get("/tally/export.xml", async (req, res, next) => {
+  try {
+    const commit = req.query.commit === "true";
+    const batch = await invoicing.buildTallyBatch({ from: req.query.from, to: req.query.to, commit });
+    if (!batch.voucherCount) throw new ApiError(404, "Nothing to export: no invoiced orders are pending");
+    res.setHeader("Content-Type", "application/xml; charset=utf-8");
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename="tally-${batch.batchId}${commit ? "" : "-preview"}.xml"`
+    );
+    return res.send(batch.xml);
+  } catch (err) {
+    return next(err);
+  }
+});
+
+/**
+ * GET /api/admin/gst/summary
+ *
+ * The figures the CA needs for GSTR-1, read from the frozen invoice values so
+ * the summary always reconciles to the documents customers hold.
+ */
+router.get("/gst/summary", async (req, res, next) => {
+  try {
+    return res.json(await invoicing.gstSummary({ from: req.query.from, to: req.query.to }));
   } catch (err) {
     return next(err);
   }
