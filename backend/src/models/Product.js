@@ -38,15 +38,15 @@ const productSchema = new mongoose.Schema(
     // and the ledgers are literally named "CGST OUTPUT @2.5%",
     // "SGST OUTPUT@2.5%" and "IGST OUTPUT@5%".
     //
-    // Worth knowing: HSN heading 3004 (Ayurvedic medicaments) is ordinarily
-    // taxed at 12%, so a 3004 code paired with 5% is an unusual combination
-    // that the GST portal may query when GSTR-1 is filed. The rate is the
-    // owner's confirmed position; the HSN below should be checked against the
-    // stock item in Tally so the two agree on the return.
+    // HSN 13021919 confirmed against the Tally stock items (RockResin and
+    // Shahjeet both carry it at 5%). It sits under heading 1302 -- vegetable
+    // saps and extracts -- which is legitimately 5%, so the code and the rate
+    // are consistent (Shilajit booked as an extract, not as a 3004 medicament,
+    // which would have been 12%).
     //
     // Editable per product precisely because it is a tax position, not a
     // constant: a reclassification must be a field change, never a code change.
-    hsnCode: { type: String, default: "30049011", trim: true },
+    hsnCode: { type: String, default: "13021919", trim: true },
     gstRatePercent: { type: Number, default: 5, min: 0, max: 28 },
     // Prices are shown to customers as "inclusive of all taxes", so tax is
     // back-calculated out of `price` rather than added on top. Flip this only

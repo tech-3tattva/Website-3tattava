@@ -2,7 +2,7 @@
  * Populate GST classification (HSN + rate) on catalogue products.
  *
  * WHY THIS EXISTS
- * The Product schema declares `hsnCode` (default "30049011") and
+ * The Product schema declares `hsnCode` (default "13021919") and
  * `gstRatePercent` (default 5), but Mongoose defaults only apply when a
  * document is created or saved -- they do NOT backfill documents that already
  * exist in the database. Every live product predates the GST field, so all of
@@ -28,11 +28,11 @@ require("dotenv").config({ path: path.join(__dirname, "..", "..", ".env") });
 const mongoose = require("mongoose");
 const Product = require("../models/Product");
 
-// The catalogue-wide defaults. HSN 30049011 (Ayurvedic medicament) and 5% are
-// the owner's confirmed position; both match the schema defaults and the Tally
-// stock item. Any product needing a different rate should be set individually
-// in the admin/DB -- this script will then leave it untouched.
-const DEFAULT_HSN = "30049011";
+// The catalogue-wide defaults, matching the Tally stock items: HSN 13021919
+// (heading 1302, vegetable saps & extracts) at 5%. A product needing a
+// different code/rate should be set individually -- this script only fills
+// blanks and never overwrites an existing value.
+const DEFAULT_HSN = "13021919";
 const DEFAULT_RATE = 5;
 
 const COMMIT = process.argv.includes("--commit");
