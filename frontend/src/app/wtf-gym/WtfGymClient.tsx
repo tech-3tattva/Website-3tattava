@@ -5,17 +5,17 @@ import { motion } from 'framer-motion';
 import { Plus_Jakarta_Sans } from "next/font/google";
 
 /* ─── Assets ─── */
-const CDN = 'https://media.3tattava.com';
-/* 1800px WebP (~134 KB). The original 6X3 LAUNCH POSTER.png is a 7200x14400
-   print file weighing ~50 MB — it was being downloaded in full by every QR
-   visitor on mobile data before this. */
-const HERO_POSTER = `${CDN}/banners/Landing_Page/wtf-launch-poster-1800.webp`;
-const HERO_VIDEO = `${CDN}/banners/Landing_Page/3tattava-x-WTF.mp4`;
-const ROCKRESIN_IMG = '/wtf/rockresin.webp';
-const SHAHJEET_IMG = '/wtf/shahjeet.webp';
-const HERO_BG = '/wtf/hero-bg.webp';
-const RITUAL_BANNER = '/wtf/ritual-banner.webp';
-const DR_KASHISH = '/wtf/dr-kashish.webp';
+/* All WTF media (video, poster, imagery) lives on the S3+CloudFront CDN
+   (media.3tattava.com), same as the rest of the site's assets — optimized to
+   WebP / faststart MP4. */
+const MEDIA = "https://media.3tattava.com/wtf";
+const HERO_POSTER = `${MEDIA}/hero-poster.webp`;
+const HERO_VIDEO = `${MEDIA}/hero.mp4`;
+const ROCKRESIN_IMG = `${MEDIA}/rockresin.webp`;
+const SHAHJEET_IMG = `${MEDIA}/shahjeet.webp`;
+const HERO_BG = `${MEDIA}/hero-bg.webp`;
+const RITUAL_BANNER = `${MEDIA}/ritual-banner.webp`;
+const DR_KASHISH = `${MEDIA}/dr-kashish.webp`;
 
 const jakarta = Plus_Jakarta_Sans({ subsets: ["latin"], style: ["normal", "italic"], display: "swap", variable: "--font-jakarta" });
 const F = "var(--font-jakarta), system-ui, sans-serif";
