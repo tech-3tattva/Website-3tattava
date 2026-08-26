@@ -17,31 +17,35 @@ const checkLimiter = rateLimit({
 
 const pincodeSchema = z.string().trim().regex(/^\d{6}$/, "Enter a valid 6-digit pincode");
 
+// NimbusPost ships pan-India, so every valid Indian pincode is serviceable by
+// default. The ServiceablePincode collection is now only for OVERRIDES: a row
+// can set a custom ETA / zone label, or be marked isActive:false to explicitly
+// exclude a pincode. No row = serviceable with the default ETA.
+const DEFAULT_ETA_DAYS = 5;
+
 async function runCheck(pincode) {
   const normalized = pincodeSchema.parse(pincode);
-  const row = await ServiceablePincode.findOne({ pincode: normalized, isActive: true }).lean().exec();
+  const row = await ServiceablePincode.findOne({ pincode: normalized }).lean().exec();
 
-  if (!row) {
+  // Deliberate exclusion: an inactive row means "we don't ship here right now".
+  if (row && row.isActive === false) {
     return {
       serviceable: false,
       pincode: normalized,
-      message: "We do not deliver to this pincode yet. You can still place an order — our team may contact you.",
+      message: "We're unable to deliver to this pincode right now. You can still place an order — our team may contact you.",
     };
   }
 
-  const eta =
-    row.etaDays != null
-      ? `Estimated delivery in about ${row.etaDays} business day${row.etaDays === 1 ? "" : "s"}.`
-      : undefined;
-
+  const etaDays = row?.etaDays ?? DEFAULT_ETA_DAYS;
+  const eta = `Estimated delivery in about ${etaDays} business day${etaDays === 1 ? "" : "s"}.`;
   return {
     serviceable: true,
     pincode: normalized,
-    zoneLabel: row.zoneLabel || undefined,
-    etaDays: row.etaDays ?? undefined,
-    message: row.zoneLabel
-      ? `Yes — we deliver to ${row.zoneLabel}.${eta ? ` ${eta}` : ""}`
-      : `Yes — we deliver to this pincode.${eta ? ` ${eta}` : ""}`,
+    zoneLabel: row?.zoneLabel || undefined,
+    etaDays,
+    message: row?.zoneLabel
+      ? `Yes — we deliver to ${row.zoneLabel}. ${eta}`
+      : `Yes — we deliver across India. ${eta}`,
   };
 }
 
