@@ -35,6 +35,9 @@ const SUPPORT_PHONE = "+91 95601 49956";
 const LEGAL_NAME = "SankalpaSiddhi Ayupharma Pvt. Ltd.";
 const GSTIN = "07ABSCS9652C1ZU";
 const ADDRESS = "690A/1, Kabool Nagar, Shahdara, Delhi 110032";
+// Cream logo (wordmark + tagline) for the dark header. Absolute URL: email
+// clients cannot resolve relative paths. Served from the site's public assets.
+const LOGO_URL = process.env.EMAIL_LOGO_URL || "https://www.3tattava.com/logos/logo-full-cream.png";
 
 function esc(s) {
   return String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -146,8 +149,8 @@ function orderConfirmation({ order, invoice, site = DEFAULT_SITE }) {
 
       <!-- Header -->
       <tr><td style="background:${BRAND.ink};padding:26px 32px">
-        <div style="font-family:${BRAND.sans};font-size:10px;letter-spacing:0.32em;text-transform:uppercase;color:${BRAND.gold}">3TATTAVA \u00b7 Doctor-Led Performance Ayurveda</div>
-        <div style="font-family:${BRAND.serif};font-size:26px;font-weight:700;letter-spacing:-0.01em;color:${BRAND.cream};margin-top:8px">Balance. Build. Become.</div>
+        <div style="font-family:${BRAND.sans};font-size:10px;letter-spacing:0.32em;text-transform:uppercase;color:${BRAND.gold};margin-bottom:12px">Doctor-Led Performance Ayurveda</div>
+        <img src="${LOGO_URL}" alt="3TATTAVA \u2014 Balance. Build. Become." width="230" style="display:block;width:230px;max-width:64%;height:auto">
       </td></tr>
 
       <!-- Hero -->

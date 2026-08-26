@@ -27,6 +27,9 @@ const gst = require("./gst");
 const SELLER = {
   legalName: "SankalpaSiddhi Ayupharma Pvt. Ltd.",
   tradeName: "3TATTAVA",
+  // Espresso wordmark for the white invoice sheet (absolute URL for the HTML
+  // view; the PDF embeds the same artwork from src/assets/logo).
+  logoUrl: "https://www.3tattava.com/logos/logo-full-espresso.png",
   gstin: "07ABSCS9652C1ZU",
   address: ["690A/1, Kabool Nagar", "Shahdara, Delhi 110032"],
   stateName: "Delhi",
@@ -262,7 +265,7 @@ function renderInvoiceHtml(inv, { watermark } = {}) {
 
   <div class="head">
     <div>
-      <div class="brand">${esc(inv.seller.tradeName)}</div>
+      <img src="${esc(inv.seller.logoUrl)}" alt="${esc(inv.seller.tradeName)}" style="height:44px;width:auto;display:block;margin-bottom:5px">
       <div class="muted">${esc(inv.seller.legalName)}</div>
       <div class="muted">${inv.seller.address.map(esc).join("<br>")}</div>
       <div class="muted">${esc(inv.seller.phone)} &middot; ${esc(inv.seller.email)}</div>

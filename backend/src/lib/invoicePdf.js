@@ -19,6 +19,7 @@ const gst = require("./gst");
 
 const FONT_DIR = path.join(__dirname, "..", "assets", "fonts");
 const FONTS = { regular: path.join(FONT_DIR, "NotoSans-Regular.ttf"), bold: path.join(FONT_DIR, "NotoSans-Bold.ttf") };
+const LOGO = path.join(__dirname, "..", "assets", "logo", "logo-full-espresso.png");
 
 const INK = "#1A1710";
 const GOLD = "#C9A84C";
@@ -65,8 +66,15 @@ function renderInvoicePdf(inv) {
     // ── Header: seller (left) + meta (right) ──
     const rightX = M + 300;
     let ly = y;
-    doc.font(FONTS.bold).fontSize(13).fillColor(INK).text(inv.seller.tradeName, M, ly, { width: 290 });
-    ly = doc.y;
+    // Brand logo (falls back to the wordmark text if the asset is unreadable so
+    // an invoice can never fail to generate over a missing image).
+    try {
+      doc.image(LOGO, M, ly, { width: 150 });
+      ly += 150 * (160 / 483) + 6;
+    } catch {
+      doc.font(FONTS.bold).fontSize(13).fillColor(INK).text(inv.seller.tradeName, M, ly, { width: 290 });
+      ly = doc.y;
+    }
     const sellerLines = [inv.seller.legalName, ...inv.seller.address, `${inv.seller.phone}  \u00b7  ${inv.seller.email}`, `GSTIN: ${inv.seller.gstin}`, `State: ${inv.seller.stateName} (${inv.seller.stateCode})`];
     doc.font(FONTS.regular).fontSize(9).fillColor(MUTED);
     for (const l of sellerLines) { doc.text(l, M, ly, { width: 290 }); ly = doc.y + 1; }
