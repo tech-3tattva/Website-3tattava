@@ -127,69 +127,6 @@ async function send({ to, subject, text, html, attachments = [] }) {
 }
 
 /**
- * Emails the tax invoice to the customer.
- *
- * The invoice is attached as HTML rather than PDF: it opens and prints
- * identically from any browser or mail client, and avoids a headless-browser
- * dependency on the server just to render a table.
- */
-async function sendInvoiceEmail({ to, invoice, html }) {
-  const number = invoice.invoiceNumber;
-  const total = invoice.totals.invoiceTotal.toLocaleString("en-IN", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  });
-
-  const subject = `Your 3TATTAVA tax invoice ${number}`;
-  const text = [
-    `Thank you for your order.`,
-    ``,
-    `Invoice number : ${number}`,
-    `Order number   : ${invoice.orderNumber}`,
-    `Amount         : Rs ${total}`,
-    `Place of supply: ${invoice.placeOfSupply || "-"}`,
-    ``,
-    `Your tax invoice is attached. Prices include GST; the tax portion is shown`,
-    `separately on the invoice.`,
-    ``,
-    `3TATTAVA - SankalpaSiddhi Ayupharma Pvt. Ltd.`,
-    `GSTIN 07ABSCS9652C1ZU`,
-  ].join("\n");
-
-  const body = `
-    <div style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:#1b1b1b;max-width:560px">
-      <p style="font-size:15px">Thank you for your order.</p>
-      <table style="font-size:14px;border-collapse:collapse;margin:14px 0">
-        <tr><td style="padding:4px 14px 4px 0;color:#666">Invoice</td><td><strong>${number}</strong></td></tr>
-        <tr><td style="padding:4px 14px 4px 0;color:#666">Order</td><td>${invoice.orderNumber}</td></tr>
-        <tr><td style="padding:4px 14px 4px 0;color:#666">Amount</td><td><strong>&#8377;${total}</strong></td></tr>
-        <tr><td style="padding:4px 14px 4px 0;color:#666">Place of supply</td><td>${invoice.placeOfSupply || "-"}</td></tr>
-      </table>
-      <p style="font-size:13px;color:#555">
-        Your tax invoice is attached. Prices include GST; the tax portion is shown separately on the invoice.
-      </p>
-      <p style="font-size:12px;color:#888;border-top:1px solid #eee;padding-top:10px">
-        3TATTAVA &middot; SankalpaSiddhi Ayupharma Pvt. Ltd. &middot; GSTIN 07ABSCS9652C1ZU
-      </p>
-    </div>`;
-
-  return send({
-    to,
-    subject,
-    text,
-    html: body,
-    attachments: [
-      {
-        // Slashes in the invoice number would look like a path in a filename.
-        filename: `invoice-${number.replace(/\//g, "-")}.html`,
-        content: html,
-        contentType: "text/html; charset=utf-8",
-      },
-    ],
-  });
-}
-
-/**
  * The single email a customer gets when their payment succeeds: confirmation of
  * the order with the tax invoice attached.
  *
@@ -285,4 +222,4 @@ async function sendOrderConfirmation({ to, order, invoice, invoiceHtml }) {
   });
 }
 
-module.exports = { send, sendInvoiceEmail, sendOrderConfirmation, mode, CAPTURE_DIR };
+module.exports = { send, sendOrderConfirmation, mode, CAPTURE_DIR };

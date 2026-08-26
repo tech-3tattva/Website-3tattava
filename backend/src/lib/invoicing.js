@@ -14,6 +14,7 @@
  *    file has actually been generated.
  */
 
+const mongoose = require("mongoose");
 const Order = require("../models/Order");
 const Product = require("../models/Product");
 const Counter = require("../models/Counter");
@@ -32,11 +33,23 @@ function isInvoiceable(order) {
   return order.payment?.status === "captured";
 }
 
-/** Per-line HSN and rate, read from the catalogue at issue time. */
+/** Per-line HSN and rate, read from the catalogue at issue time.
+ *
+ *  Real order items carry `productId` (the catalogue _id as a string, written
+ *  at checkout) but never `product`. Keying only on `product` therefore missed
+ *  every real order and fell through to null HSN and the default rate, which
+ *  silently defeats the per-product tax field. Resolve on whichever is set. */
+function lineProductId(item) {
+  return item.product || item.productId || null;
+}
+
 async function rateResolver(orders) {
   const ids = new Set();
   for (const order of orders) {
-    for (const item of order.items || []) if (item.product) ids.add(String(item.product));
+    for (const item of order.items || []) {
+      const id = lineProductId(item);
+      if (id && mongoose.Types.ObjectId.isValid(String(id))) ids.add(String(id));
+    }
   }
   const products = ids.size
     ? await Product.find({ _id: { $in: [...ids] } }).select("hsnCode gstRatePercent").lean().exec()
@@ -44,7 +57,7 @@ async function rateResolver(orders) {
   const byId = new Map(products.map((p) => [String(p._id), p]));
 
   return (item) => {
-    const product = byId.get(String(item.product));
+    const product = byId.get(String(lineProductId(item)));
     return {
       hsnCode: product?.hsnCode ?? null,
       // Fall back to the catalogue default rather than zero: silently issuing a
@@ -59,19 +72,38 @@ async function rateResolver(orders) {
  *
  * The number is allocated from an atomic counter only after we know the order
  * qualifies, so abandoned checkouts never burn a number and leave a gap.
+ *
+ * `options` exists only for the historical backfill (scripts/backfill-invoices.js)
+ * and defaults to normal live behaviour:
+ *   - `number`: record this exact invoice number instead of allocating from the
+ *     website counter. Used to mirror a sale already keyed into Tally under the
+ *     owner's own series, so one supply keeps one number across both books.
+ *   - `allowCancelledIfPaid`: issue for a status==="cancelled" order whose
+ *     payment is nonetheless captured -- a real paid sale whose courier shipment
+ *     was cancelled afterwards. The guard still refuses everything else.
  */
-async function issueInvoice(orderId) {
+async function issueInvoice(orderId, { number: forcedNumber = null, allowCancelledIfPaid = false } = {}) {
   const order = await Order.findById(orderId).exec();
   if (!order) throw new Error("Order not found");
   if (order.invoice?.number) return { order, invoiceNumber: order.invoice.number, created: false };
   if (!isInvoiceable(order)) {
-    throw new Error(`Order ${order.orderNumber} is not invoiceable (status ${order.status}, payment ${order.payment?.status})`);
+    const paidButCancelled =
+      allowCancelledIfPaid && order.status === "cancelled" && order.payment?.status === "captured";
+    if (!paidButCancelled) {
+      throw new Error(`Order ${order.orderNumber} is not invoiceable (status ${order.status}, payment ${order.payment?.status})`);
+    }
   }
 
   const issuedAt = order.payment?.capturedAt || order.createdAt || new Date();
-  const fy = series.financialYear(issuedAt);
-  const sequence = await Counter.next(`invoice:${series.WEB_PREFIX}:${fy}`);
-  const number = series.formatInvoiceNumber({ sequence, date: issuedAt });
+  let number;
+  if (forcedNumber) {
+    series.assertValid(forcedNumber);
+    number = forcedNumber;
+  } else {
+    const fy = series.financialYear(issuedAt);
+    const sequence = await Counter.next(`invoice:${series.WEB_PREFIX}:${fy}`);
+    number = series.formatInvoiceNumber({ sequence, date: issuedAt });
+  }
 
   const rateFor = await rateResolver([order]);
   const built = invoiceLib.buildInvoice({
@@ -106,26 +138,11 @@ async function issueInvoice(orderId) {
   order.gstAmount = built.totals.totalTax;
 
   await order.save();
-  // Email the customer, but never let a mail failure lose the invoice: the
-  // document is already saved and legally issued at this point. A bounced
-  // address is a follow-up, not a reason to fail the request.
-  let mail = null;
-  const to = order.shippingAddress?.email || order.guestEmail;
-  if (to && !order.isSample && !/@offline\.3tattava\.local$/i.test(to)) {
-    try {
-      mail = await mailer.sendInvoiceEmail({
-        to,
-        invoice: built,
-        html: invoiceLib.renderInvoiceHtml(built),
-      });
-    } catch (err) {
-      mail = { error: err.message };
-    }
-  } else {
-    mail = { skipped: order.isSample ? "sample order" : "no real email address" };
-  }
 
-  return { order, invoiceNumber: number, created: true, invoice: built, mail };
+  // Issuing never emails. The customer receives exactly one message -- the
+  // order confirmation with this invoice attached -- sent by onPaymentCaptured.
+  // (An admin re-issuing from the panel must not re-notify the customer either.)
+  return { order, invoiceNumber: number, created: true, invoice: built };
 }
 
 /** Rebuilds the printable invoice from an order that already has one. */
@@ -338,6 +355,9 @@ async function onPaymentCaptured(orderId) {
 
 module.exports = {
   isInvoiceable,
+  // Exported so the historical backfill can render an identical dry-run preview
+  // (same HSN/rate resolution) without writing anything.
+  rateResolver,
   issueInvoice,
   renderExisting,
   pendingForTally,
