@@ -218,7 +218,7 @@ const CSS = `
 .wg-quote-role{font-size:12px;color:${MUTED_L};}
 
 /* FAQ — dark */
-.wg-faq-sec{background:${DARK};padding:clamp(56px,9vw,100px) 24px;color:#fff;}
+.wg-faq-sec{background:linear-gradient(rgba(12,12,12,0.66),rgba(12,12,12,0.78)),url(${HERO_BG}) center/cover no-repeat,${DARK};padding:clamp(56px,9vw,100px) 24px;color:#fff;}
 .wg-faq{max-width:700px;margin:24px auto 0;}
 .wg-faq-item{border-top:1px solid ${BORDER_D};padding:18px 0;}
 .wg-faq-q{font-variation-settings:'wght' 700;font-size:15px;color:#fff;cursor:pointer;display:flex;gap:12px;align-items:center;}
