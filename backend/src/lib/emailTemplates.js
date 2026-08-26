@@ -70,7 +70,6 @@ function orderConfirmation({ order, invoice, site = DEFAULT_SITE }) {
   const first = addr.firstName || "there";
   const orderUrl = `${site}/order-confirmation/${encodeURIComponent(order.orderNumber)}`;
   const track = trackingOf(order);
-  const gst = invoice?.totals?.totalTax;
   const invNo = invoice?.invoiceNumber || null;
 
   const subject = `Order confirmed \u2713 ${order.orderNumber} \u00b7 3TATTAVA`;
@@ -82,11 +81,11 @@ function orderConfirmation({ order, invoice, site = DEFAULT_SITE }) {
       const qty = Number(i.quantity) || 0;
       const amount = i.subtotal ?? (Number(i.price) || 0) * qty;
       const thumb = i.image
-        ? `<img src="${esc(i.image)}" width="56" height="56" alt="${esc(i.name)}" style="display:block;width:56px;height:56px;border-radius:6px;object-fit:cover;background:${BRAND.beige};border:1px solid ${BRAND.border}">`
-        : `<div style="width:56px;height:56px;border-radius:6px;background:${BRAND.beige};border:1px solid ${BRAND.border}"></div>`;
+        ? `<img src="${esc(i.image)}" width="76" alt="${esc(i.name)}" style="display:block;width:76px;height:auto;border-radius:8px;background:${BRAND.beige};border:1px solid ${BRAND.border}">`
+        : `<div style="width:76px;height:76px;border-radius:8px;background:${BRAND.beige};border:1px solid ${BRAND.border}"></div>`;
       return `
       <tr>
-        <td width="56" style="padding:12px 0;vertical-align:top">${thumb}</td>
+        <td width="76" style="padding:14px 14px 14px 0;vertical-align:middle">${thumb}</td>
         <td style="padding:12px 14px;vertical-align:top;font-family:${BRAND.sans};font-size:15px;color:${BRAND.text};line-height:1.4">
           ${esc(i.name)}${i.variant ? `<div style="font-size:12px;color:${BRAND.muted};margin-top:2px">${esc(i.variant)}</div>` : ""}
           <div style="font-size:12px;color:${BRAND.muted};margin-top:2px">Qty ${qty}</div>
@@ -129,7 +128,7 @@ function orderConfirmation({ order, invoice, site = DEFAULT_SITE }) {
   const ctas = btn("View your order", orderUrl, true) + (track.url ? btn(track.delivered ? "View tracking" : "Track shipment", track.url, false) : "");
 
   const invoiceNote = invoice
-    ? `<tr><td style="padding:0 32px 8px"><div style="font-family:${BRAND.sans};font-size:13px;color:${BRAND.muted};line-height:1.6;background:${BRAND.beige};border:1px solid ${BRAND.border};border-radius:6px;padding:12px 14px">📎 Your GST tax invoice <b style="color:${BRAND.text}">${esc(invNo)}</b> is attached. Prices are inclusive of all taxes${gst != null ? `; this order includes GST of <b style="color:${BRAND.text}">${inr(gst)}</b>` : ""}.</div></td></tr>`
+    ? `<tr><td style="padding:0 32px 8px"><div style="font-family:${BRAND.sans};font-size:13px;color:${BRAND.muted};line-height:1.6;background:${BRAND.beige};border:1px solid ${BRAND.border};border-radius:6px;padding:12px 14px">📎 Your GST tax invoice <b style="color:${BRAND.text}">${esc(invNo)}</b> is attached (PDF).</div></td></tr>`
     : "";
 
   const html = `<!doctype html>
@@ -147,7 +146,7 @@ function orderConfirmation({ order, invoice, site = DEFAULT_SITE }) {
 
       <!-- Header -->
       <tr><td style="background:${BRAND.ink};padding:26px 32px">
-        <div style="font-family:${BRAND.sans};font-size:10px;letter-spacing:0.32em;text-transform:uppercase;color:${BRAND.gold}">3TATTAVA \u00b7 Performance Ayurveda</div>
+        <div style="font-family:${BRAND.sans};font-size:10px;letter-spacing:0.32em;text-transform:uppercase;color:${BRAND.gold}">3TATTAVA \u00b7 Doctor-Led Performance Ayurveda</div>
         <div style="font-family:${BRAND.serif};font-size:26px;font-weight:700;letter-spacing:-0.01em;color:${BRAND.cream};margin-top:8px">Balance. Build. Become.</div>
       </td></tr>
 
@@ -243,7 +242,7 @@ function orderConfirmation({ order, invoice, site = DEFAULT_SITE }) {
     `  Subtotal   ${inr(order.subtotal)}`,
     discount > 0 ? `  Discount   -${inr(discount)}` : null,
     `  Shipping   ${shipping > 0 ? inr(shipping) : "FREE"}`,
-    `  Total paid ${inr(order.total)}${gst != null ? `  (incl. GST ${inr(gst)})` : ""}`,
+    `  Total paid ${inr(order.total)}`,
     ``,
     `SHIPPING TO`,
     `  ${name}`,
@@ -258,7 +257,7 @@ function orderConfirmation({ order, invoice, site = DEFAULT_SITE }) {
         : `DELIVERY: your parcel is being prepared; we'll email tracking when it ships.`,
     ``,
     `View your order: ${orderUrl}`,
-    invoice ? `Your GST tax invoice ${invNo} is attached. Prices include all taxes.` : null,
+    invoice ? `Your GST tax invoice ${invNo} is attached (PDF).` : null,
     ``,
     `Questions? ${SUPPORT_EMAIL} · ${SUPPORT_PHONE}`,
     ``,

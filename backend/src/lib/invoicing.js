@@ -20,6 +20,7 @@ const Product = require("../models/Product");
 const Counter = require("../models/Counter");
 const series = require("./invoiceSeries");
 const invoiceLib = require("./invoice");
+const invoicePdf = require("./invoicePdf");
 const tally = require("./tally");
 const gst = require("./gst");
 const mailer = require("./mailer");
@@ -335,11 +336,12 @@ async function onPaymentCaptured(orderId) {
 
   try {
     const built = claimed.invoice?.number ? await renderExisting(claimed) : null;
+    const pdf = built ? await invoicePdf.renderInvoicePdf(built) : null;
     const sent = await mailer.sendOrderConfirmation({
       to,
       order: claimed,
       invoice: built,
-      invoiceHtml: built ? invoiceLib.renderInvoiceHtml(built) : null,
+      invoicePdf: pdf,
     });
     await Order.updateOne({ _id: orderId }, { $set: { confirmationMessageId: sent.messageId || null } }).exec();
     result.email = sent;

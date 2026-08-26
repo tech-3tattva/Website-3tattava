@@ -140,7 +140,7 @@ async function send({ to, subject, text, html, attachments = [] }) {
  * `invoice` may be null: the customer must still be told they paid even if
  * invoice issue failed for some reason.
  */
-async function sendOrderConfirmation({ to, order, invoice, invoiceHtml }) {
+async function sendOrderConfirmation({ to, order, invoice, invoicePdf }) {
   const { subject, html, text } = templates.orderConfirmation({ order, invoice });
   return send({
     to,
@@ -148,13 +148,13 @@ async function sendOrderConfirmation({ to, order, invoice, invoiceHtml }) {
     text,
     html,
     attachments:
-      invoiceHtml && invoice
+      invoicePdf && invoice
         ? [
             {
               // Slashes in the invoice number would look like a path in a filename.
-              filename: `invoice-${invoice.invoiceNumber.replace(/\//g, "-")}.html`,
-              content: invoiceHtml,
-              contentType: "text/html; charset=utf-8",
+              filename: `invoice-${invoice.invoiceNumber.replace(/\//g, "-")}.pdf`,
+              content: invoicePdf,
+              contentType: "application/pdf",
             },
           ]
         : [],
