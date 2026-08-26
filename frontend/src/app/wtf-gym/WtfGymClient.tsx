@@ -168,7 +168,7 @@ const CSS = `
 .wg-trainer input::placeholder{color:rgba(68,42,27,0.3);}
 
 /* Products — dark */
-.wg-products-sec{background:linear-gradient(rgba(12,12,12,0.66),rgba(12,12,12,0.78)),url(${HERO_BG}) center/contain no-repeat,${DARK};padding:clamp(56px,9vw,100px) 24px;}
+.wg-products-sec{background:linear-gradient(rgba(12,12,12,0.66),rgba(12,12,12,0.78)),url(${HERO_BG}) center/cover no-repeat,${DARK};padding:clamp(56px,9vw,100px) 24px;}
 .wg-products{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr));gap:20px;max-width:900px;margin:28px auto 0;}
 .wg-pcard{background:${CARD_DARK};border:1px solid ${BORDER_D};border-radius:20px;overflow:hidden;display:flex;flex-direction:column;}
 .wg-pcard-badge{display:inline-block;font-size:9px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:${GOLD};background:rgba(200,150,62,0.1);border:1px solid rgba(200,150,62,0.2);padding:5px 12px;border-radius:999px;margin-bottom:12px;}
@@ -195,7 +195,7 @@ const CSS = `
 .wg-proof-desc{font-size:13px;color:${MUTED_L};line-height:1.55;}
 
 /* Ritual — dark */
-.wg-ritual-sec{background:linear-gradient(90deg,rgba(12,12,12,0.12) 0%,rgba(12,12,12,0.32) 40%,rgba(12,12,12,0.85) 70%,rgba(12,12,12,0.93) 100%),url(${RITUAL_BANNER}) left center/cover no-repeat,${DARK};padding:clamp(64px,10vw,120px) 24px;color:#fff;min-height:clamp(380px,42vw,560px);display:flex;align-items:center;}
+.wg-ritual-sec{background:linear-gradient(90deg,rgba(12,12,12,0.08) 0%,rgba(12,12,12,0.42) 34%,rgba(12,12,12,0.9) 56%,rgba(12,12,12,0.96) 100%),url(${RITUAL_BANNER}) 25% center/cover no-repeat,${DARK};padding:clamp(64px,10vw,120px) 24px;color:#fff;min-height:clamp(380px,42vw,560px);display:flex;align-items:center;}
 .wg-ritual-inner{max-width:1100px;margin:0 auto;width:100%;}
 .wg-ritual-content{width:min(560px,54%);margin-left:auto;}
 .wg-steps{margin-top:24px;}
