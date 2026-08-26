@@ -198,6 +198,7 @@ const CSS = `
 .wg-ritual-sec{background:linear-gradient(90deg,rgba(12,12,12,0.08) 0%,rgba(12,12,12,0.42) 34%,rgba(12,12,12,0.9) 56%,rgba(12,12,12,0.96) 100%),url(${RITUAL_BANNER}) 25% center/cover no-repeat,${DARK};padding:clamp(64px,10vw,120px) 24px;color:#fff;min-height:clamp(380px,42vw,560px);display:flex;align-items:center;}
 .wg-ritual-inner{max-width:1100px;margin:0 auto;width:100%;}
 .wg-ritual-content{width:min(560px,54%);margin-left:auto;}
+.wg-ritual-mob{display:none;}
 .wg-steps{margin-top:24px;}
 .wg-step{display:flex;gap:16px;padding:16px 0;border-top:1px solid ${BORDER_D};}
 .wg-step-num{font-variation-settings:'wght' 800;font-size:14px;color:${GOLD};flex-shrink:0;width:28px;}
@@ -229,7 +230,7 @@ const CSS = `
 .wg-final{background:${CREAM};text-align:center;padding:clamp(64px,10vw,120px) 24px;}
 
 /* Footer — dark */
-.wg-foot{background:${DARK};padding:32px 24px;text-align:center;border-top:1px solid ${BORDER_D};color:#fff;}
+.wg-foot{background:${DARK};padding:32px 24px 76px;text-align:center;border-top:1px solid ${BORDER_D};color:#fff;}
 .wg-foot-logos{display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:20px;}
 .wg-foot-logos img{height:30px;width:auto;}
 .wg-foot-links{display:flex;flex-wrap:wrap;justify-content:center;gap:16px;margin-bottom:20px;}
@@ -243,7 +244,7 @@ const CSS = `
 .wg-sticky-text{font-size:12px;color:${DIM_D};}
 .wg-sticky-text strong{color:#fff;}
 
-@media(max-width:640px){.wg-products{grid-template-columns:1fr;}.wg-proof{grid-template-columns:1fr 1fr;}.wg-quote-sec{padding-bottom:clamp(36px,9vw,56px);}.wg-quote{grid-template-columns:1fr;gap:18px;align-items:center;}.wg-quote-photo{max-width:250px;margin:0 auto;align-self:auto;}.wg-quote-content{text-align:center;}.wg-quote-author{justify-content:center;}.wg-ritual-sec{background:linear-gradient(rgba(12,12,12,0.5),rgba(12,12,12,0.82)),url(${RITUAL_BANNER}) center/cover no-repeat,${DARK};min-height:auto;}.wg-ritual-content{width:100%;margin:0;}}
+@media(max-width:640px){.wg-products{grid-template-columns:1fr;}.wg-proof{grid-template-columns:1fr 1fr;}.wg-quote-sec{padding-bottom:clamp(36px,9vw,56px);}.wg-quote{grid-template-columns:1fr;gap:18px;align-items:center;}.wg-quote-photo{max-width:250px;margin:0 auto;align-self:auto;}.wg-quote-content{text-align:center;}.wg-quote-author{justify-content:center;}.wg-ritual-sec{background:${DARK};min-height:auto;display:block;padding:clamp(44px,9vw,64px) 24px;}.wg-ritual-content{width:100%;margin:0;}.wg-ritual-mob{display:block;width:100%;border-radius:14px;border:1px solid ${BORDER_D};margin-bottom:22px;}}
 @media(max-width:400px){.wg-proof{grid-template-columns:1fr;}}
 `;
 
@@ -353,6 +354,8 @@ export default function WtfGymClient() {
       {/* ═══ 5. RITUAL — dark ═══ */}
       <section className="wg-ritual-sec">
         <div className="wg-ritual-inner">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img className="wg-ritual-mob" src={RITUAL_BANNER} alt="Train with WTF × 3Tattava" />
           <div className="wg-ritual-content">
             <motion.p className="wg-eyebrow-d" {...fade()}>The 10-Second Habit</motion.p>
             <motion.h2 className="wg-h2-d" {...fade(0.06)}>Stack the ritual <em>after the reps.</em></motion.h2>
