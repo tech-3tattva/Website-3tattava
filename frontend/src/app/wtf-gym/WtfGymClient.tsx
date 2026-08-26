@@ -168,7 +168,7 @@ const CSS = `
 .wg-trainer input::placeholder{color:rgba(68,42,27,0.3);}
 
 /* Products — dark */
-.wg-products-sec{background:linear-gradient(rgba(12,12,12,0.62),rgba(12,12,12,0.74)),url(${HERO_BG}) center/cover no-repeat,${DARK};padding:clamp(56px,9vw,100px) 24px;}
+.wg-products-sec{background:linear-gradient(rgba(12,12,12,0.66),rgba(12,12,12,0.78)),url(${HERO_BG}) center/contain no-repeat,${DARK};padding:clamp(56px,9vw,100px) 24px;}
 .wg-products{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr));gap:20px;max-width:900px;margin:28px auto 0;}
 .wg-pcard{background:${CARD_DARK};border:1px solid ${BORDER_D};border-radius:20px;overflow:hidden;display:flex;flex-direction:column;}
 .wg-pcard-badge{display:inline-block;font-size:9px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:${GOLD};background:rgba(200,150,62,0.1);border:1px solid rgba(200,150,62,0.2);padding:5px 12px;border-radius:999px;margin-bottom:12px;}
@@ -195,10 +195,9 @@ const CSS = `
 .wg-proof-desc{font-size:13px;color:${MUTED_L};line-height:1.55;}
 
 /* Ritual — dark */
-.wg-ritual-sec{background:${DARK};padding:clamp(56px,9vw,100px) 24px;color:#fff;}
-.wg-ritual-grid{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:0.92fr 1.08fr;gap:clamp(28px,5vw,60px);align-items:center;}
-.wg-ritual-banner{width:100%;border-radius:20px;overflow:hidden;border:1px solid ${BORDER_D};box-shadow:0 24px 60px rgba(0,0,0,0.45);}
-.wg-ritual-banner img{width:100%;height:100%;display:block;object-fit:cover;}
+.wg-ritual-sec{background:linear-gradient(90deg,rgba(12,12,12,0.12) 0%,rgba(12,12,12,0.32) 40%,rgba(12,12,12,0.85) 70%,rgba(12,12,12,0.93) 100%),url(${RITUAL_BANNER}) left center/cover no-repeat,${DARK};padding:clamp(64px,10vw,120px) 24px;color:#fff;min-height:clamp(380px,42vw,560px);display:flex;align-items:center;}
+.wg-ritual-inner{max-width:1100px;margin:0 auto;width:100%;}
+.wg-ritual-content{width:min(560px,54%);margin-left:auto;}
 .wg-steps{margin-top:24px;}
 .wg-step{display:flex;gap:16px;padding:16px 0;border-top:1px solid ${BORDER_D};}
 .wg-step-num{font-variation-settings:'wght' 800;font-size:14px;color:${GOLD};flex-shrink:0;width:28px;}
@@ -206,11 +205,11 @@ const CSS = `
 .wg-step-text strong{color:#fff;font-weight:700;}
 
 /* Quote — cream */
-.wg-quote-sec{background:${CREAM_DEEP};padding:clamp(48px,7vw,80px) 24px;}
-.wg-quote{max-width:1000px;margin:0 auto;display:grid;grid-template-columns:0.72fr 1.28fr;gap:clamp(24px,4vw,52px);align-items:center;}
-.wg-quote-photo{width:100%;}
+.wg-quote-sec{background:${CREAM_DEEP};padding:clamp(48px,7vw,80px) 24px 0;}
+.wg-quote{max-width:1000px;margin:0 auto;display:grid;grid-template-columns:0.72fr 1.28fr;gap:clamp(24px,4vw,52px);align-items:stretch;}
+.wg-quote-photo{align-self:end;}
 .wg-quote-photo img{width:100%;height:auto;display:block;filter:drop-shadow(0 24px 44px rgba(68,42,27,0.22));}
-.wg-quote-content{text-align:left;}
+.wg-quote-content{align-self:center;text-align:left;}
 .wg-quote blockquote{font-size:clamp(18px,2.4vw,24px);font-style:italic;color:${INK};line-height:1.5;margin:0 0 20px;border:none;padding:0;}
 .wg-quote blockquote em{color:${GOLD};}
 .wg-quote-author{display:flex;align-items:center;gap:14px;justify-content:flex-start;}
@@ -244,7 +243,7 @@ const CSS = `
 .wg-sticky-text{font-size:12px;color:${DIM_D};}
 .wg-sticky-text strong{color:#fff;}
 
-@media(max-width:640px){.wg-products{grid-template-columns:1fr;}.wg-proof{grid-template-columns:1fr 1fr;}.wg-quote{grid-template-columns:1fr;gap:20px;}.wg-quote-content{text-align:center;}.wg-quote-author{justify-content:center;}.wg-quote-photo{max-width:260px;margin:0 auto;}.wg-ritual-grid{grid-template-columns:1fr;gap:24px;}}
+@media(max-width:640px){.wg-products{grid-template-columns:1fr;}.wg-proof{grid-template-columns:1fr 1fr;}.wg-quote-sec{padding-bottom:clamp(36px,9vw,56px);}.wg-quote{grid-template-columns:1fr;gap:18px;align-items:center;}.wg-quote-photo{max-width:250px;margin:0 auto;align-self:auto;}.wg-quote-content{text-align:center;}.wg-quote-author{justify-content:center;}.wg-ritual-sec{background:linear-gradient(rgba(12,12,12,0.5),rgba(12,12,12,0.82)),url(${RITUAL_BANNER}) center/cover no-repeat,${DARK};min-height:auto;}.wg-ritual-content{width:100%;margin:0;}}
 @media(max-width:400px){.wg-proof{grid-template-columns:1fr;}}
 `;
 
@@ -353,12 +352,8 @@ export default function WtfGymClient() {
 
       {/* ═══ 5. RITUAL — dark ═══ */}
       <section className="wg-ritual-sec">
-        <div className="wg-ritual-grid">
-          <motion.div className="wg-ritual-banner" {...fade()}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={RITUAL_BANNER} alt="Train with WTF × 3Tattava" />
-          </motion.div>
-          <div>
+        <div className="wg-ritual-inner">
+          <div className="wg-ritual-content">
             <motion.p className="wg-eyebrow-d" {...fade()}>The 10-Second Habit</motion.p>
             <motion.h2 className="wg-h2-d" {...fade(0.06)}>Stack the ritual <em>after the reps.</em></motion.h2>
             <motion.p className="wg-body-d" {...fade(0.12)}>The best routine isn&apos;t the most complicated one. It&apos;s the one you repeat.</motion.p>
