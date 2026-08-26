@@ -141,24 +141,23 @@ async function send({ to, subject, text, html, attachments = [] }) {
  * invoice issue failed for some reason.
  */
 async function sendOrderConfirmation({ to, order, invoice, invoicePdf }) {
-  const { subject, html, text } = templates.orderConfirmation({ order, invoice });
-  return send({
-    to,
-    subject,
-    text,
-    html,
-    attachments:
-      invoicePdf && invoice
-        ? [
-            {
-              // Slashes in the invoice number would look like a path in a filename.
-              filename: `invoice-${invoice.invoiceNumber.replace(/\//g, "-")}.pdf`,
-              content: invoicePdf,
-              contentType: "application/pdf",
-            },
-          ]
-        : [],
-  });
+  const { subject, html, text, inlineImages = [] } = templates.orderConfirmation({ order, invoice });
+
+  const attachments = [];
+  if (invoicePdf && invoice) {
+    attachments.push({
+      // Slashes in the invoice number would look like a path in a filename.
+      filename: `invoice-${invoice.invoiceNumber.replace(/\//g, "-")}.pdf`,
+      content: invoicePdf,
+      contentType: "application/pdf",
+    });
+  }
+  // Inline (cid) images -- e.g. the header logo lockup -- referenced from the HTML.
+  for (const img of inlineImages) {
+    attachments.push({ filename: img.filename || "image.png", path: img.path, cid: img.cid, contentDisposition: "inline" });
+  }
+
+  return send({ to, subject, text, html, attachments });
 }
 
 module.exports = { send, sendOrderConfirmation, mode, CAPTURE_DIR };
