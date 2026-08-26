@@ -11,8 +11,11 @@ const CDN = 'https://media.3tattava.com';
    visitor on mobile data before this. */
 const HERO_POSTER = `${CDN}/banners/Landing_Page/wtf-launch-poster-1800.webp`;
 const HERO_VIDEO = `${CDN}/banners/Landing_Page/3tattava-x-WTF.mp4`;
-const ROCKRESIN_IMG = `${CDN}/products/rockresin/1.png`;
-const SHAHJEET_IMG = `${CDN}/products/tgftcf%201.png`;
+const ROCKRESIN_IMG = '/wtf/rockresin.webp';
+const SHAHJEET_IMG = '/wtf/shahjeet.webp';
+const HERO_BG = '/wtf/hero-bg.webp';
+const RITUAL_BANNER = '/wtf/ritual-banner.webp';
+const DR_KASHISH = '/wtf/dr-kashish.webp';
 
 const jakarta = Plus_Jakarta_Sans({ subsets: ["latin"], style: ["normal", "italic"], display: "swap", variable: "--font-jakarta" });
 const F = "var(--font-jakarta), system-ui, sans-serif";
@@ -115,7 +118,7 @@ const CSS = `
 .wg-topbar-wtf{font-weight:800;font-size:16px;color:#fff;letter-spacing:.04em;}
 
 /* Hero */
-.wg-hero{background:${DARK};color:#fff;text-align:center;padding:clamp(90px,12vh,130px) 24px 0;}
+.wg-hero{position:relative;background:linear-gradient(rgba(12,12,12,0.45),rgba(12,12,12,0.68)),url(${HERO_BG}) center/cover no-repeat,${DARK};color:#fff;text-align:center;padding:clamp(90px,12vh,130px) 24px 0;}
 .wg-hero-eyebrow{font-size:clamp(10px,1.3vw,12px);font-weight:700;letter-spacing:.32em;text-transform:uppercase;color:${GOLD};margin-bottom:16px;}
 .wg-hero-h1{font-variation-settings:'wght' 800;font-size:clamp(30px,6.5vw,60px);line-height:1.06;letter-spacing:-.02em;margin:0 0 14px;}
 .wg-hero-h1 em{font-style:italic;color:${GOLD};}
@@ -165,12 +168,12 @@ const CSS = `
 .wg-trainer input::placeholder{color:rgba(68,42,27,0.3);}
 
 /* Products — dark */
-.wg-products-sec{background:${DARK};padding:clamp(56px,9vw,100px) 24px;}
+.wg-products-sec{background:linear-gradient(rgba(12,12,12,0.62),rgba(12,12,12,0.74)),url(${HERO_BG}) center/cover no-repeat,${DARK};padding:clamp(56px,9vw,100px) 24px;}
 .wg-products{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr));gap:20px;max-width:900px;margin:28px auto 0;}
 .wg-pcard{background:${CARD_DARK};border:1px solid ${BORDER_D};border-radius:20px;overflow:hidden;display:flex;flex-direction:column;}
 .wg-pcard-badge{display:inline-block;font-size:9px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:${GOLD};background:rgba(200,150,62,0.1);border:1px solid rgba(200,150,62,0.2);padding:5px 12px;border-radius:999px;margin-bottom:12px;}
-.wg-pcard-img{width:100%;aspect-ratio:1/1;background:${DARK};display:flex;align-items:center;justify-content:center;padding:28px;}
-.wg-pcard-img img{width:100%;height:100%;object-fit:contain;}
+.wg-pcard-img{width:100%;aspect-ratio:1/1;background:${DARK};overflow:hidden;}
+.wg-pcard-img img{width:100%;height:100%;object-fit:cover;display:block;}
 .wg-pcard-body{padding:24px;flex:1;display:flex;flex-direction:column;}
 .wg-pcard-tag{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:${GOLD};margin-bottom:6px;}
 .wg-pcard-name{font-variation-settings:'wght' 800;font-size:22px;color:#fff;margin:0 0 4px;}
@@ -193,7 +196,10 @@ const CSS = `
 
 /* Ritual — dark */
 .wg-ritual-sec{background:${DARK};padding:clamp(56px,9vw,100px) 24px;color:#fff;}
-.wg-steps{margin-top:24px;max-width:600px;}
+.wg-ritual-grid{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:0.92fr 1.08fr;gap:clamp(28px,5vw,60px);align-items:center;}
+.wg-ritual-banner{width:100%;border-radius:20px;overflow:hidden;border:1px solid ${BORDER_D};box-shadow:0 24px 60px rgba(0,0,0,0.45);}
+.wg-ritual-banner img{width:100%;height:100%;display:block;object-fit:cover;}
+.wg-steps{margin-top:24px;}
 .wg-step{display:flex;gap:16px;padding:16px 0;border-top:1px solid ${BORDER_D};}
 .wg-step-num{font-variation-settings:'wght' 800;font-size:14px;color:${GOLD};flex-shrink:0;width:28px;}
 .wg-step-text{font-size:14px;color:${MUTED_D};line-height:1.5;}
@@ -201,10 +207,13 @@ const CSS = `
 
 /* Quote — cream */
 .wg-quote-sec{background:${CREAM_DEEP};padding:clamp(48px,7vw,80px) 24px;}
-.wg-quote{max-width:700px;margin:0 auto;text-align:center;}
+.wg-quote{max-width:1000px;margin:0 auto;display:grid;grid-template-columns:0.72fr 1.28fr;gap:clamp(24px,4vw,52px);align-items:center;}
+.wg-quote-photo{width:100%;}
+.wg-quote-photo img{width:100%;height:auto;display:block;filter:drop-shadow(0 24px 44px rgba(68,42,27,0.22));}
+.wg-quote-content{text-align:left;}
 .wg-quote blockquote{font-size:clamp(18px,2.4vw,24px);font-style:italic;color:${INK};line-height:1.5;margin:0 0 20px;border:none;padding:0;}
 .wg-quote blockquote em{color:${GOLD};}
-.wg-quote-author{display:flex;align-items:center;gap:14px;justify-content:center;}
+.wg-quote-author{display:flex;align-items:center;gap:14px;justify-content:flex-start;}
 .wg-quote-avatar{width:48px;height:48px;border-radius:50%;background:${GOLD};display:flex;align-items:center;justify-content:center;font-variation-settings:'wght' 800;font-size:16px;color:#fff;}
 .wg-quote-name{font-variation-settings:'wght' 700;font-size:14px;color:${INK};}
 .wg-quote-role{font-size:12px;color:${MUTED_L};}
@@ -235,7 +244,7 @@ const CSS = `
 .wg-sticky-text{font-size:12px;color:${DIM_D};}
 .wg-sticky-text strong{color:#fff;}
 
-@media(max-width:640px){.wg-products{grid-template-columns:1fr;}.wg-proof{grid-template-columns:1fr 1fr;}}
+@media(max-width:640px){.wg-products{grid-template-columns:1fr;}.wg-proof{grid-template-columns:1fr 1fr;}.wg-quote{grid-template-columns:1fr;gap:20px;}.wg-quote-content{text-align:center;}.wg-quote-author{justify-content:center;}.wg-quote-photo{max-width:260px;margin:0 auto;}.wg-ritual-grid{grid-template-columns:1fr;gap:24px;}}
 @media(max-width:400px){.wg-proof{grid-template-columns:1fr;}}
 `;
 
@@ -344,39 +353,50 @@ export default function WtfGymClient() {
 
       {/* ═══ 5. RITUAL — dark ═══ */}
       <section className="wg-ritual-sec">
-        <div style={{ maxWidth: 600, margin: '0 auto' }}>
-          <motion.p className="wg-eyebrow-d" {...fade()}>The 10-Second Habit</motion.p>
-          <motion.h2 className="wg-h2-d" {...fade(0.06)}>Stack the ritual <em>after the reps.</em></motion.h2>
-          <motion.p className="wg-body-d" {...fade(0.12)}>The best routine isn&apos;t the most complicated one. It&apos;s the one you repeat.</motion.p>
-          <div className="wg-steps">
-            {[{ t: 'Pick your format', d: 'Traditional RockResin or portable Shahjeet Sticks.' },
-              { t: 'Follow the label', d: 'Use the measured serving exactly as directed.' },
-              { t: 'Make it automatic', d: 'Attach it to a cue you already own: water, breakfast, or gym bag.' },
-            ].map((s, i) => (
-              <motion.div key={s.t} className="wg-step" {...fade(i * 0.06)}>
-                <span className="wg-step-num">0{i + 1}</span>
-                <p className="wg-step-text"><strong>{s.t}</strong> — {s.d}</p>
-              </motion.div>
-            ))}
-          </div>
-          <motion.div {...fade(0.2)} style={{ marginTop: 20 }}>
-            <a href="#products" className="wg-btn wg-btn-gold">Find your format <Arrow /></a>
+        <div className="wg-ritual-grid">
+          <motion.div className="wg-ritual-banner" {...fade()}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={RITUAL_BANNER} alt="Train with WTF × 3Tattava" />
           </motion.div>
+          <div>
+            <motion.p className="wg-eyebrow-d" {...fade()}>The 10-Second Habit</motion.p>
+            <motion.h2 className="wg-h2-d" {...fade(0.06)}>Stack the ritual <em>after the reps.</em></motion.h2>
+            <motion.p className="wg-body-d" {...fade(0.12)}>The best routine isn&apos;t the most complicated one. It&apos;s the one you repeat.</motion.p>
+            <div className="wg-steps">
+              {[{ t: 'Pick your format', d: 'Traditional RockResin or portable Shahjeet Sticks.' },
+                { t: 'Follow the label', d: 'Use the measured serving exactly as directed.' },
+                { t: 'Make it automatic', d: 'Attach it to a cue you already own: water, breakfast, or gym bag.' },
+              ].map((s, i) => (
+                <motion.div key={s.t} className="wg-step" {...fade(i * 0.06)}>
+                  <span className="wg-step-num">0{i + 1}</span>
+                  <p className="wg-step-text"><strong>{s.t}</strong> — {s.d}</p>
+                </motion.div>
+              ))}
+            </div>
+            <motion.div {...fade(0.2)} style={{ marginTop: 20 }}>
+              <a href="#products" className="wg-btn wg-btn-gold">Find your format <Arrow /></a>
+            </motion.div>
+          </div>
         </div>
       </section>
 
       {/* ═══ 6. DOCTOR QUOTE — cream ═══ */}
       <section className="wg-quote-sec">
         <motion.div className="wg-quote" {...fade()}>
-          <blockquote>&ldquo;Don&apos;t believe our claim—<em>verify our standards.</em>&rdquo;</blockquote>
-          <div className="wg-quote-author">
-            <div className="wg-quote-avatar">KG</div>
-            <div style={{ textAlign: 'left' }}>
-              <p className="wg-quote-name">Dr. Kashish Gupta</p>
-              <p className="wg-quote-role">BAMS · Founder &amp; Formulating Ayurveda Doctor</p>
-            </div>
+          <div className="wg-quote-photo">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={DR_KASHISH} alt="Dr. Kashish Gupta, BAMS" />
           </div>
-          <a href="https://www.3tattava.com/about" className="wg-btn wg-btn-ghost-l" style={{ marginTop: 20 }}>Meet the doctor <Arrow /></a>
+          <div className="wg-quote-content">
+            <blockquote>&ldquo;Don&apos;t believe our claim—<em>verify our standards.</em>&rdquo;</blockquote>
+            <div className="wg-quote-author">
+              <div>
+                <p className="wg-quote-name">Dr. Kashish Gupta</p>
+                <p className="wg-quote-role">BAMS · Founder &amp; Formulating Ayurveda Doctor</p>
+              </div>
+            </div>
+            <a href="https://www.3tattava.com/about" className="wg-btn wg-btn-ghost-l" style={{ marginTop: 20 }}>Meet the doctor <Arrow /></a>
+          </div>
         </motion.div>
       </section>
 
