@@ -107,6 +107,11 @@ function LoginContent() {
               <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required
                 style={{ width: "100%", fontFamily: F, fontSize: 15, padding: "10px 14px", border: "1px solid #b7a392", borderRadius: 4, outline: "none" }} />
             </div>
+            <div style={{ marginTop: -6, textAlign: "right" }}>
+              <Link href="/forgot-password" style={{ fontFamily: F, fontSize: 12, color: "#cd872a", fontWeight: 600, textDecoration: "none" }}>
+                Forgot password?
+              </Link>
+            </div>
             {error && <p style={{ fontFamily: F, fontSize: 12, color: "#b4452a" }}>{error}</p>}
             <button type="submit" disabled={isLoading}
               style={{ width: "100%", fontFamily: F, fontVariationSettings: "'wdth' 85,'wght' 700", fontSize: 14, color: "#442a1b", background: "linear-gradient(105deg,#A67B2F,#E4C079,#cd872a,#A67B2F)", border: "none", padding: "14px", borderRadius: 4, cursor: "pointer", opacity: isLoading ? 0.6 : 1 }}>
