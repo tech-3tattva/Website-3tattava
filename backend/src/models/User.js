@@ -48,6 +48,7 @@ const userSchema = new mongoose.Schema(
 
     verifyToken: { type: String },
     resetToken: { type: String },
+    resetTokenExp: { type: Date },
 
     lastLogin: { type: Date },
   },
@@ -67,6 +68,7 @@ userSchema.set("toJSON", {
     delete ret.refreshTokenExp;
     delete ret.verifyToken;
     delete ret.resetToken;
+    delete ret.resetTokenExp;
   },
 });
 

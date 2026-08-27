@@ -5,11 +5,13 @@ const jwt = require("jsonwebtoken");
 const { z } = require("zod");
 const rateLimit = require("express-rate-limit");
 const twilio = require("twilio");
+const crypto = require("crypto");
 
 const User = require("../models/User");
 const { verifyToken } = require("../middleware/auth");
 const { ApiError } = require("../middleware/errorHandler");
 const { issueWelcomeCoupon } = require("../utils/welcomeCoupon");
+const mailer = require("../lib/mailer");
 
 const router = express.Router();
 
@@ -338,12 +340,95 @@ router.get("/verify-email", async (req, res, next) => {
   }
 });
 
-router.post("/forgot-password", async (req, res) => {
-  res.status(501).json({ message: "Not implemented in local MVP" });
+// ─── Password reset ──────────────────────────────────────────────────────────
+// A forgotten password used to mean permanent lockout (both endpoints returned
+// 501). The link is single-use, short-lived, and only its SHA-256 hash is
+// stored, so a database leak can't be replayed into an account takeover.
+const RESET_TTL_MIN = 60;
+
+const resetLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 5,
+  standardHeaders: "draft-8",
+  legacyHeaders: false,
+  message: { message: "Too many reset requests. Please wait a few minutes." },
 });
 
-router.post("/reset-password", async (req, res) => {
-  res.status(501).json({ message: "Not implemented in local MVP" });
+function siteBase() {
+  return (process.env.PUBLIC_SITE_URL || process.env.FRONTEND_URL || "https://www.3tattava.com").replace(/\/+$/, "");
+}
+function hashResetToken(raw) {
+  return crypto.createHash("sha256").update(raw).digest("hex");
+}
+const escHtml = (s) =>
+  String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+router.post("/forgot-password", resetLimiter, async (req, res, next) => {
+  try {
+    const { email } = z.object({ email: z.string().email() }).parse(req.body);
+    const user = await User.findOne({ email: email.toLowerCase().trim() }).exec();
+
+    // Only local-password accounts can reset; Google-only accounts have no hash.
+    if (user && user.passwordHash) {
+      const rawToken = crypto.randomBytes(32).toString("hex");
+      user.resetToken = hashResetToken(rawToken);
+      user.resetTokenExp = new Date(Date.now() + RESET_TTL_MIN * 60 * 1000);
+      await user.save();
+
+      const link = `${siteBase()}/reset-password?token=${rawToken}`;
+      const text =
+        `Hi ${user.name || "there"},\n\n` +
+        `We received a request to reset your 3TATTAVA password. Open the link below to ` +
+        `choose a new one — it expires in ${RESET_TTL_MIN} minutes:\n\n${link}\n\n` +
+        `If you didn't request this, you can safely ignore this email; your password won't change.\n\n— 3TATTAVA`;
+      const html =
+        `<div style="font-family:Arial,sans-serif;font-size:15px;color:#1b1b1b;line-height:1.6">` +
+        `<p>Hi ${escHtml(user.name) || "there"},</p>` +
+        `<p>We received a request to reset your <b>3TATTAVA</b> password. Choose a new one using the ` +
+        `button below — this link expires in ${RESET_TTL_MIN} minutes.</p>` +
+        `<p><a href="${link}" style="display:inline-block;background:#0E0C09;color:#F5EFE6;` +
+        `text-decoration:none;padding:12px 22px;border-radius:6px;font-weight:700">Reset my password</a></p>` +
+        `<p style="font-size:13px;color:#666">Or paste this link into your browser:<br>${escHtml(link)}</p>` +
+        `<p style="font-size:13px;color:#666">If you didn't request this, you can ignore this email — your password won't change.</p>` +
+        `<p>— 3TATTAVA</p></div>`;
+      try {
+        await mailer.send({ to: user.email, subject: "Reset your 3TATTAVA password", text, html });
+      } catch (e) {
+        console.error("[forgot-password] email send failed:", e.message);
+      }
+    }
+
+    // Identical response either way — never reveal whether an email is registered.
+    return res.json({ ok: true, message: "If that email is registered, a reset link is on its way." });
+  } catch (err) {
+    return next(err);
+  }
+});
+
+router.post("/reset-password", resetLimiter, async (req, res, next) => {
+  try {
+    const { token, password } = z
+      .object({ token: z.string().min(10), password: z.string().min(6) })
+      .parse(req.body);
+
+    const user = await User.findOne({
+      resetToken: hashResetToken(token),
+      resetTokenExp: { $gt: new Date() },
+    }).exec();
+    if (!user) throw new ApiError(400, "This reset link is invalid or has expired. Please request a new one.");
+
+    user.passwordHash = await bcrypt.hash(password, 12);
+    user.resetToken = undefined;
+    user.resetTokenExp = undefined;
+    // Invalidate any live session so a leaked link can't leave one behind.
+    user.refreshToken = undefined;
+    user.refreshTokenExp = undefined;
+    await user.save();
+
+    return res.json({ ok: true, message: "Your password has been updated. Please sign in." });
+  } catch (err) {
+    return next(err);
+  }
 });
 
 router.post("/admin/auth/login", async (req, res, next) => {
