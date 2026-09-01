@@ -257,7 +257,8 @@ const CSS = `
 .wg-quote-role{font-size:12px;color:${MUTED_L};}
 
 /* FAQ — dark */
-.wg-faq-sec{background:radial-gradient(95% 80% at 50% 26%,rgba(200,150,62,0.10),rgba(12,12,12,0) 60%),linear-gradient(180deg,#160f05 0%,${DARK} 60%),${DARK};padding:clamp(56px,9vw,100px) 24px;color:#fff;}
+.wg-faq-sec{background:radial-gradient(80% 75% at 50% 46%,rgba(12,12,12,0.42),rgba(12,12,12,0) 80%),url('/wtf/faq-desktop.webp') center/cover no-repeat,${DARK};padding:clamp(56px,9vw,100px) 24px;color:#fff;}
+@media (max-width:640px){.wg-faq-sec{background:radial-gradient(92% 55% at 50% 40%,rgba(12,12,12,0.4),rgba(12,12,12,0) 78%),url('/wtf/faq-mobile.webp') center/cover no-repeat,${DARK};}}
 .wg-faq{max-width:700px;margin:24px auto 0;}
 .wg-faq-item{border-top:1px solid ${BORDER_D};padding:18px 0;}
 .wg-faq-q{font-variation-settings:'wght' 700;font-size:15px;color:#fff;cursor:pointer;display:flex;gap:12px;align-items:center;}
