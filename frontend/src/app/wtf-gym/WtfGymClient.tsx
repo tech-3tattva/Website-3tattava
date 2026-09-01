@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence, MotionConfig, useScroll, useSpring, useInView, useReducedMotion } from 'framer-motion';
 import { Plus_Jakarta_Sans } from "next/font/google";
 
 /* ─── Assets ─── */
@@ -16,6 +16,9 @@ const SHAHJEET_IMG = `${MEDIA}/shahjeet.webp`;
 const HERO_BG = `${MEDIA}/hero-bg.webp`;
 const RITUAL_BANNER = `${MEDIA}/ritual-banner.webp`;
 const DR_KASHISH = `${MEDIA}/dr-kashish.webp`;
+
+/* Q&A section background: clean dark gradient for now. A generated banner image
+   will be dropped into the `.wg-faq-sec` background rule below (used as `cover`). */
 
 const jakarta = Plus_Jakarta_Sans({ subsets: ["latin"], style: ["normal", "italic"], display: "swap", variable: "--font-jakarta" });
 const F = "var(--font-jakarta), system-ui, sans-serif";
@@ -36,11 +39,39 @@ const DIM_D = 'rgba(255,255,255,0.35)';
 const MUTED_L = 'rgba(68,42,27,0.6)';
 
 const fade = (d = 0) => ({
-  initial: { opacity: 0, y: 22 } as const,
-  whileInView: { opacity: 1, y: 0 } as const,
+  initial: { opacity: 0, y: 22, filter: 'blur(8px)' } as const,
+  whileInView: { opacity: 1, y: 0, filter: 'blur(0px)' } as const,
   viewport: { once: true } as const,
-  transition: { duration: 0.65, delay: d, ease: EASE },
+  transition: { duration: 0.7, delay: d, ease: EASE },
 });
+
+/* ── Count-up stat + scroll-progress bar (both respect reduced motion) ── */
+function CountUp({ to, suffix = '', duration = 1400 }: { to: number; suffix?: string; duration?: number }) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const inView = useInView(ref, { once: true, margin: '0px 0px -15% 0px' });
+  const reduce = useReducedMotion();
+  const [val, setVal] = useState(0);
+  useEffect(() => {
+    if (!inView) return;
+    if (reduce) { setVal(to); return; }
+    let raf = 0;
+    const start = performance.now();
+    const tick = (now: number) => {
+      const prog = Math.min(1, (now - start) / duration);
+      setVal(Math.round((1 - Math.pow(1 - prog, 3)) * to));
+      if (prog < 1) raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [inView, reduce, to, duration]);
+  return <span ref={ref}>{val}{suffix}</span>;
+}
+
+function ScrollProgress() {
+  const { scrollYProgress } = useScroll();
+  const scaleX = useSpring(scrollYProgress, { stiffness: 120, damping: 30, mass: 0.3 });
+  return <motion.div className="wg-progress" style={{ scaleX }} aria-hidden />;
+}
 
 /* ─── Full-width cinematic hero with poster → video ─── */
 function HeroBanner() {
@@ -95,12 +126,19 @@ const FAQS = [
 function FaqItem({ faq, idx }: { faq: typeof FAQS[0]; idx: number }) {
   const [open, setOpen] = useState(false);
   return (
-    <div className="wg-faq-item">
+    <motion.div className="wg-faq-item" {...fade(idx * 0.05)}>
       <div className="wg-faq-q" onClick={() => setOpen(!open)} role="button" tabIndex={0} onKeyDown={e => { if (e.key === 'Enter') setOpen(!open); }}>
-        <span>0{idx + 1}</span><span>{faq.q}</span><span style={{ marginLeft: 'auto', fontSize: 18, color: GOLD }}>{open ? '−' : '+'}</span>
+        <span>0{idx + 1}</span><span>{faq.q}</span>
+        <motion.span style={{ marginLeft: 'auto', fontSize: 20, color: GOLD, display: 'inline-block', lineHeight: 1 }} animate={{ rotate: open ? 45 : 0 }} transition={{ duration: 0.28, ease: EASE }}>+</motion.span>
       </div>
-      {open && <p className="wg-faq-a">{faq.a}</p>}
-    </div>
+      <AnimatePresence initial={false}>
+        {open && (
+          <motion.div key="a" initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.3, ease: EASE }} style={{ overflow: 'hidden' }}>
+            <p className="wg-faq-a">{faq.a}</p>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
   );
 }
 
@@ -219,7 +257,7 @@ const CSS = `
 .wg-quote-role{font-size:12px;color:${MUTED_L};}
 
 /* FAQ — dark */
-.wg-faq-sec{background:linear-gradient(rgba(12,12,12,0.66),rgba(12,12,12,0.78)),url(${HERO_BG}) center/cover no-repeat,${DARK};padding:clamp(56px,9vw,100px) 24px;color:#fff;}
+.wg-faq-sec{background:radial-gradient(90% 85% at 50% 45%,rgba(12,12,12,0.45),rgba(12,12,12,0) 82%),url('/wtf/faq-bg.webp') center/cover no-repeat,${DARK};padding:clamp(56px,9vw,100px) 24px;color:#fff;}
 .wg-faq{max-width:700px;margin:24px auto 0;}
 .wg-faq-item{border-top:1px solid ${BORDER_D};padding:18px 0;}
 .wg-faq-q{font-variation-settings:'wght' 700;font-size:15px;color:#fff;cursor:pointer;display:flex;gap:12px;align-items:center;}
@@ -246,12 +284,46 @@ const CSS = `
 
 @media(max-width:640px){.wg-products{grid-template-columns:1fr;}.wg-proof{grid-template-columns:1fr 1fr;}.wg-quote-sec{padding-bottom:clamp(36px,9vw,56px);}.wg-quote{grid-template-columns:1fr;gap:18px;align-items:center;}.wg-quote-photo{max-width:250px;margin:0 auto;align-self:auto;}.wg-quote-content{text-align:center;}.wg-quote-author{justify-content:center;}.wg-ritual-sec{background:${DARK};min-height:auto;display:block;padding:clamp(44px,9vw,64px) 24px;}.wg-ritual-content{width:100%;margin:0;}.wg-ritual-mob{display:block;width:100%;border-radius:14px;border:1px solid ${BORDER_D};margin-bottom:22px;}}
 @media(max-width:400px){.wg-proof{grid-template-columns:1fr;}}
+
+/* ── Added effects: micro-interactions (no layout change) ── */
+.wg-progress{position:fixed;top:0;left:0;right:0;height:3px;transform-origin:0 50%;background:linear-gradient(90deg,${GOLD},#e6c078);z-index:60;}
+.wg-pcard{transition:transform .35s cubic-bezier(0.16,1,0.3,1),border-color .35s ease,box-shadow .35s ease;}
+.wg-pcard:hover{transform:translateY(-6px);border-color:rgba(200,150,62,0.45);box-shadow:0 22px 54px rgba(0,0,0,0.45);}
+.wg-pcard-img img{transition:transform .5s cubic-bezier(0.16,1,0.3,1);}
+.wg-pcard:hover .wg-pcard-img img{transform:scale(1.06);}
+.wg-proof-card{position:relative;overflow:hidden;transition:transform .3s ease,box-shadow .3s ease,border-color .3s ease;}
+.wg-proof-card:hover{transform:translateY(-4px);box-shadow:0 16px 36px rgba(68,42,27,0.12);border-color:${GOLD};}
+.wg-proof-card::before{content:'';position:absolute;top:0;left:-160%;width:65%;height:100%;background:linear-gradient(120deg,transparent,rgba(200,150,62,0.16),transparent);transform:skewX(-20deg);transition:left .7s ease;pointer-events:none;}
+.wg-proof-card:hover::before{left:160%;}
+.wg-proof-icon{display:inline-block;transition:text-shadow .3s ease;}
+.wg-proof-card:hover .wg-proof-icon{text-shadow:0 0 18px rgba(200,150,62,0.65);}
+.wg-btn-gold{position:relative;overflow:hidden;}
+.wg-btn-gold::after{content:'';position:absolute;top:0;left:-150%;width:60%;height:100%;background:linear-gradient(120deg,transparent,rgba(255,255,255,0.45),transparent);transform:skewX(-20deg);transition:left .6s ease;pointer-events:none;}
+.wg-btn-gold:hover::after{left:150%;}
+.wg-faq-q span:nth-child(2){transition:color .2s ease;}
+.wg-faq-q:hover span:nth-child(2){color:${GOLD};}
+@keyframes wg-slide-up{from{transform:translateY(100%);}to{transform:translateY(0);}}
+.wg-sticky{animation:wg-slide-up .5s cubic-bezier(0.16,1,0.3,1) .3s both;}
+@keyframes wg-glow{0%,100%{box-shadow:0 0 0 0 rgba(200,150,62,0);}50%{box-shadow:0 0 0 5px rgba(200,150,62,0.14);}}
+.wg-sticky .wg-btn-gold{animation:wg-glow 2.8s ease-in-out infinite;}
+/* Gold shimmer on the key italic accent words */
+@keyframes wg-shimmer{to{background-position:-200% 0;}}
+.wg-hero-h1 em,.wg-h2-d em{background:linear-gradient(100deg,${GOLD} 34%,#f6e6b8 50%,${GOLD} 66%);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;animation:wg-shimmer 5s linear infinite;}
+/* Tactile button press */
+.wg-btn:active{transform:scale(0.96);}
+@media (prefers-reduced-motion: reduce){
+  .wg-progress{display:none;}
+  .wg-pcard,.wg-pcard-img img,.wg-proof-card,.wg-proof-card::before,.wg-btn-gold::after,.wg-sticky,.wg-sticky .wg-btn-gold,.wg-hero-h1 em,.wg-h2-d em,.wg-btn{animation:none!important;transition:none!important;}
+  .wg-pcard,.wg-proof-card,.wg-sticky,.wg-btn{transform:none!important;}
+}
 `;
 
 export default function WtfGymClient() {
   return (
+    <MotionConfig reducedMotion="user">
     <div className={`wg ${jakarta.variable}`}>
       <style dangerouslySetInnerHTML={{ __html: CSS }} />
+      <ScrollProgress />
 
       {/* ═══ TOP BAR — WTF × 3TATTAVA logo ═══ */}
       <div className="wg-topbar">
@@ -280,8 +352,8 @@ export default function WtfGymClient() {
         </motion.div>
         <motion.div {...fade(0.35)}><HeroBanner /></motion.div>
         <div className="wg-stats">
-          <div style={{ textAlign: 'center' }}><div className="wg-stat-val">70%+</div><div className="wg-stat-label">Fulvic acid</div></div>
-          <div style={{ textAlign: 'center' }}><div className="wg-stat-val">80+</div><div className="wg-stat-label">Trace minerals</div></div>
+          <div style={{ textAlign: 'center' }}><div className="wg-stat-val"><CountUp to={70} suffix="%+" /></div><div className="wg-stat-label">Fulvic acid</div></div>
+          <div style={{ textAlign: 'center' }}><div className="wg-stat-val"><CountUp to={80} suffix="+" /></div><div className="wg-stat-label">Trace minerals</div></div>
         </div>
       </section>
 
@@ -344,7 +416,7 @@ export default function WtfGymClient() {
             { icon: '△', title: 'Made for consistency', desc: 'Traditional resin or travel-ready honey sticks — the same intent in a format that fits.' },
           ].map((p, i) => (
             <motion.div key={p.title} className="wg-proof-card" {...fade(i * 0.06)}>
-              <p className="wg-proof-num">0{i + 1}</p><p className="wg-proof-icon">{p.icon}</p>
+              <p className="wg-proof-num">0{i + 1}</p><motion.p className="wg-proof-icon" initial={{ scale: 0, rotate: -30 }} whileInView={{ scale: 1, rotate: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.06 + 0.12, type: 'spring', stiffness: 260, damping: 14 }}>{p.icon}</motion.p>
               <h3 className="wg-proof-title">{p.title}</h3><p className="wg-proof-desc">{p.desc}</p>
             </motion.div>
           ))}
@@ -443,5 +515,6 @@ export default function WtfGymClient() {
         <a href="#products" className="wg-btn wg-btn-gold" style={{ padding: '10px 20px', fontSize: 11 }}>Shop <Arrow /></a>
       </div>
     </div>
+    </MotionConfig>
   );
 }
