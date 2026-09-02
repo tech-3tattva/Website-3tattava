@@ -10,15 +10,29 @@ const F = "var(--font-primary), system-ui, sans-serif";
 const INK = "#442a1b";
 const GOLD = "#cd872a";
 
-/* Community testimonial reels (portrait 9/16). Hover to preview (muted); click to open with sound. */
-const TESTIMONIAL_VIDEOS = [
-  "https://media.3tattava.com/videos/Client+Testimonials+1.mp4",
-  "https://media.3tattava.com/videos/Review%20Video.mp4",
+/* Community reels (portrait 9/16). Muted preview when scrolled into view; click to
+   open with sound.
+
+   Each reel carries a light poster and the video is `preload="none"`, so the page
+   loads none of the footage up front — these files are large (the first is ~108 MB)
+   and preloading them was costing every visitor the whole payload.
+
+   All media is served from the S3+CloudFront CDN (media.3tattava.com), same as the
+   rest of the site's assets — nothing heavy ships inside the repo. */
+type Reel = { src: string; poster: string };
+
+const MEDIA = "https://media.3tattava.com/videos";
+
+const TESTIMONIAL_REELS: Reel[] = [
+  { src: `${MEDIA}/Client+Testimonials+1.mp4`, poster: `${MEDIA}/posters/testimonial-1.webp` },
+  { src: `${MEDIA}/Review%20Video.mp4`, poster: `${MEDIA}/posters/testimonial-2.webp` },
+  { src: `${MEDIA}/doctor-rockresin.mp4`, poster: `${MEDIA}/posters/doctor-rockresin.webp` },
+  { src: `${MEDIA}/doctor-shahjeet.mp4`, poster: `${MEDIA}/posters/doctor-shahjeet.webp` },
 ];
 
 /* One reel — shows its first frame (never blank), plays muted on hover, has a pause toggle,
    and opens full-size (with sound) when clicked. */
-function TestimonialReel({ src, onExpand }: { src: string; onExpand: () => void }) {
+function TestimonialReel({ reel, onExpand }: { reel: Reel; onExpand: () => void }) {
   const ref = useRef<HTMLVideoElement>(null);
   const wrapRef = useRef<HTMLDivElement>(null);
   const inView = useInView(wrapRef, { margin: "-10%" });
@@ -68,10 +82,11 @@ function TestimonialReel({ src, onExpand }: { src: string; onExpand: () => void 
         muted
         loop
         playsInline
-        preload="auto"
+        preload="none"
+        poster={reel.poster}
         style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", borderRadius: "inherit" }}
       >
-        <source src={src} type="video/mp4" />
+        <source src={reel.src} type="video/mp4" />
       </video>
 
       {/* Pause control */}
@@ -183,17 +198,17 @@ export default function TestimonialVideo() {
         >
           Hear it straight from the people who made 3Tattava part of their daily ritual.
         </motion.p>
-
-        {/* ─── Video reels (hover to preview · click to expand) ─── */}
-        <motion.div
-          {...reveal(0.25)}
-          style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(230px, 1fr))", gap: "clamp(16px, 2.5vw, 28px)", maxWidth: 620, margin: "0 auto" }}
-        >
-          {TESTIMONIAL_VIDEOS.map((src) => (
-            <TestimonialReel key={src} src={src} onExpand={() => setExpanded(src)} />
-          ))}
-        </motion.div>
       </div>
+
+      {/* ─── Video reels (scroll to preview · click to expand) ─── */}
+      <motion.div
+        {...reveal(0.25)}
+        style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(210px, 1fr))", gap: "clamp(16px, 2.5vw, 24px)", maxWidth: 1040, margin: "0 auto" }}
+      >
+        {TESTIMONIAL_REELS.map((r) => (
+          <TestimonialReel key={r.src} reel={r} onExpand={() => setExpanded(r.src)} />
+        ))}
+      </motion.div>
 
       {/* ─── Full-view lightbox (with sound) ─── */}
       <AnimatePresence>
